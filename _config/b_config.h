@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211031
 //<o> Firmware version
-#define FW_VERSION 70100
+#define FW_VERSION 70200
 //</h>
 
 //<h> Platform Configuration
@@ -73,7 +73,7 @@
 //<3=> error
 #define _DEBUG_ENABLE 1
 
-//<e> ADCHUB Enable/Disable
+//<e> Adchub Enable/Disable
 #define _ADCHUB_ENABLE 0
 //<o> Filter Buffer Size
 #define FILTER_BUF_SIZE 10
