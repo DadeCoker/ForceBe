@@ -42,15 +42,34 @@
 
 static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {
-    if (IS_NULL(spi_if))
+    uint16_t SpeedVal = 1;
+    if (IS_NULL(spi_if) || (speed >= B_HAL_SPI_SPEED_INVALID))
     {
         return -1;
     }
+    
+    if(speed == B_HAL_SPI_SLOW)
+    {
+        SpeedVal = 6;
+    }
+    
     switch (spi_if->_if.spi)
     {
         case B_HAL_SPI_1:
-
+            while(SPI1->SR & 0x80);
+            SPI1->CR1 &= ~(0x7 << 3);
+            SPI1->CR1 |= SpeedVal << 3;
             break;
+        case B_HAL_SPI_2:
+            while(SPI2->SR & 0x80);
+            SPI2->CR1 &= ~(0x7 << 3);
+            SPI2->CR1 |= SpeedVal << 3;
+            break;
+        case B_HAL_SPI_3:
+            while(SPI3->SR & 0x80);
+            SPI3->CR1 &= ~(0x7 << 3);
+            SPI3->CR1 |= SpeedVal << 3;
+            break;        
         default:
             break;
     }
