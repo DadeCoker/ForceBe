@@ -124,7 +124,8 @@ typedef uint8_t (*pOptFunc_t)(void *param);
  * \defgroup ESP12F_Private_FunctionPrototypes
  * \{
  */
-static void    _bEspUartIdleCb(uint8_t *pbuf, uint16_t len);
+static int _bEspUartIdleCb(uint8_t *pbuf, uint16_t len);
+
 static uint8_t _bEspEnterAt(void *param);
 static uint8_t _bEspAt(void *param);
 static uint8_t _bEspReset(void *param);
@@ -274,10 +275,11 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
     return 0;
 }
 
-static void _bEspUartIdleCb(uint8_t *pbuf, uint16_t len)
+static int _bEspUartIdleCb(uint8_t *pbuf, uint16_t len)
 {
     bAtFeedRespData(pbuf, len);
     _bEspRecHandler(pbuf, len);
+    return 0;
 }
 
 static void _bEspCmdFinished(uint8_t result)
@@ -660,7 +662,7 @@ static uint8_t _bEspPing(void *param)
     len = sprintf(buf, "AT+PING=\"%s\"\r\n", (char *)param);
     if (len > 0)
     {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 5000);
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 2000);
     }
     return retval;
 }
@@ -754,7 +756,8 @@ static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
         case bCMD_WIFI_PING:
             if (param != NULL)
             {
-                _bEspCmdStart(cmd, bWifiPingOptList, sizeof(bWifiPingOptList), param, strlen(param));
+                _bEspCmdStart(cmd, bWifiPingOptList, sizeof(bWifiPingOptList), param,
+                              strlen(param));
             }
             break;
         default:

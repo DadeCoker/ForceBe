@@ -85,9 +85,9 @@ static void _bUtilStatPolling()
         {
             if (pstat->f != NULL)
             {
-                retval = pstat->f(PARAM_ENTER, p->prev_stat, p->count);
                 p->count += 1;
                 p->tick = bHalGetSysTick();
+                retval  = pstat->f(PARAM_ENTER, p->prev_stat, p->count);
             }
         }
         else
@@ -96,9 +96,9 @@ static void _bUtilStatPolling()
             {
                 if (pstat->f != NULL)
                 {
-                    retval = pstat->f(PARAM_NULL, p->prev_stat, p->count);
                     p->count += 1;
                     p->tick = bHalGetSysTick();
+                    retval  = pstat->f(PARAM_NULL, p->prev_stat, p->count);
                 }
             }
         }
@@ -147,6 +147,25 @@ int bUtilStatRegist(bUtilStatInstance_t *pinstance)
     }
     pinstance->next = pStatHead->next;
     pStatHead->next = pinstance;
+    return 0;
+}
+
+int bUtilStatSwitch(bUtilStatInstance_t *pinstance, uint8_t stat)
+{
+    const bStatList_t *pstat = NULL;
+    if (pinstance == NULL)
+    {
+        return -1;
+    }
+    if (stat >= pinstance->list_num)
+    {
+        return -1;
+    }
+    pstat = &pinstance->plist[pinstance->stat];
+    pstat->f(PARAM_EXIT, pinstance->prev_stat, pinstance->count);
+    pinstance->prev_stat = pinstance->stat;
+    pinstance->stat      = stat;
+    pinstance->count     = 0;
     return 0;
 }
 

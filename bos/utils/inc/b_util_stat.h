@@ -122,7 +122,7 @@ typedef bUtilStat_t bUtilStatInstance_t;
  */
 
 int bUtilStatRegist(bUtilStatInstance_t *pinstance);
-
+int bUtilStatSwitch(bUtilStatInstance_t *pinstance, uint8_t stat);
 /**
  * \}
  */

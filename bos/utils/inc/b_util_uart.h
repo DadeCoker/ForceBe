@@ -53,7 +53,7 @@ extern "C" {
  * \{
  */
 
-typedef void (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len);
+typedef int (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len);
 
 typedef struct UtilUart
 {
