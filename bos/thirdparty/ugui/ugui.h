@@ -92,7 +92,7 @@ extern const UG_FONT FONT_24X40;
 #ifdef USE_FONT_32X53
 extern const UG_FONT FONT_32X53;
 #endif
-#if _GUI_FONT == 3
+#if GUI_FONT == 3
 extern UG_FONT bGUI_XBF_Font;
 #endif
 /* -------------------------------------------------------------------------------- */
@@ -875,7 +875,7 @@ typedef struct
 /* -------------------------------------------------------------------------------- */
 /* -- PROTOTYPES                                                                 -- */
 /* -------------------------------------------------------------------------------- */
-#if _GUI_FONT == 3
+#if GUI_FONT == 3
 
 typedef struct
 {

@@ -85,7 +85,7 @@ typedef struct
  * \defgroup HAL_Exported_Defines
  * \{
  */
-#define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
+#define MS2TICKS(m) (m / (1000 / TICK_FRQ_HZ))
 
 #define B_SET_BIT(REG, BIT) ((REG) |= (BIT))
 #define B_CLEAR_BIT(REG, BIT) ((REG) &= ~(BIT))

@@ -33,8 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
-     _MCU_PLATFORM == 1004)
+#if (MCU_PLATFORM == 1001 || MCU_PLATFORM == 1002 || MCU_PLATFORM == 1003 || MCU_PLATFORM == 1004)
 
 //         Register Address
 

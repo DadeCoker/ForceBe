@@ -6,9 +6,11 @@
 /* This is an example of glue functions to attach various exsisting      */
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
+#include "diskio.h" /* Declarations of disk functions */
+
 #include "b_os.h"
 #include "ff.h" /* Obtains integer types */
-#include "diskio.h" /* Declarations of disk functions */
+
 /* Definitions of physical drive number for each drive */
 
 /*-----------------------------------------------------------------------*/
@@ -18,7 +20,7 @@
 DSTATUS disk_status(BYTE pdrv /* Physical drive nmuber to identify the drive */
 )
 {
-#if _FS_ENABLE && (_FS_SELECT == 0)
+#if _FS_ENABLE && (FS_SELECT == 0)
     DSTATUS stat = RES_OK;
     switch (pdrv)
     {
@@ -52,7 +54,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
                   UINT  count   /* Number of sectors to read */
 )
 {
-#if _FS_ENABLE && (_FS_SELECT == 0)
+#if _FS_ENABLE && (FS_SELECT == 0)
     DRESULT res = RES_OK;
     int     fd  = -1;
     switch (pdrv)
@@ -126,7 +128,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
                    UINT        count   /* Number of sectors to write */
 )
 {
-#if _FS_ENABLE && (_FS_SELECT == 0)
+#if _FS_ENABLE && (FS_SELECT == 0)
     DRESULT res = RES_OK;
     int     fd  = -1;
     switch (pdrv)
@@ -136,8 +138,8 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
         {
             // translate the arguments here
             bFlashErase_t cmd_erase;
-            uint32_t     e_size = 0;
-            fd                  = bOpen(bSPIFLASH, BCORE_FLAG_RW);
+            uint32_t      e_size = 0;
+            fd                   = bOpen(bSPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
@@ -207,9 +209,9 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
     DRESULT res = RES_OK;
     switch (pdrv)
     {
-#if _SPIFLASH_ENABLE         
+#if _SPIFLASH_ENABLE
         case DEV_SPIFLASH:
-        {           
+        {
             int fd = -1;
             fd     = bOpen(bSPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
@@ -246,7 +248,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
             switch (cmd)
             {
                 case GET_SECTOR_COUNT:
-                    ((LBA_t *)buff)[0] = _SD_SIZE * 1024 * 1024 / 512 * 1024;
+                    ((LBA_t *)buff)[0] = SD_SIZE_XG * 1024 * 1024 / 512 * 1024;
                     break;
                 case GET_SECTOR_SIZE:
                     ((WORD *)buff)[0] = 512;

@@ -35,7 +35,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (_MCU_PLATFORM == 7001)
+#if (MCU_PLATFORM == 7001)
 
 #define FLASH_BASE_ADDR (0x8000000UL)
 

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (_MCU_PLATFORM == 3001)
+#if (MCU_PLATFORM == 3001)
 
 //      Register Address
 

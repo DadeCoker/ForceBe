@@ -89,7 +89,7 @@ static bGUI_Info_t GUI_Info = {
 
 static UG_GUI bGUI_Handle;
 
-#if _GUI_FONT == 3
+#if GUI_FONT == 3
 UG_FONT bGUI_XBF_Font;
 #endif
 /**
@@ -113,7 +113,7 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
 {
     int      fd = -1;
     uint32_t off;
-#if (_LCD_DISP_MODE == 0)
+#if (LCD_DISP_MODE == 0)
     int tmp_y = x;
     x         = LCD_X_SIZE - 1 - y;
     y         = tmp_y;
@@ -137,7 +137,7 @@ static void _bGUI_TouchExec()
 {
     int           fd = -1;
     bTouchAdVal_t AdVal;
-#if (_LCD_DISP_MODE == 0)
+#if (LCD_DISP_MODE == 0)
     uint16_t tmp;
 #endif
     if (GUI_Info.lcd_id < 0 || GUI_Info.touch_id < 0)
@@ -160,7 +160,7 @@ static void _bGUI_TouchExec()
     {
         AdVal.x_ad = (AdVal.x_ad - X_TOUCH_AD_MIN) * LCD_X_SIZE / (X_TOUCH_AD_MAX - X_TOUCH_AD_MIN);
         AdVal.y_ad = (AdVal.y_ad - Y_TOUCH_AD_MIN) * LCD_Y_SIZE / (Y_TOUCH_AD_MAX - Y_TOUCH_AD_MIN);
-#if (_LCD_DISP_MODE == 0)
+#if (LCD_DISP_MODE == 0)
         tmp        = AdVal.x_ad;
         AdVal.x_ad = AdVal.y_ad;
         AdVal.y_ad = LCD_X_SIZE - 1 - tmp;
@@ -199,7 +199,7 @@ int bGUI_Init(int lcd, int touch)
     }
     GUI_Info.lcd_id   = lcd;
     GUI_Info.touch_id = touch;
-#if (_LCD_DISP_MODE == 0)
+#if (LCD_DISP_MODE == 0)
     UG_Init(&bGUI_Handle, _LCD_SetColorPixel, LCD_Y_SIZE, LCD_X_SIZE);
 #else
     UG_Init(&bGUI_Handle, _LCD_SetColorPixel, LCD_X_SIZE, LCD_Y_SIZE);
@@ -207,15 +207,15 @@ int bGUI_Init(int lcd, int touch)
     UG_SelectGUI(&bGUI_Handle);
     UG_SetForecolor(C_WHITE);
     UG_SetBackcolor(C_BLACK);
-#if _GUI_FONT == 0
+#if GUI_FONT == 0
     UG_FontSelect(&FONT_6X8);
-#elif _GUI_FONT == 1
+#elif GUI_FONT == 1
     UG_FontSelect(&FONT_8X12);
-#elif _GUI_FONT == 2
+#elif GUI_FONT == 2
     UG_FontSelect(&FONT_12X16);
-#elif _GUI_FONT == 3
+#elif GUI_FONT == 3
     uint8_t xbf_info[18];
-    if (0 > UG_ReadXBF(_XBF_FILE_ADDR, xbf_info, 18))
+    if (0 > UG_ReadXBF(XBF_FILE_ADDR, xbf_info, 18))
     {
         b_log_e("read err\r\n");
         return -1;
@@ -232,7 +232,7 @@ int bGUI_Init(int lcd, int touch)
     return 0;
 }
 
-#if _GUI_FONT == 3
+#if GUI_FONT == 3
 
 #include "b_device.h"
 

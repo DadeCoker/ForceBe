@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (_MCU_PLATFORM == 4001)
+#if (MCU_PLATFORM == 4001)
 
 //         Register Address
 

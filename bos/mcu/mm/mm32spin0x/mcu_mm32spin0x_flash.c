@@ -35,7 +35,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (_MCU_PLATFORM == 3002)
+#if (MCU_PLATFORM == 3002)
 
 #define FLASH_BASE_ADDR (0x8000000UL)
 #define FLASH_PAGE_SIZE (1024)

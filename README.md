@@ -160,7 +160,7 @@ int main()
     uint32_t boot_count = 0;
     BoardInit();
 
-    SysTick_Config(SystemCoreClock / _TICK_FRQ_HZ);
+    SysTick_Config(SystemCoreClock / TICK_FRQ_HZ);
     NVIC_SetPriority(SysTick_IRQn, 0x0);
 
     bInit();

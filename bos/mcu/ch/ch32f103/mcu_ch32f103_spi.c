@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 
-#if (_MCU_PLATFORM == 7001)
+#if (MCU_PLATFORM == 7001)
 
 //         Register Address
 

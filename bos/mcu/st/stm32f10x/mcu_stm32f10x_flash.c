@@ -35,22 +35,21 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
-     _MCU_PLATFORM == 1004)
+#if (MCU_PLATFORM == 1001 || MCU_PLATFORM == 1002 || MCU_PLATFORM == 1003 || MCU_PLATFORM == 1004)
 
 #define FLASH_BASE_ADDR (0x8000000UL)
 
-#if (_MCU_PLATFORM == 1003 || _MCU_PLATFORM == 1004)
+#if (MCU_PLATFORM == 1003 || MCU_PLATFORM == 1004)
 #define FLASH_PAGE_SIZE (2048)
 #else
 #define FLASH_PAGE_SIZE (1024)
 #endif
 
-#if (_MCU_PLATFORM == 1001)
+#if (MCU_PLATFORM == 1001)
 #define FLASH_MAX_SIZE (32 * 1024)
-#elif (_MCU_PLATFORM == 1002)
+#elif (MCU_PLATFORM == 1002)
 #define FLASH_MAX_SIZE (128 * 1024)
-#elif (_MCU_PLATFORM == 1003)
+#elif (MCU_PLATFORM == 1003)
 #define FLASH_MAX_SIZE (512 * 1024)
 #else
 #define FLASH_MAX_SIZE (256 * 1024)

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (_MCU_PLATFORM == 1101)
+#if (MCU_PLATFORM == 1101)
 
 void bMcuIntEnable()
 {

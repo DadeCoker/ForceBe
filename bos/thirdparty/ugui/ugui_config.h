@@ -1,7 +1,9 @@
 #ifndef __UGUI_CONFIG_H
 #define __UGUI_CONFIG_H
-#include "b_config.h"
 #include <stdint.h>
+
+#include "b_config.h"
+
 #if _UGUI_ENABLE
 /* -------------------------------------------------------------------------------- */
 /* -- CONFIG SECTION                                                             -- */
@@ -17,7 +19,7 @@
 //#define  USE_FONT_4X6
 //#define  USE_FONT_5X8
 //#define  USE_FONT_5X12
-#if _GUI_FONT == 0
+#if GUI_FONT == 0
 #define USE_FONT_6X8
 #endif
 //#define  USE_FONT_6X10
@@ -25,12 +27,12 @@
 //#define  USE_FONT_8X8
 //#define  USE_FONT_8X12_CYRILLIC
 //#define  USE_FONT_8X12
-#if _GUI_FONT == 1
+#if GUI_FONT == 1
 #define USE_FONT_8X12
 #endif
 //#define  USE_FONT_8X14
 //#define  USE_FONT_10X16
-#if _GUI_FONT == 2
+#if GUI_FONT == 2
 #define USE_FONT_12X16
 #endif
 //#define  USE_FONT_12X20

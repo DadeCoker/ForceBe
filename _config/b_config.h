@@ -42,7 +42,7 @@
 
 //<h> Platform Configuration
 //<o> Tick Frequncy HZ
-#define _TICK_FRQ_HZ 1000
+#define TICK_FRQ_HZ 1000
 //<o> MCU Platform
 //<1001=> STM32F10X_LD
 //<1002=> STM32F10X_MD
@@ -54,7 +54,7 @@
 //<3002=> MM32SPIN0X
 //<4001=> HC32L13X
 //<7001=> CH32F103
-#define _MCU_PLATFORM 1004
+#define MCU_PLATFORM 1004
 //</h>
 
 //<h> Hal Configuration
@@ -123,7 +123,7 @@
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
-#define _PROTO_FID_SIZE 4
+#define PROTO_FID_SIZE 4
 //<o> Size of The Len Field
 //<1=> 1Byte
 //<2=> 2Bytes
@@ -257,20 +257,20 @@
 //<o> LCD DISPLAY MODE
 //<0=> H
 //<1=> V
-#define _LCD_DISP_MODE 0
+#define LCD_DISP_MODE 0
 
 //<o> Font
 //<0=> FONT_6X8
 //<1=> FONT_8X12
 //<2=> FONT_12X16
 //<3=> FONT_XBF
-#define _GUI_FONT 0
+#define GUI_FONT 0
 //<o> Encoding
 //<0=> UTF-8
 //<1=> UNICODE
-#define _ENCODING 0
+#define GUI_ENCODING 0
 //<o> XBF Base Address
-#define _XBF_FILE_ADDR 0
+#define XBF_FILE_ADDR 0
 //</e>
 
 //<e> FS Enable/Disable
@@ -282,7 +282,7 @@
 //<o> FatFS or LittleFS
 //<0=> FatFS
 //<1=> LittleFS
-#define _FS_SELECT 0
+#define FS_SELECT 0
 
 //<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
 #define _SPIFLASH_ENABLE 1
@@ -293,8 +293,18 @@
 //<e> SD Card Enable/Disable (Device No:SD)
 #define _SD_ENABLE 0
 //<o> SD Card x(G)
-#define _SD_SIZE 1
+#define SD_SIZE_XG 1
 //</e>
+//</e>
+
+//<e> CJSON Enable/Disable
+#define _CJSON_ENABLE 0
+
+//<o> Malloc & Free Functions
+//<0=> Default(malloc/free)
+//<1=> bMalloc&bFree
+#define CJSON_MEM_FUNCTIONS 0
+
 //</e>
 
 //</h>

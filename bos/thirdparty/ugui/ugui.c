@@ -13532,7 +13532,7 @@ static int _Utf82UnicodeSize(const uint8_t utf8)
     return -1;
 }
 
-static int _Utf82Unicode(const uint8_t *utf8, uint32_t *unicode)
+static int _Utf82Unicode(const uint8_t* utf8, uint32_t* unicode)
 {
     if (utf8 == NULL || unicode == NULL)
     {
@@ -13541,7 +13541,7 @@ static int _Utf82Unicode(const uint8_t *utf8, uint32_t *unicode)
     char b1, b2, b3, b4, b5, b6;
     *unicode          = 0x0;
     int      utfbytes = _Utf82UnicodeSize(*utf8);
-    uint8_t *ptmp     = (uint8_t *)unicode;
+    uint8_t* ptmp     = (uint8_t*)unicode;
     switch (utfbytes)
     {
         case 0:
@@ -13610,7 +13610,6 @@ static int _Utf82Unicode(const uint8_t *utf8, uint32_t *unicode)
     }
     return utfbytes;
 }
-
 
 UG_S16 UG_Init(UG_GUI* g, void (*p)(UG_S16, UG_S16, UG_COLOR), UG_S16 x, UG_S16 y)
 {
@@ -14027,10 +14026,10 @@ uint8_t UG_GetUnicode(char* str, uint32_t* unicode)
     *unicode        = chr;
     if (chr & 0x80)
     {
-#if _ENCODING == 0
+#if GUI_ENCODING == 0
         utf_num = _Utf82UnicodeSize(chr);
         _Utf82Unicode((const uint8_t*)str, unicode);
-#elif _ENCODING == 1
+#elif GUI_ENCODING == 1
         *unicode = ((uint16_t*)str)[0];
         utf_num  = 2;
 #endif
@@ -14082,13 +14081,13 @@ void UG_PutString(UG_S16 x, UG_S16 y, char* str)
 
 void UG_PutCharUnicode(uint32_t v, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc)
 {
-#if _GUI_FONT == 3
+#if GUI_FONT == 3
     uint8_t    i = 0, j = 0, k = 0;
     uint8_t    tmp_data = 0;
     XBF_Info_t info;
     XBF_Data_t _data;
     uint32_t   info_addr = 0;
-    info_addr            = _XBF_FILE_ADDR + ((v - ' ') * 6) + 18;
+    info_addr            = XBF_FILE_ADDR + ((v - ' ') * 6) + 18;
     UG_ReadXBF(info_addr, (uint8_t*)&info, sizeof(XBF_Info_t));
     UG_ReadXBF(info.addr, (uint8_t*)&_data, sizeof(XBF_Data_t));
     if ((gui->font.char_height * _data.x_byte + sizeof(XBF_Data_t)) == info.len)
@@ -14452,11 +14451,11 @@ void _UG_PutChar(char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc, const U
                 {
                     b     = font->p[index++];
                     color = ((((fc & 0xFF) * b + (bc & 0xFF) * (256 - b)) >> 8) &
-                                0xFF) |  // Blue component
+                             0xFF) |  // Blue component
                             ((((fc & 0xFF00) * b + (bc & 0xFF00) * (256 - b)) >> 8) &
-                                0xFF00) |  // Green component
+                             0xFF00) |  // Green component
                             ((((fc & 0xFF0000) * b + (bc & 0xFF0000) * (256 - b)) >> 8) &
-                                0xFF0000);  // Red component
+                             0xFF0000);  // Red component
                     push_pixel(color);
                 }
                 index += font->char_width - actual_char_width;
@@ -14504,11 +14503,11 @@ void _UG_PutChar(char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc, const U
                 {
                     b     = font->p[index++];
                     color = ((((fc & 0xFF) * b + (bc & 0xFF) * (256 - b)) >> 8) &
-                                0xFF) |  // Blue component
+                             0xFF) |  // Blue component
                             ((((fc & 0xFF00) * b + (bc & 0xFF00) * (256 - b)) >> 8) &
-                                0xFF00) |  // Green component
+                             0xFF00) |  // Green component
                             ((((fc & 0xFF0000) * b + (bc & 0xFF0000) * (256 - b)) >> 8) &
-                                0xFF0000);  // Red component
+                             0xFF0000);  // Red component
                     gui->pset(xo, yo, color);
                     xo++;
                 }
@@ -14590,9 +14589,9 @@ void _UG_PutText(UG_TEXT* txt)
 
             if (*c & 0x80)
             {
-#if _ENCODING == 0
+#if GUI_ENCODING == 0
                 c += _Utf82UnicodeSize(*c);
-#elif _ENCODING == 1
+#elif GUI_ENCODING == 1
                 c += 2;
 #endif
                 wl += wl;

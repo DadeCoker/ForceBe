@@ -33,7 +33,9 @@
 #include "modules/inc/b_mod_fs.h"
 #if _FS_ENABLE
 #include <stdio.h>
+
 #include "utils/inc/b_util_log.h"
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -80,11 +82,11 @@
  * \defgroup FS_Private_Variables
  * \{
  */
-#if _FS_SELECT == 0
+#if FS_SELECT == 0
 static FATFS bFATFS_Table[E_DEV_NUMBER];
 #endif
 
-#if _FS_SELECT == 1
+#if FS_SELECT == 1
 lfs_t bLittleFS;
 #endif
 
@@ -105,7 +107,7 @@ lfs_t bLittleFS;
  * \defgroup FS_Private_Functions
  * \{
  */
-#if _FS_SELECT == 1
+#if FS_SELECT == 1
 #include "core/inc/b_core.h"
 
 static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off,
@@ -204,13 +206,13 @@ int _bFS_DeviceSync(const struct lfs_config *c)
  * \addtogroup FS_Exported_Functions
  * \{
  */
-#if _FS_SELECT == 0
+#if FS_SELECT == 0
 uint8_t bFileSystemWorkBuf[FF_MAX_SS];
 int     bFS_Init()
 {
     FRESULT result = FR_OK;
     uint8_t disk_str[8];
-    FATFS * fs;
+    FATFS  *fs;
     DWORD   fre_clust, fre_sect, tot_sect;
 #if _SPIFLASH_ENABLE
     sprintf((char *)disk_str, "%d:", DEV_SPIFLASH);
@@ -314,7 +316,7 @@ int bFS_Test()
 
 #endif
 
-#if (_FS_SELECT == 1)
+#if (FS_SELECT == 1)
 // configuration of the filesystem is provided by this struct
 const struct lfs_config cfg = {
     // block device operations
@@ -353,7 +355,7 @@ lfs_file_t file;
 int        bFS_Test()
 {
     // read current count
-    lfs_t *  plsf       = &bLittleFS;
+    lfs_t   *plsf       = &bLittleFS;
     uint32_t boot_count = 0;
     lfs_file_open(plsf, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
     lfs_file_read(plsf, &file, &boot_count, sizeof(boot_count));
