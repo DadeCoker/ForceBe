@@ -61,20 +61,21 @@ typedef struct
 
 typedef struct
 {
-    uint8_t *pcmd;
-    uint16_t cmd_len;
-    uint8_t *presp;
-    uint16_t resp_len;
-    uint8_t  uart;
     uint8_t  id;
+    uint8_t  uart;
+    uint8_t *pcmd;
+    uint8_t *presp;
+    uint16_t cmd_len;
+    uint16_t resp_len;
+    uint32_t timeout;
 } bAtQueue_t;
 
 typedef struct
 {
-    uint8_t  head_index;
-    uint8_t  tail_index;
-    uint8_t  stat_index;
-    uint8_t  id;
+    uint8_t           head_index;
+    uint8_t           tail_index;
+    uint8_t           stat_index;
+    uint8_t           id;
     volatile uint8_t  retry_count;
     volatile uint8_t  flag;
     volatile uint32_t tick;
@@ -110,10 +111,11 @@ typedef struct
  * \defgroup AT_Private_Variables
  * \{
  */
-static bAtQueue_t bAtQueue[AT_Q_LEN];
-static bAtStat_t  bAtStat[AT_STAT_LEN];
-static bAtInfo_t  bAtInfo;
-static uint8_t    bAtInitFlag = 0;
+static bAtQueue_t    bAtQueue[AT_Q_LEN];
+static bAtStat_t     bAtStat[AT_STAT_LEN];
+static bAtInfo_t     bAtInfo;
+static uint8_t       bAtInitFlag = 0;
+static bAtCallback_t bAtCallback[AT_CALLBACK_NUMBER];
 /**
  * \}
  */
@@ -171,6 +173,13 @@ static void _bAtNextCommand(uint8_t id, uint8_t sta)
     {
         bAtInfo.tail_index = AT_INDEX_INVALID;
     }
+    for (i = 0; i < AT_CALLBACK_NUMBER; i++)
+    {
+        if (bAtCallback[i] != NULL)
+        {
+            bAtCallback[i](id, sta);
+        }
+    }
 }
 
 /**
@@ -182,7 +191,8 @@ static void _bAtNextCommand(uint8_t id, uint8_t sta)
  * \{
  */
 
-int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart)
+int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart,
+               uint32_t timeout)
 {
     int retval = -1;
 
@@ -221,13 +231,14 @@ int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_le
     bAtQueue[bAtInfo.head_index].resp_len = resp_len;
     bAtQueue[bAtInfo.head_index].uart     = uart;
     bAtQueue[bAtInfo.head_index].id       = bAtInfo.id;
+    bAtQueue[bAtInfo.head_index].timeout  = timeout;
 
     bAtStat[bAtInfo.stat_index].id     = bAtInfo.id;
     bAtStat[bAtInfo.stat_index].status = AT_STA_NULL;
 
     retval = bAtInfo.id;
 
-    bAtInfo.id += 1;
+    bAtInfo.id         = (bAtInfo.id + 1) % AT_INVALID_ID;
     bAtInfo.stat_index = (bAtInfo.stat_index + 1) % AT_STAT_LEN;
     if (bAtInfo.tail_index == AT_INDEX_INVALID)
     {
@@ -252,7 +263,7 @@ int bAtGetStat(uint8_t id)
 
 int bAtFeedRespData(uint8_t *pbuf, uint16_t len)
 {
-    char *      pretval = NULL;
+    char       *pretval = NULL;
     bAtQueue_t *pAtCmd  = NULL;
     if (pbuf == NULL || bAtInfo.flag != AT_FLAG_WAIT)
     {
@@ -260,15 +271,35 @@ int bAtFeedRespData(uint8_t *pbuf, uint16_t len)
     }
     pAtCmd  = &bAtQueue[bAtInfo.tail_index];
     pretval = strstr((const char *)pbuf, (const char *)pAtCmd->presp);
-    if (pretval == NULL)
-    {
-        _bAtRetry();
-    }
-    else
+    if (pretval != NULL)
     {
         _bAtNextCommand(pAtCmd->id, AT_STA_OK);
     }
     return 0;
+}
+
+int bAtRegistCallback(bAtCallback_t cb)
+{
+    static uint8_t init_f = 0;
+    int            i      = 0;
+    if (init_f == 0)
+    {
+        init_f = 1;
+        memset(bAtCallback, 0, sizeof(bAtCallback));
+    }
+    if (cb == NULL)
+    {
+        return -1;
+    }
+    for (i = 0; i < AT_CALLBACK_NUMBER; i++)
+    {
+        if (bAtCallback[i] == NULL)
+        {
+            bAtCallback[i] = cb;
+            return 0;
+        }
+    }
+    return -2;
 }
 
 void bAtPolling()
@@ -301,7 +332,7 @@ void bAtPolling()
     }
     else if (bAtInfo.flag == AT_FLAG_WAIT)
     {
-        if (bHalGetSysTick() - bAtInfo.tick >= MS2TICKS(AT_TIMEOUT_MS))
+        if (bHalGetSysTick() - bAtInfo.tick >= MS2TICKS(pAtCmd->timeout))
         {
             _bAtRetry();
         }

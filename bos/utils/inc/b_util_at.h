@@ -57,6 +57,17 @@ extern "C" {
  * \defgroup AT_Exported_TypesDefinitions
  * \{
  */
+typedef void (*bAtCallback_t)(uint8_t id, uint8_t result);
+/**
+ * \}
+ */
+
+/**
+ * \defgroup AT_Exported_Defines
+ * \{
+ */
+#define AT_INVALID_ID (0XFF)
+
 #define AT_STA_NULL (0)
 #define AT_STA_OK (1)
 #define AT_STA_ERR (2)
@@ -66,21 +77,14 @@ extern "C" {
  */
 
 /**
- * \defgroup AT_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup AT_Exported_Functions
  * \{
  */
 int bAtGetStat(uint8_t id);
+int bAtRegistCallback(bAtCallback_t cb);
 int bAtFeedRespData(uint8_t *pbuf, uint16_t len);
-int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart);
+int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart,
+               uint32_t timeout);
 /**
  * \}
  */
