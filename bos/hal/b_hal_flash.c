@@ -61,7 +61,7 @@ __WEAKDEF int bMcuFlashLock()
     return -1;
 }
 
-__WEAKDEF int bMcuFlashErase(uint32_t raddr, uint8_t pages)
+__WEAKDEF int bMcuFlashErase(uint32_t raddr, uint32_t pages)
 {
     return -1;
 }
@@ -104,7 +104,7 @@ int bHalFlashLock()
     return bMcuFlashLock();
 }
 
-int bHalFlashErase(uint32_t raddr, uint8_t pages)
+int bHalFlashErase(uint32_t raddr, uint32_t pages)
 {
     return bMcuFlashErase(raddr, pages);
 }

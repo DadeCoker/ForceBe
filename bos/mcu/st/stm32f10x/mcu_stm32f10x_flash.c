@@ -95,11 +95,11 @@ int bMcuFlashLock()
     return retval;
 }
 
-int bMcuFlashErase(uint32_t raddr, uint8_t pages)
+int bMcuFlashErase(uint32_t raddr, uint32_t pages)
 {
-    int     retval  = 0;
-    int     timeout = 0;
-    uint8_t i       = 0;
+    int      retval  = 0;
+    int      timeout = 0;
+    uint32_t i       = 0;
 
     raddr = FLASH_BASE_ADDR + raddr;
     raddr = raddr / FLASH_PAGE_SIZE * FLASH_PAGE_SIZE;
