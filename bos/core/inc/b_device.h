@@ -62,10 +62,10 @@ extern "C" {
 
 typedef enum
 {
+    B_REG_DEV_NULL,
 #define B_DEVICE_REG(dev, driver, desc) dev,
 #include "b_device_list.h"
-    B_REG_DRV_NULL,
-    B_REG_DRV_NUMBER
+    B_REG_DEV_NUMBER
 } bDeviceName_t;
 
 typedef union

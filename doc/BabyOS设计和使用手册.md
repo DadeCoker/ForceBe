@@ -615,24 +615,24 @@ typedef enum
 {
 #define B_DEVICE_REG(dev, driver, desc) dev,
 #include "b_device_list.h"
-    B_REG_DRV_NULL,
-    B_REG_DRV_NUMBER
+    B_REG_DEV_NULL,
+    B_REG_DEV_NUMBER
 } bDeviceName_t;
 //b_device.c
 //驱动号数组
-static bDriverNumber_t bDriverNumberTable[B_REG_DRV_NUMBER] = {
+static bDriverNumber_t bDriverNumberTable[B_REG_DEV_NUMBER] = {
 #define B_DEVICE_REG(dev, driver, desc) driver,
 #include "b_device_list.h"
     B_DRIVER_NULL,
 };
 //设备描述信息数组
-static const char *bDeviceDescTable[B_REG_DRV_NUMBER] = {
+static const char *bDeviceDescTable[B_REG_DEV_NUMBER] = {
 #define B_DEVICE_REG(dev, driver, desc) desc,
 #include "b_device_list.h"
     "null",
 };
 //驱动实例数组
-static bDriverInterface_t bDriverInterfaceTable[B_REG_DRV_NUMBER];
+static bDriverInterface_t bDriverInterfaceTable[B_REG_DEV_NUMBER];
 ```
 
 根据注册的设备，定义相应数量的驱动实例。以宏的形式来实现，避免对动态内存的依赖。
@@ -722,7 +722,7 @@ int bDeviceInit()
     bSECTION_FOR_EACH(driver_init_0, bDriverRegInit_t, pdriver_init_0)
     {
         j = 0;
-        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        for (i = 0; i < B_REG_DEV_NUMBER; i++)
         {
             if (bDriverNumberTable[i] == pdriver_init_0->drv_number)
             {
@@ -735,7 +735,7 @@ int bDeviceInit()
     bSECTION_FOR_EACH(driver_init, bDriverRegInit_t, pdriver_init)
     {
         j = 0;
-        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        for (i = 0; i < B_REG_DEV_NUMBER; i++)
         {
             if (bDriverNumberTable[i] == pdriver_init->drv_number)
             {

@@ -80,19 +80,19 @@
  * \defgroup DEVICE_Private_Variables
  * \{
  */
-static bDriverNumber_t bDriverNumberTable[B_REG_DRV_NUMBER] = {
+static bDriverNumber_t bDriverNumberTable[B_REG_DEV_NUMBER] = {
+    B_DRIVER_NULL,
 #define B_DEVICE_REG(dev, driver, desc) driver,
 #include "b_device_list.h"
-    B_DRIVER_NULL,
 };
 
-static const char *bDeviceDescTable[B_REG_DRV_NUMBER] = {
+static const char *bDeviceDescTable[B_REG_DEV_NUMBER] = {
+    "null",
 #define B_DEVICE_REG(dev, driver, desc) desc,
 #include "b_device_list.h"
-    "null",
 };
 
-static bDriverInterface_t bDriverInterfaceTable[B_REG_DRV_NUMBER];
+static bDriverInterface_t bDriverInterfaceTable[B_REG_DEV_NUMBER];
 
 bSECTION_DEF_FLASH(driver_init_0, bDriverRegInit_t);
 bSECTION_DEF_FLASH(driver_init, bDriverRegInit_t);
@@ -117,7 +117,7 @@ bSECTION_DEF_FLASH(driver_init, bDriverRegInit_t);
 static int _bDriverNullInit(bDriverInterface_t *pdrv)
 {
     (void)pdrv;  // prevent unused warning
-    if (strcmp(bDeviceDescTable[0], "null") == 0)
+    if (B_REG_DEV_NUMBER == 1)
     {
         b_log_i("No device is registered\r\n");
     }
@@ -146,7 +146,7 @@ int bDeviceInit()
     bSECTION_FOR_EACH(driver_init_0, bDriverRegInit_t, pdriver_init_0)
     {
         j = 0;
-        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        for (i = 0; i < B_REG_DEV_NUMBER; i++)
         {
             if (bDriverNumberTable[i] == pdriver_init_0->drv_number)
             {
@@ -159,7 +159,7 @@ int bDeviceInit()
     bSECTION_FOR_EACH(driver_init, bDriverRegInit_t, pdriver_init)
     {
         j = 0;
-        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        for (i = 0; i < B_REG_DEV_NUMBER; i++)
         {
             if (bDriverNumberTable[i] == pdriver_init->drv_number)
             {
@@ -169,12 +169,20 @@ int bDeviceInit()
             }
         }
     }
+
+    b_log("dev_no\t\t%16s\tstate\n", "des");
+    for (i = 0; i < B_REG_DEV_NUMBER; i++)
+    {
+        b_log("%d\t\t%16s\t%d\n", i, bDriverInterfaceTable[i].pdes,
+              bDriverInterfaceTable[i].status);
+    }
+    b_log("\r\n");
     return 0;
 }
 
 int bDeviceReinit(uint32_t dev_no)
 {
-    if (dev_no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -190,7 +198,7 @@ int bDeviceReinit(uint32_t dev_no)
 int bDeviceOpen(uint32_t dev_no)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (dev_no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -212,7 +220,7 @@ int bDeviceOpen(uint32_t dev_no)
 int bDeviceRead(uint32_t dev_no, uint32_t offset, uint8_t *pdata, uint32_t len)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (dev_no >= B_REG_DRV_NUMBER || pdata == NULL)
+    if (dev_no >= B_REG_DEV_NUMBER || pdata == NULL)
     {
         return -1;
     }
@@ -235,7 +243,7 @@ int bDeviceRead(uint32_t dev_no, uint32_t offset, uint8_t *pdata, uint32_t len)
 int bDeviceWrite(uint32_t dev_no, uint32_t address, uint8_t *pdata, uint32_t len)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (dev_no >= B_REG_DRV_NUMBER || pdata == NULL)
+    if (dev_no >= B_REG_DEV_NUMBER || pdata == NULL)
     {
         return -1;
     }
@@ -258,7 +266,7 @@ int bDeviceWrite(uint32_t dev_no, uint32_t address, uint8_t *pdata, uint32_t len
 int bDeviceClose(uint32_t dev_no)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (dev_no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -280,7 +288,7 @@ int bDeviceClose(uint32_t dev_no)
 int bDeviceCtl(uint32_t dev_no, uint8_t cmd, void *param)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (dev_no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -302,7 +310,7 @@ int bDeviceCtl(uint32_t dev_no, uint8_t cmd, void *param)
 int bDeviceModifyHalIf(uint32_t dev_no, uint32_t offset, const uint8_t *pVal, uint8_t size)
 {
     uint32_t halif_addr = 0;
-    if (dev_no >= B_REG_DRV_NUMBER || pVal == NULL || size == 0)
+    if (dev_no >= B_REG_DEV_NUMBER || pVal == NULL || size == 0)
     {
         return -1;
     }
@@ -322,7 +330,7 @@ int bDeviceModifyHalIf(uint32_t dev_no, uint32_t offset, const uint8_t *pVal, ui
 
 int bDeviceISNormal(uint32_t dev_no)
 {
-    if (dev_no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -338,7 +346,7 @@ int bDeviceISNormal(uint32_t dev_no)
  */
 int bDeviceReadMessage(uint32_t dev_no, bDeviceMsg_t *pmsg)
 {
-    if (pmsg == NULL || dev_no >= B_REG_DRV_NUMBER)
+    if (pmsg == NULL || dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -354,7 +362,7 @@ int bDeviceReadMessage(uint32_t dev_no, bDeviceMsg_t *pmsg)
  */
 int bDeviceWriteMessage(uint32_t dev_no, bDeviceMsg_t *pmsg)
 {
-    if (pmsg == NULL || dev_no >= B_REG_DRV_NUMBER)
+    if (pmsg == NULL || dev_no >= B_REG_DEV_NUMBER)
     {
         return -1;
     }

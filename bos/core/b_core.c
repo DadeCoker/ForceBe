@@ -84,7 +84,7 @@
  * \{
  */
 
-static bCoreFd_t bCoreFdTable[B_REG_DRV_NUMBER];
+static bCoreFd_t bCoreFdTable[B_REG_DEV_NUMBER];
 
 bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
 /**
@@ -118,14 +118,14 @@ static int _bCoreCreateFd(uint32_t dev_no, uint8_t flag)
     static uint8_t init = 0;
     if (init == 0)
     {
-        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        for (i = 0; i < B_REG_DEV_NUMBER; i++)
         {
             bCoreFdTable[i].status = BCORE_STA_NULL;
         }
         init = 1;
     }
 
-    for (i = 0; i < B_REG_DRV_NUMBER; i++)
+    for (i = 0; i < B_REG_DEV_NUMBER; i++)
     {
         if (bCoreFdTable[i].status == BCORE_STA_OPEN)
         {
@@ -136,7 +136,7 @@ static int _bCoreCreateFd(uint32_t dev_no, uint8_t flag)
         }
     }
 
-    for (i = 0; i < B_REG_DRV_NUMBER; i++)
+    for (i = 0; i < B_REG_DEV_NUMBER; i++)
     {
         if (bCoreFdTable[i].status == BCORE_STA_NULL)
         {
@@ -210,7 +210,7 @@ int bOpen(uint32_t dev_no, uint8_t flag)
 int bRead(int fd, uint8_t *pdata, uint32_t len)
 {
     int retval;
-    if (fd < 0 || fd >= B_REG_DRV_NUMBER || pdata == NULL)
+    if (fd < 0 || fd >= B_REG_DEV_NUMBER || pdata == NULL)
     {
         return -1;
     }
@@ -231,7 +231,7 @@ int bRead(int fd, uint8_t *pdata, uint32_t len)
 int bWrite(int fd, uint8_t *pdata, uint32_t len)
 {
     int retval;
-    if (fd < 0 || fd >= B_REG_DRV_NUMBER || pdata == NULL)
+    if (fd < 0 || fd >= B_REG_DEV_NUMBER || pdata == NULL)
     {
         return -1;
     }
@@ -251,7 +251,7 @@ int bWrite(int fd, uint8_t *pdata, uint32_t len)
 
 int bLseek(int fd, uint32_t off)
 {
-    if (fd < 0 || fd >= B_REG_DRV_NUMBER)
+    if (fd < 0 || fd >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -266,7 +266,7 @@ int bLseek(int fd, uint32_t off)
 
 int bCtl(int fd, uint8_t cmd, void *param)
 {
-    if (fd < 0 || fd >= B_REG_DRV_NUMBER)
+    if (fd < 0 || fd >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -275,7 +275,7 @@ int bCtl(int fd, uint8_t cmd, void *param)
 
 int bClose(int fd)
 {
-    if (fd < 0 || fd >= B_REG_DRV_NUMBER)
+    if (fd < 0 || fd >= B_REG_DEV_NUMBER)
     {
         return -1;
     }
@@ -291,7 +291,7 @@ int bClose(int fd)
 int bCoreIsIdle()
 {
     int i;
-    for (i = 0; i < B_REG_DRV_NUMBER; i++)
+    for (i = 0; i < B_REG_DEV_NUMBER; i++)
     {
         if (bCoreFdTable[i].status == BCORE_STA_OPEN)
         {
@@ -321,7 +321,7 @@ int bInit()
     b_log("HW:%d.%d.%d FW:%d.%d.%d COMPILE:%s-%s\r\n", (HW_VERSION / 10000),
           (HW_VERSION % 10000) / 100, HW_VERSION % 100, (FW_VERSION / 10000),
           (FW_VERSION % 10000) / 100, FW_VERSION % 100, __DATE__, __TIME__);
-    b_log("device number:%d\r\n", B_REG_DRV_NUMBER);
+    b_log("device number:%d\r\n", B_REG_DEV_NUMBER);
     return bDeviceInit();
 }
 
