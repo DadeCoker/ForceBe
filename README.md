@@ -9,18 +9,10 @@
 
 - [BabyOS](#BabyOS)
     - [BabyOS是什么](#BabyOS是什么)
+    - [代码结构](#代码结构)
     - [适用项目](#适用项目)
     - [前世今生](#前世今生)
-        - [功耗的考量](#功耗的考量)
-        - [缩短开发周期](#缩短开发周期)
     - [使用方法](#使用方法)
-        - [添加文件](#添加文件)
-        - [增加系统定时器](#增加系统定时器)
-        - [选择功能模块](#选择功能模块)
-        - [注册设备](#注册设备)
-        - [使用范例](#使用范例)
-            - [指定硬件接口](#指定硬件接口)
-            - [基于SPIFLASH使用KV功能](#基于SPIFLASH使用KV功能)
     - [BabyOS教程](#BabyOS教程)
     - [BabyOS私有协议上位机Demo](#BabyOS私有协议上位机Demo)
     - [Baby如何成长](#Baby如何成长)
@@ -43,13 +35,23 @@ _/____/___(___(_(___/_(___/_(____/___(____/___
 
 BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
 
-![frame](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/frame.png)
-
 **对项目而言，缩短开发周期**。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
 
-**对工程师而言，减少重复工作**。调试过的功能模块和驱动代码放入BabyOS中进行管理，以后项目可以直接使用，去掉重复调试的工作。
+**对工程师而言，减少重复工作**。调试过的功能模块和驱动代码放入BabyOS中管理，以后项目可以直接使用，去掉重复调试的工作。
 
-------
+# 代码结构
+
+BabyOS代码分为3部分：
+
+**[BabyOS仓库](https://gitee.com/notrynohigh/BabyOS)**：功能模块和驱动 ,一般情况下用户不需要改动，可以将此仓库作为子模块。 
+
+**[BabyOS_Config](https://gitee.com/notrynohigh/BabyOS_Config)**：配置文件和设备注册文件  
+
+**[BabyOS_Hal](https://gitee.com/notrynohigh/BabyOS_Hal)**：硬件抽象层, 不同分支对应不同硬件平台，选择对应平台下载，没有合适的则选择master分支
+
+![frame](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/frame.png)
+
+
 
 # 适用项目
 
@@ -65,53 +67,55 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
  ................
 
-使用MCU裸机开发的项目大多有两个要求：**产品功耗**和**开发周期**
+使用MCU开发的项目大多有两个要求：**产品功耗**和**开发周期**
 
 #### 功耗的考量
 
-出于功耗考虑，对外设的操作是：唤醒外设，操作，最后进入休眠。这样的操作形式和文件的操作很类似，文件的操作步骤是打开到编辑到关闭。因此将外设的操作看作是对文件的操作进行。驱动中打开和关闭对应着唤醒和睡眠。
+设备的操作：唤醒设备，操作，设置休眠。
+
+文件的操作：打开文件，编辑，关闭文件。
+
+因此BabyOS中对设备的操作由统一的接口，即将设备看做文件一样对待。
 
 #### 缩短开发周期
 
-项目中，有较多使用率高的功能模块，例如：UTC、错误管理、电池电量、存储数据、上位机通信、固件升级等等。同时也有很多常用的芯片、传感器等。BabyOS便是将这些使用率高的功能模块以及常用的芯片、传感器驱动进行收集并管理。新项目启动时，以搭积木的方式完成一部分工作以此来缩短开发时间。
+项目中有较多使用率高的功能模块和外设，BabyOS提供友好的框架对功能模块和设备驱动进行收集和管理。
 
- 
+新项目启动时，以搭积木的方式即可完成一部分工作，以此来缩短开发时间。
+
+
 
 # 使用方法
 
-BabyOS代码分为3部分，**BabyOS仓库**：功能模块和驱动  **BabyOS_Config**：配置文件和注册设备的文件   **BabyOS_Hal**：硬件抽象层文件
+**基于STM32F107上使用SPIFLASH及KV功能模块为例**
 
-BabyOS仓库代码用户一般不需要改动，可以将此仓库作为子模块。
+## 1.添加文件
 
-BabyOS_Config和BabyOS_Hal这两个仓库的代码用户会修改，用户将这两个仓库代码克隆后放入工程
-
-##   1.添加文件
-
-```C
+```shell
 BabyOS							//可作git子模块使用
 ├── bos
-│   ├── algorithm               //常用算法，选择需要的算法添加至工程
-│   ├── core					//核心文件，必须全部包含至工程
-│   ├── drivers					//驱动文件，选择需要的驱动添加至工程
-│   ├── modules					//功能模块，可全部添加至工程，由配置文件b_config.h配置
-│   ├── thirdparty				//第三方代码，选择需要的代码添加
-│   └── utils					//实用代码，选择需要的添加至工程
+│   ├── algorithm               //常用算法，无需添加其中文件
+│   ├── core					//核心文件，全部包含至工程
+│   ├── drivers					//驱动文件，选择spiflash驱动添加至工程
+│   ├── modules					//功能模块，全部添加至工程，由配置文件b_config.h配置
+│   ├── thirdparty				//第三方代码，选择SFUD第三方代码添加至工程
+│   └── utils					//实用代码，选择delay部分代码添加至工程
 ├── build						
 ├── CMakeLists.txt
 ├── doc							//相关文档
-├── Examples					//使用例子
+├── Examples					
 │   └── qpn
 ├── LICENSE						//开源协议
 └── README.md
-BabyOS_Config					//https://gitee.com/notrynohigh/BabyOS_Config  克隆后放入工程
-BabyOS_Hal						//https://gitee.com/notrynohigh/BabyOS_Hal     克隆后放入工程
+BabyOS_Config					//克隆后放入工程目录，全部添加至工程
+BabyOS_Hal						//克隆后放入工程目录，添加hal、gpio、uart、spi部分
 ```
 
-```C
+```shell
 //进入用户工程目录执行
 git submodule add https://gitee.com/notrynohigh/BabyOS.git
-git clone https://gitee.com/notrynohigh/BabyOS_Config.git    //克隆后删除BabyOS_Config目录内的.git
-git clone https://gitee.com/notrynohigh/BabyOS_Hal.git		 //克隆后切换到对应平台的分支，如果没有则采用master分支作为模板。同时删除BabyOS_Hal目录的.git
+git clone https://gitee.com/notrynohigh/BabyOS_Config.git    //克隆配置文件及设备注册文件
+git clone https://gitee.com/notrynohigh/BabyOS_Hal.git		 //克隆后切换到对应平台的分支，如果没有则采用master分支作为模板
 ```
 
 
@@ -128,7 +132,7 @@ git clone https://gitee.com/notrynohigh/BabyOS_Hal.git		 //克隆后切换到对
 
 ##   3.选择功能模块
 
-b_config.h进行配置，根据自己的需要选择功能模块。
+b_config.h进行配置，勾选其中的KV Enable/Disable项
 
 ![config](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/1.png)
 
@@ -143,25 +147,22 @@ B_DEVICE_REG(SPIFLASH, bSPIFLASH_Driver[0], "flash")
 //B_DEVICE_REG(null, bNullDriver, "null")   
 ```
 
-##   5.使用范例  
-
-以b_kv功能模块为例，先在b_config里面使能b_kv。
-
-### 5.1修改硬件接口
+##   5.修改硬件接口
 
 b_hal.h中根据实际连接图修改GPIO和SPI号
 
 ```C
 #define HAL_SPIFLASH_QSPI_EN            0
 #define HAL_SPIFLASH_TOTAL_NUMBER       1 
-#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN12}},}    ////{{qspi, spi, {cs_port, cs_pin}},} 
+#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN12}},}   
 ```
 
-### 5.2 修改硬件抽象层b_hal_spi.c内SPI的操作
+## 6.修改硬件抽象层SPI部分
 
 （依赖硬件平台，使用STM32 HAL库为例）
 
 ```C
+//b_hal_spi.c
 int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
@@ -197,7 +198,7 @@ int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 }
 ```
 
-### 5.3 修改硬件抽象层b_hal_gpio.c内IO的操作
+## 7.修改硬件抽象层GPIO部分
 
 （依赖硬件平台，使用STM32 HAL库为例）
 
@@ -209,7 +210,7 @@ void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s)
 }
 ```
 
-### 5.4 基于SPIFLASH使用KV功能
+## 8.基于SPIFLASH使用KV功能
 
 ```c
 #include "b_os.h"    //头文件
