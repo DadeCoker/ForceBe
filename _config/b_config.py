@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-import os, sys, psutil
+import os, sys
 from kconfiglib import Kconfig
 from menuconfig import menuconfig
 
@@ -32,11 +32,6 @@ def mconfig(argv):
     kconf_fd.write(kconf_list)
     kconf_fd.close()
     
-    #parent_pid = os.getppid()
-    #parent_name = psutil.Process(parent_pid).name()
-    #print(psutil.Process(parent_pid).name())
-    #if parent_name.find('cmd.exe') < 0:
-
     mconf_set_env(argv)
     kconf = Kconfig(filename="./Kconfig")
     menuconfig(kconf)

@@ -4,8 +4,9 @@ bos_path="../bos"
 
 echo bos path : $bos_path
 
+python -m pip install --upgrade pip
+
 pip install kconfiglib
-pip install psutil
 
 python b_config.py $bos_path
 

@@ -23,11 +23,15 @@ if %ERRORLEVEL% == 0 (
 	goto checkenv
 )
 
+python -m pip install --upgrade pip
+
 pip install kconfiglib
 pip install windows-curses
-pip install psutil
 
 python b_config.py %bos_path%
+
+
+
 
 
 
