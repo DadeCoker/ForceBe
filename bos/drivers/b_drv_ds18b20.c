@@ -175,20 +175,6 @@ static int _bDS18B20Start(bDriverInterface_t *pdrv)
     return retval;
 }
 
-static int _bDS18B20Ctl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
-{
-    int retval = -1;
-    switch (cmd)
-    {
-        case bCMD_SENSOR_START:
-            retval = _bDS18B20Start(pdrv);
-            break;
-        default:
-            break;
-    }
-    return retval;
-}
-
 static int _bDS18B20Read(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     int16_t    temp_dig = 0;
@@ -199,7 +185,16 @@ static int _bDS18B20Read(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, 
     {
         return -1;
     }
-
+    if (pdrv->_private.v == 0)
+    {
+        _bDS18B20Start(pdrv);
+        pdrv->_private.v = bHalGetSysTick();
+        return -1;
+    }
+    else if (bHalGetSysTick() - pdrv->_private.v < MS2TICKS(500))
+    {
+        return -2;
+    }
     if (_bSbusReady(pdrv))
     {
         _bSbusWriteByte(pdrv, 0xCC);
@@ -209,9 +204,10 @@ static int _bDS18B20Read(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, 
     {
         return -1;
     }
-    tml      = _bSbusReadByte(pdrv);
-    tmh      = _bSbusReadByte(pdrv);
-    temp_dig = ((int16_t)tmh) << 8;
+    pdrv->_private.v = 0;
+    tml              = _bSbusReadByte(pdrv);
+    tmh              = _bSbusReadByte(pdrv);
+    temp_dig         = ((int16_t)tmh) << 8;
     temp_dig |= tml;
     if (temp_dig < 0)
     {
@@ -238,8 +234,8 @@ static int _bDS18B20Read(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, 
 int bDS18B20_Init(bDriverInterface_t *pdrv)
 {
     bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bDS18B20_Init);
-    pdrv->read = _bDS18B20Read;
-    pdrv->ctl  = _bDS18B20Ctl;
+    pdrv->read       = _bDS18B20Read;
+    pdrv->_private.v = 0;
     return 0;
 }
 
