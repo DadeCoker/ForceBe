@@ -49,42 +49,6 @@ extern "C" {
  */
 
 /**
- * \defgroup BASE64_Exported_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup BASE64_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup BASE64_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup BASE64_Exported_Variables
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup BASE64_Exported_Functions
  * \{
  */

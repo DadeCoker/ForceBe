@@ -49,44 +49,6 @@ extern "C" {
  */
 
 /**
- * \defgroup HMAC_SHA1_Exported_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup HMAC_SHA1_Exported_Defines
- * \{
- */
-
-//#define SHA1_DEBUG      1
-
-/**
- * \}
- */
-
-/**
- * \defgroup HMAC_SHA1_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup HMAC_SHA1_Exported_Variables
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup HMAC_SHA1_Exported_Functions
  * \{
  */

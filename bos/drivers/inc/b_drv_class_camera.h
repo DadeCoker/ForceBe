@@ -69,12 +69,12 @@ typedef struct
  * \defgroup CAMERA_Exported_Defines
  * \{
  */
-#define bCMD_CONF_LIGHTMODE 0  // bCameraCfgStruct_t
-#define bCMD_CONF_COLOR_SAT 1  // bCameraCfgStruct_t
+#define bCMD_CONF_LIGHTMODE 0   // bCameraCfgStruct_t
+#define bCMD_CONF_COLOR_SAT 1   // bCameraCfgStruct_t
 #define bCMD_CONF_BRIGHTNESS 2  // bCameraCfgStruct_t
-#define bCMD_CONF_CONTRAST 3  // bCameraCfgStruct_t
-#define bCMD_CONF_SHARPNESS 4  // bCameraCfgStruct_t
-#define bCMD_CONF_FLASH_LED 5  // bCameraCfgStruct_t
+#define bCMD_CONF_CONTRAST 3    // bCameraCfgStruct_t
+#define bCMD_CONF_SHARPNESS 4   // bCameraCfgStruct_t
+#define bCMD_CONF_FLASH_LED 5   // bCameraCfgStruct_t
 #define bCMD_CONF_OUTSIZE 6
 /**
  * \}

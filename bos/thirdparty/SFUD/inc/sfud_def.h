@@ -29,41 +29,48 @@
 #ifndef _SFUD_DEF_H_
 #define _SFUD_DEF_H_
 
+#include <sfud_cfg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <sfud_cfg.h>
+
 #include "sfud_flash_def.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define SFUD_BOOL           uint8_t
-#define SFUD_TRUE           1
-#define SFUD_FALSE          0
+#define SFUD_BOOL uint8_t
+#define SFUD_TRUE 1
+#define SFUD_FALSE 0
 
 /* debug print function. Must be implement by user. */
 #ifdef SFUD_DEBUG_MODE
 #ifndef SFUD_DEBUG
-#define SFUD_DEBUG(...) b_log_w(__VA_ARGS__);b_log("\r\n")
+#define SFUD_DEBUG(...)   \
+    b_log_w(__VA_ARGS__); \
+    b_log("\r\n")
 #endif /* SFUD_DEBUG */
 #else
 #define SFUD_DEBUG(...)
 #endif /* SFUD_DEBUG_MODE */
 
 #ifndef SFUD_INFO
-#define SFUD_INFO(...)  b_log(__VA_ARGS__);b_log("\r\n")
+#define SFUD_INFO(...)  \
+    b_log(__VA_ARGS__); \
+    b_log("\r\n")
 #endif
 
 /* assert for developer. */
 #ifdef SFUD_DEBUG_MODE
-#define SFUD_ASSERT(EXPR)                                                      \
-if (!(EXPR))                                                                   \
-{                                                                              \
-    SFUD_DEBUG("(%s) has assert failed at %s.", #EXPR, __FUNCTION__);          \
-    while (1);                                                                 \
-}
+#define SFUD_ASSERT(EXPR)                                                 \
+    if (!(EXPR))                                                          \
+    {                                                                     \
+        SFUD_DEBUG("(%s) has assert failed at %s.", #EXPR, __FUNCTION__); \
+        while (1)                                                         \
+            ;                                                             \
+    }
 #else
 #define SFUD_ASSERT(EXPR)
 #endif
@@ -75,138 +82,152 @@ if (!(EXPR))                                                                   \
  * @param retry retry counts
  * @param result SFUD_ERR_TIMEOUT: retry timeout
  */
-#define SFUD_RETRY_PROCESS(delay, retry, result)                               \
-    void (*__delay_temp)(void) = (void (*)(void))delay;                        \
-    if (retry == 0) {result = SFUD_ERR_TIMEOUT;break;}                         \
-    else {if (__delay_temp) {__delay_temp();} retry --;}
+#define SFUD_RETRY_PROCESS(delay, retry, result)        \
+    void (*__delay_temp)(void) = (void (*)(void))delay; \
+    if (retry == 0)                                     \
+    {                                                   \
+        result = SFUD_ERR_TIMEOUT;                      \
+        break;                                          \
+    }                                                   \
+    else                                                \
+    {                                                   \
+        if (__delay_temp)                               \
+        {                                               \
+            __delay_temp();                             \
+        }                                               \
+        retry--;                                        \
+    }
 
 /* software version number */
-#define SFUD_SW_VERSION                             "1.1.0"
+#define SFUD_SW_VERSION "1.1.0"
 /*
  * all defined supported command
  */
 #ifndef SFUD_CMD_WRITE_ENABLE
-#define SFUD_CMD_WRITE_ENABLE                          0x06
+#define SFUD_CMD_WRITE_ENABLE 0x06
 #endif
 
 #ifndef SFUD_CMD_WRITE_DISABLE
-#define SFUD_CMD_WRITE_DISABLE                         0x04
+#define SFUD_CMD_WRITE_DISABLE 0x04
 #endif
 
 #ifndef SFUD_CMD_READ_STATUS_REGISTER
-#define SFUD_CMD_READ_STATUS_REGISTER                  0x05
+#define SFUD_CMD_READ_STATUS_REGISTER 0x05
 #endif
 
 #ifndef SFUD_VOLATILE_SR_WRITE_ENABLE
-#define SFUD_VOLATILE_SR_WRITE_ENABLE                  0x50
+#define SFUD_VOLATILE_SR_WRITE_ENABLE 0x50
 #endif
 
 #ifndef SFUD_CMD_WRITE_STATUS_REGISTER
-#define SFUD_CMD_WRITE_STATUS_REGISTER                 0x01
+#define SFUD_CMD_WRITE_STATUS_REGISTER 0x01
 #endif
 
 #ifndef SFUD_CMD_PAGE_PROGRAM
-#define SFUD_CMD_PAGE_PROGRAM                          0x02
+#define SFUD_CMD_PAGE_PROGRAM 0x02
 #endif
 
 #ifndef SFUD_CMD_AAI_WORD_PROGRAM
-#define SFUD_CMD_AAI_WORD_PROGRAM                      0xAD
+#define SFUD_CMD_AAI_WORD_PROGRAM 0xAD
 #endif
 
 #ifndef SFUD_CMD_ERASE_CHIP
-#define SFUD_CMD_ERASE_CHIP                            0xC7
+#define SFUD_CMD_ERASE_CHIP 0xC7
 #endif
 
 #ifndef SFUD_CMD_READ_DATA
-#define SFUD_CMD_READ_DATA                             0x03
+#define SFUD_CMD_READ_DATA 0x03
 #endif
 
-#ifndef SFUD_CMD_DUAL_OUTPUT_READ_DATA 
-#define SFUD_CMD_DUAL_OUTPUT_READ_DATA                 0x3B
+#ifndef SFUD_CMD_DUAL_OUTPUT_READ_DATA
+#define SFUD_CMD_DUAL_OUTPUT_READ_DATA 0x3B
 #endif
 
-#ifndef SFUD_CMD_DUAL_IO_READ_DATA 
-#define SFUD_CMD_DUAL_IO_READ_DATA                     0xBB
+#ifndef SFUD_CMD_DUAL_IO_READ_DATA
+#define SFUD_CMD_DUAL_IO_READ_DATA 0xBB
 #endif
 
 #ifndef SFUD_CMD_QUAD_IO_READ_DATA
-#define SFUD_CMD_QUAD_IO_READ_DATA                     0xEB
+#define SFUD_CMD_QUAD_IO_READ_DATA 0xEB
 #endif
 
 #ifndef SFUD_CMD_QUAD_OUTPUT_READ_DATA
-#define SFUD_CMD_QUAD_OUTPUT_READ_DATA                 0x6B
+#define SFUD_CMD_QUAD_OUTPUT_READ_DATA 0x6B
 #endif
 
 #ifndef SFUD_CMD_MANUFACTURER_DEVICE_ID
-#define SFUD_CMD_MANUFACTURER_DEVICE_ID                0x90
+#define SFUD_CMD_MANUFACTURER_DEVICE_ID 0x90
 #endif
 
 #ifndef SFUD_CMD_JEDEC_ID
-#define SFUD_CMD_JEDEC_ID                              0x9F
+#define SFUD_CMD_JEDEC_ID 0x9F
 #endif
 
 #ifndef SFUD_CMD_READ_UNIQUE_ID
-#define SFUD_CMD_READ_UNIQUE_ID                        0x4B
+#define SFUD_CMD_READ_UNIQUE_ID 0x4B
 #endif
 
 #ifndef SFUD_CMD_READ_SFDP_REGISTER
-#define SFUD_CMD_READ_SFDP_REGISTER                    0x5A
+#define SFUD_CMD_READ_SFDP_REGISTER 0x5A
 #endif
 
 #ifndef SFUD_CMD_ENABLE_RESET
-#define SFUD_CMD_ENABLE_RESET                          0x66
+#define SFUD_CMD_ENABLE_RESET 0x66
 #endif
 
 #ifndef SFUD_CMD_RESET
-#define SFUD_CMD_RESET                                 0x99
+#define SFUD_CMD_RESET 0x99
 #endif
 
 #ifndef SFUD_CMD_ENTER_4B_ADDRESS_MODE
-#define SFUD_CMD_ENTER_4B_ADDRESS_MODE                 0xB7
+#define SFUD_CMD_ENTER_4B_ADDRESS_MODE 0xB7
 #endif
 
 #ifndef SFUD_CMD_EXIT_4B_ADDRESS_MODE
-#define SFUD_CMD_EXIT_4B_ADDRESS_MODE                  0xE9
+#define SFUD_CMD_EXIT_4B_ADDRESS_MODE 0xE9
 #endif
 
 #ifndef SFUD_WRITE_MAX_PAGE_SIZE
-#define SFUD_WRITE_MAX_PAGE_SIZE                        256
+#define SFUD_WRITE_MAX_PAGE_SIZE 256
 #endif
 
 /* send dummy data for read data */
 #ifndef SFUD_DUMMY_DATA
-#define SFUD_DUMMY_DATA                                0xFF
+#define SFUD_DUMMY_DATA 0xFF
 #endif
 
 /* maximum number of erase type support on JESD216 (V1.0) */
-#define SFUD_SFDP_ERASE_TYPE_MAX_NUM                      4
+#define SFUD_SFDP_ERASE_TYPE_MAX_NUM 4
 
 /**
  * status register bits
  */
-enum {
-    SFUD_STATUS_REGISTER_BUSY = (1 << 0),                  /**< busing */
-    SFUD_STATUS_REGISTER_WEL = (1 << 1),                   /**< write enable latch */
-    SFUD_STATUS_REGISTER_SRP = (1 << 7),                   /**< status register protect */
+enum
+{
+    SFUD_STATUS_REGISTER_BUSY = (1 << 0), /**< busing */
+    SFUD_STATUS_REGISTER_WEL  = (1 << 1), /**< write enable latch */
+    SFUD_STATUS_REGISTER_SRP  = (1 << 7), /**< status register protect */
 };
 
 /**
  * error code
  */
-typedef enum {
-    SFUD_SUCCESS = 0,                                      /**< success */
-    SFUD_ERR_NOT_FOUND = 1,                                /**< not found or not supported */
-    SFUD_ERR_WRITE = 2,                                    /**< write error */
-    SFUD_ERR_READ = 3,                                     /**< read error */
-    SFUD_ERR_TIMEOUT = 4,                                  /**< timeout error */
-    SFUD_ERR_ADDR_OUT_OF_BOUND = 5,                        /**< address is out of flash bound */
+typedef enum
+{
+    SFUD_SUCCESS               = 0, /**< success */
+    SFUD_ERR_NOT_FOUND         = 1, /**< not found or not supported */
+    SFUD_ERR_WRITE             = 2, /**< write error */
+    SFUD_ERR_READ              = 3, /**< read error */
+    SFUD_ERR_TIMEOUT           = 4, /**< timeout error */
+    SFUD_ERR_ADDR_OUT_OF_BOUND = 5, /**< address is out of flash bound */
 } sfud_err;
 
 #ifdef SFUD_USING_QSPI
 /**
  * QSPI flash read cmd format
  */
-typedef struct {
+typedef struct
+{
     uint8_t instruction;
     uint8_t instruction_lines;
     uint8_t address_size;
@@ -218,46 +239,52 @@ typedef struct {
 #endif /* SFUD_USING_QSPI */
 
 /* SPI bus write read data function type */
-typedef sfud_err (*spi_write_read_func)(const uint8_t *write_buf, size_t write_size, uint8_t *read_buf, size_t read_size);
+typedef sfud_err (*spi_write_read_func)(const uint8_t *write_buf, size_t write_size,
+                                        uint8_t *read_buf, size_t read_size);
 
 #ifdef SFUD_USING_SFDP
 /**
  * the SFDP (Serial Flash Discoverable Parameters) parameter info which used on this library
  */
-typedef struct {
-    SFUD_BOOL available;                              /**< available when read SFDP OK */
-    uint8_t major_rev;                           /**< SFDP Major Revision */
-    uint8_t minor_rev;                           /**< SFDP Minor Revision */
-    uint16_t write_gran;                         /**< write granularity (bytes) */
-    uint8_t erase_4k;                            /**< 4 kilobyte erase is supported throughout the device */
-    uint8_t erase_4k_cmd;                        /**< 4 Kilobyte erase command */
-    SFUD_BOOL sr_is_non_vola;                         /**< status register is supports non-volatile */
-    uint8_t vola_sr_we_cmd;                      /**< volatile status register write enable command */
-    SFUD_BOOL addr_3_byte;                            /**< supports 3-Byte addressing */
-    SFUD_BOOL addr_4_byte;                            /**< supports 4-Byte addressing */
-    uint32_t capacity;                           /**< flash capacity (bytes) */
-    struct {
-        uint32_t size;                           /**< erase sector size (bytes). 0x00: not available */
-        uint8_t cmd;                             /**< erase command */
-    } eraser[SFUD_SFDP_ERASE_TYPE_MAX_NUM];      /**< supported eraser types table */
-    //TODO lots of fast read-related stuff (like modes supported and number of wait states/dummy cycles needed in each)
+typedef struct
+{
+    SFUD_BOOL available;      /**< available when read SFDP OK */
+    uint8_t   major_rev;      /**< SFDP Major Revision */
+    uint8_t   minor_rev;      /**< SFDP Minor Revision */
+    uint16_t  write_gran;     /**< write granularity (bytes) */
+    uint8_t   erase_4k;       /**< 4 kilobyte erase is supported throughout the device */
+    uint8_t   erase_4k_cmd;   /**< 4 Kilobyte erase command */
+    SFUD_BOOL sr_is_non_vola; /**< status register is supports non-volatile */
+    uint8_t   vola_sr_we_cmd; /**< volatile status register write enable command */
+    SFUD_BOOL addr_3_byte;    /**< supports 3-Byte addressing */
+    SFUD_BOOL addr_4_byte;    /**< supports 4-Byte addressing */
+    uint32_t  capacity;       /**< flash capacity (bytes) */
+    struct
+    {
+        uint32_t size;                      /**< erase sector size (bytes). 0x00: not available */
+        uint8_t  cmd;                       /**< erase command */
+    } eraser[SFUD_SFDP_ERASE_TYPE_MAX_NUM]; /**< supported eraser types table */
+    // TODO lots of fast read-related stuff (like modes supported and number of wait states/dummy
+    // cycles needed in each)
 } sfud_sfdp, *sfud_sfdp_t;
 #endif
 
 /**
  * SPI device
  */
-typedef struct __sfud_spi {
+typedef struct __sfud_spi
+{
     /* SPI device name */
-//    char *name;
+    //    char *name;
     void *_hal_if;
     /* SPI bus write read data function */
-    sfud_err (*wr)(const struct __sfud_spi *spi, const uint8_t *write_buf, size_t write_size, uint8_t *read_buf,
-                   size_t read_size);
+    sfud_err (*wr)(const struct __sfud_spi *spi, const uint8_t *write_buf, size_t write_size,
+                   uint8_t *read_buf, size_t read_size);
 #ifdef SFUD_USING_QSPI
     /* QSPI fast read function */
-    sfud_err (*qspi_read)(const struct __sfud_spi *spi, uint32_t addr, sfud_qspi_read_cmd_format *qspi_read_cmd_format,
-                          uint8_t *read_buf, size_t read_size);
+    sfud_err (*qspi_read)(const struct __sfud_spi *spi, uint32_t addr,
+                          sfud_qspi_read_cmd_format *qspi_read_cmd_format, uint8_t *read_buf,
+                          size_t read_size);
 #endif
     /* lock SPI bus */
     void (*lock)(const struct __sfud_spi *spi);
@@ -270,26 +297,28 @@ typedef struct __sfud_spi {
 /**
  * serial flash device
  */
-typedef struct {
-    char *name;                                  /**< serial flash name */
-    
-    size_t index;                                /**< index of flash device information table  @see flash_table */
-    sfud_flash_chip chip;                        /**< flash chip information */
-    sfud_spi spi;                                /**< SPI device */
-    SFUD_BOOL init_ok;                                /**< initialize OK flag */
-    SFUD_BOOL addr_in_4_byte;                         /**< flash is in 4-Byte addressing */
-    struct {
-        void (*delay)(void);                     /**< every retry's delay */
-        size_t times;                            /**< default times for error retry */
+typedef struct
+{
+    char *name; /**< serial flash name */
+
+    size_t          index;   /**< index of flash device information table  @see flash_table */
+    sfud_flash_chip chip;    /**< flash chip information */
+    sfud_spi        spi;     /**< SPI device */
+    SFUD_BOOL       init_ok; /**< initialize OK flag */
+    SFUD_BOOL       addr_in_4_byte; /**< flash is in 4-Byte addressing */
+    struct
+    {
+        void (*delay)(void); /**< every retry's delay */
+        size_t times;        /**< default times for error retry */
     } retry;
-    void *user_data;                             /**< some user data */
+    void *user_data; /**< some user data */
 
 #ifdef SFUD_USING_QSPI
-    sfud_qspi_read_cmd_format read_cmd_format;   /**< fast read cmd format */
+    sfud_qspi_read_cmd_format read_cmd_format; /**< fast read cmd format */
 #endif
 
 #ifdef SFUD_USING_SFDP
-    sfud_sfdp sfdp;                              /**< serial flash discoverable parameters by JEDEC standard */
+    sfud_sfdp sfdp; /**< serial flash discoverable parameters by JEDEC standard */
 #endif
 
 } sfud_flash, *sfud_flash_t;

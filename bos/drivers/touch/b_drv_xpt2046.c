@@ -122,8 +122,6 @@ static uint16_t _bXPT2046ReadVal(uint8_t r)
     return ((h << 8) | (l)) >> 3;
 }
 
-/**************************************************************************************************driver
- * interface*****/
 static int _bXPT2046Read(bXPT2046_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
     bTouchAD_ReadStruct_t *pxy = (bTouchAD_ReadStruct_t *)pbuf;

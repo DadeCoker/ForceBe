@@ -107,8 +107,6 @@ bOLED_Driver_t bOLED_Driver;
  * \{
  */
 
-/******************************************************************/
-
 static void _bOLED_WriteCmd(uint8_t cmd)
 {
     int ret = 0;
@@ -172,9 +170,6 @@ static void _bOLED_Fill(uint8_t fill_data)
         }
     }
 }
-
-/************************************************************************************************************driver
- * interface*******/
 
 static int _bOLEDWrite(bOLED_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {

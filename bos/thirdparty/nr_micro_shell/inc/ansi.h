@@ -6,21 +6,21 @@
  * @brief     [brief]
  * *****************************************************************************
  * @attention
- * 
+ *
  * MIT License
- * 
+ *
  * Copyright (C) 2019 Ji Youzhou
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,8 +35,7 @@
 #define __ansi_h
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -48,24 +47,24 @@ extern "C"
 #define NR_ANSI_CTRL_MAX_LEN 20
 #define NR_ANSI_MAX_EX_DATA_NUM 1
 
-    enum
-    {
-        ANSI_ENABLE_SHOW,
-        ANSI_DISABLE_SHOW
-    };
+enum
+{
+    ANSI_ENABLE_SHOW,
+    ANSI_DISABLE_SHOW
+};
 
-    typedef struct nr_ansi_struct
-    {
-        short p;
-        unsigned int counter;
-        char current_line[NR_ANSI_LINE_SIZE];
+typedef struct nr_ansi_struct
+{
+    short        p;
+    unsigned int counter;
+    char         current_line[NR_ANSI_LINE_SIZE];
 
-        char combine_buf[NR_ANSI_CTRL_MAX_LEN];
-        char cmd_num;
-        char combine_state;
-    } ansi_st;
+    char combine_buf[NR_ANSI_CTRL_MAX_LEN];
+    char cmd_num;
+    char combine_state;
+} ansi_st;
 
-    typedef void (*ansi_fun_t)(ansi_st *);
+typedef void (*ansi_fun_t)(ansi_st *);
 
 #define NR_ANSI_SET_TEXT(cmd) ((const char *)"\033["##cmd##"m") /** the form of set text font */
 
@@ -154,7 +153,6 @@ void ansi_init(ansi_st *ansi);
 void ansi_clear_current_line(ansi_st *ansi);
 
 extern ansi_st nr_ansi;
-
 
 #endif
 

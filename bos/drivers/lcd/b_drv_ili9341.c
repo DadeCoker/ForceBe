@@ -103,8 +103,6 @@ bILI9341_Driver_t bILI9341_Driver;
  * \{
  */
 
-/******************************************************************/
-
 static void _bILI9341SetCursor(uint16_t Xpos, uint16_t Ypos)
 {
     bHalLcdWriteCmd(0X2A);
@@ -115,9 +113,6 @@ static void _bILI9341SetCursor(uint16_t Xpos, uint16_t Ypos)
     bHalLcdWriteData(Ypos & 0XFF);
     bHalLcdWriteCmd(0X2C);
 }
-
-/************************************************************************************************************driver
- * interface*******/
 
 static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {

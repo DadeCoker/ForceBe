@@ -69,9 +69,8 @@ typedef void (*pbPoling_t)(void);
 
 #if defined(__ICCARM__)
 // Enable IAR language extensions
-#pragma language=extended
+#pragma language = extended
 #endif
-
 
 #define CONCAT_2(s1, s2) s1##s2
 #define __stringify(x...) #x
@@ -82,83 +81,78 @@ typedef void (*pbPoling_t)(void);
  * \{
  */
 
- /**
-  * \brief the beginning of a section
-  */
+/**
+ * \brief the beginning of a section
+ */
 #if defined(__CC_ARM)
-#define BOS_SECTION_START_ADDR(section_name)       &CONCAT_2(section_name, $$Base)
+#define BOS_SECTION_START_ADDR(section_name) &CONCAT_2(section_name, $$Base)
 
 #elif defined(__GNUC__)
-#define BOS_SECTION_START_ADDR(section_name)       &CONCAT_2(__start_, section_name)
+#define BOS_SECTION_START_ADDR(section_name) &CONCAT_2(__start_, section_name)
 
 #elif defined(__ICCARM__)
-#define BOS_SECTION_START_ADDR(section_name)       __section_begin(STRINGIFY(section_name))
+#define BOS_SECTION_START_ADDR(section_name) __section_begin(STRINGIFY(section_name))
 #endif
-
 
 /**
  * \brief the end of a section.
- */   
+ */
 #if defined(__CC_ARM)
-#define BOS_SECTION_END_ADDR(section_name)         &CONCAT_2(section_name, $$Limit)
+#define BOS_SECTION_END_ADDR(section_name) &CONCAT_2(section_name, $$Limit)
 
 #elif defined(__GNUC__)
-#define BOS_SECTION_END_ADDR(section_name)         &CONCAT_2(__stop_, section_name)
+#define BOS_SECTION_END_ADDR(section_name) &CONCAT_2(__stop_, section_name)
 
 #elif defined(__ICCARM__)
-#define BOS_SECTION_END_ADDR(section_name)         __section_end(STRINGIFY(section_name))
+#define BOS_SECTION_END_ADDR(section_name) __section_end(STRINGIFY(section_name))
 #endif
-
 
 /**
  * \brief the length of a given section
- */   
-#define BOS_SECTION_LENGTH(section_name)                        \
-    ((size_t)BOS_SECTION_END_ADDR(section_name) -               \
-     (size_t)BOS_SECTION_START_ADDR(section_name))
-
+ */
+#define BOS_SECTION_LENGTH(section_name) \
+    ((size_t)BOS_SECTION_END_ADDR(section_name) - (size_t)BOS_SECTION_START_ADDR(section_name))
 
 /**
  * \brief creating a section
- */      
+ */
 #if defined(__CC_ARM)
-#define BOS_SECTION_DEF(section_name, data_type)                \
-    extern data_type * CONCAT_2(section_name, $$Base);          \
-    extern void      * CONCAT_2(section_name, $$Limit)
+#define BOS_SECTION_DEF(section_name, data_type)      \
+    extern data_type *CONCAT_2(section_name, $$Base); \
+    extern void *     CONCAT_2(section_name, $$Limit)
 
 #elif defined(__GNUC__)
-#define BOS_SECTION_DEF(section_name, data_type)                \
-    extern data_type * CONCAT_2(__start_, section_name);        \
-    extern void      * CONCAT_2(__stop_,  section_name)
+#define BOS_SECTION_DEF(section_name, data_type)        \
+    extern data_type *CONCAT_2(__start_, section_name); \
+    extern void *     CONCAT_2(__stop_, section_name)
 
 #elif defined(__ICCARM__)
-#define BOS_SECTION_DEF(section_name, data_type)                \
+#define BOS_SECTION_DEF(section_name, data_type) \
     _Pragma(STRINGIFY(section = STRINGIFY(section_name)));
 
 #endif
 
-
 /**
  * \brief declaring a variable and registering it in a section.
- */    
+ */
 #if defined(__CC_ARM)
 #define BOS_SECTION_ITEM_REGISTER(section_name, section_var) \
-    section_var __attribute__ ((section(STRINGIFY(section_name)))) __attribute__((used))
+    section_var __attribute__((section(STRINGIFY(section_name)))) __attribute__((used))
 
 #elif defined(__GNUC__)
 #define BOS_SECTION_ITEM_REGISTER(section_name, section_var) \
-    section_var __attribute__ ((section("." STRINGIFY(section_name)))) __attribute__((used))
+    section_var __attribute__((section("." STRINGIFY(section_name)))) __attribute__((used))
 
 #elif defined(__ICCARM__)
 #define BOS_SECTION_ITEM_REGISTER(section_name, section_var) \
-    __root section_var @ STRINGIFY(section_name)
+    __root section_var @STRINGIFY(section_name)
 #endif
 
 /**
  * \brief retrieving a variable from a section.
  */
 #define BOS_SECTION_ITEM_GET(section_name, data_type, i) \
-    ((data_type*)BOS_SECTION_START_ADDR(section_name) + (i))
+    ((data_type *)BOS_SECTION_START_ADDR(section_name) + (i))
 
 /**
  * \brief getting the number of variables in a section.
@@ -166,23 +160,19 @@ typedef void (*pbPoling_t)(void);
 #define BOS_SECTION_ITEM_COUNT(section_name, data_type) \
     BOS_SECTION_LENGTH(section_name) / sizeof(data_type)
 
-
-      
-      
 #define bSECTION_DEF_FLASH(section_name, data_type) BOS_SECTION_DEF(section_name, const data_type)
-#define bSECTION_DEF_RAM(section_name, data_type) BOS_SECTION_DEF(section_name, data_type)  
+#define bSECTION_DEF_RAM(section_name, data_type) BOS_SECTION_DEF(section_name, data_type)
 
 #define bSECTION_ITEM_REGISTER_FLASH(section_name, data_type, var_name) \
-      BOS_SECTION_ITEM_REGISTER(section_name, const data_type var_name)
+    BOS_SECTION_ITEM_REGISTER(section_name, const data_type var_name)
 
 #define bSECTION_ITEM_REGISTER_RAM(section_name, data_type, var_name) \
-        BOS_SECTION_ITEM_REGISTER(section_name, data_type var_name)
-      
+    BOS_SECTION_ITEM_REGISTER(section_name, data_type var_name)
+
 #define bSECTION_FOR_EACH(section_name, data_type, variable)                     \
     for (data_type *variable = BOS_SECTION_ITEM_GET(section_name, data_type, 0); \
          (intptr_t)variable != (intptr_t)BOS_SECTION_END_ADDR(section_name); variable++)
-          
-          
+
 /**
  * \}
  */
@@ -197,24 +187,6 @@ typedef void (*pbPoling_t)(void);
  */
 #define BOS_REG_POLLING_FUNC(func) \
     bSECTION_ITEM_REGISTER_FLASH(bos_polling, pbPoling_t, CONCAT_2(polling, func)) = func
-/**
- * \}
- */
-
-/**
- * \defgroup COMMON_Exported_Variables
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup DEVICE_Exported_Functions
- * \{
- */
-
 /**
  * \}
  */

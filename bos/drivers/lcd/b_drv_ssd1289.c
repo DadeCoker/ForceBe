@@ -102,14 +102,11 @@ bSSD1289_Driver_t bSSD1289_Driver;
  * \{
  */
 
-/****************************************************************/
 static void _SSD1289WriteReg(uint16_t cmd, uint16_t dat)
 {
     bHalLcdWriteCmd(cmd);
     bHalLcdWriteData(dat);
 }
-
-/******************************************************************/
 
 static void _bSSD1289SetWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {

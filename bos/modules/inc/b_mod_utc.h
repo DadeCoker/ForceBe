@@ -83,7 +83,7 @@ typedef uint32_t bUTC_t;
 #define YEAR_DAYS(yr) (YEAR_CHECK(yr) ? 366 : 365)
 #define MAXCALCTICKS ((uint16_t)(13105))
 #define BEGYEAR 2000  // UTC started at 00:00:00 January 1, 2000
-#define DAY 86400UL  // 24 hours * 60 minutes * 60 seconds
+#define DAY 86400UL   // 24 hours * 60 minutes * 60 seconds
 /**
  * \}
  */

@@ -62,10 +62,10 @@ typedef bDriverInterface_t bSD_Driver_t;
  */
 
 /* Definitions for MMC/SDC command */
-#define CMD0 (0x40 + 0) /* GO_IDLE_STATE */
-#define CMD1 (0x40 + 1) /* SEND_OP_COND */
-#define CMD8 (0x40 + 8) /* SEND_IF_COND */
-#define CMD9 (0x40 + 9) /* SEND_CSD */
+#define CMD0 (0x40 + 0)   /* GO_IDLE_STATE */
+#define CMD1 (0x40 + 1)   /* SEND_OP_COND */
+#define CMD8 (0x40 + 8)   /* SEND_IF_COND */
+#define CMD9 (0x40 + 9)   /* SEND_CSD */
 #define CMD10 (0x40 + 10) /* SEND_CID */
 #define CMD12 (0x40 + 12) /* STOP_TRANSMISSION */
 #define CMD16 (0x40 + 16) /* SET_BLOCKLEN */
@@ -79,9 +79,9 @@ typedef bDriverInterface_t bSD_Driver_t;
 #define CMD58 (0x40 + 58) /* READ_OCR */
 #define CMD59 (0x40 + 59) /* READ_OCR */
 /* MMC card type flags (MMC_GET_TYPE) */
-#define CT_MMC 0x01 /* MMC ver 3 */
-#define CT_SD1 0x02 /* SD ver 1 */
-#define CT_SD2 0x04 /* SD ver 2 */
+#define CT_MMC 0x01  /* MMC ver 3 */
+#define CT_SD1 0x02  /* SD ver 1 */
+#define CT_SD2 0x04  /* SD ver 2 */
 #define CT_SDHC 0x06 /* SDHC */
 
 /**

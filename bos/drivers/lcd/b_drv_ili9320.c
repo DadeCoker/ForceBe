@@ -103,8 +103,6 @@ bILI9320_Driver_t bILI9320_Driver;
  * \{
  */
 
-/******************************************************************/
-
 static void _bILI9320WriteReg(uint16_t reg, uint16_t dat)
 {
     bHalLcdWriteCmd(reg);
@@ -117,9 +115,6 @@ static void _bILI9320SetCursor(uint16_t Xpos, uint16_t Ypos)
     _bILI9320WriteReg(0X21, Ypos);
     bHalLcdWriteCmd(0X22);
 }
-
-/************************************************************************************************************driver
- * interface*******/
 
 static int _bILI9320Write(bILI9320_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {

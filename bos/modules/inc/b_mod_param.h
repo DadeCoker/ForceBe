@@ -60,8 +60,8 @@ extern "C" {
 typedef struct bParamStruct
 {
     uint8_t size;
-    char *  name;
-    void *  addr;
+    char*   name;
+    void*   addr;
 } bParamStruct_t;
 
 typedef bParamStruct_t bParamInstance_t;

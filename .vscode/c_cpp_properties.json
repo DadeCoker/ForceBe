@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "bos/algorithm/inc/",
+                "bos/core/inc/",
+                "bos/drivers/inc/",
+                "bos/modules/inc/",
+                "bos/thirdparty/CmBacktrace/",
+                "bos/thirdparty/FatFS/",
+                "bos/thirdparty/FlexibleButton/",
+                "bos/thirdparty/littlefs/",
+                "bos/thirdparty/nr_micro_shell/inc/",
+                "bos/thirdparty/SFUD/inc/",
+                "bos/thirdparty/UGUI/",
+                "bos/utils/inc/"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "8.1",
+            "compilerPath": "D:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+}

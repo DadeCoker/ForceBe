@@ -7,71 +7,68 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
-#include "ff.h"			/* Obtains integer types */
-#include "diskio.h"		/* Declarations of disk functions */
+#include "diskio.h" /* Declarations of disk functions */
+
 #include "b_os.h"
+#include "ff.h" /* Obtains integer types */
+
 /* Definitions of physical drive number for each drive */
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_status (
-	BYTE pdrv		/* Physical drive nmuber to identify the drive */
+DSTATUS disk_status(BYTE pdrv /* Physical drive nmuber to identify the drive */
 )
 {
-#if _FS_ENABLE && (_FS_SELECT == 0)     
-	DSTATUS stat = RES_OK;
-	switch (pdrv) {
-	case DEV_SPIFLASH :
-		return stat;
+#if _FS_ENABLE && (_FS_SELECT == 0)
+    DSTATUS stat = RES_OK;
+    switch (pdrv)
+    {
+        case DEV_SPIFLASH:
+            return stat;
 
-	case DEV_SDCARD :
-		return stat;
-	}
-#endif    
-	return STA_NOINIT;
+        case DEV_SDCARD:
+            return stat;
+    }
+#endif
+    return STA_NOINIT;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Inidialize a Drive                                                    */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_initialize (
-	BYTE pdrv				/* Physical drive nmuber to identify the drive */
+DSTATUS disk_initialize(BYTE pdrv /* Physical drive nmuber to identify the drive */
 )
 {
-	return RES_OK;
+    return RES_OK;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_read (
-	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
-	BYTE *buff,		/* Data buffer to store read data */
-	LBA_t sector,	/* Start sector in LBA */
-	UINT count		/* Number of sectors to read */
+DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive */
+                  BYTE *buff,   /* Data buffer to store read data */
+                  LBA_t sector, /* Start sector in LBA */
+                  UINT  count   /* Number of sectors to read */
 )
 {
-#if _FS_ENABLE && (_FS_SELECT == 0)    
-	DRESULT res = RES_OK;
-    int fd = -1;
-	switch (pdrv) {
-#if _SPIFLASH_ENABLE        
-	case DEV_SPIFLASH :
+#if _FS_ENABLE && (_FS_SELECT == 0)
+    DRESULT res = RES_OK;
+    int     fd  = -1;
+    switch (pdrv)
+    {
+#if _SPIFLASH_ENABLE
+        case DEV_SPIFLASH:
         {
             // translate the arguments here
             uint32_t e_size = 0;
-            fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-            if(fd >= 0)
+            fd              = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            if (fd >= 0)
             {
-                if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+                if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
                 {
                     bLseek(fd, sector * e_size);
                     bRead(fd, buff, count * e_size);
@@ -91,16 +88,15 @@ DRESULT disk_read (
 
             return res;
         }
-#endif        
-        
-        
+#endif
+
 #if _SD_ENABLE
-	case DEV_SDCARD :
+        case DEV_SDCARD:
         {
             // translate the arguments here
 
             fd = bOpen(SD, BCORE_FLAG_RW);
-            if(fd >= 0)
+            if (fd >= 0)
             {
                 bLseek(fd, sector);
                 bRead(fd, buff, count);
@@ -115,13 +111,11 @@ DRESULT disk_read (
 
             return res;
         }
-#endif        
-	}
 #endif
-	return RES_PARERR;
+    }
+#endif
+    return RES_PARERR;
 }
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
@@ -129,30 +123,30 @@ DRESULT disk_read (
 
 #if FF_FS_READONLY == 0
 
-DRESULT disk_write (
-	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
-	const BYTE *buff,	/* Data to be written */
-	LBA_t sector,		/* Start sector in LBA */
-	UINT count			/* Number of sectors to write */
+DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the drive */
+                   const BYTE *buff,   /* Data to be written */
+                   LBA_t       sector, /* Start sector in LBA */
+                   UINT        count   /* Number of sectors to write */
 )
 {
-#if _FS_ENABLE && (_FS_SELECT == 0)      
-	DRESULT res = RES_OK;
-    int fd = -1;
-	switch (pdrv) {
-#if _SPIFLASH_ENABLE         
-	case DEV_SPIFLASH :
+#if _FS_ENABLE && (_FS_SELECT == 0)
+    DRESULT res = RES_OK;
+    int     fd  = -1;
+    switch (pdrv)
+    {
+#if _SPIFLASH_ENABLE
+        case DEV_SPIFLASH:
         {
             // translate the arguments here
             bCMD_Erase_t cmd_erase;
-            uint32_t e_size = 0;
-            fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-            if(fd >= 0)
+            uint32_t     e_size = 0;
+            fd                  = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            if (fd >= 0)
             {
-                if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+                if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
                 {
                     cmd_erase.addr = sector * e_size;
-                    cmd_erase.num = count;
+                    cmd_erase.num  = count;
                     bCtl(fd, bCMD_ERASE_SECTOR, &cmd_erase);
                     bLseek(fd, sector * e_size);
                     bWrite(fd, (uint8_t *)buff, count * e_size);
@@ -172,15 +166,15 @@ DRESULT disk_write (
 
             return res;
         }
-#endif        
-        
+#endif
+
 #if _SD_ENABLE
-	case DEV_SDCARD :
+        case DEV_SDCARD:
         {
             // translate the arguments here
 
             fd = bOpen(SD, BCORE_FLAG_RW);
-            if(fd >= 0)
+            if (fd >= 0)
             {
                 bLseek(fd, sector);
                 bWrite(fd, (uint8_t *)buff, count);
@@ -195,44 +189,43 @@ DRESULT disk_write (
 
             return res;
         }
-#endif        
-	}
 #endif
-	return RES_PARERR;
+    }
+#endif
+    return RES_PARERR;
 }
 
 #endif
-
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_ioctl (
-	BYTE pdrv,		/* Physical drive nmuber (0..) */
-	BYTE cmd,		/* Control code */
-	void *buff		/* Buffer to send/receive control data */
+DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
+                   BYTE  cmd,  /* Control code */
+                   void *buff  /* Buffer to send/receive control data */
 )
 {
-#if _FS_ENABLE      
-	DRESULT res = RES_OK;
-	switch (pdrv) {
-	case DEV_SPIFLASH :
+#if _FS_ENABLE
+    DRESULT res = RES_OK;
+    switch (pdrv)
+    {
+        case DEV_SPIFLASH:
         {
             int fd = -1;
-            fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-            if(fd >= 0)
+            fd     = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            if (fd >= 0)
             {
-                switch(cmd)
+                switch (cmd)
                 {
                     case GET_SECTOR_COUNT:
-                        if(bCtl(fd, bCMD_GET_SECTOR_COUNT, buff) < 0)
+                        if (bCtl(fd, bCMD_GET_SECTOR_COUNT, buff) < 0)
                         {
                             res = RES_ERROR;
                         }
                         break;
                     case GET_SECTOR_SIZE:
-                        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, buff) < 0)
+                        if (bCtl(fd, bCMD_GET_SECTOR_SIZE, buff) < 0)
                         {
                             res = RES_ERROR;
                         }
@@ -243,7 +236,7 @@ DRESULT disk_ioctl (
                 }
                 bClose(fd);
             }
-            else 
+            else
             {
                 res = RES_ERROR;
             }
@@ -251,25 +244,23 @@ DRESULT disk_ioctl (
             return res;
         }
 
+        case DEV_SDCARD:
+            switch (cmd)
+            {
+                case GET_SECTOR_COUNT:
+                    ((LBA_t *)buff)[0] = _SD_SIZE * 1024 * 1024 / 512 * 1024;
+                    break;
+                case GET_SECTOR_SIZE:
+                    ((WORD *)buff)[0] = 512;
+                    break;
+                case GET_BLOCK_SIZE:
+                    ((WORD *)buff)[0] = 8;
+                    break;
+            }
+            // Process of the command for the MMC/SD card
 
-	case DEV_SDCARD :
-        switch(cmd)
-        {
-            case GET_SECTOR_COUNT:
-                ((LBA_t *)buff)[0] = _SD_SIZE * 1024 * 1024 / 512 * 1024;
-                break;
-            case GET_SECTOR_SIZE:
-                ((WORD *)buff)[0] = 512;
-                break;
-            case GET_BLOCK_SIZE:
-                ((WORD *)buff)[0] = 8;
-                break;
-        }
-		// Process of the command for the MMC/SD card
-
-		return res;
-	}
+            return res;
+    }
 #endif
-	return RES_PARERR;
+    return RES_PARERR;
 }
-

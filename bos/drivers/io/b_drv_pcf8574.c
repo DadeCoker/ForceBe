@@ -91,9 +91,6 @@ bPCF8574_Driver_t bPCF8574_Driver;
  * \{
  */
 
-/************************************************************************************************************driver
- * interface*******/
-
 static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     uint8_t tmp;

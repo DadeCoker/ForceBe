@@ -27,10 +27,12 @@
  */
 
 #include "sfud.h"
+
 #include <string.h>
 
+
 /* send dummy data for read data */
-#define DUMMY_DATA                               0xFF
+#define DUMMY_DATA 0xFF
 
 //#ifndef SFUD_FLASH_DEVICE_TABLE
 //#error "Please configure the flash device information table in (in sfud_cfg.h)."
@@ -50,12 +52,13 @@ static const sfud_flash_chip flash_chip_table[] = SFUD_FLASH_CHIP_TABLE;
 /**
  * flash read data mode
  */
-enum sfud_qspi_read_mode {
-    NORMAL_SPI_READ = 1 << 0,               /**< mormal spi read mode */
-    DUAL_OUTPUT = 1 << 1,                   /**< qspi fast read dual output */
-    DUAL_IO = 1 << 2,                       /**< qspi fast read dual input/output */
-    QUAD_OUTPUT = 1 << 3,                   /**< qspi fast read quad output */
-    QUAD_IO = 1 << 4,                       /**< qspi fast read quad input/output */
+enum sfud_qspi_read_mode
+{
+    NORMAL_SPI_READ = 1 << 0, /**< mormal spi read mode */
+    DUAL_OUTPUT     = 1 << 1, /**< qspi fast read dual output */
+    DUAL_IO         = 1 << 2, /**< qspi fast read dual input/output */
+    QUAD_OUTPUT     = 1 << 3, /**< qspi fast read quad output */
+    QUAD_IO         = 1 << 4, /**< qspi fast read quad input/output */
 };
 
 /* QSPI flash chip's extended information table */
@@ -64,29 +67,28 @@ static const sfud_qspi_flash_ext_info qspi_flash_ext_info_table[] = SFUD_FLASH_E
 
 static sfud_err software_init(const sfud_flash *flash);
 static sfud_err hardware_init(sfud_flash *flash);
-static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, size_t size, uint16_t write_gran,
-        const uint8_t *data);
+static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, size_t size,
+                                        uint16_t write_gran, const uint8_t *data);
 static sfud_err aai_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data);
 static sfud_err wait_busy(const sfud_flash *flash);
 static sfud_err reset(const sfud_flash *flash);
 static sfud_err read_jedec_id(sfud_flash *flash);
 static sfud_err set_write_enabled(const sfud_flash *flash, SFUD_BOOL enabled);
 static sfud_err set_4_byte_address_mode(sfud_flash *flash, SFUD_BOOL enabled);
-static void make_adress_byte_array(const sfud_flash *flash, uint32_t addr, uint8_t *array);
+static void     make_adress_byte_array(const sfud_flash *flash, uint32_t addr, uint8_t *array);
 
 /* ../port/sfup_port.c */
 extern void sfud_log_debug(const char *file, const long line, const char *format, ...);
 extern void sfud_log_info(const char *format, ...);
 
-#if __GNUC__ 
-sfud_err __attribute__((weak)) sfud_spi_port_init(sfud_flash * flash)
+#if __GNUC__
+sfud_err __attribute__((weak)) sfud_spi_port_init(sfud_flash *flash)
 #else
-__weak sfud_err sfud_spi_port_init(sfud_flash * flash)
+__weak sfud_err sfud_spi_port_init(sfud_flash *flash)
 #endif
 {
     return SFUD_ERR_NOT_FOUND;
 }
-
 
 /**
  * SFUD initialize by flash device
@@ -95,18 +97,23 @@ __weak sfud_err sfud_spi_port_init(sfud_flash * flash)
  *
  * @return result
  */
-sfud_err sfud_device_init(sfud_flash *flash) {
+sfud_err sfud_device_init(sfud_flash *flash)
+{
     sfud_err result = SFUD_SUCCESS;
 
     /* hardware initialize */
     result = hardware_init(flash);
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         result = software_init(flash);
     }
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         flash->init_ok = SFUD_TRUE;
         SFUD_INFO("%s flash device is initialize success.", flash->name);
-    } else {
+    }
+    else
+    {
         flash->init_ok = SFUD_FALSE;
         SFUD_INFO("Error: %s flash device is initialize fail.", flash->name);
     }
@@ -119,19 +126,22 @@ sfud_err sfud_device_init(sfud_flash *flash) {
  *
  * @return result
  */
-sfud_err sfud_init(void) {
+sfud_err sfud_init(void)
+{
     sfud_err cur_flash_result = SFUD_SUCCESS, all_flash_result = SFUD_SUCCESS;
-    size_t i;
+    size_t   i;
 
     SFUD_DEBUG("Start initialize Serial Flash Universal Driver(SFUD) V%s.", SFUD_SW_VERSION);
     SFUD_DEBUG("You can get the latest version on https://github.com/armink/SFUD .");
     /* initialize all flash device in flash device table */
-    for (i = 0; i < sizeof(flash_table) / sizeof(sfud_flash); i++) {
+    for (i = 0; i < sizeof(flash_table) / sizeof(sfud_flash); i++)
+    {
         /* initialize flash device index of flash device information table */
         flash_table[i].index = i;
-        cur_flash_result = sfud_device_init(&flash_table[i]);
+        cur_flash_result     = sfud_device_init(&flash_table[i]);
 
-        if (cur_flash_result != SFUD_SUCCESS) {
+        if (cur_flash_result != SFUD_SUCCESS)
+        {
             all_flash_result = cur_flash_result;
         }
     }
@@ -146,10 +156,14 @@ sfud_err sfud_init(void) {
  *
  * @return flash device
  */
-sfud_flash *sfud_get_device(size_t index) {
-    if (index < sfud_get_device_num()) {
+sfud_flash *sfud_get_device(size_t index)
+{
+    if (index < sfud_get_device_num())
+    {
         return &flash_table[index];
-    } else {
+    }
+    else
+    {
         return NULL;
     }
 }
@@ -159,7 +173,8 @@ sfud_flash *sfud_get_device(size_t index) {
  *
  * @return flash device total number
  */
-size_t sfud_get_device_num(void) {
+size_t sfud_get_device_num(void)
+{
     return sizeof(flash_table) / sizeof(sfud_flash);
 }
 
@@ -168,27 +183,32 @@ size_t sfud_get_device_num(void) {
  *
  * @return flash device table pointer
  */
-const sfud_flash *sfud_get_device_table(void) {
+const sfud_flash *sfud_get_device_table(void)
+{
     return flash_table;
 }
 
 #ifdef SFUD_USING_QSPI
-static void qspi_set_read_cmd_format(sfud_flash *flash, uint8_t ins, uint8_t ins_lines, uint8_t addr_lines,
-        uint8_t dummy_cycles, uint8_t data_lines) {
+static void qspi_set_read_cmd_format(sfud_flash *flash, uint8_t ins, uint8_t ins_lines,
+                                     uint8_t addr_lines, uint8_t dummy_cycles, uint8_t data_lines)
+{
     /* if medium size greater than 16Mb, use 4-Byte address, instruction should be added one */
-    if (flash->chip.capacity <= 0x1000000) {
-        flash->read_cmd_format.instruction = ins;
+    if (flash->chip.capacity <= 0x1000000)
+    {
+        flash->read_cmd_format.instruction  = ins;
         flash->read_cmd_format.address_size = 24;
-    } else {
-        flash->read_cmd_format.instruction = ins + 1;
+    }
+    else
+    {
+        flash->read_cmd_format.instruction  = ins + 1;
         flash->read_cmd_format.address_size = 32;
     }
 
-    flash->read_cmd_format.instruction_lines = ins_lines;
-    flash->read_cmd_format.address_lines = addr_lines;
+    flash->read_cmd_format.instruction_lines     = ins_lines;
+    flash->read_cmd_format.address_lines         = addr_lines;
     flash->read_cmd_format.alternate_bytes_lines = 0;
-    flash->read_cmd_format.dummy_cycles = dummy_cycles;
-    flash->read_cmd_format.data_lines = data_lines;
+    flash->read_cmd_format.dummy_cycles          = dummy_cycles;
+    flash->read_cmd_format.data_lines            = data_lines;
 }
 
 /**
@@ -204,46 +224,60 @@ static void qspi_set_read_cmd_format(sfud_flash *flash, uint8_t ins, uint8_t ins
  *
  * @return result
  */
-sfud_err sfud_qspi_fast_read_enable(sfud_flash *flash, uint8_t data_line_width) {
-    size_t i = 0;
-    uint8_t read_mode = NORMAL_SPI_READ;
-    sfud_err result = SFUD_SUCCESS;
+sfud_err sfud_qspi_fast_read_enable(sfud_flash *flash, uint8_t data_line_width)
+{
+    size_t   i         = 0;
+    uint8_t  read_mode = NORMAL_SPI_READ;
+    sfud_err result    = SFUD_SUCCESS;
 
     SFUD_ASSERT(flash);
     SFUD_ASSERT(data_line_width == 1 || data_line_width == 2 || data_line_width == 4);
 
     /* get read_mode, If don't found, the default is SFUD_QSPI_NORMAL_SPI_READ */
-    for (i = 0; i < sizeof(qspi_flash_ext_info_table) / sizeof(sfud_qspi_flash_ext_info); i++) {
-        if ((qspi_flash_ext_info_table[i].mf_id == flash->chip.mf_id)
-                && (qspi_flash_ext_info_table[i].type_id == flash->chip.type_id)
-                && (qspi_flash_ext_info_table[i].capacity_id == flash->chip.capacity_id)) {
+    for (i = 0; i < sizeof(qspi_flash_ext_info_table) / sizeof(sfud_qspi_flash_ext_info); i++)
+    {
+        if ((qspi_flash_ext_info_table[i].mf_id == flash->chip.mf_id) &&
+            (qspi_flash_ext_info_table[i].type_id == flash->chip.type_id) &&
+            (qspi_flash_ext_info_table[i].capacity_id == flash->chip.capacity_id))
+        {
             read_mode = qspi_flash_ext_info_table[i].read_mode;
         }
     }
 
     /* determine qspi supports which read mode and set read_cmd_format struct */
-    switch (data_line_width) {
-    case 1:
-        qspi_set_read_cmd_format(flash, SFUD_CMD_READ_DATA, 1, 1, 0, 1);
-        break;
-    case 2:
-        if (read_mode & DUAL_IO) {
-            qspi_set_read_cmd_format(flash, SFUD_CMD_DUAL_IO_READ_DATA, 1, 2, 8, 2);
-        } else if (read_mode & DUAL_OUTPUT) {
-            qspi_set_read_cmd_format(flash, SFUD_CMD_DUAL_OUTPUT_READ_DATA, 1, 1, 8, 2);
-        } else {
+    switch (data_line_width)
+    {
+        case 1:
             qspi_set_read_cmd_format(flash, SFUD_CMD_READ_DATA, 1, 1, 0, 1);
-        }
-        break;
-    case 4:
-        if (read_mode & QUAD_IO) {
-            qspi_set_read_cmd_format(flash, SFUD_CMD_QUAD_IO_READ_DATA, 1, 4, 6, 4);
-        } else if (read_mode & QUAD_OUTPUT) {
-            qspi_set_read_cmd_format(flash, SFUD_CMD_QUAD_OUTPUT_READ_DATA, 1, 1, 8, 4);
-        } else {
-            qspi_set_read_cmd_format(flash, SFUD_CMD_READ_DATA, 1, 1, 0, 1);
-        }
-        break;
+            break;
+        case 2:
+            if (read_mode & DUAL_IO)
+            {
+                qspi_set_read_cmd_format(flash, SFUD_CMD_DUAL_IO_READ_DATA, 1, 2, 8, 2);
+            }
+            else if (read_mode & DUAL_OUTPUT)
+            {
+                qspi_set_read_cmd_format(flash, SFUD_CMD_DUAL_OUTPUT_READ_DATA, 1, 1, 8, 2);
+            }
+            else
+            {
+                qspi_set_read_cmd_format(flash, SFUD_CMD_READ_DATA, 1, 1, 0, 1);
+            }
+            break;
+        case 4:
+            if (read_mode & QUAD_IO)
+            {
+                qspi_set_read_cmd_format(flash, SFUD_CMD_QUAD_IO_READ_DATA, 1, 4, 6, 4);
+            }
+            else if (read_mode & QUAD_OUTPUT)
+            {
+                qspi_set_read_cmd_format(flash, SFUD_CMD_QUAD_OUTPUT_READ_DATA, 1, 1, 8, 4);
+            }
+            else
+            {
+                qspi_set_read_cmd_format(flash, SFUD_CMD_READ_DATA, 1, 1, 0, 1);
+            }
+            break;
     }
 
     return result;
@@ -253,16 +287,18 @@ sfud_err sfud_qspi_fast_read_enable(sfud_flash *flash, uint8_t data_line_width) 
 /**
  * hardware initialize
  */
-static sfud_err hardware_init(sfud_flash *flash) {
+static sfud_err hardware_init(sfud_flash *flash)
+{
     extern sfud_err sfud_spi_port_init(sfud_flash * flash);
 
     sfud_err result = SFUD_SUCCESS;
-    size_t i;
+    size_t   i;
 
     SFUD_ASSERT(flash);
 
     result = sfud_spi_port_init(flash);
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         return result;
     }
 
@@ -273,49 +309,64 @@ static sfud_err hardware_init(sfud_flash *flash) {
 
     /* SPI write read function must be initialize */
     SFUD_ASSERT(flash->spi.wr);
-    /* if the user don't configure flash chip information then using SFDP parameter or static flash parameter table */
-    if (flash->chip.capacity == 0 || flash->chip.write_mode == 0 || flash->chip.erase_gran == 0
-            || flash->chip.erase_gran_cmd == 0) {
+    /* if the user don't configure flash chip information then using SFDP parameter or static flash
+     * parameter table */
+    if (flash->chip.capacity == 0 || flash->chip.write_mode == 0 || flash->chip.erase_gran == 0 ||
+        flash->chip.erase_gran_cmd == 0)
+    {
         /* read JEDEC ID include manufacturer ID, memory type ID and flash capacity ID */
         result = read_jedec_id(flash);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             return result;
         }
 
 #ifdef SFUD_USING_SFDP
-        extern SFUD_BOOL sfud_read_sfdp(sfud_flash *flash);
+        extern SFUD_BOOL sfud_read_sfdp(sfud_flash * flash);
         /* read SFDP parameters */
-        if (sfud_read_sfdp(flash)) {
-            flash->chip.name = NULL;
+        if (sfud_read_sfdp(flash))
+        {
+            flash->chip.name     = NULL;
             flash->chip.capacity = flash->sfdp.capacity;
             /* only 1 byte or 256 bytes write mode for SFDP */
-            if (flash->sfdp.write_gran == 1) {
+            if (flash->sfdp.write_gran == 1)
+            {
                 flash->chip.write_mode = SFUD_WM_BYTE;
-            } else {
+            }
+            else
+            {
                 flash->chip.write_mode = SFUD_WM_PAGE_256B;
             }
-            /* find the the smallest erase sector size for eraser. then will use this size for erase granularity */
-            flash->chip.erase_gran = flash->sfdp.eraser[0].size;
+            /* find the the smallest erase sector size for eraser. then will use this size for erase
+             * granularity */
+            flash->chip.erase_gran     = flash->sfdp.eraser[0].size;
             flash->chip.erase_gran_cmd = flash->sfdp.eraser[0].cmd;
-            for (i = 1; i < SFUD_SFDP_ERASE_TYPE_MAX_NUM; i++) {
-                if (flash->sfdp.eraser[i].size != 0 && flash->chip.erase_gran > flash->sfdp.eraser[i].size) {
-                    flash->chip.erase_gran = flash->sfdp.eraser[i].size;
+            for (i = 1; i < SFUD_SFDP_ERASE_TYPE_MAX_NUM; i++)
+            {
+                if (flash->sfdp.eraser[i].size != 0 &&
+                    flash->chip.erase_gran > flash->sfdp.eraser[i].size)
+                {
+                    flash->chip.erase_gran     = flash->sfdp.eraser[i].size;
                     flash->chip.erase_gran_cmd = flash->sfdp.eraser[i].cmd;
                 }
             }
-        } else {
+        }
+        else
+        {
 #endif
 
 #ifdef SFUD_USING_FLASH_INFO_TABLE
             /* read SFDP parameters failed then using SFUD library provided static parameter */
-            for (i = 0; i < sizeof(flash_chip_table) / sizeof(sfud_flash_chip); i++) {
-                if ((flash_chip_table[i].mf_id == flash->chip.mf_id)
-                        && (flash_chip_table[i].type_id == flash->chip.type_id)
-                        && (flash_chip_table[i].capacity_id == flash->chip.capacity_id)) {
-                    flash->chip.name = flash_chip_table[i].name;
-                    flash->chip.capacity = flash_chip_table[i].capacity;
-                    flash->chip.write_mode = flash_chip_table[i].write_mode;
-                    flash->chip.erase_gran = flash_chip_table[i].erase_gran;
+            for (i = 0; i < sizeof(flash_chip_table) / sizeof(sfud_flash_chip); i++)
+            {
+                if ((flash_chip_table[i].mf_id == flash->chip.mf_id) &&
+                    (flash_chip_table[i].type_id == flash->chip.type_id) &&
+                    (flash_chip_table[i].capacity_id == flash->chip.capacity_id))
+                {
+                    flash->chip.name           = flash_chip_table[i].name;
+                    flash->chip.capacity       = flash_chip_table[i].capacity;
+                    flash->chip.write_mode     = flash_chip_table[i].write_mode;
+                    flash->chip.erase_gran     = flash_chip_table[i].erase_gran;
                     flash->chip.erase_gran_cmd = flash_chip_table[i].erase_gran_cmd;
                     break;
                 }
@@ -325,52 +376,68 @@ static sfud_err hardware_init(sfud_flash *flash) {
 #ifdef SFUD_USING_SFDP
         }
 #endif
-
     }
 
-    if (flash->chip.capacity == 0 || flash->chip.write_mode == 0 || flash->chip.erase_gran == 0
-            || flash->chip.erase_gran_cmd == 0) {
+    if (flash->chip.capacity == 0 || flash->chip.write_mode == 0 || flash->chip.erase_gran == 0 ||
+        flash->chip.erase_gran_cmd == 0)
+    {
         SFUD_INFO("Warning: This flash device is not found or not support.");
         return SFUD_ERR_NOT_FOUND;
-    } else {
+    }
+    else
+    {
         const char *flash_mf_name = NULL;
         /* find the manufacturer information */
-        for (i = 0; i < sizeof(mf_table) / sizeof(sfud_mf); i++) {
-            if (mf_table[i].id == flash->chip.mf_id) {
+        for (i = 0; i < sizeof(mf_table) / sizeof(sfud_mf); i++)
+        {
+            if (mf_table[i].id == flash->chip.mf_id)
+            {
                 flash_mf_name = mf_table[i].name;
                 break;
             }
         }
         /* print manufacturer and flash chip name */
-        if (flash_mf_name && flash->chip.name) {
-            SFUD_INFO("Find a %s %s flash chip. Size is %ld bytes.", flash_mf_name, flash->chip.name,
-                    flash->chip.capacity);
-        } else if (flash_mf_name) {
-            SFUD_INFO("Find a %s flash chip. Size is %ld bytes.", flash_mf_name, flash->chip.capacity);
-        } else {
+        if (flash_mf_name && flash->chip.name)
+        {
+            SFUD_INFO("Find a %s %s flash chip. Size is %ld bytes.", flash_mf_name,
+                      flash->chip.name, flash->chip.capacity);
+        }
+        else if (flash_mf_name)
+        {
+            SFUD_INFO("Find a %s flash chip. Size is %ld bytes.", flash_mf_name,
+                      flash->chip.capacity);
+        }
+        else
+        {
             SFUD_INFO("Find a flash chip. Size is %ld bytes.", flash->chip.capacity);
         }
     }
 
     /* reset flash device */
     result = reset(flash);
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         return result;
     }
 
     /* I found when the flash write mode is supported AAI mode. The flash all blocks is protected,
      * so need change the flash status to unprotected before write and erase operate. */
-    if (flash->chip.write_mode & SFUD_WM_AAI) {
+    if (flash->chip.write_mode & SFUD_WM_AAI)
+    {
         result = sfud_write_status(flash, SFUD_TRUE, 0x00);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             return result;
         }
     }
 
     /* if the flash is large than 16MB (256Mb) then enter in 4-Byte addressing mode */
-    if (flash->chip.capacity > (1L << 24)) {
+    if (flash->chip.capacity > (1L << 24))
+    {
         result = set_4_byte_address_mode(flash, SFUD_TRUE);
-    } else {
+    }
+    else
+    {
         flash->addr_in_4_byte = SFUD_FALSE;
     }
 
@@ -384,7 +451,8 @@ static sfud_err hardware_init(sfud_flash *flash) {
  *
  * @return result
  */
-static sfud_err software_init(const sfud_flash *flash) {
+static sfud_err software_init(const sfud_flash *flash)
+{
     sfud_err result = SFUD_SUCCESS;
 
     SFUD_ASSERT(flash);
@@ -402,42 +470,50 @@ static sfud_err software_init(const sfud_flash *flash) {
  *
  * @return result
  */
-sfud_err sfud_read(const sfud_flash *flash, uint32_t addr, size_t size, uint8_t *data) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[5], cmd_size;
+sfud_err sfud_read(const sfud_flash *flash, uint32_t addr, size_t size, uint8_t *data)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[5], cmd_size;
 
     SFUD_ASSERT(flash);
     SFUD_ASSERT(data);
     /* must be call this function after initialize OK */
     SFUD_ASSERT(flash->init_ok);
     /* check the flash address bound */
-    if (addr + size > flash->chip.capacity) {
+    if (addr + size > flash->chip.capacity)
+    {
         SFUD_INFO("Error: Flash address is out of bound.");
         return SFUD_ERR_ADDR_OUT_OF_BOUND;
     }
     /* lock SPI */
-    if (spi->lock) {
+    if (spi->lock)
+    {
         spi->lock(spi);
     }
 
     result = wait_busy(flash);
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
 #ifdef SFUD_USING_QSPI
-        if (flash->read_cmd_format.instruction != SFUD_CMD_READ_DATA) {
-            result = spi->qspi_read(spi, addr, (sfud_qspi_read_cmd_format *)&flash->read_cmd_format, data, size);
-        } else
+        if (flash->read_cmd_format.instruction != SFUD_CMD_READ_DATA)
+        {
+            result = spi->qspi_read(spi, addr, (sfud_qspi_read_cmd_format *)&flash->read_cmd_format,
+                                    data, size);
+        }
+        else
 #endif
         {
             cmd_data[0] = SFUD_CMD_READ_DATA;
             make_adress_byte_array(flash, addr, &cmd_data[1]);
             cmd_size = flash->addr_in_4_byte ? 5 : 4;
-            result = spi->wr(spi, cmd_data, cmd_size, data, size);
+            result   = spi->wr(spi, cmd_data, cmd_size, data, size);
         }
     }
     /* unlock SPI */
-    if (spi->unlock) {
+    if (spi->unlock)
+    {
         spi->unlock(spi);
     }
 
@@ -451,36 +527,44 @@ sfud_err sfud_read(const sfud_flash *flash, uint32_t addr, size_t size, uint8_t 
  *
  * @return result
  */
-sfud_err sfud_chip_erase(const sfud_flash *flash) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[4];
+sfud_err sfud_chip_erase(const sfud_flash *flash)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[4];
 
     SFUD_ASSERT(flash);
     /* must be call this function after initialize OK */
     SFUD_ASSERT(flash->init_ok);
     /* lock SPI */
-    if (spi->lock) {
+    if (spi->lock)
+    {
         spi->lock(spi);
     }
 
     /* set the flash write enable */
     result = set_write_enabled(flash, SFUD_TRUE);
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         goto __exit;
     }
 
     cmd_data[0] = SFUD_CMD_ERASE_CHIP;
-    /* dual-buffer write, like AT45DB series flash chip erase operate is different for other flash */
-    if (flash->chip.write_mode & SFUD_WM_DUAL_BUFFER) {
+    /* dual-buffer write, like AT45DB series flash chip erase operate is different for other flash
+     */
+    if (flash->chip.write_mode & SFUD_WM_DUAL_BUFFER)
+    {
         cmd_data[1] = 0x94;
         cmd_data[2] = 0x80;
         cmd_data[3] = 0x9A;
-        result = spi->wr(spi, cmd_data, 4, NULL, 0);
-    } else {
+        result      = spi->wr(spi, cmd_data, 4, NULL, 0);
+    }
+    else
+    {
         result = spi->wr(spi, cmd_data, 1, NULL, 0);
     }
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         SFUD_INFO("Error: Flash chip erase SPI communicate error.");
         goto __exit;
     }
@@ -490,7 +574,8 @@ __exit:
     /* set the flash write disable */
     set_write_enabled(flash, SFUD_FALSE);
     /* unlock SPI */
-    if (spi->unlock) {
+    if (spi->unlock)
+    {
         spi->unlock(spi);
     }
 
@@ -508,80 +593,101 @@ __exit:
  *
  * @return result
  */
-sfud_err sfud_erase(const sfud_flash *flash, uint32_t addr, size_t size) {
-    extern size_t sfud_sfdp_get_suitable_eraser(const sfud_flash *flash, uint32_t addr, size_t erase_size);
+sfud_err sfud_erase(const sfud_flash *flash, uint32_t addr, size_t size)
+{
+    extern size_t sfud_sfdp_get_suitable_eraser(const sfud_flash *flash, uint32_t addr,
+                                                size_t erase_size);
 
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[5], cmd_size, cur_erase_cmd;
-    size_t cur_erase_size;
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[5], cmd_size, cur_erase_cmd;
+    size_t          cur_erase_size;
 
     SFUD_ASSERT(flash);
     /* must be call this function after initialize OK */
     SFUD_ASSERT(flash->init_ok);
     /* check the flash address bound */
-    if (addr + size > flash->chip.capacity) {
+    if (addr + size > flash->chip.capacity)
+    {
         SFUD_INFO("Error: Flash address is out of bound.");
         return SFUD_ERR_ADDR_OUT_OF_BOUND;
     }
 
-    if (addr == 0 && size == flash->chip.capacity) {
+    if (addr == 0 && size == flash->chip.capacity)
+    {
         return sfud_chip_erase(flash);
     }
 
     /* lock SPI */
-    if (spi->lock) {
+    if (spi->lock)
+    {
         spi->lock(spi);
     }
 
     /* loop erase operate. erase unit is erase granularity */
-    while (size) {
+    while (size)
+    {
         /* if this flash is support SFDP parameter, then used SFDP parameter supplies eraser */
 #ifdef SFUD_USING_SFDP
         size_t eraser_index;
-        if (flash->sfdp.available) {
+        if (flash->sfdp.available)
+        {
             /* get the suitable eraser for erase process from SFDP parameter */
-            eraser_index = sfud_sfdp_get_suitable_eraser(flash, addr, size);
-            cur_erase_cmd = flash->sfdp.eraser[eraser_index].cmd;
+            eraser_index   = sfud_sfdp_get_suitable_eraser(flash, addr, size);
+            cur_erase_cmd  = flash->sfdp.eraser[eraser_index].cmd;
             cur_erase_size = flash->sfdp.eraser[eraser_index].size;
-        } else {
+        }
+        else
+        {
 #else
         {
 #endif
-            cur_erase_cmd = flash->chip.erase_gran_cmd;
+            cur_erase_cmd  = flash->chip.erase_gran_cmd;
             cur_erase_size = flash->chip.erase_gran;
         }
         /* set the flash write enable */
         result = set_write_enabled(flash, SFUD_TRUE);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             goto __exit;
         }
 
         cmd_data[0] = cur_erase_cmd;
         make_adress_byte_array(flash, addr, &cmd_data[1]);
         cmd_size = flash->addr_in_4_byte ? 5 : 4;
-        result = spi->wr(spi, cmd_data, cmd_size, NULL, 0);
-        if (result != SFUD_SUCCESS) {
+        result   = spi->wr(spi, cmd_data, cmd_size, NULL, 0);
+        if (result != SFUD_SUCCESS)
+        {
             SFUD_INFO("Error: Flash erase SPI communicate error.");
             goto __exit;
         }
         result = wait_busy(flash);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             goto __exit;
         }
         /* make erase align and calculate next erase address */
-        if (addr % cur_erase_size != 0) {
-            if (size > cur_erase_size - (addr % cur_erase_size)) {
+        if (addr % cur_erase_size != 0)
+        {
+            if (size > cur_erase_size - (addr % cur_erase_size))
+            {
                 size -= cur_erase_size - (addr % cur_erase_size);
                 addr += cur_erase_size - (addr % cur_erase_size);
-            } else {
+            }
+            else
+            {
                 goto __exit;
             }
-        } else {
-            if (size > cur_erase_size) {
+        }
+        else
+        {
+            if (size > cur_erase_size)
+            {
                 size -= cur_erase_size;
                 addr += cur_erase_size;
-            } else {
+            }
+            else
+            {
                 goto __exit;
             }
         }
@@ -591,7 +697,8 @@ __exit:
     /* set the flash write disable */
     set_write_enabled(flash, SFUD_FALSE);
     /* unlock SPI */
-    if (spi->unlock) {
+    if (spi->unlock)
+    {
         spi->unlock(spi);
     }
 
@@ -609,13 +716,14 @@ __exit:
  *
  * @return result
  */
-static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, size_t size, uint16_t write_gran,
-        const uint8_t *data) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    static uint8_t cmd_data[5 + SFUD_WRITE_MAX_PAGE_SIZE];
-    uint8_t cmd_size;
-    size_t data_size;
+static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, size_t size,
+                                        uint16_t write_gran, const uint8_t *data)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    static uint8_t  cmd_data[5 + SFUD_WRITE_MAX_PAGE_SIZE];
+    uint8_t         cmd_size;
+    size_t          data_size;
 
     SFUD_ASSERT(flash);
     /* only support 1 or 256 */
@@ -623,20 +731,24 @@ static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, 
     /* must be call this function after initialize OK */
     SFUD_ASSERT(flash->init_ok);
     /* check the flash address bound */
-    if (addr + size > flash->chip.capacity) {
+    if (addr + size > flash->chip.capacity)
+    {
         SFUD_INFO("Error: Flash address is out of bound.");
         return SFUD_ERR_ADDR_OUT_OF_BOUND;
     }
     /* lock SPI */
-    if (spi->lock) {
+    if (spi->lock)
+    {
         spi->lock(spi);
     }
 
     /* loop write operate. write unit is write granularity */
-    while (size) {
+    while (size)
+    {
         /* set the flash write enable */
         result = set_write_enabled(flash, SFUD_TRUE);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             goto __exit;
         }
         cmd_data[0] = SFUD_CMD_PAGE_PROGRAM;
@@ -644,16 +756,25 @@ static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, 
         cmd_size = flash->addr_in_4_byte ? 5 : 4;
 
         /* make write align and calculate next write address */
-        if (addr % write_gran != 0) {
-            if (size > write_gran - (addr % write_gran)) {
+        if (addr % write_gran != 0)
+        {
+            if (size > write_gran - (addr % write_gran))
+            {
                 data_size = write_gran - (addr % write_gran);
-            } else {
+            }
+            else
+            {
                 data_size = size;
             }
-        } else {
-            if (size > write_gran) {
+        }
+        else
+        {
+            if (size > write_gran)
+            {
                 data_size = write_gran;
-            } else {
+            }
+            else
+            {
                 data_size = size;
             }
         }
@@ -663,12 +784,14 @@ static sfud_err page256_or_1_byte_write(const sfud_flash *flash, uint32_t addr, 
         memcpy(&cmd_data[cmd_size], data, data_size);
 
         result = spi->wr(spi, cmd_data, cmd_size + data_size, NULL, 0);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             SFUD_INFO("Error: Flash write SPI communicate error.");
             goto __exit;
         }
         result = wait_busy(flash);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             goto __exit;
         }
         data += data_size;
@@ -678,7 +801,8 @@ __exit:
     /* set the flash write disable */
     set_write_enabled(flash, SFUD_FALSE);
     /* unlock SPI */
-    if (spi->unlock) {
+    if (spi->unlock)
+    {
         spi->unlock(spi);
     }
 
@@ -688,8 +812,9 @@ __exit:
 /**
  * write flash data (no erase operate) for auto address increment mode
  *
- * If the address is odd number, it will place one 0xFF before the start of data for protect the old data.
- * If the latest remain size is 1, it will append one 0xFF at the end of data for protect the old data.
+ * If the address is odd number, it will place one 0xFF before the start of data for protect the old
+ * data. If the latest remain size is 1, it will append one 0xFF at the end of data for protect the
+ * old data.
  *
  * @param flash flash device
  * @param addr start address
@@ -698,59 +823,72 @@ __exit:
  *
  * @return result
  */
-static sfud_err aai_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[8], cmd_size;
-    SFUD_BOOL first_write = SFUD_TRUE;
+static sfud_err aai_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[8], cmd_size;
+    SFUD_BOOL       first_write = SFUD_TRUE;
 
     SFUD_ASSERT(flash);
     SFUD_ASSERT(flash->init_ok);
     /* check the flash address bound */
-    if (addr + size > flash->chip.capacity) {
+    if (addr + size > flash->chip.capacity)
+    {
         SFUD_INFO("Error: Flash address is out of bound.");
         return SFUD_ERR_ADDR_OUT_OF_BOUND;
     }
     /* lock SPI */
-    if (spi->lock) {
+    if (spi->lock)
+    {
         spi->lock(spi);
     }
-    /* The address must be even for AAI write mode. So it must write one byte first when address is odd. */
-    if (addr % 2 != 0) {
+    /* The address must be even for AAI write mode. So it must write one byte first when address is
+     * odd. */
+    if (addr % 2 != 0)
+    {
         result = page256_or_1_byte_write(flash, addr++, 1, 1, data++);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             goto __exit;
         }
         size--;
     }
     /* set the flash write enable */
     result = set_write_enabled(flash, SFUD_TRUE);
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         goto __exit;
     }
     /* loop write operate. */
     cmd_data[0] = SFUD_CMD_AAI_WORD_PROGRAM;
-    while (size >= 2) {
-        if (first_write) {
+    while (size >= 2)
+    {
+        if (first_write)
+        {
             make_adress_byte_array(flash, addr, &cmd_data[1]);
-            cmd_size = flash->addr_in_4_byte ? 5 : 4;
-            cmd_data[cmd_size] = *data;
+            cmd_size               = flash->addr_in_4_byte ? 5 : 4;
+            cmd_data[cmd_size]     = *data;
             cmd_data[cmd_size + 1] = *(data + 1);
-            first_write = SFUD_FALSE;
-        } else {
-            cmd_size = 1;
+            first_write            = SFUD_FALSE;
+        }
+        else
+        {
+            cmd_size    = 1;
             cmd_data[1] = *data;
             cmd_data[2] = *(data + 1);
         }
 
         result = spi->wr(spi, cmd_data, cmd_size + 2, NULL, 0);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             SFUD_INFO("Error: Flash write SPI communicate error.");
             goto __exit;
         }
 
         result = wait_busy(flash);
-        if (result != SFUD_SUCCESS) {
+        if (result != SFUD_SUCCESS)
+        {
             goto __exit;
         }
 
@@ -761,16 +899,19 @@ static sfud_err aai_write(const sfud_flash *flash, uint32_t addr, size_t size, c
     /* set the flash write disable for exit AAI mode */
     result = set_write_enabled(flash, SFUD_FALSE);
     /* write last one byte data when origin write size is odd */
-    if (result == SFUD_SUCCESS && size == 1) {
+    if (result == SFUD_SUCCESS && size == 1)
+    {
         result = page256_or_1_byte_write(flash, addr, 1, 1, data);
     }
 
 __exit:
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         set_write_enabled(flash, SFUD_FALSE);
     }
     /* unlock SPI */
-    if (spi->unlock) {
+    if (spi->unlock)
+    {
         spi->unlock(spi);
     }
 
@@ -787,15 +928,21 @@ __exit:
  *
  * @return result
  */
-sfud_err sfud_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data) {
+sfud_err sfud_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data)
+{
     sfud_err result = SFUD_SUCCESS;
 
-    if (flash->chip.write_mode & SFUD_WM_PAGE_256B) {
+    if (flash->chip.write_mode & SFUD_WM_PAGE_256B)
+    {
         result = page256_or_1_byte_write(flash, addr, size, 256, data);
-    } else if (flash->chip.write_mode & SFUD_WM_AAI) {
+    }
+    else if (flash->chip.write_mode & SFUD_WM_AAI)
+    {
         result = aai_write(flash, addr, size, data);
-    } else if (flash->chip.write_mode & SFUD_WM_DUAL_BUFFER) {
-        //TODO dual-buffer write mode
+    }
+    else if (flash->chip.write_mode & SFUD_WM_DUAL_BUFFER)
+    {
+        // TODO dual-buffer write mode
     }
 
     return result;
@@ -811,66 +958,82 @@ sfud_err sfud_write(const sfud_flash *flash, uint32_t addr, size_t size, const u
  *
  * @return result
  */
-sfud_err sfud_erase_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data) {
+sfud_err sfud_erase_write(const sfud_flash *flash, uint32_t addr, size_t size, const uint8_t *data)
+{
     sfud_err result = SFUD_SUCCESS;
 
     result = sfud_erase(flash, addr, size);
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         result = sfud_write(flash, addr, size, data);
     }
 
     return result;
 }
 
-static sfud_err reset(const sfud_flash *flash) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[2];
+static sfud_err reset(const sfud_flash *flash)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[2];
 
     SFUD_ASSERT(flash);
 
     cmd_data[0] = SFUD_CMD_ENABLE_RESET;
-    result = spi->wr(spi, cmd_data, 1, NULL, 0);
-    if (result == SFUD_SUCCESS) {
+    result      = spi->wr(spi, cmd_data, 1, NULL, 0);
+    if (result == SFUD_SUCCESS)
+    {
         result = wait_busy(flash);
-    } else {
+    }
+    else
+    {
         SFUD_INFO("Error: Flash device reset failed.");
         return result;
     }
 
     cmd_data[1] = SFUD_CMD_RESET;
-    result = spi->wr(spi, &cmd_data[1], 1, NULL, 0);
+    result      = spi->wr(spi, &cmd_data[1], 1, NULL, 0);
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         result = wait_busy(flash);
     }
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         SFUD_DEBUG("Flash device reset success.");
-    } else {
+    }
+    else
+    {
         SFUD_INFO("Error: Flash device reset failed.");
     }
 
     return result;
 }
 
-static sfud_err read_jedec_id(sfud_flash *flash) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[1], recv_data[3];
+static sfud_err read_jedec_id(sfud_flash *flash)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[1], recv_data[3];
 
     SFUD_ASSERT(flash);
 
     cmd_data[0] = SFUD_CMD_JEDEC_ID;
-    result = spi->wr(spi, cmd_data, sizeof(cmd_data), recv_data, sizeof(recv_data));
-    if (result == SFUD_SUCCESS) {
-        flash->chip.mf_id = recv_data[0];
-        flash->chip.type_id = recv_data[1];
+    result      = spi->wr(spi, cmd_data, sizeof(cmd_data), recv_data, sizeof(recv_data));
+    if (result == SFUD_SUCCESS)
+    {
+        flash->chip.mf_id       = recv_data[0];
+        flash->chip.type_id     = recv_data[1];
         flash->chip.capacity_id = recv_data[2];
-        SFUD_DEBUG("The flash device manufacturer ID is 0x%02X, memory type ID is 0x%02X, capacity ID is 0x%02X.",
-                flash->chip.mf_id, flash->chip.type_id, flash->chip.capacity_id);
-    } else {
+        SFUD_DEBUG(
+            "The flash device manufacturer ID is 0x%02X, memory type ID is 0x%02X, capacity ID is "
+            "0x%02X.",
+            flash->chip.mf_id, flash->chip.type_id, flash->chip.capacity_id);
+    }
+    else
+    {
         SFUD_INFO("Error: Read flash device JEDEC ID error.");
     }
 
@@ -885,29 +1048,38 @@ static sfud_err read_jedec_id(sfud_flash *flash) {
  *
  * @return result
  */
-static sfud_err set_write_enabled(const sfud_flash *flash, SFUD_BOOL enabled) {
+static sfud_err set_write_enabled(const sfud_flash *flash, SFUD_BOOL enabled)
+{
     sfud_err result = SFUD_SUCCESS;
-    uint8_t cmd, register_status;
+    uint8_t  cmd, register_status;
 
     SFUD_ASSERT(flash);
 
-    if (enabled) {
+    if (enabled)
+    {
         cmd = SFUD_CMD_WRITE_ENABLE;
-    } else {
+    }
+    else
+    {
         cmd = SFUD_CMD_WRITE_DISABLE;
     }
 
     result = flash->spi.wr(&flash->spi, &cmd, 1, NULL, 0);
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         result = sfud_read_status(flash, &register_status);
     }
 
-    if (result == SFUD_SUCCESS) {
-        if (enabled && (register_status & SFUD_STATUS_REGISTER_WEL) == 0) {
+    if (result == SFUD_SUCCESS)
+    {
+        if (enabled && (register_status & SFUD_STATUS_REGISTER_WEL) == 0)
+        {
             SFUD_INFO("Error: Can't enable write status.");
             return SFUD_ERR_WRITE;
-        } else if (!enabled && (register_status & SFUD_STATUS_REGISTER_WEL) == 1) {
+        }
+        else if (!enabled && (register_status & SFUD_STATUS_REGISTER_WEL) == 1)
+        {
             SFUD_INFO("Error: Can't disable write status.");
             return SFUD_ERR_WRITE;
         }
@@ -919,37 +1091,46 @@ static sfud_err set_write_enabled(const sfud_flash *flash, SFUD_BOOL enabled) {
 /**
  * enable or disable 4-Byte addressing for flash
  *
- * @note The 4-Byte addressing just supported for the flash capacity which is large then 16MB (256Mb).
+ * @note The 4-Byte addressing just supported for the flash capacity which is large then 16MB
+ * (256Mb).
  *
  * @param flash flash device
  * @param enabled SFUD_TRUE: enable   SFUD_FALSE: disable
  *
  * @return result
  */
-static sfud_err set_4_byte_address_mode(sfud_flash *flash, SFUD_BOOL enabled) {
+static sfud_err set_4_byte_address_mode(sfud_flash *flash, SFUD_BOOL enabled)
+{
     sfud_err result = SFUD_SUCCESS;
-    uint8_t cmd;
+    uint8_t  cmd;
 
     SFUD_ASSERT(flash);
 
     /* set the flash write enable */
     result = set_write_enabled(flash, SFUD_TRUE);
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         return result;
     }
 
-    if (enabled) {
+    if (enabled)
+    {
         cmd = SFUD_CMD_ENTER_4B_ADDRESS_MODE;
-    } else {
+    }
+    else
+    {
         cmd = SFUD_CMD_EXIT_4B_ADDRESS_MODE;
     }
 
     result = flash->spi.wr(&flash->spi, &cmd, 1, NULL, 0);
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         flash->addr_in_4_byte = enabled ? SFUD_TRUE : SFUD_FALSE;
         SFUD_DEBUG("%s 4-Byte addressing mode success.", enabled ? "Enter" : "Exit");
-    } else {
+    }
+    else
+    {
         SFUD_INFO("Error: %s 4-Byte addressing mode failed.", enabled ? "Enter" : "Exit");
     }
 
@@ -964,7 +1145,8 @@ static sfud_err set_4_byte_address_mode(sfud_flash *flash, SFUD_BOOL enabled) {
  *
  * @return result
  */
-sfud_err sfud_read_status(const sfud_flash *flash, uint8_t *status) {
+sfud_err sfud_read_status(const sfud_flash *flash, uint8_t *status)
+{
     uint8_t cmd = SFUD_CMD_READ_STATUS_REGISTER;
 
     SFUD_ASSERT(flash);
@@ -973,30 +1155,35 @@ sfud_err sfud_read_status(const sfud_flash *flash, uint8_t *status) {
     return flash->spi.wr(&flash->spi, &cmd, 1, status, 1);
 }
 
-static sfud_err wait_busy(const sfud_flash *flash) {
+static sfud_err wait_busy(const sfud_flash *flash)
+{
     sfud_err result = SFUD_SUCCESS;
-    uint8_t status;
-    size_t retry_times = flash->retry.times;
+    uint8_t  status;
+    size_t   retry_times = flash->retry.times;
 
     SFUD_ASSERT(flash);
 
-    while (SFUD_TRUE) {
+    while (SFUD_TRUE)
+    {
         result = sfud_read_status(flash, &status);
-        if (result == SFUD_SUCCESS && ((status & SFUD_STATUS_REGISTER_BUSY)) == 0) {
+        if (result == SFUD_SUCCESS && ((status & SFUD_STATUS_REGISTER_BUSY)) == 0)
+        {
             break;
         }
         /* retry counts */
         SFUD_RETRY_PROCESS(flash->retry.delay, retry_times, result);
     }
 
-    if (result != SFUD_SUCCESS || ((status & SFUD_STATUS_REGISTER_BUSY)) != 0) {
+    if (result != SFUD_SUCCESS || ((status & SFUD_STATUS_REGISTER_BUSY)) != 0)
+    {
         SFUD_INFO("Error: Flash wait busy has an error.");
     }
 
     return result;
 }
 
-static void make_adress_byte_array(const sfud_flash *flash, uint32_t addr, uint8_t *array) {
+static void make_adress_byte_array(const sfud_flash *flash, uint32_t addr, uint8_t *array)
+{
     uint8_t len, i;
 
     SFUD_ASSERT(flash);
@@ -1004,7 +1191,8 @@ static void make_adress_byte_array(const sfud_flash *flash, uint32_t addr, uint8
 
     len = flash->addr_in_4_byte ? 4 : 3;
 
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < len; i++)
+    {
         array[i] = (addr >> ((len - (i + 1)) * 8)) & 0xFF;
     }
 }
@@ -1018,27 +1206,33 @@ static void make_adress_byte_array(const sfud_flash *flash, uint32_t addr, uint8
  *
  * @return result
  */
-sfud_err sfud_write_status(const sfud_flash *flash, SFUD_BOOL is_volatile, uint8_t status) {
-    sfud_err result = SFUD_SUCCESS;
-    const sfud_spi *spi = &flash->spi;
-    uint8_t cmd_data[2];
+sfud_err sfud_write_status(const sfud_flash *flash, SFUD_BOOL is_volatile, uint8_t status)
+{
+    sfud_err        result = SFUD_SUCCESS;
+    const sfud_spi *spi    = &flash->spi;
+    uint8_t         cmd_data[2];
 
     SFUD_ASSERT(flash);
 
-    if (is_volatile) {
+    if (is_volatile)
+    {
         cmd_data[0] = SFUD_VOLATILE_SR_WRITE_ENABLE;
-        result = spi->wr(spi, cmd_data, 1, NULL, 0);
-    } else {
+        result      = spi->wr(spi, cmd_data, 1, NULL, 0);
+    }
+    else
+    {
         result = set_write_enabled(flash, SFUD_TRUE);
     }
 
-    if (result == SFUD_SUCCESS) {
+    if (result == SFUD_SUCCESS)
+    {
         cmd_data[0] = SFUD_CMD_WRITE_STATUS_REGISTER;
         cmd_data[1] = status;
-        result = spi->wr(spi, cmd_data, 2, NULL, 0);
+        result      = spi->wr(spi, cmd_data, 2, NULL, 0);
     }
 
-    if (result != SFUD_SUCCESS) {
+    if (result != SFUD_SUCCESS)
+    {
         SFUD_INFO("Error: Write_status register failed.");
     }
 

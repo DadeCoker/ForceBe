@@ -70,10 +70,10 @@ typedef struct
  * \defgroup GSENSOR_Exported_Defines
  * \{
  */
-#define bCMD_CFG_ODR 0  // uint16_t   (x)Hz
-#define bCMD_CFG_FS 1  // uint8_t   (x)g
+#define bCMD_CFG_ODR 0        // uint16_t   (x)Hz
+#define bCMD_CFG_FS 1         // uint8_t   (x)g
 #define bCMD_CFG_POWERDOWN 2  // no param
-#define bCMD_CFG_FIFO 3  // bGSensorCfgFIFO_t
+#define bCMD_CFG_FIFO 3       // bGSensorCfgFIFO_t
 /**
  * \}
  */

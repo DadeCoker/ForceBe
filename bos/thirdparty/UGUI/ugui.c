@@ -1,14 +1,14 @@
 /* -------------------------------------------------------------------------------- */
-/* -- ÂµGUI - Generic GUI module (C)Achim DÃ¶bler, 2015                            -- */
+/* -- ç¢ŒGUI - Generic GUI module (C)Achim Dæžšbler, 2015                            -- */
 /* -------------------------------------------------------------------------------- */
-// ÂµGUI is a generic GUI module for embedded systems.
+// ç¢ŒGUI is a generic GUI module for embedded systems.
 // This is a free software that is open for education, research and commercial
 // developments under license policy of following terms.
 //
-//  Copyright (C) 2015, Achim DÃ¶bler, all rights reserved.
+//  Copyright (C) 2015, Achim Dæžšbler, all rights reserved.
 //  URL: http://www.embeddedlightning.com/
 //
-// * The ÂµGUI module is a free software and there is NO WARRANTY.
+// * The ç¢ŒGUI module is a free software and there is NO WARRANTY.
 // * No restriction on use. You can use, modify and redistribute it for
 //   personal, non-profit or commercial products UNDER YOUR RESPONSIBILITY.
 // * Redistributions of source code must retain the above copyright notice.
@@ -27,7 +27,7 @@
 // for giving valuable suggestions regarding real-time os support.
 //
 // Samuel Kleiser
-// for reporting bugs and giving examples how to improve ÂµGUI.
+// for reporting bugs and giving examples how to improve ç¢ŒGUI.
 /* -------------------------------------------------------------------------------- */
 /* -- REVISION HISTORY                                                           -- */
 /* -------------------------------------------------------------------------------- */
@@ -5342,14 +5342,14 @@ void _UG_PutChar( char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc, const 
 
    switch ( bt )
    {
-      case 0xF6: bt = 0x94; break; // ö
-      case 0xD6: bt = 0x99; break; // Ö
-      case 0xFC: bt = 0x81; break; // ü
-      case 0xDC: bt = 0x9A; break; // Ü
-      case 0xE4: bt = 0x84; break; // ä
-      case 0xC4: bt = 0x8E; break; // Ä
-      case 0xB5: bt = 0xE6; break; // µ
-      case 0xB0: bt = 0xF8; break; // °
+      case 0xF6: bt = 0x94; break; // ï¿½
+      case 0xD6: bt = 0x99; break; // ï¿½
+      case 0xFC: bt = 0x81; break; // ï¿½
+      case 0xDC: bt = 0x9A; break; // ï¿½
+      case 0xE4: bt = 0x84; break; // ï¿½
+      case 0xC4: bt = 0x8E; break; // ï¿½
+      case 0xB5: bt = 0xE6; break; // ï¿½
+      case 0xB0: bt = 0xF8; break; // ï¿½
    }
 
    if (bt < font->start_char || bt > font->end_char) return;

@@ -22,8 +22,8 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * Function: It is an head file for this library. You can see all of the functions which can be called by user.
- * Created on: 2016-04-23
+ * Function: It is an head file for this library. You can see all of the functions which can be
+ * called by user. Created on: 2016-04-23
  */
 
 #ifndef _SFUD_H_

@@ -49,15 +49,6 @@ extern "C" {
  */
 
 /**
- * \defgroup SORT_Exported_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup SORT_Exported_Defines
  * \{
  */
@@ -68,24 +59,6 @@ extern "C" {
 #define _ALGO_SORT_U16 3
 #define _ALGO_SORT_I32 4
 #define _ALGO_SORT_U32 5
-
-/**
- * \}
- */
-
-/**
- * \defgroup SORT_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup SORT_Exported_Variables
- * \{
- */
 
 /**
  * \}

@@ -6,21 +6,21 @@
  * @brief     [brief]
  * *****************************************************************************
  * @attention
- * 
+ *
  * MIT License
- * 
+ *
  * Copyright (C) 2019 Ji Youzhou
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,10 +32,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "ansi_port.h"
-#include "ansi.h"
+
 #include <stdio.h>
-#include "nr_micro_shell.h"
 #include <string.h>
+
+#include "ansi.h"
+#include "nr_micro_shell.h"
+
 
 #if _NR_MICRO_SHELL_ENABLE
 #include "b_hal.h"
@@ -70,7 +73,7 @@ void nr_ansi_ctrl_common_slover(ansi_st *ansi)
 void nr_ansi_in_enter(ansi_st *ansi)
 {
 #if NR_SHELL_END_OF_LINE == 1
-    ansi->p = -1;
+    ansi->p       = -1;
     ansi->counter = 0;
 
     nr_shell.cmd_his.index = (nr_shell.cmd_his.len > 0) ? 1 : 0;
@@ -86,7 +89,7 @@ void nr_ansi_in_enter(ansi_st *ansi)
 void nr_ansi_in_newline(ansi_st *ansi)
 {
 #if NR_SHELL_END_OF_LINE != 1
-    ansi->p = -1;
+    ansi->p       = -1;
     ansi->counter = 0;
 
     nr_shell.cmd_his.index = (nr_shell.cmd_his.len > 0) ? 1 : 0;
@@ -124,7 +127,8 @@ void nr_ansi_in_up(ansi_st *ansi)
     if (nr_shell.cmd_his.index > 0)
     {
         nr_shell.cmd_his.index++;
-        nr_shell.cmd_his.index = (nr_shell.cmd_his.index > nr_shell.cmd_his.len) ? 1 : nr_shell.cmd_his.index;
+        nr_shell.cmd_his.index =
+            (nr_shell.cmd_his.index > nr_shell.cmd_his.len) ? 1 : nr_shell.cmd_his.index;
 
 #if NR_SHLL_FULL_ANSI == 1
         shell_printf("\033[%dD", ansi->p + 1);
@@ -136,7 +140,7 @@ void nr_ansi_in_up(ansi_st *ansi)
 
         shell_his_copy_queue_item(&nr_shell.cmd_his, nr_shell.cmd_his.index, ansi->current_line);
         ansi->counter = strlen(ansi->current_line);
-        ansi->p = ansi->counter - 1;
+        ansi->p       = ansi->counter - 1;
 
         ansi_show_str(ansi->current_line, ansi->counter);
     }
@@ -148,7 +152,8 @@ void nr_ansi_in_down(ansi_st *ansi)
     if (nr_shell.cmd_his.index > 0)
     {
         nr_shell.cmd_his.index--;
-        nr_shell.cmd_his.index = (nr_shell.cmd_his.index == 0) ? nr_shell.cmd_his.len : nr_shell.cmd_his.index;
+        nr_shell.cmd_his.index =
+            (nr_shell.cmd_his.index == 0) ? nr_shell.cmd_his.len : nr_shell.cmd_his.index;
 
 #if NR_SHLL_FULL_ANSI == 1
         shell_printf("\033[%dD", ansi->p + 1);
@@ -160,7 +165,7 @@ void nr_ansi_in_down(ansi_st *ansi)
 
         shell_his_copy_queue_item(&nr_shell.cmd_his, nr_shell.cmd_his.index, ansi->current_line);
         ansi->counter = strlen(ansi->current_line);
-        ansi->p = ansi->counter - 1;
+        ansi->p       = ansi->counter - 1;
 
         ansi_show_str(ansi->current_line, ansi->counter);
     }
@@ -197,7 +202,7 @@ void nr_ansi_in_tab(ansi_st *ansi)
         if (ansi->counter == 0)
         {
             shell_printf("\r\n");
-            bSECTION_FOR_EACH(b_mod_shell, static_cmd_st, ptmp)  
+            bSECTION_FOR_EACH(b_mod_shell, static_cmd_st, ptmp)
             {
                 shell_printf(ptmp->cmd);
                 shell_printf("\r\n");
@@ -214,7 +219,7 @@ void nr_ansi_in_tab(ansi_st *ansi)
             shell_printf(nr_shell.user_name);
 #endif
             ansi->counter = strlen(cmd);
-            ansi->p = ansi->counter - 1;
+            ansi->p       = ansi->counter - 1;
             strcpy(ansi->current_line, cmd);
 
             ansi_show_str(ansi->current_line, ansi->counter);
@@ -225,6 +230,3 @@ void nr_ansi_in_tab(ansi_st *ansi)
 #endif
 
 /******************* (C) COPYRIGHT 2019 Ji Youzhou *****END OF FILE*****************/
-
-
-
