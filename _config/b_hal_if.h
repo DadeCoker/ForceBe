@@ -74,7 +74,9 @@
 // oled
 #define HAL_OLED_IF                                                                \
     {                                                                              \
-        ._if._i2c.is_simulation = 0, ._if._i2c._if.i2c = B_HAL_I2C_1, .is_spi = 0, \
+        ._if._i2c.dev_addr = 0x78, ._if._i2c.is_simulation = 1,                    \
+        ._if._i2c._if.simulating_i2c.sda = {B_HAL_GPIOA, B_HAL_PIN10},             \
+        ._if._i2c._if.simulating_i2c.clk = {B_HAL_GPIOA, B_HAL_PIN9}, .is_spi = 0, \
     }
 
 // ssd1289

@@ -50,25 +50,18 @@
 #define _MCU_PLATFORM 2001
 //</h>
 
-//<h> Utils Configuration
-//<q> Simulating IIC Enable/Disable
-#define _SIMULATING_IIC_ENABLE 1
-//<q> Simulating SPI Enable/Disable
-#define _SIMULATING_SPI_ENABLE 1
-//</h>
-
 //<h> Modules Configuration
 //<q> Algorithm Enable/Disable
-#define _BOS_ALGO_ENABLE 1
+#define _BOS_ALGO_ENABLE 0
 
 //<q> Modules Enable/Disable
-#define _BOS_MODULES_ENABLE 1
+#define _BOS_MODULES_ENABLE 0
 
 //<q> UTC2000 Enable/Disable
-#define _UTC2000_ENABLE 1
+#define _UTC2000_ENABLE 0
 
 //<q> Lunar Enable/Disable
-#define _LUNAR_ENABLE 1
+#define _LUNAR_ENABLE 0
 
 //<o> Debug level
 //<0=> off
@@ -78,7 +71,7 @@
 #define _DEBUG_ENABLE 1
 
 //<e> Battery Enable/Disable
-#define _BATTERY_ENABLE 1
+#define _BATTERY_ENABLE 0
 //<o> Battery Threshold (mv)
 #define BATTERY_THRESHOLD 3350
 //<o> Battery Detection Cycle (ms)
@@ -86,22 +79,22 @@
 //</e>
 
 //<e> Error Manage Enable/Disable
-#define _ERROR_MANAGE_ENABLE 1
+#define _ERROR_MANAGE_ENABLE 0
 //<o> Error Queue Length
 #define ERROR_Q_LENGTH 10
 //</e>
 
 //<q> Event Manage Enable/Disable
-#define _EVENT_MANAGE_ENABLE 1
+#define _EVENT_MANAGE_ENABLE 0
 
 //<e> Modbus Enable/Disable
-#define _MODBUS_ENABLE 1
+#define _MODBUS_ENABLE 0
 //<o> Modbus Buffer Size
 #define MODBUS_BUF_SIZE 200
 //</e>
 
 //<e> Protocol Enable/Disable
-#define _PROTO_ENABLE 1
+#define _PROTO_ENABLE 0
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
@@ -124,7 +117,7 @@
 //</e>
 
 //<e> Save Data Enable/Disable
-#define _SAVE_DATA_ENABLE 1
+#define _SAVE_DATA_ENABLE 0
 
 //<q> Save Data ClassA
 #define _SAVE_DATA_A_ENABLE 0
@@ -135,25 +128,25 @@
 //</e>
 
 //<q> KV Enable/Disable
-#define _KV_ENABLE 1
+#define _KV_ENABLE 0
 
 //<q> FIFO Enable/Disable
-#define _FIFO_ENABLE 1
+#define _FIFO_ENABLE 0
 
 //<q> XMODEM128 Enable/Disable
-#define _XMODEM128_ENABLE 1
+#define _XMODEM128_ENABLE 0
 
 //<q> YMODEM Enable/Disable
-#define _YMODEM_ENABLE 1
+#define _YMODEM_ENABLE 0
 
 //<e> Menu Enable/Disable
-#define _MENU_ENABLE 1
+#define _MENU_ENABLE 0
 //<o> Menu Item Number
 #define MENU_ITEM_NUMBER 10
 //</e>
 
 //<e> Heap4 Enable/Disable
-#define _HEAP_ENABLE 1
+#define _HEAP_ENABLE 0
 //<o> Heap Size
 #define HEAP_SIZE 1024
 //<e> External SDRAM ?
@@ -164,17 +157,17 @@
 //</e>
 
 //<q> Soft-timer Enable/Disable
-#define _TIMER_ENABLE 1
+#define _TIMER_ENABLE 0
 
 //<q> Tuning Parameters Enable/Disable
-#define _PARAM_ENABLE 1
+#define _PARAM_ENABLE 0
 
 //</h>
 
 //<h> Third Party Configuration
 
 //<e> NR Micro Shell Enable/Disable
-#define _NR_MICRO_SHELL_ENABLE 1
+#define _NR_MICRO_SHELL_ENABLE 0
 
 //<s> The user's name
 #define NR_SHELL_USER_NAME "nr@bos:"
@@ -215,7 +208,7 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE 1
+#define _FLEXIBLEBUTTON_ENABLE 0
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ 50
 //<o> Number of Buttons
@@ -229,7 +222,7 @@
 //</e>
 
 //<e> UGUI Enable/Disable
-#define _UGUI_ENABLE 1
+#define _UGUI_ENABLE 0
 //<o> X PHYSICAL SIZE
 #define LCD_X_SIZE 240
 //<o> Y PHYSICAL SIZE
@@ -281,7 +274,7 @@
 //</e>
 
 //<e> FS Enable/Disable
-#define _FS_ENABLE 1
+#define _FS_ENABLE 0
 
 //<q> bFS_Test() Enable/Disable
 #define _FS_TEST_ENABLE 1
