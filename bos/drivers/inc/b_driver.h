@@ -79,20 +79,6 @@ typedef struct bDriverIf
 typedef int (*pbDriverInit_t)(void);
 
 //-----------------------------------------------------
-// Camera
-typedef struct
-{
-    uint8_t config_val;
-} bCameraCfg_t;
-
-typedef struct
-{
-    uint16_t xoff;
-    uint16_t yoff;
-    uint16_t xsize;
-    uint16_t ysize;
-} bCameraOutsize_t;
-
 // Flash
 typedef struct
 {
