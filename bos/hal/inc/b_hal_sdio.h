@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_hal.h
+ * \file        b_hal_sdio.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,102 +21,68 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SSPIL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_H__
-#define __B_HAL_H__
+#ifndef __B_HAL_SDIO_H__
+#define __B_HAL_SDIO_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#include "b_hal_flash.h"
-#include "b_hal_gpio.h"
-#include "b_hal_i2c.h"
-#include "b_hal_if.h"
-#include "b_hal_it.h"
-#include "b_hal_spi.h"
-#include "b_hal_qspi.h"
-#include "b_hal_uart.h"
-#include "b_hal_sdio.h"
+#include <stdint.h>
+
 /**
  * \addtogroup B_HAL
  * \{
  */
 
 /**
- * \addtogroup HAL
+ * \addtogroup SDIO
  * \{
  */
 
 /**
- * \defgroup HAL_Exported_TypesDefinitions
+ * \defgroup SDIO_Exported_TypesDefinitions
  * \{
  */
-
-typedef struct
+typedef enum
 {
-    union
-    {
-        uint32_t rw_addr;
-        struct
-        {
-            bHalGPIOInstance_t data;
-            bHalGPIOInstance_t rs;
-            bHalGPIOInstance_t rd;
-            bHalGPIOInstance_t wr;
-            bHalGPIOInstance_t cs;
-        } _io;
-        struct
-        {
-            bHalGPIOInstance_t rs;
-            bHalSPIIf_t        _spi;
-        } _spi;
-    } _if;
-    uint8_t if_type;  // 0: _io  1: rw_addr  2: _spi
-} bLCD_HalIf_t;
-
-#define LCD_IF_TYPE_IO (0)
-#define LCD_IF_TYPE_RWADDR (1)
-#define LCD_IF_TYPE_SPI (2)
+    B_HAL_SDIO_1,
+    B_HAL_SDIO_INVALID,
+} bHalSDIONumber_t;
 
 /**
  * \}
  */
 
 /**
- * \defgroup HAL_Exported_Defines
+ * \defgroup SDIO_Exported_Definitions
  * \{
  */
-#define MS2TICKS(m) (m / (1000 / TICK_FRQ_HZ))
-
-#if _HALIF_VARIABLE_ENABLE
-#define HALIF_KEYWORD static
-#else
-#define HALIF_KEYWORD const static
-#endif
 
 /**
  * \}
  */
 
 /**
- * \defgroup HAL_Exported_Functions
+ * \defgroup SDIO_Exported_Functions
  * \{
  */
-void     bHalIncSysTick(void);
-void     bHalInit(void);
-void     bHalDelayMs(uint16_t xms);
-void     bHalDelayUs(uint32_t xus);
-uint32_t bHalGetSysTick(void);
-
+int bMcuSDIOReadBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
+int bMcuSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
+int bMcuSDIOErase(const bHalSDIONumber_t sd, uint32_t addr, uint32_t xblocks);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+int bHalSDIOReadBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
+int bHalSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
+int bHalSDIOErase(const bHalSDIONumber_t sd, uint32_t addr, uint32_t xblocks);
 /**
  * \}
  */
@@ -135,4 +101,4 @@ uint32_t bHalGetSysTick(void);
 
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
