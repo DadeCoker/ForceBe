@@ -143,7 +143,7 @@
 //<o> Size of The Len Field
 //<1=> 1Byte
 //<2=> 2Bytes
-#define PROTO_FLEN_SIZE 1
+#define PROTO_FLEN_SIZE 2
 //<e> Encrypt Enable/Disable
 #define _PROTO_ENCRYPT_ENABLE 0
 //<o> Secret Key 1

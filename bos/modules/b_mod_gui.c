@@ -260,14 +260,15 @@ int bGUIRegist(bGUIInstance_t *pInstance)
     {
         return -1;
     }
-    if (pInstance->touch_type != TOUCH_TYPE_RES && pInstance->touch_type != TOUCH_TYPE_CAP)
+    if ((pInstance->touch_type != TOUCH_TYPE_RES && pInstance->touch_type != TOUCH_TYPE_CAP) &&
+        pInstance->touch_dev_no != 0)
     {
         return -2;
     }
     if (pGUIHead == NULL)
     {
-        pGUIHead         = pInstance;
-        pGUIHead->pnext  = NULL;
+        pGUIHead        = pInstance;
+        pGUIHead->pnext = NULL;
     }
     else
     {

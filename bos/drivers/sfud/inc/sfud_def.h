@@ -298,7 +298,7 @@ typedef struct __sfud_spi
  */
 typedef struct
 {
-    char *name; /**< serial flash name */
+    const char *name; /**< serial flash name */
 
     size_t          index;   /**< index of flash device information table  @see flash_table */
     sfud_flash_chip chip;    /**< flash chip information */
