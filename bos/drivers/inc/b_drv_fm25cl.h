@@ -57,7 +57,7 @@ extern "C" {
  * \defgroup FM25CL_Exported_TypesDefinitions
  * \{
  */
-
+//<HALIF 1 SPI
 typedef bHalSPIIf_t bFM25CL_HalIf_t;
 
 typedef bDriverInterface_t bFM25CL_Driver_t;

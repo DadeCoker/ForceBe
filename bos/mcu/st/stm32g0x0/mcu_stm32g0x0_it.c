@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_drv_oled.h
+ * \file        mcu_stm32f10x_it.c
  * \version     v0.0.1
- * \date        2020/03/02
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,74 +21,35 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SUARTL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_OLED_H__
-#define __B_DRV_OLED_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*Includes ----------------------------------------------*/
-#include "drivers/inc/b_driver.h"
+#include "b_config.h"
+#include "hal/inc/b_hal_it.h"
 
-/**
- * \addtogroup BABYOS
- * \{
- */
+#if (_MCU_PLATFORM == 1101 || _MCU_PLATFORM == 1102 || _MCU_PLATFORM == 1103)
 
-/**
- * \addtogroup B_DRIVER
- * \{
- */
-
-/**
- * \addtogroup OLED
- * \{
- */
-
-/**
- * \defgroup OLED_Exported_TypesDefinitions
- * \{
- */
-//<HALIF 2 SPI_I2C
-typedef struct
+static void _IntEnable()
 {
-    union
-    {
-        bHalI2CIf_t _i2c;
-        bHalSPIIf_t _spi;
-    } _if;
-    uint8_t is_spi;
-} bOLED_HalIf_t;
-
-typedef bDriverInterface_t bOLED_Driver_t;
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#ifdef __cplusplus
+    ;
 }
-#endif
+
+static void _IntDisable()
+{
+    ;
+}
+
+bHalITDriver_t bHalITDriver = {
+    .pIntEnable  = _IntEnable,
+    .pIntDisable = _IntDisable,
+};
 
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/

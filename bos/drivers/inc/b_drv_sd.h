@@ -51,6 +51,7 @@ extern "C" {
  * \defgroup SD_Exported_TypesDefinitions
  * \{
  */
+//<HALIF 1 SPI
 typedef bHalSPIIf_t bSD_HalIf_t;
 
 typedef bDriverInterface_t bSD_Driver_t;

@@ -35,9 +35,9 @@
 
 //<h> Version Configuration
 //<o> Hardware version
-#define HW_VERSION 211031
+#define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70200
+#define FW_VERSION 70300
 //</h>
 
 //<h> Platform Configuration
@@ -48,6 +48,9 @@
 //<1002=> STM32F10X_MD
 //<1003=> STM32F10X_HD
 //<1004=> STM32F10X_CL
+//<1101=> STM32G030
+//<1102=> STM32G070
+//<1103=> STM32G0B0
 //<2001=> NATION_F40X
 //<3001=> MM32SPIN2X
 //<4001=> HC32L13X
@@ -161,6 +164,9 @@
 //<q> Soft-timer Enable/Disable
 #define _TIMER_ENABLE 0
 
+//<q> Soft-pwm Enable/Disable
+#define _PWM_ENABLE 0
+
 //<q> Tuning Parameters Enable/Disable
 #define _PARAM_ENABLE 0
 
@@ -190,8 +196,6 @@
 //<o> ANSI command line buffer size
 #define NR_ANSI_LINE_SIZE 100
 
-#define NR_SHELL_CMD_LINE_MAX_LENGTH NR_ANSI_LINE_SIZE
-
 //<o> Maximum username length
 #define NR_SHELL_USER_NAME_MAX_LENGTH 30
 
@@ -217,9 +221,6 @@
 //<q> Echo enable/disable
 #define NR_SHELL_ECHO_ENABLE 1
 
-#if _DEBUG_ENABLE
-#define shell_printf(fmt, args...) b_log(fmt, ##args);
-#endif
 //</e>
 
 //<e> FlexibleButton Enable/Disable

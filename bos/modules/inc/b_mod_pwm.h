@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_drv_oled.h
+ * \file        b_mod_pwm.h
  * \version     v0.0.1
- * \date        2020/03/02
+ * \date        2020/05/16
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -28,15 +28,19 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_OLED_H__
-#define __B_DRV_OLED_H__
+#ifndef __B_MOD_PWM_H__
+#define __B_MOD_PWM_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "drivers/inc/b_driver.h"
+#include <stdint.h>
+
+#include "b_config.h"
+
+#if _PWM_ENABLE
 
 /**
  * \addtogroup BABYOS
@@ -44,31 +48,61 @@ extern "C" {
  */
 
 /**
- * \addtogroup B_DRIVER
+ * \addtogroup MODULES
  * \{
  */
 
 /**
- * \addtogroup OLED
+ * \addtogroup PWM
  * \{
  */
 
 /**
- * \defgroup OLED_Exported_TypesDefinitions
+ * \defgroup PWM_Exported_TypesDefinitions
  * \{
  */
-//<HALIF 2 SPI_I2C
-typedef struct
+
+typedef void (*pPwmHandler)(void);
+
+typedef struct bSoftPwmStruct
 {
-    union
-    {
-        bHalI2CIf_t _i2c;
-        bHalSPIIf_t _spi;
-    } _if;
-    uint8_t is_spi;
-} bOLED_HalIf_t;
+    uint8_t                  repeat;		//0 一直重复			
+    uint32_t                 tick;
+    uint32_t                 period;
+	uint32_t                 ccr;
+    pPwmHandler            	handler1;
+	pPwmHandler            	handler2;
+    struct bSoftPwmStruct *next;
+} bSoftPwmStruct_t;
 
-typedef bDriverInterface_t bOLED_Driver_t;
+typedef bSoftPwmStruct_t bSoftPwmInstance_t;
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup PWM_Exported_Defines
+ * \{
+ */
+
+#define bPWM_INSTANCE(name, _period, _ccr, _repeat) \
+    bSoftPwmInstance_t name = {.period = _period,.ccr = _ccr, .repeat = _repeat};
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup PWM_Exported_Functions
+ * \{
+ */
+///< pPWMInstance \ref bPWM_INSTANCE
+int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler1, pPwmHandler handler2);
+int bSoftPwmStop(bSoftPwmInstance_t *pPwmInstance);
+int bSoftPwmReset(bSoftPwmInstance_t *pPwmInstance);
+int bSoftPwmSetPeriod(bSoftPwmInstance_t *pPwmInstance, uint32_t ms);
+int bSoftPwmSetCcr(bSoftPwmInstance_t *pPwmInstance, uint32_t ms);
 /**
  * \}
  */
@@ -84,6 +118,8 @@ typedef bDriverInterface_t bOLED_Driver_t;
 /**
  * \}
  */
+
+#endif
 
 #ifdef __cplusplus
 }
@@ -91,4 +127,4 @@ typedef bDriverInterface_t bOLED_Driver_t;
 
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/

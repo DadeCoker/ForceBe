@@ -34,12 +34,13 @@
 #include "hal/inc/b_hal_spi.h"
 #include "utils/inc/b_util_spi.h"
 
-#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
-     _MCU_PLATFORM == 1004)
+#if (_MCU_PLATFORM == 1101 || _MCU_PLATFORM == 1102 || _MCU_PLATFORM == 1103)
 
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
+
+#include "stm32g0xx_hal.h"
 
 //         Register Address
 
@@ -75,6 +76,8 @@ typedef struct
 
 static McuSpiReg_t *SpiTable[3] = {MCU_SPI1, MCU_SPI2, MCU_SPI3};
 
+extern SPI_HandleTypeDef hspi1;
+
 static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {
     uint16_t     SpeedVal = 1;
@@ -91,6 +94,7 @@ static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
     {
         return -1;
     }
+
     pSpi = SpiTable[spi_if->_if.spi];
     while (pSpi->SR & 0x80)
     {
@@ -103,10 +107,8 @@ static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 
 static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    int          i = 0;
-    uint8_t      tmp;
-    bUtilSPI_t   simulating_spi;
-    McuSpiReg_t *pSpi = NULL;
+    uint8_t    tmp;
+    bUtilSPI_t simulating_spi;
     if (IS_NULL(spi_if))
     {
         return 0;
@@ -126,20 +128,17 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
         {
             return 0;
         }
-        pSpi = SpiTable[spi_if->_if.spi];
-        while ((pSpi->SR & 0x02) == 0)
+        switch (spi_if->_if.spi)
         {
-            ;
-        }
-        pSpi->DR = dat;
-        while ((pSpi->SR & 0x01) == 0)
-        {
-            ;
-        }
-        tmp = pSpi->DR;
-        for (i = 0; i < 8; i++)
-        {
-            ;
+            case B_HAL_SPI_1:
+                HAL_SPI_TransmitReceive(&hspi1, &dat, &tmp, 1, 0xff);
+                break;
+            case B_HAL_SPI_2:
+
+                break;
+
+            default:
+                break;
         }
     }
     return tmp;

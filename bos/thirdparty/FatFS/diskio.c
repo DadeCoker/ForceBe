@@ -92,7 +92,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
         {
             // translate the arguments here
 
-            fd = bOpen(SD, BCORE_FLAG_RW);
+            fd = bOpen(bSD, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 bLseek(fd, sector);
@@ -170,7 +170,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
         {
             // translate the arguments here
 
-            fd = bOpen(SD, BCORE_FLAG_RW);
+            fd = bOpen(bSD, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 bLseek(fd, sector);
@@ -207,8 +207,9 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
     DRESULT res = RES_OK;
     switch (pdrv)
     {
+#if _SPIFLASH_ENABLE         
         case DEV_SPIFLASH:
-        {
+        {           
             int fd = -1;
             fd     = bOpen(SPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
@@ -240,7 +241,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
             // Process of the command for the RAM drive
             return res;
         }
-
+#endif
         case DEV_SDCARD:
             switch (cmd)
             {

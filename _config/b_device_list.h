@@ -32,7 +32,7 @@
 /**
            for example !
 
-/////B_DEVICE_REG(dev, driver_interface, desc);
+/////B_DEVICE_REG(dev, driver_interface, desc)
  */
 
 // B_DEVICE_REG(SSD1289, bSSD1289_Driver, "lcd")
