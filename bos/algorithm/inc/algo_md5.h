@@ -56,8 +56,13 @@ extern "C" {
  * \{
  */
 
+// 结果未小写的字符串
 void md5_16(uint8_t* input, uint32_t ilen, uint8_t output[16]);
 void md5_32(uint8_t* input, uint32_t ilen, uint8_t output[32]);
+
+// 结果为十六进制数组
+void md5_hex_8(uint8_t* input, uint32_t ilen, uint8_t output[8]);
+void md5_hex_16(uint8_t* input, uint32_t ilen, uint8_t output[16]);
 
 /**
  * \}

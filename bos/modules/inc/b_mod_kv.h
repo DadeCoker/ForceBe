@@ -40,6 +40,8 @@ extern "C" {
 
 #include "b_config.h"
 
+#define _KV_ENABLE 1
+
 #if (defined(_KV_ENABLE) && (_KV_ENABLE == 1))
 
 /**
@@ -58,9 +60,31 @@ extern "C" {
  */
 
 /**
+ * \defgroup KV_Exported_Typedefines
+ * \{
+ */
+typedef struct
+{
+    const uint32_t dev;
+    const uint32_t address;
+    const uint32_t total_size;
+    uint32_t       erase_size;
+    uint32_t       write_index;
+} bKVStruct_t;
+
+typedef bKVStruct_t bKVInstance_t;
+
+/**
+ * \}
+ */
+
+/**
  * \defgroup KV_Exported_Defines
  * \{
  */
+
+#define bKV_INSTANCE(name, dev_no, addr, size) \
+    bKVInstance_t name = {.dev = dev_no, .address = addr, .total_size = size, erase_size = 0};
 
 /**
  * \}
@@ -70,7 +94,7 @@ extern "C" {
  * \defgroup KV_Exported_Functions
  * \{
  */
-
+int bKVInit(bKVInstance_t *pinstance);
 /**
  * \}
  */

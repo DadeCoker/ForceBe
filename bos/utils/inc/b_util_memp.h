@@ -79,9 +79,11 @@ typedef struct bMempList
  */
 void *bMalloc(uint32_t size);
 void  bFree(void *paddr);
+
 #if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
 void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo);
 #endif
+
 int bMempListInit(bMempList_t *phead);
 int bMempListAdd(bMempList_t *phead, uint8_t *p, uint32_t len);
 int bMempListFree(bMempList_t *phead);

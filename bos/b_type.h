@@ -87,6 +87,8 @@ extern "C" {
 #define __WEAKDEF __attribute__((weak))
 #endif
 
+#define B_SIZE_ALIGNMENT(size, align) (((size) + (align)-1) & ~((align)-1))
+
 /**
  * \}
  */

@@ -369,6 +369,29 @@ void md5_32(uint8_t* input, uint32_t ilen, uint8_t output[32])
     }
 }
 
+void md5_hex_16(uint8_t* input, uint32_t ilen, uint8_t output[16])
+{
+    if (input == NULL || ilen == 0)
+    {
+        return;
+    }
+    md5(input, ilen, output);
+}
+
+void md5_hex_8(uint8_t* input, uint32_t ilen, uint8_t output[8])
+{
+    uint8_t out[16], i = 0;
+    if (input == NULL || ilen == 0)
+    {
+        return;
+    }
+    md5(input, ilen, out);
+    for (i = 0; i < 8; i++)
+    {
+        output[i] = out[4 + i];
+    }
+}
+
 /**
  * \}
  */
