@@ -44,8 +44,8 @@
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ 1000
 //<o> MCU Platform
-//<1001=> STM32 STD
-//<1002=> STM32 HAL
+//<1001=> STM32F10X STD
+//<1002=> STM32F1XX HAL
 //<2001=> NATION_F40X
 #define _MCU_PLATFORM 2001
 //</h>
