@@ -81,6 +81,13 @@ typedef struct
     volatile uint32_t tick;
 } bAtInfo_t;
 
+typedef struct CbInfo
+{
+    bAtCallback_t  cb;
+    void          *arg;
+    struct CbInfo *next;
+} bAtCbInfo_t;
+
 /**
  * \}
  */
@@ -111,11 +118,11 @@ typedef struct
  * \defgroup AT_Private_Variables
  * \{
  */
-static bAtQueue_t    bAtQueue[AT_Q_LEN];
-static bAtStat_t     bAtStat[AT_STAT_LEN];
-static bAtInfo_t     bAtInfo;
-static uint8_t       bAtInitFlag = 0;
-static bAtCallback_t bAtCallback[AT_CALLBACK_NUMBER];
+static bAtQueue_t  bAtQueue[AT_Q_LEN];
+static bAtStat_t   bAtStat[AT_STAT_LEN];
+static bAtInfo_t   bAtInfo;
+static uint8_t     bAtInitFlag   = 0;
+static bAtCbInfo_t bAtCbInfoHead = {.next = NULL};
 /**
  * \}
  */
@@ -154,7 +161,8 @@ static void _bAtRetry()
 static void _bAtNextCommand(uint8_t id, uint8_t sta)
 {
 
-    int i = 0;
+    int          i     = 0;
+    bAtCbInfo_t *pinfo = bAtCbInfoHead.next;
     for (i = 0; i < AT_STAT_LEN; i++)
     {
         if (bAtStat[i].id == id)
@@ -173,12 +181,11 @@ static void _bAtNextCommand(uint8_t id, uint8_t sta)
     {
         bAtInfo.tail_index = AT_INDEX_INVALID;
     }
-    for (i = 0; i < AT_CALLBACK_NUMBER; i++)
+
+    while (pinfo != NULL)
     {
-        if (bAtCallback[i] != NULL)
-        {
-            bAtCallback[i](id, sta);
-        }
+        pinfo->cb(id, sta, pinfo->arg);
+        pinfo = pinfo->next;
     }
 }
 
@@ -191,8 +198,8 @@ static void _bAtNextCommand(uint8_t id, uint8_t sta)
  * \{
  */
 
-int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len, uint8_t uart,
-               uint32_t timeout)
+int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len,
+               uint8_t uart, uint32_t timeout)
 {
     int retval = -1;
 
@@ -278,28 +285,25 @@ int bAtFeedRespData(uint8_t *pbuf, uint16_t len)
     return 0;
 }
 
-int bAtRegistCallback(bAtCallback_t cb)
+int bAtRegistCallback(bAtCallback_t cb, void *arg)
 {
-    static uint8_t init_f = 0;
-    int            i      = 0;
-    if (init_f == 0)
-    {
-        init_f = 1;
-        memset(bAtCallback, 0, sizeof(bAtCallback));
-    }
+    int          i     = 0;
+    bAtCbInfo_t *pinfo = NULL;
     if (cb == NULL)
     {
         return -1;
     }
-    for (i = 0; i < AT_CALLBACK_NUMBER; i++)
+
+    pinfo = (bAtCbInfo_t *)bMalloc(sizeof(bAtCbInfo_t));
+    if (pinfo == NULL)
     {
-        if (bAtCallback[i] == NULL)
-        {
-            bAtCallback[i] = cb;
-            return 0;
-        }
+        return -2;
     }
-    return -2;
+    pinfo->cb          = cb;
+    pinfo->arg         = arg;
+    pinfo->next        = bAtCbInfoHead.next;
+    bAtCbInfoHead.next = pinfo;
+    return 0;
 }
 
 void bAtPolling()

@@ -59,6 +59,34 @@ extern "C" {
  */
 //<HALIF 1 UART
 typedef bHalUartNumber_t bESP12F_HalIf_t;
+
+typedef struct
+{
+    const uint8_t *plist;
+    uint8_t        index;
+    uint8_t        list_len;
+    uint8_t        at_id;
+    uint8_t        cmd;
+} bEsp12fOptInfo_t;
+
+#define ESP12F_REC_BUF_LEN (1536)
+typedef struct
+{
+    bUitlUartInstance_t uart;
+    uint8_t             rec_buf[ESP12F_REC_BUF_LEN];
+    bEsp12fOptInfo_t    opt;
+    void               *opt_param;
+    bWiFiData_t         wifi_rec_data;
+    bMempList_t         tcp_data_list;
+    struct
+    {
+        uint8_t mux_enable;
+        uint8_t conn_id; /* data */
+    } cfg;
+    uint8_t lock;
+    uint8_t result;
+} bEsp12fPrivate_t;
+
 /**
  * \}
  */
@@ -67,11 +95,9 @@ typedef bHalUartNumber_t bESP12F_HalIf_t;
  * \defgroup ESP12F_Exported_Definitions
  * \{
  */
-#define ESP_CMD_RETRY (2)
-
-#define ESP_CMD_RESULT_NULL (0)
-#define ESP_CMD_RESULT_OK (1)
-#define ESP_CMD_RESULT_ERR (2)
+#define ESP12F_CMD_RESULT_NULL (0)
+#define ESP12F_CMD_RESULT_OK (1)
+#define ESP12F_CMD_RESULT_ERR (2)
 /**
  * \}
  */

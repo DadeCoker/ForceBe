@@ -53,7 +53,7 @@ extern "C" {
  * \{
  */
 
-typedef int (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len);
+typedef int (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len, void *arg);
 
 typedef struct UtilUart
 {
@@ -62,6 +62,7 @@ typedef struct UtilUart
     volatile uint16_t    index;
     uint32_t             idle_thd_ms;
     pbUartIdleCallback_t callback;
+    void                *cb_arg;
     uint32_t             l_tick;
     uint32_t             l_index;
     struct UtilUart     *next;
@@ -78,18 +79,19 @@ typedef bUitlUart_t bUitlUartInstance_t;
  * \defgroup UART_Exported_Defines
  * \{
  */
-#define bUTIL_UART_INSTANCE(name, buf_len, idle_ms, cb) \
-    static uint8_t      Buf##name[buf_len];             \
-    bUitlUartInstance_t name = {                        \
-        .pbuf        = Buf##name,                       \
-        .buf_size    = buf_len,                         \
-        .idle_thd_ms = idle_ms,                         \
-        .callback    = cb,                              \
-        .index       = 0,                               \
-        .l_tick      = 0,                               \
-        .l_index     = 0,                               \
-        .prev        = NULL,                            \
-        .next        = NULL,                            \
+#define bUTIL_UART_INSTANCE(name, buf_len, idle_ms, cb, arg) \
+    static uint8_t      Buf##name[buf_len];                  \
+    bUitlUartInstance_t name = {                             \
+        .pbuf        = Buf##name,                            \
+        .buf_size    = buf_len,                              \
+        .idle_thd_ms = idle_ms,                              \
+        .callback    = cb,                                   \
+        .cb_arg      = arg,                                  \
+        .index       = 0,                                    \
+        .l_tick      = 0,                                    \
+        .l_index     = 0,                                    \
+        .prev        = NULL,                                 \
+        .next        = NULL,                                 \
     }
 
 /**
@@ -100,7 +102,13 @@ typedef bUitlUart_t bUitlUartInstance_t;
  * \defgroup UART_Exported_Functions
  * \{
  */
+//    初始化用户定义的bUitlUartInstance_t（没有使用bUTIL_UART_INSTANCE去定义实例的情况）
+void bUtilUartInitStruct(bUitlUartInstance_t *pinstance, uint8_t *pbuf, uint16_t size,
+                         uint32_t idle_ms, pbUartIdleCallback_t cb, void *arg);
+
+//    将串口号绑定到已有实例，绑定后可以用 bUtilUartRxHandler2和bUtilUartReceivedSize2
 void bUtilUartBind(uint8_t uart_no, bUitlUartInstance_t *pinstance);
+
 //    bUtilUartRxHandler 和 bUtilUartRxHandler2 效果是一样
 //    但是，只有通过bUtilUartBind绑定串口号，才能调用bUtilUartRxHandler2
 void bUtilUartRxHandler(bUitlUartInstance_t *pinstance, uint8_t dat);

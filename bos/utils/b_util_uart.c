@@ -249,6 +249,25 @@ uint16_t bUtilUartReceivedSize2(uint8_t uart_no)
     return pUtilUartBindTable[uart_no]->index;
 }
 
+void bUtilUartInitStruct(bUitlUartInstance_t *pinstance, uint8_t *pbuf, uint16_t size,
+                         uint32_t idle_ms, pbUartIdleCallback_t cb, void *arg)
+{
+    if (pinstance == NULL || pbuf == NULL || cb == NULL)
+    {
+        return;
+    }
+    pinstance->pbuf        = pbuf;
+    pinstance->buf_size    = size;
+    pinstance->idle_thd_ms = idle_ms;
+    pinstance->callback    = cb;
+    pinstance->cb_arg      = arg;
+    pinstance->index       = 0;
+    pinstance->l_tick      = 0;
+    pinstance->l_index     = 0;
+    pinstance->prev        = NULL;
+    pinstance->next        = NULL;
+}
+
 /**
  * \}
  */

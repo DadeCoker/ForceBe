@@ -57,7 +57,7 @@ extern "C" {
  * \defgroup AT_Exported_TypesDefinitions
  * \{
  */
-typedef void (*bAtCallback_t)(uint8_t id, uint8_t result);
+typedef void (*bAtCallback_t)(uint8_t id, uint8_t result, void *arg);
 /**
  * \}
  */
@@ -81,10 +81,10 @@ typedef void (*bAtCallback_t)(uint8_t id, uint8_t result);
  * \{
  */
 int bAtGetStat(uint8_t id);
-int bAtRegistCallback(bAtCallback_t cb);
+int bAtRegistCallback(bAtCallback_t cb, void *arg);
 int bAtFeedRespData(uint8_t *pbuf, uint16_t len);
-int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len, uint8_t uart,
-               uint32_t timeout);
+int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len,
+               uint8_t uart, uint32_t timeout);
 /**
  * \}
  */

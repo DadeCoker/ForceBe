@@ -93,8 +93,6 @@
 #define AT_Q_LEN 3
 //<o> AT Command Retry Count
 #define AT_RETRY_COUNT 2
-//<o> AT Callback Number
-#define AT_CALLBACK_NUMBER 2
 //</e>
 
 //</h>

@@ -117,23 +117,25 @@ typedef struct
  */
 #define _bDRIVER_HALIF_TABLE(halif_type, drv_name) \
     HALIF_KEYWORD halif_type bHalIf_##drv_name[] = {HAL_##drv_name##_IF}
-#define bDRIVER_HALIF_TABLE(halif_type, drv_name) _bDRIVER_HALIF_TABLE(halif_type, drv_name)
-
 #define _bDRIVER_HALIF_INSTANCE(drv_name, drv_no) (void *)&bHalIf_##drv_name[drv_no]
-#define bDRIVER_HALIF_INSTANCE(drv_name, drv_no) _bDRIVER_HALIF_INSTANCE(drv_name, drv_no)
+#define _bDRIVER_HALIF_NUM(halif_type, drv_name) (sizeof(bHalIf_##drv_name) / sizeof(halif_type))
 
-#define _bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f)                         \
-    do                                                                       \
-    {                                                                        \
-        pdrv->status     = 0;                                                \
-        pdrv->init       = init_f;                                           \
-        pdrv->open       = NULL;                                             \
-        pdrv->close      = NULL;                                             \
-        pdrv->ctl        = NULL;                                             \
-        pdrv->write      = NULL;                                             \
-        pdrv->read       = NULL;                                             \
+#define bDRIVER_HALIF_TABLE(halif_type, drv_name) _bDRIVER_HALIF_TABLE(halif_type, drv_name)
+#define bDRIVER_HALIF_INSTANCE(drv_name, drv_no) _bDRIVER_HALIF_INSTANCE(drv_name, drv_no)
+#define bDRIVER_HALIF_NUM(halif_type, drv_name) _bDRIVER_HALIF_NUM(halif_type, drv_name)
+
+#define _bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f)                        \
+    do                                                                      \
+    {                                                                       \
+        pdrv->status     = 0;                                               \
+        pdrv->init       = init_f;                                          \
+        pdrv->open       = NULL;                                            \
+        pdrv->close      = NULL;                                            \
+        pdrv->ctl        = NULL;                                            \
+        pdrv->write      = NULL;                                            \
+        pdrv->read       = NULL;                                            \
         pdrv->hal_if     = _bDRIVER_HALIF_INSTANCE(drv_name, pdrv->drv_no); \
-        pdrv->_private.v = 0;                                                \
+        pdrv->_private.v = 0;                                               \
     } while (0)
 #define bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f) _bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f)
 
