@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/V7.3.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/V7.4.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -122,9 +122,9 @@ Include头文件 `b_os.h`
 
 可以由配置工具生成如下代码。
 
-配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2
+配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/
 
-![](https://images.gitee.com/uploads/images/2021/1212/020923_ec27eb55_1789704.png)
+![](https://gitee.com/notrynohigh/bconfig-tool/raw/master/doc/1.png)
 
 加入drivers内文件至工程后，则需要配置驱动的接口：`b_hal_if.h`
 
@@ -200,7 +200,7 @@ boot:1819043356
 
 # 5 BabyOS教程
 
-教程的代码仓库中不同分支对应着不同实验【基于STM32F107CV、小熊派STM32L431RC等】：
+教程的代码仓库中不同分支对应着不同实验：
 
 <https://gitee.com/notrynohigh/BabyOS_Example>  
 
@@ -210,7 +210,7 @@ BabyOS私有协议上位机Demo：
 
 BabyOS配置工具：
 
-[https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2](https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2) 
+[https://gitee.com/notrynohigh/bconfig-tool/releases/
 
 
 
@@ -287,4 +287,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2022.02 | 调整结构，使得依赖关系更加合理。                             |      |
 | 2022.03 | 增加cjson第三方代码，并配上内存池。修改b_config.h中宏的命名以及文件夹、文件命名。 |      |
 | 2022.04 | 增加WIFI模块驱动，增加获取驱动私有信息的接口，增加QSPI       |      |
+| 2022.05 | 重写配置工具                                                 |      |
 
