@@ -89,8 +89,18 @@ typedef struct
  * \{
  */
 #if _MATRIXKEY_ENABLE
+
+#if (MATRIXKEY_ROWS == 0 || MATRIXKEY_COLUMNS == 0)
+#error ROWS and COLUMNS Must be greater than zero
+#endif
+
 #define BUTTON_NUM (FLEX_BTN_NUMBER + ((MATRIXKEY_ROWS) * (MATRIXKEY_COLUMNS)))
 #else
+
+#if (FLEX_BTN_NUMBER == 0)
+#error FLEX_BTN_NUMBER Must be greater than zero
+#endif
+
 #define BUTTON_NUM (FLEX_BTN_NUMBER)
 #endif
 /**
@@ -112,7 +122,11 @@ typedef struct
  */
 static flex_button_t       bButtonList[BUTTON_NUM];
 static bButtonEventInfo_t  bButtonEventInfo[BUTTON_NUM];
+
+#if (FLEX_BTN_NUMBER > 0)
 const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
+#endif
+
 #if _MATRIXKEY_ENABLE
 const static bMatrixKeyInfo_t bMatrixKeyInfo = HAL_B_MATRIXKEY_GPIO;
 #endif
@@ -133,12 +147,13 @@ const static bMatrixKeyInfo_t bMatrixKeyInfo = HAL_B_MATRIXKEY_GPIO;
  * \defgroup BUTTON_Private_Functions
  * \{
  */
-
+#if (FLEX_BTN_NUMBER > 0) 
 static uint8_t _bButtonRead(void *p)
-{
+{ 
     flex_button_t *btn = (flex_button_t *)p;
     return bHalGpioReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
 }
+#endif
 
 #if _MATRIXKEY_ENABLE
 static uint8_t _bMatrixKeyRead(void *p)
@@ -197,6 +212,7 @@ static void _bButtonCallback(void *p)
 int bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms)
 {
     int i;
+#if (FLEX_BTN_NUMBER > 0)     
     for (i = 0; i < FLEX_BTN_NUMBER; i++)
     {
         bButtonList[i].id                     = i;
@@ -210,6 +226,7 @@ int bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms)
         bButtonEventInfo[i].handler = NULL;
         bButtonEventInfo[i].event   = 0;
     }
+#endif    
 #if _MATRIXKEY_ENABLE  
     for(;i < BUTTON_NUM;i++)
     {
