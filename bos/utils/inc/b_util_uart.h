@@ -83,7 +83,7 @@ typedef bUitlUart_t bUitlUartInstance_t;
     bUitlUartInstance_t name = {                        \
         .pbuf        = Buf##name,                       \
         .buf_size    = buf_len,                         \
-        .dile_thd_ms = idle_ms,                         \
+        .idle_thd_ms = idle_ms,                         \
         .callback    = cb,                              \
         .index       = 0,                               \
         .l_tick      = 0,                               \
