@@ -74,7 +74,7 @@ int bMcuFlashUnlock()
     return retval;
 }
 
-int bMcuFlashLock
+int bMcuFlashLock()
 {
     int retval = 0;
     MCU_FLASH->CR |= (0x00000001 << 7);
