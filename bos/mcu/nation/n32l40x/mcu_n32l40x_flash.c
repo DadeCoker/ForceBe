@@ -40,7 +40,7 @@
 //       Flash Information
 
 #define FLASH_BASE_ADDR (0x8000000UL)
-#define FLASH_END_ADDR (0x801FFFFUL)
+#define FLASH_MAX_SIZE (128 * 1024)
 #define FLASH_PAGE_SIZE (2048)
 
 #define FLASH_KEY_1 (0x45670123UL)
@@ -94,7 +94,8 @@ static int _FlashErase(uint32_t raddr, uint8_t pages)
 
     raddr = FLASH_BASE_ADDR + raddr;
     raddr = raddr / FLASH_PAGE_SIZE * FLASH_PAGE_SIZE;
-    if ((raddr + (pages * FLASH_PAGE_SIZE)) > FLASH_END_ADDR || ((MCU_FLASH->STS) & 0x01) != 0)
+    if ((raddr + (pages * FLASH_PAGE_SIZE)) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR) ||
+        ((MCU_FLASH->STS) & 0x01) != 0)
     {
         return -1;
     }
@@ -126,7 +127,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     uint32_t wdata   = 0;
     uint16_t wlen = (len + 3) / 4, i = 0;
     raddr = FLASH_BASE_ADDR + raddr;
-    if (pbuf == NULL || (raddr & 0x3) || (raddr + len) > FLASH_END_ADDR ||
+    if (pbuf == NULL || (raddr & 0x3) || (raddr + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR) ||
         ((MCU_FLASH->STS) & 0x01) != 0)
     {
         return -1;
@@ -159,7 +160,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 
 static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
-    if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > FLASH_END_ADDR)
+    if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR))
     {
         return -1;
     }

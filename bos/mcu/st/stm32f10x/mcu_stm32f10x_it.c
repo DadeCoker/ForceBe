@@ -33,8 +33,8 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (_MCU_PLATFORM == 1001)
-#include "stm32f10x.h"
+#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
+     _MCU_PLATFORM == 1004)
 
 static void _IntEnable()
 {

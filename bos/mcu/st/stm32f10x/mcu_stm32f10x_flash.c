@@ -35,15 +35,46 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (_MCU_PLATFORM == 1001)
-#include "stm32f10x.h"
-#define _FLASH_BASE_ADDR (0x8000000UL)
+#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
+     _MCU_PLATFORM == 1004)
 
-#if defined STM32F10X_HD || defined STM32F10X_CL
-#define _FLASH_PAGE_SIZE (2048)
+#define FLASH_BASE_ADDR (0x8000000UL)
+
+#if (_MCU_PLATFORM == 1003 || _MCU_PLATFORM == 1004)
+#define FLASH_PAGE_SIZE (2048)
 #else
-#define _FLASH_PAGE_SIZE (1024)
+#define FLASH_PAGE_SIZE (1024)
 #endif
+
+#if (_MCU_PLATFORM == 1001)
+#define FLASH_MAX_SIZE (32 * 1024)
+#elif (_MCU_PLATFORM == 1002)
+#define FLASH_MAX_SIZE (128 * 1024)
+#elif (_MCU_PLATFORM == 1003)
+#define FLASH_MAX_SIZE (512 * 1024)
+#else
+#define FLASH_MAX_SIZE (256 * 1024)
+#endif
+
+#define FLASH_KEY_1 (0x45670123UL)
+#define FLASH_KEY_2 (0xCDEF89ABUL)
+#define FLASH_PER_TIMEOUT (0x000B0000UL)
+#define FLASH_PG_TIMEOUT (0x00002000UL)
+
+typedef struct
+{
+    volatile uint32_t ACR;
+    volatile uint32_t KEYR;
+    volatile uint32_t OPTKEYR;
+    volatile uint32_t SR;
+    volatile uint32_t CR;
+    volatile uint32_t AR;
+    volatile uint32_t RESERVED;
+    volatile uint32_t OBR;
+    volatile uint32_t WRPR;
+} McuFlashReg_t;
+
+#define MCU_FLASH ((McuFlashReg_t *)0x40022000)
 
 static int _FlashInit()
 {
@@ -52,45 +83,62 @@ static int _FlashInit()
 
 static int _FlashUnlock()
 {
-    int retval = 0;
-    FLASH_Unlock();
+    int retval      = 0;
+    MCU_FLASH->KEYR = FLASH_KEY_1;
+    MCU_FLASH->KEYR = FLASH_KEY_2;
     return retval;
 }
 
 static int _FlashLock()
 {
     int retval = 0;
-    FLASH_Lock();
+    MCU_FLASH->CR |= (0x00000001 << 7);
     return retval;
 }
 
 static int _FlashErase(uint32_t raddr, uint8_t pages)
 {
-    int     retval = 0;
-    uint8_t i      = 0;
-    raddr          = _FLASH_BASE_ADDR + raddr;
-    raddr          = raddr / _FLASH_PAGE_SIZE * _FLASH_PAGE_SIZE;
+    int     retval  = 0;
+    int     timeout = 0;
+    uint8_t i       = 0;
+
+    raddr = FLASH_BASE_ADDR + raddr;
+    raddr = raddr / FLASH_PAGE_SIZE * FLASH_PAGE_SIZE;
+    if ((raddr + (pages * FLASH_PAGE_SIZE)) > (FLASH_BASE_ADDR + FLASH_MAX_SIZE) ||
+        ((MCU_FLASH->SR) & 0x01) != 0)
+    {
+        return -1;
+    }
+
     for (i = 0; i < pages; i++)
     {
-        if (FLASH_COMPLETE == FLASH_ErasePage(raddr))
+        MCU_FLASH->SR |= 0xFC;
+        MCU_FLASH->CR |= (0x00000001 << 1);
+        MCU_FLASH->AR = raddr;
+        MCU_FLASH->CR |= (0x00000001 << 6);
+        timeout = FLASH_PER_TIMEOUT;
+        while (((MCU_FLASH->SR) & 0x01) != 0 && timeout > 0)
         {
-            raddr += _FLASH_PAGE_SIZE;
+            timeout--;
         }
-        else
+        if (timeout <= 0)
         {
-            retval = -1;
+            retval = -2;
             break;
         }
+        raddr += FLASH_PAGE_SIZE;
     }
     return retval;
 }
 
 static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 {
-    uint16_t wdata = 0;
+    int      timeout = 0;
+    uint16_t wdata   = 0;
     uint16_t wlen = (len + 1) / 2, i = 0;
-    raddr = _FLASH_BASE_ADDR + raddr;
-    if (pbuf == NULL || (raddr & 0x1))
+    raddr = FLASH_BASE_ADDR + raddr;
+    if (pbuf == NULL || (raddr & 0x1) || (raddr + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR) ||
+        ((MCU_FLASH->SR) & 0x01) != 0)
     {
         return -1;
     }
@@ -99,7 +147,20 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     {
         wdata = (wdata << 8) | pbuf[i * 2 + 1];
         wdata = (wdata << 8) | pbuf[i * 2 + 0];
-        FLASH_ProgramHalfWord(raddr, wdata);
+
+        MCU_FLASH->SR |= 0xFC;
+        MCU_FLASH->CR |= (0x00000001 << 0);
+        *((volatile uint32_t *)raddr) = wdata;
+
+        timeout = FLASH_PG_TIMEOUT;
+        while (((MCU_FLASH->SR) & 0x01) != 0 && timeout > 0)
+        {
+            timeout--;
+        }
+        if (timeout <= 0)
+        {
+            return -2;
+        }
         raddr += 2;
     }
     return (wlen * 2);
@@ -107,12 +168,11 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 
 static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
-    raddr = _FLASH_BASE_ADDR + raddr;
-    if (pbuf == NULL || !IS_FLASH_ADDRESS(raddr))
+    if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR))
     {
         return -1;
     }
-
+    raddr = FLASH_BASE_ADDR + raddr;
     memcpy(pbuf, (const uint8_t *)raddr, len);
     return len;
 }
