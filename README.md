@@ -276,13 +276,23 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 BabyOS包含了第三方开源代码，这部分代码都是MCU项目中比较实用的。
 
-b_shell 功能模块基于开源项目nr_micro_shell，<https://gitee.com/nrush/nr_micro_shell>，感谢作者Nrush
+Shell功能模块基于开源项目nr_micro_shell，<https://gitee.com/nrush/nr_micro_shell>，感谢作者Nrush
 
-b_button 功能模块基于开源项目FlexibleButton，<https://github.com/murphyzhao/FlexibleButton>，感谢作者Murphy
+Button 功能模块基于开源项目FlexibleButton，<https://github.com/murphyzhao/FlexibleButton>，感谢作者Murphy
 
-b_gui 功能模块基于开源项目uGUI, <https://github.com/achimdoebler/UGUI>, 感谢作者Achimdoebler
+GUI功能模块基于开源项目uGUI, <https://github.com/achimdoebler/UGUI>, 感谢作者Achimdoebler
 
-b_trace功能模块基于开源项目CmBacktrace,<https://gitee.com/Armink/CmBacktrace>, 感谢作者Armink
+Hardfault跟踪功能模块基于开源项目CmBacktrace,<https://gitee.com/Armink/CmBacktrace>, 感谢作者Armink
+
+SPIFlash驱动基于开源项目SFUD,https://gitee.com/Armink/SFUD 感谢作者Armink
+
+FS功能模块是基于FatFS和LittleFS,方便用户使用:
+
+​				http://elm-chan.org/fsw/ff/archives.html FatFS
+
+​				https://github.com/ARMmbed/littlefs LittleFS
+
+------
 
 **如果您觉得这套开源代码有意义，请给个Star表示支持，谢谢！**
 

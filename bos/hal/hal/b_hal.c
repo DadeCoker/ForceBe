@@ -101,6 +101,21 @@ volatile uint32_t bSysTick = 0;
  * \addtogroup HAL_Exported_Functions
  * \{
  */
+#if _DEBUG_ENABLE
+
+
+
+int fputc(int c, FILE *p)
+{
+    uint8_t ch = c & 0xff;
+    bHalUartSend(B_HAL_UART_1, &ch, 1);
+    return c;
+}
+
+
+
+#endif
+ 
 void bHalEnterCritical()
 {
 

@@ -43,14 +43,14 @@ extern "C" {
 /* debug print function. Must be implement by user. */
 #ifdef SFUD_DEBUG_MODE
 #ifndef SFUD_DEBUG
-#define SFUD_DEBUG(...) b_log_w(__VA_ARGS__),b_log("\r\n")
+#define SFUD_DEBUG(...) b_log_w(__VA_ARGS__);b_log("\r\n")
 #endif /* SFUD_DEBUG */
 #else
 #define SFUD_DEBUG(...)
 #endif /* SFUD_DEBUG_MODE */
 
 #ifndef SFUD_INFO
-#define SFUD_INFO(...)  b_log(__VA_ARGS__),b_log("\r\n")
+#define SFUD_INFO(...)  b_log(__VA_ARGS__);b_log("\r\n")
 #endif
 
 /* assert for developer. */
