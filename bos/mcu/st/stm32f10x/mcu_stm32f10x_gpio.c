@@ -95,8 +95,8 @@ void bMcuGpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir, b
         }
         else
         {
-            pGpio->CRH &= ~(0x0000000F << (pin * 4));
-            pGpio->CRH |= (dir_val << (pin * 4));
+            pGpio->CRH &= ~(0x0000000F << ((pin - B_HAL_PIN8) * 4));
+            pGpio->CRH |= (dir_val << ((pin - B_HAL_PIN8) * 4));
         }
     }
 }

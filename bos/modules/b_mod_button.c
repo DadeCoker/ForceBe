@@ -65,6 +65,15 @@ typedef struct
     uint8_t        logic_level;
 } bButtonInfo_t;
 
+#if _MATRIXKEY_ENABLE
+typedef struct
+{
+    bHalGPIOInstance_t Rows[MATRIXKEY_ROWS];
+    bHalGPIOInstance_t Columns[MATRIXKEY_COLUMNS];
+}bMatrixKeyInfo_t;
+#endif
+
+
 typedef struct
 {
     uint16_t           event;
@@ -79,7 +88,11 @@ typedef struct
  * \defgroup BUTTON_Private_Defines
  * \{
  */
-
+#if _MATRIXKEY_ENABLE
+#define BUTTON_NUM (FLEX_BTN_NUMBER + ((MATRIXKEY_ROWS) * (MATRIXKEY_COLUMNS)))
+#else
+#define BUTTON_NUM (FLEX_BTN_NUMBER)
+#endif
 /**
  * \}
  */
@@ -97,9 +110,12 @@ typedef struct
  * \defgroup BUTTON_Private_Variables
  * \{
  */
-static flex_button_t       bButtonList[FLEX_BTN_NUMBER];
-static bButtonEventInfo_t  bButtonEventInfo[FLEX_BTN_NUMBER];
+static flex_button_t       bButtonList[BUTTON_NUM];
+static bButtonEventInfo_t  bButtonEventInfo[BUTTON_NUM];
 const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
+#if _MATRIXKEY_ENABLE
+const static bMatrixKeyInfo_t bMatrixKeyInfo = HAL_B_MATRIXKEY_GPIO;
+#endif
 /**
  * \}
  */
@@ -124,6 +140,23 @@ static uint8_t _bButtonRead(void *p)
     return bHalGpioReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
 }
 
+#if _MATRIXKEY_ENABLE
+static uint8_t _bMatrixKeyRead(void *p)
+{
+    uint8_t tmp = 1;
+    flex_button_t *btn = (flex_button_t *)p;
+    uint8_t id = btn->id - FLEX_BTN_NUMBER;
+    uint8_t row = 0, col = 0;
+    row = id / MATRIXKEY_COLUMNS;
+    col = id % MATRIXKEY_COLUMNS;
+    bHalGpioConfig(bMatrixKeyInfo.Rows[row].port, bMatrixKeyInfo.Rows[row].pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+    bHalGpioWritePin(bMatrixKeyInfo.Rows[row].port, bMatrixKeyInfo.Rows[row].pin, 0);
+    tmp = bHalGpioReadPin(bMatrixKeyInfo.Columns[col].port, bMatrixKeyInfo.Columns[col].pin);
+    bHalGpioConfig(bMatrixKeyInfo.Rows[row].port, bMatrixKeyInfo.Rows[row].pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_PULLUP);
+    return tmp;
+}
+#endif
+
 static void _bButtonCore()
 {
     static uint32_t tick = 0;
@@ -139,7 +172,7 @@ BOS_REG_POLLING_FUNC(_bButtonCore);
 static void _bButtonCallback(void *p)
 {
     flex_button_t *btn = (flex_button_t *)p;
-    if (btn->id >= FLEX_BTN_NUMBER)
+    if (btn->id >= BUTTON_NUM)
     {
         return;
     }
@@ -177,12 +210,27 @@ int bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms)
         bButtonEventInfo[i].handler = NULL;
         bButtonEventInfo[i].event   = 0;
     }
+#if _MATRIXKEY_ENABLE  
+    for(;i < BUTTON_NUM;i++)
+    {
+        bButtonList[i].id                     = i;
+        bButtonList[i].pressed_logic_level    = 0;
+        bButtonList[i].usr_button_read        = _bMatrixKeyRead;
+        bButtonList[i].cb                     = _bButtonCallback;
+        bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(short_xms);
+        bButtonList[i].long_press_start_tick  = FLEX_MS_TO_SCAN_CNT(long_xms);
+        bButtonList[i].long_hold_start_tick   = FLEX_MS_TO_SCAN_CNT(llong_xms);
+        flex_button_register(&bButtonList[i]);
+        bButtonEventInfo[i].handler = NULL;
+        bButtonEventInfo[i].event   = 0;
+    }
+#endif    
     return 0;
 }
 
 void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler)
 {
-    if (id >= FLEX_BTN_NUMBER || handler == NULL)
+    if (id >= BUTTON_NUM || handler == NULL)
     {
         return;
     }

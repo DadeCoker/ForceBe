@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70403
+#define FW_VERSION 70405
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -253,7 +253,14 @@
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ 50
 //<o> Number of Buttons
-#define FLEX_BTN_NUMBER 3
+#define FLEX_BTN_NUMBER 4
+//<e> MatrixKey Enable/Disable
+#define _MATRIXKEY_ENABLE 0
+//<o> Number of Matrix Rows
+#define MATRIXKEY_ROWS 2
+//<o> Number of Matrix Columns
+#define MATRIXKEY_COLUMNS 2
+//</e>
 //</e>
 
 //<e> UGUI Enable/Disable
