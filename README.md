@@ -86,7 +86,7 @@ MCU裸机开发项目。编译器勾选C99
 | bos/mcu        | 根据需要添加 | 根据平台添加对应的代码，对应b_config.h中的配置               |
 | bos/modules    | 全部添加     | 全部添加后，可在b_config中配置                               |
 | bos/thirdparty | 根据需要添加 | CmBacktrace 错误跟踪<br>FatFS 文件系统<br>littlefs 文件系统<br>FlexibleButton 使用按键模块则需要添加<br>nr_micro_shell 命令行<br>SFUD 使用SPIFLASH驱动需要添加<br>UGUI 简单的GUI库 |
-| bos/utils      | 全部添加     | 通用代码，有模拟的IIC和SPI代码                               |
+| bos/utils      | 全部添加     | 通用代码，有模拟的IIC和SPI代码，模拟串口接收空闲事件         |
 | bos/_config    |              | b_config.h BabyOS 配置文件<br>b_device_list.h 注册设备的文件<br>b_hal_if.h 驱动接口文件 |
 
 ### 4.2.3 添加头文件路径
