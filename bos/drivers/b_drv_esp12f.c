@@ -205,7 +205,8 @@ static bWiFiData_t bWiFiRecData = {
     .tcp.pstr  = NULL,
     .mqtt.pstr = NULL,
 };
-
+static uint8_t          bWifiMuxEnable   = 0;
+static uint8_t          bWifiConnId      = 0;
 static volatile uint8_t bWiFiRecDataLock = 0;
 static bMempList_t      bTcpDataList;
 /**
@@ -296,9 +297,32 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
     retp = strstr((const char *)pbuf, "+IPD");
     while (retp)
     {
-        retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
-        if (retval == 1 && rlen > 0 && rlen < len)
+        if (bWifiMuxEnable)
         {
+            retval = sscanf((const char *)retp, "+IPD,%d,%d:%*s", &id, &rlen);
+            if (retval != 2)
+            {
+                retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
+                if (retval == 1)
+                {
+                    bWifiMuxEnable = 0;
+                }
+            }
+        }
+
+        if (bWifiMuxEnable == 0)
+        {
+            retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
+        }
+
+        if (((retval == 1 && bWifiMuxEnable == 0) || (retval == 2 && bWifiMuxEnable == 1)) &&
+            rlen > 0 && rlen < len)
+        {
+            if (bWifiMuxEnable)
+            {
+                bWifiConnId = id;
+                retp        = retp + _bEspNumLen(id) + 1;
+            }
             retp = retp + 5 + _bEspNumLen(rlen) + 1;
             bMempListAdd(&bTcpDataList, (uint8_t *)retp, rlen);
             retp += rlen;
@@ -508,6 +532,7 @@ static uint8_t _bEspSetMux(void *param)
     uint8_t retval = AT_INVALID_ID;
     retval         = bAtCmdSend("AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"), "OK", strlen("OK"),
                                 bESP12F_HalIf, 500);
+    bWifiMuxEnable = 1;
     return retval;
 }
 
@@ -516,6 +541,7 @@ static uint8_t _bEspDisableMux(void *param)
     uint8_t retval = AT_INVALID_ID;
     retval         = bAtCmdSend("AT+CIPMUX=0\r\n", strlen("AT+CIPMUX=0\r\n"), "OK", strlen("OK"),
                                 bESP12F_HalIf, 500);
+    bWifiMuxEnable = 0;
     return retval;
 }
 
@@ -708,7 +734,15 @@ static uint8_t _bEspTcpUdpSend1(void *param)
     {
         return retval;
     }
-    len = sprintf(buf, "AT+CIPSEND=%d\r\n", pdata->len);
+    if (bWifiMuxEnable)
+    {
+        len = sprintf(buf, "AT+CIPSEND=%d,%d\r\n", bWifiConnId, pdata->len);
+    }
+    else
+    {
+        len = sprintf(buf, "AT+CIPSEND=%d\r\n", pdata->len);
+    }
+
     if (len > 0)
     {
         retval = bAtCmdSend(buf, len, ">", strlen(">"), bESP12F_HalIf, 500);
@@ -846,7 +880,7 @@ static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
                               param, sizeof(bTcpUdpInfo_t));
             }
             break;
-        case bCMD_WIFI_TCP_SEND:
+        case bCMD_WIFI_TCP_UDP_SEND:
             if (param != NULL)
             {
                 _bEspCmdStart(cmd, bWifiTcpSendOptList, sizeof(bWifiTcpSendOptList), param,

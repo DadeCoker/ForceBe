@@ -133,7 +133,7 @@ typedef struct
 #define bCMD_WIFI_LOCAL_TCP_SERVER 7  // bTcpUdpInfo_t
 #define bCMD_WIFI_REMOT_TCP_SERVER 8  // bTcpUdpInfo_t
 #define bCMD_WIFI_REMOT_UDP_SERVER 9  // bTcpUdpInfo_t
-#define bCMD_WIFI_TCP_SEND 10         // bTcpUdpData_t
+#define bCMD_WIFI_TCP_UDP_SEND 10     // bTcpUdpData_t
 #define bCMD_WIFI_PING 11             // char *ip
 
 typedef struct
