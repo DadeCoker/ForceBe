@@ -4,8 +4,6 @@
 
 <img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/2.png" alt="logo"  />
 
-​                  
-
 BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
 
 对项目而言，缩短开发周期。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
