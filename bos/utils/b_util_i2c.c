@@ -103,74 +103,74 @@
 
 void bUtilI2C_Start(bUtilI2C_t i2c)
 {
-    bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 1);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 1);
+    bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 1);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 1);
     bHalDelayUs(1);
-    bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 0);
     bHalDelayUs(1);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
 }
 
 void bUtilI2C_Stop(bUtilI2C_t i2c)
 {
-    bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 0);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 1);
+    bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 1);
     bHalDelayUs(1);
-    bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 1);
+    bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 1);
     bHalDelayUs(1);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
-    bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 0);
 }
 
 int bUtilI2C_ACK(bUtilI2C_t i2c)
 {
     uint8_t tmp = 0xff;
-    bHalGPIO_Config(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioConfig(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
     bHalDelayUs(1);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 1);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 1);
     do
     {
         tmp--;
         bHalDelayUs(10);
-    } while ((bHalGPIO_ReadPin(i2c.sda.port, i2c.sda.pin) != 0x0) && (tmp > 0));
+    } while ((bHalGPIODriver.pGpioReadPin(i2c.sda.port, i2c.sda.pin) != 0x0) && (tmp > 0));
     if (tmp == 0)
     {
         bUtilI2C_Stop(i2c);
         return -1;
     }
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
-    bHalGPIO_Config(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioConfig(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
     return 0;
 }
 
 void bUtilI2C_mACK(bUtilI2C_t i2c)
 {
-    bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 0);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 1);
+    bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 1);
     bHalDelayUs(1);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
     bHalDelayUs(1);
 }
 
 void bUtilI2C_WriteByte(bUtilI2C_t i2c, uint8_t dat)
 {
     uint8_t i = 0;
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
     for (i = 0; i < 8; i++)
     {
         bHalDelayUs(1);
         if (dat & 0x80)
         {
-            bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 1);
+            bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 1);
         }
         else
         {
-            bHalGPIO_WritePin(i2c.sda.port, i2c.sda.pin, 0);
+            bHalGPIODriver.pGpioWritePin(i2c.sda.port, i2c.sda.pin, 0);
         }
-        bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 1);
+        bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 1);
         bHalDelayUs(1);
-        bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+        bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
         dat <<= 1;
     }
 }
@@ -178,22 +178,22 @@ void bUtilI2C_WriteByte(bUtilI2C_t i2c, uint8_t dat)
 uint8_t bUtilI2C_ReadByte(bUtilI2C_t i2c)
 {
     uint8_t i = 0, tmp = 0;
-    bHalGPIO_Config(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-    bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+    bHalGPIODriver.pGpioConfig(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+    bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
     bHalDelayUs(1);
     for (i = 0; i < 8; i++)
     {
-        bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 1);
+        bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 1);
         tmp <<= 1;
-        if (bHalGPIO_ReadPin(i2c.sda.port, i2c.sda.pin))
+        if (bHalGPIODriver.pGpioReadPin(i2c.sda.port, i2c.sda.pin))
         {
             tmp++;
         }
         bHalDelayUs(1);
-        bHalGPIO_WritePin(i2c.clk.port, i2c.clk.pin, 0);
+        bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);
         bHalDelayUs(1);
     }
-    bHalGPIO_Config(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+    bHalGPIODriver.pGpioConfig(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
     return tmp;
 }
 
@@ -283,7 +283,7 @@ int bUtilI2C_ReadBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, 
     return 0;
 }
 
-int bUtilI2C_WriteBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, uint8_t len)
+int bUtilI2C_WriteBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, const uint8_t *pdat, uint8_t len)
 {
     uint32_t i = 0;
     bUtilI2C_Start(i2c);

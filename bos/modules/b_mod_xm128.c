@@ -35,7 +35,7 @@
 #include "core/inc/b_section.h"
 
 #if _XMODEM128_ENABLE
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 /**
  * \addtogroup BABYOS
  * \{

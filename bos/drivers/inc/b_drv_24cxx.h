@@ -52,11 +52,7 @@ extern "C" {
  * \{
  */
 
-typedef struct
-{
-    bHalI2CNumber_t iic;
-    uint8_t         addr;
-} b24CXX_HalIf_t;
+typedef bHalI2CIf_t b24CXX_HalIf_t;
 
 typedef bDriverInterface_t b24CXX_Driver_t;
 /**

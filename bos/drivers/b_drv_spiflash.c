@@ -100,12 +100,12 @@ extern sfud_flash flash_table[];
 
 static void _bSPIFlashSPI_Lock(const sfud_spi *spi)
 {
-    bHalEnterCritical();
+    bHalITDriver.pIntDisable();
 }
 
 static void _bSPIFlashSPI_Unlock(const sfud_spi *spi)
 {
-    bHalExitCritical();
+    bHalITDriver.pIntEnable();
 }
 
 /**
@@ -122,7 +122,6 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
         return SFUD_ERR_WRITE;
     }
 
-    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
     if (_if->is_spi == 0)
     {
         result = SFUD_ERR_WRITE;
@@ -130,16 +129,17 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
     }
     else
     {
+        bHalGPIODriver.pGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
         if (write_buf && write_size)
         {
-            bHalSPI_Send(_if->_if.spi, (uint8_t *)write_buf, write_size);
+            bHalSPIDriver.pSend(&_if->_if._spi, (uint8_t *)write_buf, write_size);
         }
         if (read_buf && read_size)
         {
-            bHalSPI_Receive(_if->_if.spi, (uint8_t *)read_buf, read_size);
+            bHalSPIDriver.pReceive(&_if->_if._spi, (uint8_t *)read_buf, read_size);
         }
+        bHalGPIODriver.pGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
     }
-    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
     return result;
 }
 
@@ -189,7 +189,6 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
 {
     bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     uint8_t cmd = 0xab;
-    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
     if (_if->is_spi == 0)
     {
         return -1;
@@ -197,9 +196,10 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
     }
     else
     {
-        bHalSPI_Send(_if->_if.spi, &cmd, 1);
+        bHalGPIODriver.pGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+        bHalSPIDriver.pSend(&_if->_if._spi, &cmd, 1);
+        bHalGPIODriver.pGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
     }
-    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
     bHalDelayUs(10);
     return 0;
 }
@@ -208,7 +208,6 @@ static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
 {
     bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     uint8_t cmd = 0xb9;
-    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
     if (_if->is_spi == 0)
     {
         return -1;
@@ -216,9 +215,10 @@ static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
     }
     else
     {
-        bHalSPI_Send(_if->_if.spi, &cmd, 1);
+        bHalGPIODriver.pGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+        bHalSPIDriver.pSend(&_if->_if._spi, &cmd, 1);
+        bHalGPIODriver.pGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
     }
-    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
     bHalDelayUs(10);
     return 0;
 }

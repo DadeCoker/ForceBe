@@ -62,16 +62,8 @@ typedef struct
 {
     union
     {
-        struct
-        {
-            bHalI2CNumber_t iic;
-            uint8_t         addr;
-        } _iic;
-        struct
-        {
-            bHalSPINumber_t    spi;
-            bHalGPIOInstance_t cs;
-        } _spi;
+        bHalI2CIf_t _i2c;
+        bHalSPIIf_t _spi;
     } _if;
     uint8_t is_spi;
 } bOLED_HalIf_t;

@@ -94,6 +94,7 @@ static const char *bDeviceDescTable[bDEV_MAX_NUM] = {
 #include "b_device_list.h"
 };
 
+bSECTION_DEF_FLASH(driver_init_0, pbDriverInit_t);
 bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);
 /**
  * \}
@@ -128,6 +129,10 @@ bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);
 int bDeviceInit()
 {
     memset(&bNullDriver, 0, sizeof(bNullDriver));
+    bSECTION_FOR_EACH(driver_init_0, pbDriverInit_t, pdriver_init_0)
+    {
+        (*pdriver_init_0)();
+    }    
     bSECTION_FOR_EACH(driver_init, pbDriverInit_t, pdriver_init)
     {
         (*pdriver_init)();

@@ -49,7 +49,6 @@
 /* -------------------------------------------------------------------------------- */
 #include "ugui.h"
 #if _UGUI_ENABLE
-#include "algorithm/inc/algo_utf8_unicode.h"
 
 /* Static functions */
 UG_RESULT _UG_WindowDrawTitle(UG_WINDOW* wnd);
@@ -13513,6 +13512,106 @@ const UG_FONT FONT_24X40 = {(unsigned char*)font_24x40, FONT_TYPE_1BPP, 24, 40, 
 const UG_FONT FONT_32X53 = {(unsigned char*)font_32x53, FONT_TYPE_1BPP, 32, 53, 0, 255, NULL};
 #endif
 
+static int _Utf82UnicodeSize(const uint8_t utf8)
+{
+    uint8_t c = utf8;
+    if (c < 0x80)
+        return 0;
+    if (c >= 0x80 && c < 0xC0)
+        return -1;
+    if (c >= 0xC0 && c < 0xE0)
+        return 2;
+    if (c >= 0xE0 && c < 0xF0)
+        return 3;
+    if (c >= 0xF0 && c < 0xF8)
+        return 4;
+    if (c >= 0xF8 && c < 0xFC)
+        return 5;
+    if (c >= 0xFC)
+        return 6;
+    return -1;
+}
+
+static int _Utf82Unicode(const uint8_t *utf8, uint32_t *unicode)
+{
+    if (utf8 == NULL || unicode == NULL)
+    {
+        return -1;
+    }
+    char b1, b2, b3, b4, b5, b6;
+    *unicode          = 0x0;
+    int      utfbytes = _Utf82UnicodeSize(*utf8);
+    uint8_t *ptmp     = (uint8_t *)unicode;
+    switch (utfbytes)
+    {
+        case 0:
+            *ptmp = *utf8;
+            utfbytes += 1;
+            break;
+        case 2:
+            b1 = *utf8;
+            b2 = *(utf8 + 1);
+            if ((b2 & 0xE0) != 0x80)
+                return 0;
+            *ptmp       = (b1 << 6) + (b2 & 0x3F);
+            *(ptmp + 1) = (b1 >> 2) & 0x07;
+            break;
+        case 3:
+            b1 = *utf8;
+            b2 = *(utf8 + 1);
+            b3 = *(utf8 + 2);
+            if (((b2 & 0xC0) != 0x80) || ((b3 & 0xC0) != 0x80))
+                return 0;
+            *ptmp       = (b2 << 6) + (b3 & 0x3F);
+            *(ptmp + 1) = (b1 << 4) + ((b2 >> 2) & 0x0F);
+            break;
+        case 4:
+            b1 = *utf8;
+            b2 = *(utf8 + 1);
+            b3 = *(utf8 + 2);
+            b4 = *(utf8 + 3);
+            if (((b2 & 0xC0) != 0x80) || ((b3 & 0xC0) != 0x80) || ((b4 & 0xC0) != 0x80))
+                return 0;
+            *ptmp       = (b3 << 6) + (b4 & 0x3F);
+            *(ptmp + 1) = (b2 << 4) + ((b3 >> 2) & 0x0F);
+            *(ptmp + 2) = ((b1 << 2) & 0x1C) + ((b2 >> 4) & 0x03);
+            break;
+        case 5:
+            b1 = *utf8;
+            b2 = *(utf8 + 1);
+            b3 = *(utf8 + 2);
+            b4 = *(utf8 + 3);
+            b5 = *(utf8 + 4);
+            if (((b2 & 0xC0) != 0x80) || ((b3 & 0xC0) != 0x80) || ((b4 & 0xC0) != 0x80) ||
+                ((b5 & 0xC0) != 0x80))
+                return 0;
+            *ptmp       = (b4 << 6) + (b5 & 0x3F);
+            *(ptmp + 1) = (b3 << 4) + ((b4 >> 2) & 0x0F);
+            *(ptmp + 2) = (b2 << 2) + ((b3 >> 4) & 0x03);
+            *(ptmp + 3) = (b1 << 6);
+            break;
+        case 6:
+            b1 = *utf8;
+            b2 = *(utf8 + 1);
+            b3 = *(utf8 + 2);
+            b4 = *(utf8 + 3);
+            b5 = *(utf8 + 4);
+            b6 = *(utf8 + 5);
+            if (((b2 & 0xC0) != 0x80) || ((b3 & 0xC0) != 0x80) || ((b4 & 0xC0) != 0x80) ||
+                ((b5 & 0xC0) != 0x80) || ((b6 & 0xC0) != 0x80))
+                return 0;
+            *ptmp       = (b5 << 6) + (b6 & 0x3F);
+            *(ptmp + 1) = (b5 << 4) + ((b6 >> 2) & 0x0F);
+            *(ptmp + 2) = (b3 << 2) + ((b4 >> 4) & 0x03);
+            *(ptmp + 3) = ((b1 << 6) & 0x40) + (b2 & 0x3F);
+            break;
+        default:
+            return 0;
+    }
+    return utfbytes;
+}
+
+
 UG_S16 UG_Init(UG_GUI* g, void (*p)(UG_S16, UG_S16, UG_COLOR), UG_S16 x, UG_S16 y)
 {
     UG_U8 i;
@@ -13929,8 +14028,8 @@ uint8_t UG_GetUnicode(char* str, uint32_t* unicode)
     if (chr & 0x80)
     {
 #if _ENCODING == 0
-        utf_num = utf8_to_unicode_size(chr);
-        utf8_to_unicode((const uint8_t*)str, unicode);
+        utf_num = _Utf82UnicodeSize(chr);
+        _Utf82Unicode((const uint8_t*)str, unicode);
 #elif _ENCODING == 1
         *unicode = ((uint16_t*)str)[0];
         utf_num  = 2;
@@ -14492,7 +14591,7 @@ void _UG_PutText(UG_TEXT* txt)
             if (*c & 0x80)
             {
 #if _ENCODING == 0
-                c += utf8_to_unicode_size(*c);
+                c += _Utf82UnicodeSize(*c);
 #elif _ENCODING == 1
                 c += 2;
 #endif

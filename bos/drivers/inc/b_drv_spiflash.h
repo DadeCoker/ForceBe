@@ -61,11 +61,11 @@ typedef struct
 {
     union
     {
-        bHalQSPINumber_t qspi;
-        bHalSPINumber_t  spi;
+        //...  qspi reserved
+
+        bHalSPIIf_t _spi;
     } _if;
-    bHalGPIOInstance_t cs;
-    uint8_t            is_spi;
+    uint8_t is_spi;
 } bSPIFLASH_HalIf_t;
 
 typedef bDriverInterface_t bSPIFLASH_Driver_t;

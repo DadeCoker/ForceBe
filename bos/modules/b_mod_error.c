@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_error.h"
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 #include "core/inc/b_section.h"
 
 #if _ERROR_MANAGE_ENABLE
@@ -82,7 +82,7 @@
  * \defgroup ERROR_Private_Variables
  * \{
  */
-static bErrorInfo_t bErrorRecord[_ERROR_Q_LENGTH];
+static bErrorInfo_t bErrorRecord[ERROR_Q_LENGTH];
 static pecb         bFcb = NULL;
 /**
  * \}
@@ -110,7 +110,7 @@ static void _bErrorCore()
     uint32_t i    = 0;
     uint32_t tick = 0;
     tick          = bHalGetSysTick();
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err == INVALID_ERR)
         {
@@ -148,7 +148,7 @@ int bErrorInit(pecb cb)
         return -1;
     }
     bFcb = cb;
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         bErrorRecord[i].err = INVALID_ERR;
     }
@@ -178,7 +178,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
         return -1;
     }
 
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err == err)
         {
@@ -193,7 +193,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
             break;
         }
     }
-    if (i >= _ERROR_Q_LENGTH)
+    if (i >= ERROR_Q_LENGTH)
     {
         bErrorRecord[index].err    = err;
         bErrorRecord[index].utc    = utc;
@@ -201,7 +201,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
         bErrorRecord[index].s_tick = 0;
         bErrorRecord[index].type   = level;
         bErrorRecord[index].ack    = 0;
-        index                      = (index + 1) % _ERROR_Q_LENGTH;
+        index                      = (index + 1) % ERROR_Q_LENGTH;
     }
     return 0;
 }
@@ -220,7 +220,7 @@ int bErrorClear(uint8_t e_no)
     {
         return -1;
     }
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err == e_no)
         {
@@ -244,7 +244,7 @@ int bErrorIS_Exist(uint8_t e_no)
     {
         return -1;
     }
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err == e_no)
         {
@@ -257,7 +257,7 @@ int bErrorIS_Exist(uint8_t e_no)
 int bErrorIS_Empty()
 {
     int i = 0;
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err != INVALID_ERR)
         {
@@ -270,7 +270,7 @@ int bErrorIS_Empty()
 int bErrorAck(uint8_t e_no)
 {
     int i;
-    for (i = 0; i < _ERROR_Q_LENGTH; i++)
+    for (i = 0; i < ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err == e_no)
         {

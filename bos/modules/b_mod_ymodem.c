@@ -37,7 +37,7 @@
 #if _YMODEM_ENABLE
 #include <string.h>
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 
 /**
  * \addtogroup BABYOS

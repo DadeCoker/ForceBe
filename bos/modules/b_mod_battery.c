@@ -32,8 +32,8 @@
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_battery.h"
 
-#include "b_hal.h"
 #include "core/inc/b_section.h"
+#include "hal/inc/b_hal.h"
 
 #if _BATTERY_ENABLE
 /**
@@ -64,7 +64,7 @@
  * \defgroup BATTERY_Private_Defines
  * \{
  */
-
+#define SAMPLE_TIMES (15)
 /**
  * \}
  */
@@ -105,13 +105,15 @@ static pBatteryGetmV_t bpBatteryGetmV  = NULL;
  */
 static void _bBatteryCalculate()
 {
-    uint32_t        mv      = 0;
-    uint16_t        min_tmp = 0xffff, max_tmp = 0, tmp = 0, i;
-    static uint32_t tick = (uint32_t)(0 - MS2TICKS(_BATTERY_D_CYCLE));
-    if (bHalGetSysTick() - tick >= MS2TICKS(_BATTERY_D_CYCLE))
+    uint32_t                 mv      = 0;
+    uint16_t                 min_tmp = 0xffff, max_tmp = 0, tmp = 0, i;
+    uint8_t                  status_tmp = BATTERY_STA_LOW;
+    volatile static uint32_t tick       = (uint32_t)(0 - MS2TICKS(BATTERY_D_CYCLE));
+    volatile static uint32_t stat_tick  = 0;
+    if (bHalGetSysTick() - tick >= MS2TICKS(BATTERY_D_CYCLE))
     {
         tick = bHalGetSysTick();
-        for (i = 0; i < 5; i++)
+        for (i = 0; i < SAMPLE_TIMES; i++)
         {
             if (bpBatteryGetmV)
             {
@@ -127,15 +129,27 @@ static void _bBatteryCalculate()
                 min_tmp = tmp;
             }
         }
-        tmp = (mv - min_tmp - max_tmp) / 3;
+        tmp = (mv - min_tmp - max_tmp) / (SAMPLE_TIMES - 2);
 
-        if (tmp >= _BATTERY_THRESHOLD)
+        if (tmp >= BATTERY_THRESHOLD)
         {
-            bBatteryStatus = BATTERY_STA_NORMAL;
+            status_tmp = BATTERY_STA_NORMAL;
+        }
+        if (tmp != bBatteryStatus)
+        {
+            if (stat_tick == 0)
+            {
+                stat_tick = bHalGetSysTick();
+            }
+            else if (bHalGetSysTick() - stat_tick > MS2TICKS(2000))
+            {
+                bBatteryStatus = status_tmp;
+                stat_tick      = 0;
+            }
         }
         else
         {
-            bBatteryStatus = BATTERY_STA_LOW;
+            stat_tick = 0;
         }
         bBatteryVoltage = tmp;
     }

@@ -61,6 +61,11 @@
  * \{
  */
 #define FIFO_LEN(w, r, s) (((w) >= (r)) ? ((w) - (r)) : ((w) + (s) - (r)))
+
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
 /**
  * \}
  */

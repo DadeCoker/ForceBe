@@ -39,7 +39,6 @@ extern "C" {
 #include <stdint.h>
 
 #include "b_config.h"
-#include "b_hal.h"
 
 #ifndef _BOS_ALGO_ENABLE
 #define _BOS_ALGO_ENABLE (0)

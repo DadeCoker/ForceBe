@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "core/inc/b_core.h"
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 #include "core/inc/b_device.h"
 #include "core/inc/b_section.h"
 

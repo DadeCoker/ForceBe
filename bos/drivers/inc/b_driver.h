@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 #include "core/inc/b_section.h"
 
 /**
@@ -79,20 +79,6 @@ typedef struct bDriverIf
 typedef int (*pbDriverInit_t)(void);
 
 //-----------------------------------------------------
-// Camera
-typedef struct
-{
-    uint8_t config_val;
-} bCameraCfg_t;
-
-typedef struct
-{
-    uint16_t xoff;
-    uint16_t yoff;
-    uint16_t xsize;
-    uint16_t ysize;
-} bCameraOutsize_t;
-
 // Flash
 typedef struct
 {
@@ -149,15 +135,6 @@ typedef struct
  */
 
 //-----------------------------------------COMMAND--
-// Camera
-#define bCMD_CONF_LIGHTMODE 0   // bCameraCfg_t
-#define bCMD_CONF_COLOR_SAT 1   // bCameraCfg_t
-#define bCMD_CONF_BRIGHTNESS 2  // bCameraCfg_t
-#define bCMD_CONF_CONTRAST 3    // bCameraCfg_t
-#define bCMD_CONF_SHARPNESS 4   // bCameraCfg_t
-#define bCMD_CONF_FLASH_LED 5   // bCameraCfg_t
-#define bCMD_CONF_OUTSIZE 6
-
 // Flash
 #define bCMD_ERASE_SECTOR 0      // <==> bFlashErase_t
 #define bCMD_GET_SECTOR_SIZE 1   // <==> uint32_t
@@ -166,8 +143,9 @@ typedef struct
 // Gsensor
 #define bCMD_CFG_ODR 0        // uint16_t Hz
 #define bCMD_CFG_FS 1         // uint8_t g
-#define bCMD_CFG_POWERDOWN 2  // no param
+#define bCMD_CFG_POWERDOWN 2  // none
 #define bCMD_CFG_FIFO 3       // bGSensorFifo_t
+#define bCMD_SIG_INT 4       // none
 
 /**
  * \}
@@ -177,8 +155,14 @@ typedef struct
  * \defgroup DRIVER_Exported_Macros
  * \{
  */
+#define bDRIVER_REG_INIT_0(func) \
+    bSECTION_ITEM_REGISTER_FLASH(driver_init_0, pbDriverInit_t, CONCAT_2(init0, func)) = func
+
 #define bDRIVER_REG_INIT(func) \
     bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func)) = func
+
+#define bDRIVER_REG_INIT_1 bDRIVER_REG_INIT
+
 
 #define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)(pdrv->_hal_if)
 /**
@@ -202,8 +186,6 @@ extern bDriverInterface_t bILI9320_Driver;
 extern bDriverInterface_t bOLED_Driver;
 
 extern bDriverInterface_t bXPT2046_Driver;
-
-extern bDriverInterface_t bOV5640_Driver;
 
 extern bDriverInterface_t bPCF8574_Driver;
 

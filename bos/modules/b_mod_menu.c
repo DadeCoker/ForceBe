@@ -61,7 +61,9 @@
  * \defgroup MENU_Private_Defines
  * \{
  */
-
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
 /**
  * \}
  */
@@ -79,7 +81,7 @@
  * \defgroup MENU_Private_Variables
  * \{
  */
-static bMenuItem_t bMenuItemTable[_MENU_ITEM_NUMBER];
+static bMenuItem_t bMenuItemTable[MENU_ITEM_NUMBER];
 static uint8_t     ItemIndex = 0;
 
 static bMenuItem_t *pC_Item = NULL;
@@ -126,7 +128,7 @@ int bMenuAddSibling(uint32_t ref_id, uint32_t id, pCreateUI f)
 {
     int          i = 0;
     bMenuItem_t *ptmp, *pref = NULL;
-    if (ItemIndex >= _MENU_ITEM_NUMBER)
+    if (ItemIndex >= MENU_ITEM_NUMBER)
     {
         return -1;
     }
@@ -170,7 +172,7 @@ int bMenuAddChild(uint32_t ref_id, uint32_t id, pCreateUI f)
 {
     int          i = 0;
     bMenuItem_t *ptmp, *pref = NULL;
-    if (ItemIndex >= _MENU_ITEM_NUMBER)
+    if (ItemIndex >= MENU_ITEM_NUMBER)
     {
         return -1;
     }

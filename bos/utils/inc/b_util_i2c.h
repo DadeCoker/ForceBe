@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 
 /**
  * \addtogroup B_UTILS
@@ -78,7 +78,7 @@ int     bUtilI2C_WriteData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t da
 uint8_t bUtilI2C_ReadData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr);
 
 int bUtilI2C_ReadBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, uint8_t len);
-int bUtilI2C_WriteBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, uint8_t len);
+int bUtilI2C_WriteBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, const uint8_t *pdat, uint8_t len);
 
 /**
  * \}

@@ -114,11 +114,11 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     uint32_t off;
 #if (_LCD_DISP_MODE == 0)
     int tmp_y = x;
-    x         = _LCD_X_SIZE - 1 - y;
+    x         = LCD_X_SIZE - 1 - y;
     y         = tmp_y;
 #endif
     off = y;
-    if (x >= _LCD_X_SIZE || y >= _LCD_Y_SIZE)
+    if (x >= LCD_X_SIZE || y >= LCD_Y_SIZE)
     {
         return;
     }
@@ -127,7 +127,7 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     {
         return;
     }
-    bLseek(fd, off * _LCD_X_SIZE + x);
+    bLseek(fd, off * LCD_X_SIZE + x);
     bWrite(fd, (uint8_t *)&c, sizeof(UG_COLOR));
     bClose(fd);
 }
@@ -150,21 +150,21 @@ static void _bGUI_TouchExec()
     }
     bRead(fd, (uint8_t *)&AdVal, sizeof(bTouchAdVal_t));
     bClose(fd);
-    if (AdVal.x_ad < _X_TOUCH_AD_MIN || AdVal.x_ad >= _X_TOUCH_AD_MAX ||
-        AdVal.y_ad < _Y_TOUCH_AD_MIN || AdVal.y_ad >= _Y_TOUCH_AD_MAX)
+    if (AdVal.x_ad < X_TOUCH_AD_MIN || AdVal.x_ad >= X_TOUCH_AD_MAX ||
+        AdVal.y_ad < Y_TOUCH_AD_MIN || AdVal.y_ad >= Y_TOUCH_AD_MAX)
     {
-        UG_TouchUpdate(_LCD_X_SIZE, _LCD_Y_SIZE, TOUCH_STATE_RELEASED);
+        UG_TouchUpdate(LCD_X_SIZE, LCD_Y_SIZE, TOUCH_STATE_RELEASED);
     }
     else
     {
         AdVal.x_ad =
-            (AdVal.x_ad - _X_TOUCH_AD_MIN) * _LCD_X_SIZE / (_X_TOUCH_AD_MAX - _X_TOUCH_AD_MIN);
+            (AdVal.x_ad - X_TOUCH_AD_MIN) * LCD_X_SIZE / (X_TOUCH_AD_MAX - X_TOUCH_AD_MIN);
         AdVal.y_ad =
-            (AdVal.y_ad - _Y_TOUCH_AD_MIN) * _LCD_Y_SIZE / (_Y_TOUCH_AD_MAX - _Y_TOUCH_AD_MIN);
+            (AdVal.y_ad - Y_TOUCH_AD_MIN) * LCD_Y_SIZE / (Y_TOUCH_AD_MAX - Y_TOUCH_AD_MIN);
 #if (_LCD_DISP_MODE == 0)
         tmp        = AdVal.x_ad;
         AdVal.x_ad = AdVal.y_ad;
-        AdVal.y_ad = _LCD_X_SIZE - 1 - tmp;
+        AdVal.y_ad = LCD_X_SIZE - 1 - tmp;
 #endif
         UG_TouchUpdate(AdVal.x_ad, AdVal.y_ad, TOUCH_STATE_PRESSED);
     }
@@ -201,9 +201,9 @@ int bGUI_Init(int lcd, int touch)
     GUI_Info.lcd_id   = lcd;
     GUI_Info.touch_id = touch;
 #if (_LCD_DISP_MODE == 0)
-    UG_Init(&bGUI_Handle, _LCD_SetColorPixel, _LCD_Y_SIZE, _LCD_X_SIZE);
+    UG_Init(&bGUI_Handle, _LCD_SetColorPixel, LCD_Y_SIZE, LCD_X_SIZE);
 #else
-    UG_Init(&bGUI_Handle, _LCD_SetColorPixel, _LCD_X_SIZE, _LCD_Y_SIZE);
+    UG_Init(&bGUI_Handle, _LCD_SetColorPixel, LCD_X_SIZE, LCD_Y_SIZE);
 #endif
     UG_SelectGUI(&bGUI_Handle);
     UG_SetForecolor(C_WHITE);

@@ -58,11 +58,7 @@ extern "C" {
  * \{
  */
 
-typedef struct
-{
-    bHalSPINumber_t    spi;
-    bHalGPIOInstance_t cs;
-} bFM25CL_HalIf_t;
+typedef bHalSPIIf_t bFM25CL_HalIf_t;
 
 typedef bDriverInterface_t bFM25CL_Driver_t;
 
