@@ -49,17 +49,11 @@
  * \{
  */
 
-typedef union
-{
-    int16_t i16bit;
-    uint8_t u8bit[2];
-}bAxisData_t;
-
 typedef struct
 {
-    bAxisData_t x;
-    bAxisData_t y;
-    bAxisData_t z;
+    int16_t x_mg;
+    int16_t y_mg;
+    int16_t z_mg;
 }bGsensor3Axis_t;
 
  

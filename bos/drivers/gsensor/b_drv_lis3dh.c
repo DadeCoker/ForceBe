@@ -340,9 +340,9 @@ static void _bLis3dhPolling()
         for(i = 0;i <= fss;i++)
         {
             _bLis3dhReadRegs(LIS3DH_OUT_X_L, (uint8_t *)&bLis3dhFifoValue[i], 6);
-            bLis3dhFifoValue[i].x.i16bit =  (bLis3dhFifoValue[i].x.i16bit >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
-            bLis3dhFifoValue[i].y.i16bit =  (bLis3dhFifoValue[i].y.i16bit >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
-            bLis3dhFifoValue[i].z.i16bit =  (bLis3dhFifoValue[i].z.i16bit >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
+            bLis3dhFifoValue[i].x_mg =  (bLis3dhFifoValue[i].x_mg >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
+            bLis3dhFifoValue[i].y_mg =  (bLis3dhFifoValue[i].y_mg >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
+            bLis3dhFifoValue[i].z_mg =  (bLis3dhFifoValue[i].z_mg >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
         }
         bGsensor3AxisCallback(bLis3dhFifoValue, fss + 1);
     }
@@ -365,7 +365,7 @@ __weak void bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number)
     int i = 0;
     for(i = 0;i < number;i++)
     {
-        b_log("x:%d y:%d z:%d\r\n", xyz[i].x.i16bit, xyz[i].y.i16bit, xyz[i].z.i16bit);
+        b_log("x:%d y:%d z:%d\r\n", xyz[i].x_mg, xyz[i].y_mg, xyz[i].z_mg);
     }
 }
 
