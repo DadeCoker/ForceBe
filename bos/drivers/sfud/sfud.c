@@ -1172,7 +1172,7 @@ static sfud_err wait_busy(const sfud_flash *flash)
 
     if (result != SFUD_SUCCESS || ((status & SFUD_STATUS_REGISTER_BUSY)) != 0)
     {
-        SFUD_INFO("Error: Flash wait busy has an error.");
+        SFUD_INFO("Error: Flash wait busy has an error. %d %d", result, status);
     }
 
     return result;

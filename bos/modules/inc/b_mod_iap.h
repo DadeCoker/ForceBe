@@ -125,7 +125,11 @@ void bIapJump2App(void);
  * XXX: Boot or App
  * 主要用于判断，进入启动程序和进入应用程序时，当前状态是否合法
  */
-int bIapInit(void);
+/**
+ * \param dev_no：固件暂存区的设备号
+ *        注：暂存于内部FLASH 或 没有暂存区，dev_no = 0
+ */
+int bIapInit(uint8_t dev_no);
 /**
  * \return int 0：没有升级流程  1：升级流程正常运行中  -1：升级流程异常
  */

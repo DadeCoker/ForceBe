@@ -268,7 +268,7 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
     flash->spi.unlock    = _bSPIFlashSPI_Unlock;
     flash->spi.user_data = NULL;
     flash->retry.delay   = NULL;
-    flash->retry.times   = 10000;  // Required
+    flash->retry.times   = 0xFFFFFFFF;  // Required
     return result;
 }
 
@@ -299,7 +299,7 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
         bHalSpiSend(&_if->_if._spi, &cmd, 1);
         bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
     }
-    bHalDelayMs(10);
+    bHalDelayUs(10);
     return 0;
 }
 

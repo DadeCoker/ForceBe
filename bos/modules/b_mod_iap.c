@@ -335,7 +335,7 @@ __WEAKDEF void bIapJump2App()
     ((pJumpFunc_t)(*((volatile uint32_t *)(APP_START_ADDR + 4))))();
 }
 
-int bIapInit()
+int bIapInit(uint8_t dev_no)
 {
     uint32_t flag_check = 0;
     bHalFlashInit();
@@ -345,6 +345,7 @@ int bIapInit()
     {
         memset(&bIapFlag, 0, sizeof(bIapFlag_t));
     }
+    bIapFlag.info.dev_no = dev_no;
     return 0;
 }
 
