@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/V7.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/V7.3.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -276,5 +276,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2021.07 | 修改gcc环境下链接文件的修改方法                              |      |
 | 2021.10 | 修改将分离的两个仓库内容重新加入进来，改变HAL代码的方式以及各个驱动的接口结构。V7.0.0 |      |
 | 2021.11 | 针对警告和报错点进行优化, mcu目录下的代码默认用寄存器操作方式 |      |
-| 2021.12 | 优化整体结构，增加对应配置工具，方便使用。                   |      |
+| 2021.12 | 优化整体结构，增加对应配置工具，方便使用。支持V7.3.0及更新版本的 b_config.h |      |
 
