@@ -202,4 +202,9 @@ config COMPILER_FLAGS
     default "-O3"
     depends on _COREMARK_ENABLE
 
+config _UNITY_ENABLE
+    bool "Unity Enable/Disable"
+    default n
+
+
 endmenu
