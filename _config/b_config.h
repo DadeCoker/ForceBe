@@ -56,8 +56,9 @@
 //<3001=> MM32SPIN2X
 //<3002=> MM32SPIN0X
 //<4001=> HC32L13X
+//<4002=> HC32L07X
 //<7001=> CH32F103
-#define MCU_PLATFORM 1004
+#define MCU_PLATFORM 4002
 //</h>
 
 //<h> Hal Configuration
