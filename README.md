@@ -75,13 +75,23 @@ MCU开发项目。编译器勾选C99
 
 # 5 BabyOS教程
 
-<iframe src="//player.bilibili.com/player.html?aid=300842435&bvid=BV1Ff4y1o7bZ&cid=769630997&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+视频教程一共有四讲（可以在哔哩哔哩网站搜索BabyOS）：
 
-<iframe src="//player.bilibili.com/player.html?aid=513285928&bvid=BV1Lg411f7cH&cid=769641102&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+第一讲介绍BabyOS，主要介绍项目发起的背景和项目的定位。
 
-<iframe src="//player.bilibili.com/player.html?aid=685829080&bvid=BV1iU4y1q7EJ&cid=770570520&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+https://www.bilibili.com/video/BV1Ff4y1o7bZ?share_source=copy_web
 
-<iframe src="//player.bilibili.com/player.html?aid=385762470&bvid=BV1JZ4y1Y7S7&cid=771576161&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+第二讲BabyOS的快速体验和进阶体验，根据手册的第2、3、4章节内容进行讲解以及实操演示。
+
+https://www.bilibili.com/video/BV1Lg411f7cH?share_source=copy_web
+
+第三讲BabyOS的功能概述，根据手册的第5章节内容进行讲解。对BabyOS各个部分的设计进行讲解。
+
+https://www.bilibili.com/video/BV1iU4y1q7EJ?share_source=copy_web
+
+第四讲BabyOS的功能组件，根据手册的第6、7章节内容进行讲解，对modules目录和utils目录的内容进行讲解。
+
+https://www.bilibili.com/video/BV1JZ4y1Y7S7?share_source=copy_web
 
 # 6 BabyOS例程
 
@@ -143,9 +153,9 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 
 管理员邮箱：notrynohigh@outlook.com
 
-开发小组群：
+开发小组QQ群&开发动态发布的公众号：
 
-![qq](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/qq.png)
+![qq](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/qq.png) ![qrcode](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/qrcode.jpg)
 
 
 
