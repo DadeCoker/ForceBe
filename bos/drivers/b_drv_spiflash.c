@@ -333,14 +333,14 @@ static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
     return 0;
 }
 
-static int _bSPIFLASH_ReadBuf(bSPIFLASH_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _bSPIFLASH_ReadBuf(bSPIFLASH_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
     sfud_flash *flash = (sfud_flash *)(pdrv->_private._p);
     sfud_read(flash, addr, len, pbuf);
     return len;
 }
 
-static int _bSPIFLASH_WriteBuf(bSPIFLASH_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _bSPIFLASH_WriteBuf(bSPIFLASH_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
     sfud_flash *flash = (sfud_flash *)(pdrv->_private._p);
     sfud_write(flash, addr, len, pbuf);

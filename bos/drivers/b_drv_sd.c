@@ -442,16 +442,16 @@ static int _bSD_WriteSingleBlock(uint32_t sector, uint8_t *pbuf)
 
 // sector:  Sector number to write from
 // count: Number of sectors to write
-static int _bSD_Write(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint16_t count)
+static int _bSD_Write(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint32_t count)
 {
-    int i = 0;
+    int i      = 0;
     int retval = -1;
     if (bSD_HalIf.is_spi)
     {
         for (i = 0; i < count; i++)
         {
             retval = _bSD_WriteSingleBlock(sector + i, pbuf + i * 512);
-            if(retval < 0)
+            if (retval < 0)
             {
                 break;
             }
@@ -461,25 +461,25 @@ static int _bSD_Write(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint16
     {
         retval = bHalSDIOWriteBlocks(bSD_HalIf._if._sdio, pbuf, sector, count);
     }
-    if(retval < 0)
+    if (retval < 0)
     {
         return -1;
-    }    
+    }
     return count;
 }
 
 // sector:  Sector number to write from
 // count: Number of sectors to write
-static int _bSD_Read(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint16_t count)
+static int _bSD_Read(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint32_t count)
 {
-    int i = 0;
+    int i      = 0;
     int retval = -1;
     if (bSD_HalIf.is_spi)
     {
         for (i = 0; i < count; i++)
         {
             retval = _bSD_ReadSingleBlock(sector + i, pbuf + i * 512);
-            if(retval < 0)
+            if (retval < 0)
             {
                 break;
             }
@@ -489,7 +489,7 @@ static int _bSD_Read(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint16_
     {
         retval = bHalSDIOReadBlocks(bSD_HalIf._if._sdio, pbuf, sector, count);
     }
-    if(retval < 0)
+    if (retval < 0)
     {
         return -1;
     }

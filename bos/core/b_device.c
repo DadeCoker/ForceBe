@@ -188,7 +188,7 @@ int bDeviceOpen(uint8_t no)
     return retval;
 }
 
-int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len)
+int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint32_t len)
 {
     int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM || pdata == NULL)
@@ -210,7 +210,7 @@ int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len)
     return retval;
 }
 
-int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint16_t len)
+int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint32_t len)
 {
     int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM || pdata == NULL)

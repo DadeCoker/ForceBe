@@ -66,12 +66,12 @@ __WEAKDEF int bMcuFlashErase(uint32_t raddr, uint8_t pages)
     return -1;
 }
 
-__WEAKDEF int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
+__WEAKDEF int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len)
 {
     return -1;
 }
 
-__WEAKDEF int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
+__WEAKDEF int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint32_t len)
 {
     return -1;
 }
@@ -109,12 +109,12 @@ int bHalFlashErase(uint32_t raddr, uint8_t pages)
     return bMcuFlashErase(raddr, pages);
 }
 
-int bHalFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
+int bHalFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len)
 {
     return bMcuFlashWrite(raddr, pbuf, len);
 }
 
-int bHalFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
+int bHalFlashRead(uint32_t raddr, uint8_t *pbuf, uint32_t len)
 {
     return bMcuFlashRead(raddr, pbuf, len);
 }

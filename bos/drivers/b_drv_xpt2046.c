@@ -123,7 +123,7 @@ static uint16_t _bXPT2046ReadVal(uint8_t r)
     return ((h << 8) | (l)) >> 3;
 }
 
-static int _bXPT2046Read(bXPT2046_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _bXPT2046Read(bXPT2046_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
     bTouchAdVal_t *pxy = (bTouchAdVal_t *)pbuf;
 

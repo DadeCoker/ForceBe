@@ -93,7 +93,7 @@ bPCF8574_Driver_t              bPCF8574_Driver;
  * \{
  */
 
-static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     uint8_t tmp;
     if (off >= 8 || len != 1)
@@ -114,7 +114,7 @@ static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, 
     return len;
 }
 
-static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     uint8_t tmp;
     if (off >= 8 || len != 1)

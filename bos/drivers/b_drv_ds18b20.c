@@ -185,7 +185,7 @@ static int _bDS18B20Ctl(bDS18B20_Driver_t *pdrv, uint8_t cmd, void *param)
     return retval;
 }
 
-static int _bDS18B20Read(bDS18B20_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _bDS18B20Read(bDS18B20_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     int16_t    temp_dig = 0;
     float      temp     = 0;

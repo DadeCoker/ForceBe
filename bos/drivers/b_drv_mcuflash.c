@@ -103,12 +103,12 @@ static int _bMCUFLASHClose(bMCUFLASH_Driver_t *pdrv)
     return bHalFlashLock();
 }
 
-static int _bMCUFLASHWrite(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _bMCUFLASHWrite(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     return bHalFlashWrite(off, pbuf, len);
 }
 
-static int _bMCUFLASHRead(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _bMCUFLASHRead(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     return bHalFlashRead(off, pbuf, len);
 }

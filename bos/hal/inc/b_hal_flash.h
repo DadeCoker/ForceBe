@@ -57,8 +57,8 @@ int      bMcuFlashInit(void);
 int      bMcuFlashUnlock(void);
 int      bMcuFlashLock(void);
 int      bMcuFlashErase(uint32_t raddr, uint8_t pages);
-int      bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len);
-int      bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len);
+int      bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len);
+int      bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint32_t len);
 uint32_t bMcuFlashSectorSize(void);
 uint32_t bMcuFlashChipSize(void);
 //---------------------------------------------------------------------------------------
@@ -67,8 +67,8 @@ int      bHalFlashInit(void);
 int      bHalFlashUnlock(void);
 int      bHalFlashLock(void);
 int      bHalFlashErase(uint32_t raddr, uint8_t pages);
-int      bHalFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len);
-int      bHalFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len);
+int      bHalFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len);
+int      bHalFlashRead(uint32_t raddr, uint8_t *pbuf, uint32_t len);
 uint32_t bHalFlashSectorSize(void);
 uint32_t bHalFlashChipSize(void);
 /**

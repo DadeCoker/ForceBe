@@ -222,7 +222,7 @@ static uint8_t _bEspNumLen(uint32_t n)
 {
     uint32_t t   = 1;
     uint8_t  len = 0;
-    if(n == 0)
+    if (n == 0)
     {
         return 1;
     }
@@ -904,7 +904,7 @@ static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
     return retval;
 }
 
-static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len)
+static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len)
 {
     int retval = 0;
     if (len < sizeof(bWiFiData_t) || pbuf == NULL || bWiFiRecDataLock)

@@ -68,8 +68,8 @@ typedef struct bDriverIf
     int (*open)(struct bDriverIf *pdrv);
     int (*close)(struct bDriverIf *pdrv);
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
-    int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len);
-    int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len);
+    int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
+    int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
     void *_hal_if;
     union
     {

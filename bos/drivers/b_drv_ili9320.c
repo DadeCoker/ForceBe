@@ -177,7 +177,7 @@ static void _bILI9320SetCursor(uint16_t Xpos, uint16_t Ypos)
     _bLcdWriteCmd(0X22);
 }
 
-static int _bILI9320Write(bILI9320_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _bILI9320Write(bILI9320_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
     uint16_t     x      = addr % LCD_X_SIZE;
     uint16_t     y      = addr / LCD_X_SIZE;

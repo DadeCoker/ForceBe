@@ -207,7 +207,7 @@ int bOpen(uint8_t dev_no, uint8_t flag)
     return -1;
 }
 
-int bRead(int fd, uint8_t *pdata, uint16_t len)
+int bRead(int fd, uint8_t *pdata, uint32_t len)
 {
     int retval;
     if (fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
@@ -228,7 +228,7 @@ int bRead(int fd, uint8_t *pdata, uint16_t len)
     return retval;
 }
 
-int bWrite(int fd, uint8_t *pdata, uint16_t len)
+int bWrite(int fd, uint8_t *pdata, uint32_t len)
 {
     int retval;
     if (fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)

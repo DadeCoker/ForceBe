@@ -309,6 +309,7 @@ int bIapSetFwInfo(bIapFwInfo_t *pinfo)
 #if IAP_FILE_CACHE == 0
     bIapFlag.app_invalid = 1;
     _bIapSaveFlag();
+    bIapFwInfo.dev_no = bIapMcuDevNo;
 #endif
 #if ((IAP_FILE_CACHE == 0) || (IAP_FILE_CACHE == 1) || (IAP_FILE_CACHE == 2))
     fd = bOpen(bIapFwInfo.dev_no, BCORE_FLAG_RW);
@@ -422,12 +423,12 @@ int bIapVerifyFwData()
     bClose(fd_flash);
 #endif
     bClose(fd_mcu);
-#if _IAP_CHECKSUM_ENABLE
     if (_bIapCalCRC32(0, (uint8_t *)APP_START_ADDR, bIapFwInfo.len) != bIapFwInfo.c_crc32)
     {
+#if _IAP_CHECKSUM_ENABLE        
         return -1;
+#endif        
     }
-#endif
     return 0;
 }
 

@@ -133,11 +133,11 @@ int bMcuFlashErase(uint32_t raddr, uint8_t pages)
     return retval;
 }
 
-int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
+int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len)
 {
     int      timeout  = 0;
     uint32_t wdata[2] = {0, 0};
-    uint16_t wlen = (len + 7) / 8, i = 0;
+    uint32_t wlen = (len + 7) / 8, i = 0;
     uint32_t tmp;
     if (sMcuFlashSize == 0)
     {
@@ -184,7 +184,7 @@ int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     return (wlen * 8);
 }
 
-int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
+int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint32_t len)
 {
     if (sMcuFlashSize == 0)
     {

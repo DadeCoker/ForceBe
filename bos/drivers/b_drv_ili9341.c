@@ -289,7 +289,7 @@ static int _bILI9341Ctl(bILI9341_Driver_t *pdrv, uint8_t cmd, void *param)
     return retval;
 }
 
-static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
     uint16_t     x      = addr % LCD_X_SIZE;
     uint16_t     y      = addr / LCD_X_SIZE;

@@ -117,7 +117,7 @@ static void _FM25_WR_Lock(bFM25CL_HalIf_t *_if)
 /**************************************************************************************************driver
  * interface*****/
 
-static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, uint16_t len)
+static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, uint32_t len)
 {
     uint8_t cmd[3];
     bDRV_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
@@ -133,7 +133,7 @@ static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, 
     return len;
 }
 
-static int _FM25_WritBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pdat, uint16_t len)
+static int _FM25_WritBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pdat, uint32_t len)
 {
     uint8_t cmd[3];
     bDRV_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);

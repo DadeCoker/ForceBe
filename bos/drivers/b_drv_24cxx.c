@@ -94,7 +94,7 @@ b24CXX_Driver_t              b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b2
  * \{
  */
 
-static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     uint8_t  l_c = off % 8;
     uint16_t i   = 0;
@@ -126,7 +126,7 @@ static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint
     return len;
 }
 
-static int _b24CXXRead(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _b24CXXRead(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     bDRV_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
     bHalI2CMemRead(_if, off, pbuf, len);
