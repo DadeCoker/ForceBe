@@ -1,6 +1,0 @@
-[submodule "bos_config"]
-	path = bos_config
-	url = https://gitee.com/notrynohigh/bos_config.git
-[submodule "bos_hal"]
-	path = bos_hal
-	url = https://gitee.com/notrynohigh/bos_hal.git
