@@ -136,7 +136,7 @@ void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t 
     uint32_t param    = 0;
     uint8_t  name_len = 0;
     int      str_len  = 0;
-    char *   p_tmp = NULL, *pbuf = (char *)bLogBuff;
+    char    *p_tmp = NULL, *pbuf = (char *)bLogBuff;
     char     line_number[8];
     va_list  ap;
 
@@ -146,10 +146,10 @@ void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t 
     }
 
     memset(pbuf, 0, B_LOG_BUF_SIZE);
-    param = bLogParamTable[type];
 
     if (type < 3)
     {
+        param           = bLogParamTable[type];
         pbuf[buf_len++] = bLogPrefix[type];
         pbuf[buf_len++] = ':';
         if (param & B_LOG_PARAM_FILE)
