@@ -59,7 +59,7 @@ extern "C" {
  * \{
  */
 
-typedef void (*pBtnEventHandler_t)(uint16_t event, uint8_t param);
+typedef void (*pBtnEventHandler_t)(uint8_t id, uint16_t event, uint8_t param);
 
 /**
  * \}

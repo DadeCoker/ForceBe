@@ -195,7 +195,7 @@ static void _bButtonCallback(void *p)
     {
         if (bButtonEventInfo[btn->id].handler)
         {
-            bButtonEventInfo[btn->id].handler((0x0001 << btn->event), btn->click_cnt);
+            bButtonEventInfo[btn->id].handler(btn->id, (0x0001 << btn->event), btn->click_cnt);
         }
     }
 }
