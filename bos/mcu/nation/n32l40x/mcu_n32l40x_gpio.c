@@ -37,7 +37,7 @@
 
 //         Register Address
 
-#define GPIO_REG_OFF (0x400)
+#define GPIO_REG_OFF (0x400UL)
 #define GPIO_REG_BASE (0x40010800UL)
 
 typedef struct
@@ -86,11 +86,11 @@ static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t di
     }
     else
     {
-        pGpio->PMODE &= ~(0x11 << pin);
-        pGpio->PMODE |= (dir_val << pin);
+        pGpio->PMODE &= ~(0x3 << (pin * 2));
+        pGpio->PMODE |= (dir_val << (pin * 2));
 
-        pGpio->PUPD &= ~(0x11 << pin);
-        pGpio->PUPD |= (pull_val << pin);
+        pGpio->PUPD &= ~(0x3 << (pin * 2));
+        pGpio->PUPD |= (pull_val << (pin * 2));
     }
 }
 
