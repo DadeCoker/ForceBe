@@ -31,6 +31,8 @@
 #ifndef __FLEXIBLE_BUTTON_H__
 #define __FLEXIBLE_BUTTON_H__
 
+#include <stdint.h>
+
 #include "b_config.h"
 
 #if _FLEXIBLEBUTTON_ENABLE

@@ -49,7 +49,8 @@
 //<1003=> STM32F10X_HD
 //<1004=> STM32F10X_CL
 //<2001=> NATION_F40X
-#define _MCU_PLATFORM 1004
+//<3001=> MM32SPIN2X
+#define _MCU_PLATFORM 3001
 //</h>
 
 //<h> Modules Configuration
@@ -72,12 +73,10 @@
 //<3=> error
 #define _DEBUG_ENABLE 1
 
-//<e> Battery Enable/Disable
-#define _BATTERY_ENABLE 0
-//<o> Battery Threshold (mv)
-#define BATTERY_THRESHOLD 3350
-//<o> Battery Detection Cycle (ms)
-#define BATTERY_D_CYCLE 500
+//<e> ADCHUB Enable/Disable
+#define _ADCHUB_ENABLE 0
+//<o> Filter Buffer Size
+#define FILTER_BUF_SIZE 10
 //</e>
 
 //<e> Error Manage Enable/Disable

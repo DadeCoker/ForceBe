@@ -1,6 +1,8 @@
 #ifndef __ALGO_SPEEDPID_H__
 #define __ALGO_SPEEDPID_H__
 
+#include <stdint.h>
+
 struct PID
 {
     double SetSpeed;     //定义设定值

@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_battery.h"
+#include "b_mod_adchub.h"
 #include "b_mod_button.h"
 #include "b_mod_error.h"
 #include "b_mod_event.h"

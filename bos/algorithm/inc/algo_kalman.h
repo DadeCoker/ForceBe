@@ -1,6 +1,8 @@
 #ifndef __ALGO_KALMAN_H__
 #define __ALGO_KALMAN_H__
 
+#include <stdint.h>
+
 #include "algo_matrix.h"
 
 /* Refer to http://en.wikipedia.org/wiki/Kalman_filter for

@@ -36,7 +36,10 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
+#include <stdint.h>
+
 #include "b_config.h"
+
 #if _FS_ENABLE
 
 #if (_FS_SELECT == 0)

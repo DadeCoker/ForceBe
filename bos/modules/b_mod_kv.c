@@ -311,7 +311,6 @@ static int _bKV_LoadInfo(int fd)
             bKV_Info.t_index = t1;
         }
     }
-    //    b_log("t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);
     return 0;
 }
 
@@ -407,7 +406,6 @@ static int _bKV_ArrangeSpace(int fd)
     {
         _bKV_ClearSector(fd, bKV_SECTOR_T2 | bKV_SECTOR_D2);
     }
-    //    b_log_w("t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);
     return 0;
 }
 
@@ -438,7 +436,6 @@ static int _bKV_AddNew(int fd, uint32_t id, uint8_t *pbuf, uint16_t len)
     bKV_Info.t_index += 1;
     bLseek(fd, tmp.address);
     bWrite(fd, pbuf, tmp.len);
-    //    b_log_w("n: t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);
     return 0;
 }
 
@@ -488,7 +485,6 @@ static int _bKV_ModifyValue(int fd, uint32_t index, bKV_Index_t t, uint32_t id, 
         bWrite(fd, (uint8_t *)&t.statu, sizeof(uint32_t));
         retval = _bKV_AddNew(fd, id, pbuf, len);
     }
-    //    b_log_w("t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);
     return retval;
 }
 

@@ -1,6 +1,6 @@
 /**
  *!
- * \file       b_mod_battery.h
+ * \file       b_mod_ADCHUB.h
  * \version    v0.0.1
  * \date       2020/03/26
  * \author     Bean(notrynohigh@outlook.com)
@@ -28,16 +28,19 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_MOD_BATTERY_H__
-#define __B_MOD_BATTERY_H__
+#ifndef __B_MOD_ADCHUB_H__
+#define __B_MOD_ADCHUB_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
+#include <stdint.h>
+
 #include "b_config.h"
-#if _BATTERY_ENABLE
+
+#if _ADCHUB_ENABLE
 /**
  * \addtogroup BABYOS
  * \{
@@ -49,48 +52,60 @@ extern "C" {
  */
 
 /**
- * \addtogroup BATTERY
+ * \addtogroup ADCHUB
  * \{
  */
 
 /**
- * \defgroup BATTERY_Exported_TypesDefinitions
+ * \defgroup ADCHUB_Exported_TypesDefinitions
  * \{
  */
-typedef uint16_t (*pBatteryGetmV_t)(void);
+
+typedef void (*pAdchubCb_t)(uint32_t ad_val, uint32_t arg);
+
+typedef struct _AdcInfo
+{
+    uint8_t          srq;
+    uint8_t          filter;
+    uint8_t          flag;
+    uint8_t          index;
+    pAdchubCb_t      callback;
+    uint32_t         arg;
+    uint32_t         buf[FILTER_BUF_SIZE];
+    struct _AdcInfo *next;
+    struct _AdcInfo *prev;
+} bAdcInfo_t;
+
+typedef bAdcInfo_t bAdcInstance_t;
+
 /**
  * \}
  */
 
 /**
- * \defgroup BATTERY_Exported_Defines
+ * \defgroup ADCHUB_Exported_Defines
  * \{
  */
 
-/**
- * \defgroup BATTERY_STATUS_Defines
- * \{
- */
-
-#define BATTERY_STA_NORMAL 0
-#define BATTERY_STA_LOW 1
+#define bADC_INSTANCE(name, ad_srq, filter_en, cb, cb_arg) \
+    bAdcInstance_t name = {                                \
+        .srq      = ad_srq,                                \
+        .filter   = filter_en,                             \
+        .callback = cb,                                    \
+        .arg      = cb_arg,                                \
+    }
 
 /**
  * \}
  */
 
 /**
- * \}
- */
-
-/**
- * \defgroup BATTERY_Exported_Functions
+ * \defgroup ADCHUB_Exported_Functions
  * \{
  */
 
-int      bBatteryInit(pBatteryGetmV_t f);
-uint8_t  bBatGetStatus(void);
-uint16_t bBatGetVoltageValue(void);
+int bAdchubRegist(bAdcInstance_t *pInstance);
+int bAdchubFeedValue(uint8_t ad_srq, uint32_t ad_val);
 
 /**
  * \}

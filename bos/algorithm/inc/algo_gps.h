@@ -12,9 +12,11 @@
 #ifndef __ALGO_GPS_H__
 #define __ALGO_GPS_H__
 
+#include <stdint.h>
 #include <stdio.h>
 
 #include "algo_kalman.h"
+
 
 /* Create a GPS filter that only tracks two dimensions of position and
    velocity.

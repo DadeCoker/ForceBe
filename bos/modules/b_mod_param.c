@@ -117,7 +117,7 @@ static int _copy2int(void *addr, uint8_t size)
 
 static void _ShellParamHandle(char argc, char *argv)
 {
-    int val;
+    int val, tmp;
     if (argc > 1)
     {
         bSECTION_FOR_EACH(b_mod_param, bParamInstance_t, ptmp)
@@ -130,8 +130,10 @@ static void _ShellParamHandle(char argc, char *argv)
                     memcpy(ptmp->addr, (void *)&val, ptmp->size);
                 }
                 else if (argc == 2)
-                {
-                    b_log("%s:%d\r\n", ptmp->name, _copy2int(ptmp->addr, ptmp->size));
+                {         
+                    tmp = _copy2int(ptmp->addr, ptmp->size);   
+                    tmp = tmp;
+                    b_log("%s:%d\r\n", ptmp->name, tmp);                  
                 }
                 break;
             }

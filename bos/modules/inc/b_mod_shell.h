@@ -36,7 +36,10 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
+#include <stdint.h>
+
 #include "b_config.h"
+
 #if _NR_MICRO_SHELL_ENABLE
 #include "thirdparty/nr_micro_shell/inc/nr_micro_shell.h"
 /**
