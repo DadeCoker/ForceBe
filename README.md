@@ -81,21 +81,28 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 ###   添加文件
 
-bos/core/         核心文件全部添加至工程
+```C
+.
+├── bos
+│   ├── algorithm               //常用算法，选择需要的算法添加至工程
+│   ├── core					//核心文件，必须全部包含至工程
+│   ├── drivers					//驱动文件，选择需要的驱动添加至工程
+│   ├── modules					//功能模块，可全部添加至工程，由配置文件b_config.h配置
+│   ├── thirdparty				//第三方代码，选择需要的代码添加
+│   └── utils					//实用代码，选择需要的添加至工程
+├── bos_config					//子模块，BabyOS配置文件及设备注册 https://gitee.com/notrynohigh/bos_config
+├── bos_hal						//子模块，BabyOS硬件抽象层 https://gitee.com/notrynohigh/bos_hal
+├── build						//cmake编译目录
+├── CMakeLists.txt
+├── doc							//相关文档
+├── Examples					//使用例子
+│   └── qpn
+├── LICENSE						//开源协议
+├── main.c						//测试main.c
+└── README.md
+```
 
-bos/config/       配置文件及设备列表文件，全部添加至工程
 
-bos/driver/       选择需要的驱动添加至工程，将b_hal.h内定义的硬件接口取消注释
-
-bos/hal/hal/      硬件抽象层，将需要的文件添加至工程，根据具体平台进行修改
-
-bos/hal/utils/    底层实用代码，全部添加至工程
-
-bos/modules/   功能模块，全部添加至工程
-
-bos/algorithm/ 实用算法，选择需要的添加至工程
-
-bos/thirdparty/ 第三方开源代码，将需要的添加至工程
 
 ### 增加系统定时器
 
