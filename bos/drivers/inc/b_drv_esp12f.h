@@ -37,7 +37,7 @@ extern "C" {
 
 /*Includes ----------------------------------------------*/
 #include "drivers/inc/b_driver.h"
-
+#include "utils/inc/b_utils.h"
 /**
  * \addtogroup BABYOS
  * \{

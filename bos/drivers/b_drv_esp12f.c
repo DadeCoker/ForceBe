@@ -33,9 +33,6 @@
 #include "drivers/inc/b_drv_esp12f.h"
 
 #include <stdio.h>
-
-#include "utils/inc/b_utils.h"
-
 /**
  * \addtogroup BABYOS
  * \{
@@ -501,7 +498,6 @@ static uint8_t _bEspSetAp(bDriverInterface_t *pdrv, void *param)
 static uint8_t _bEspJoinAp(bDriverInterface_t *pdrv, void *param)
 {
     bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
     uint8_t        retval = AT_INVALID_ID;
     char           buf[200];
     int            len   = 0;
@@ -829,11 +825,11 @@ static void _bEspPolling()
         }
         if (pinfo->opt.plist == NULL || pinfo->opt.at_id != AT_INVALID_ID)
         {
-            return;
+            continue;
         }
         if (!IS_ESP_OPT(pinfo->opt.plist[pinfo->opt.index]))
         {
-            return;
+            continue;
         }
         pinfo->opt.at_id =
             bOptFuncTable[pinfo->opt.plist[pinfo->opt.index]](pdrv, pinfo->opt_param);
