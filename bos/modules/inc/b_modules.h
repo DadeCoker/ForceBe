@@ -58,6 +58,7 @@ extern "C" {
 #include "b_mod_utc.h"
 #include "b_mod_xm128.h"
 #include "b_mod_ymodem.h"
+#include "b_mod_pwm.h"
 
 #ifdef __cplusplus
 }

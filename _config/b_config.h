@@ -161,6 +161,9 @@
 //<q> Soft-timer Enable/Disable
 #define _TIMER_ENABLE 0
 
+//<q> Soft-pwm Enable/Disable
+#define _PWM_ENABLE 0 
+
 //<q> Tuning Parameters Enable/Disable
 #define _PARAM_ENABLE 0
 
