@@ -170,10 +170,15 @@ int bDeviceInit()
         }
     }
 
-    b_log("dev_no\t\t%16s\tstate\n", "des");
+    b_log("\r\ndev_no\t\t%16s\tstate\r\n", "des");
     for (i = 0; i < B_REG_DEV_NUMBER; i++)
     {
-        b_log("%d\t\t%16s\t%d\n", i, bDriverInterfaceTable[i].pdes,
+        if (bDriverInterfaceTable[i].pdes == NULL)
+        {
+            b_log("%d\t\t%16s\t%d\r\n", i, "no drive", -1);
+            continue;
+        }
+        b_log("%d\t\t%16s\t%d\r\n", i, bDriverInterfaceTable[i].pdes,
               bDriverInterfaceTable[i].status);
     }
     b_log("\r\n");

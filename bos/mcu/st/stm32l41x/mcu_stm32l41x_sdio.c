@@ -35,40 +35,15 @@
 
 #if (MCU_PLATFORM == 1201)
 
-#include "stm32l4xx_hal.h"
-
-#if defined(SDMMC1)
-
-extern SD_HandleTypeDef hsd1;
-
 int bMcuSDIOReadBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks)
 {
-    if (HAL_SD_ReadBlocks(&hsd1, pdata, addr, xblocks, 0xFFFFFFFF) == HAL_OK)
-    {
-        return 0;
-    }
     return -1;
 }
 
 int bMcuSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks)
 {
-    uint32_t tick = 0;
-    if (HAL_SD_WriteBlocks(&hsd1, pdata, addr, xblocks, 0xFFFFFFFF) != HAL_OK)
-    {
-        return -1;
-    }
-    tick = bHalGetSysTick();
-    while(HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
-    {
-        if(bHalGetSysTick() - tick >= MS2TICKS(5000))
-        {
-            return -1;
-        }
-    }
     return 0;
 }
-
-#endif
 
 #endif
 
