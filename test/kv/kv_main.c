@@ -10,14 +10,20 @@
 #include "../port.h"
 #include "b_os.h"
 
-bKV_INSTANCE(gKVInstance, bTESTFLASH, 0, 100 * 1024, 4 * 1024);
+bKV_INSTANCE(gKVInstance, bTESTFLASH, 0, 10 * 4 * 1024, 4 * 1024);
 
 void check_name()
 {
-    uint8_t name[64];
-    b_log("read name:");
+    static uint8_t flag    = 0;
+    uint8_t        write[] = "babyos1";
+    uint8_t        name[64];
+    memset(name, 0, sizeof(name));
+    flag     = (flag + 1) % 2;
+    write[6] = write[6] + flag;
+    bKVSetValue(&gKVInstance, "name", write, strlen(write));
+    b_log("read name: %d\r\n", bKVGetValueLength(&gKVInstance, "name"));
     bKVGetValue(&gKVInstance, "name", name, sizeof(name), NULL);
-    b_log("name: %s\n", name);
+    b_log("name: %s\r\n", name);
 }
 
 int main()
@@ -25,7 +31,6 @@ int main()
     port_init();
     bInit();
     bKVInit(&gKVInstance);
-    bKVSetValue(&gKVInstance, "name", "babyos", strlen("babyos"));
     while (1)
     {
         bExec();

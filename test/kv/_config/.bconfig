@@ -25,8 +25,8 @@ _BOS_ALGO_ENABLE=y
 # _ALGO_SHA1_ENABLE is not set
 # _ALGO_SORT_ENABLE is not set
 # _ALGO_UNICODE_ENABLE is not set
-# _ALGO_MD5_ENABLE is not set
-# _ALGO_CRC_ENABLE is not set
+_ALGO_MD5_ENABLE=y
+_ALGO_CRC_ENABLE=y
 # end of Algorithm Configuration
 
 #
