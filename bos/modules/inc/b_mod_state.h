@@ -61,7 +61,7 @@ extern "C" {
  * \{
  */
 
-typedef void (*pStateEvenHandler_t)(void *arg);
+typedef void (*pStateEvenHandler_t)(uint32_t event, void *arg);
 typedef void (*pStateEnterHandler_t)(uint32_t pre_state);
 typedef void (*pStateExitHandler_t)(void);
 typedef void (*pStateHandler_t)(void);
@@ -87,8 +87,6 @@ typedef struct
     bStateEventTable_t   event_table;
 } bStateInfo_t;
 
-typedef bStateInfo_t *bStateInstance_t;
-
 /**
  * \}
  */
@@ -97,8 +95,8 @@ typedef bStateInfo_t *bStateInstance_t;
  * \defgroup STATE_Exported_Defines
  * \{
  */
-#define bSTATE_REG_INSTANCE(state_info)                                                     \
-    bSECTION_ITEM_REGISTER_FLASH(b_mod_state, bStateInstance_t, CONCAT_2(b_, state_info)) = \
+#define bSTATE_REG_INSTANCE(state_info)                                                   \
+    bSECTION_ITEM_REGISTER_FLASH(b_mod_state, bStateInfo_t *, CONCAT_2(b_, state_info)) = \
         &state_info
 /**
  * \}

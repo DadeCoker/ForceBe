@@ -12,9 +12,9 @@
 
 # BabyOS设计和使用手册
 
-**V0.2.3**
+**V0.2.4**
 
-***BabyOS V7.4.6***
+***BabyOS V7.4.10***
 
 
 
@@ -26,11 +26,12 @@
 
 **修订记录：**
 
-| 日期       | 记录                                     | 修订人      |
-| ---------- | ---------------------------------------- | ----------- |
-| 2022.03.18 | 编写初稿                                 | notrynohigh |
-| 2022.06.05 | 增加功能模块详细介绍                     | notrynohigh |
-| 2022.06.06 | 修改按键模块的描述，文档对应代码的版本号 | notrynohigh |
+| 日期       | 记录                                        | 修订人      |
+| ---------- | ------------------------------------------- | ----------- |
+| 2022.03.18 | 编写初稿                                    | notrynohigh |
+| 2022.06.05 | 增加功能模块详细介绍                        | notrynohigh |
+| 2022.06.06 | 修改按键模块的描述，文档对应代码的版本号    | notrynohigh |
+| 2022.10.22 | 链接文件增加b_mod_state段<br>增加状态机介绍 | notrynohigh |
 
 
 
@@ -669,6 +670,15 @@ SECTIONS
     . = ALIGN(4);
   } > FLASH
 
+  .b_mod_state :
+  {
+    . = ALIGN(4);
+    PROVIDE(__start_b_mod_state = .);
+    KEEP(*(SORT(.b_mod_state*)))
+    PROVIDE(__stop_b_mod_state = .);
+    . = ALIGN(4);
+  } > FLASH      
+      
   /* BabyOS Section ---------end----*/
   ......
 }
@@ -1913,6 +1923,60 @@ https://gitee.com/notrynohigh/BabyOS_Example/tree/BearPi/
 例程仓库小熊派分支，利用BabyOS通用协议专用上位机进行固件升级
 
 https://gitee.com/notrynohigh/BabyOS_Protocol
+
+
+
+## 6.18 b_mod_state
+
+此功能模块提供给用户进行应用的开发：
+
+状态：进入状态时执行的函数、在此状态下执行的函数、离开状态时执行的函数
+
+事件：每个状态可附加一个事件表：事件&事件处理函数
+
+### 6.18.1 数据结构
+
+```C
+
+typedef void (*pStateEvenHandler_t)(uint32_t event, void *arg);
+typedef void (*pStateEnterHandler_t)(uint32_t pre_state);
+typedef void (*pStateExitHandler_t)(void);
+typedef void (*pStateHandler_t)(void);
+
+typedef struct
+{
+    uint32_t            event;
+    pStateEvenHandler_t handler;
+} bStateEvent_t;
+
+typedef struct
+{
+    bStateEvent_t *p_event_table;
+    uint32_t       number;
+} bStateEventTable_t;
+
+typedef struct
+{
+    uint32_t             state;
+    pStateEnterHandler_t enter;
+    pStateExitHandler_t  exit;
+    pStateHandler_t      handler;
+    bStateEventTable_t   event_table;
+} bStateInfo_t;
+```
+
+### 6.18.2 接口介绍
+
+```C
+#define bSTATE_REG_INSTANCE(state_info)   //注册状态信息                                                   
+int bStateTransfer(uint32_t state);                //切换状态
+int bStateInvokeEvent(uint32_t event, void *arg);  //触发事件
+int bGetCurrentState(void);                        //获取当前状态
+```
+
+### 6.18.3 使用例子
+
+https://gitee.com/notrynohigh/BabyOS_Example
 
 <div STYLE="page-break-after: always;"></div>
 

@@ -55,7 +55,7 @@
  */
 static bStateInfo_t *pbStateInfo = NULL;
 
-bSECTION_DEF_FLASH(b_mod_state, bStateInstance_t);
+bSECTION_DEF_FLASH(b_mod_state, bStateInfo_t *);
 /**
  * \}
  */
@@ -93,13 +93,17 @@ int bStateTransfer(uint32_t state)
             return 0;
         }
     }
-    bSECTION_FOR_EACH(b_mod_state, bStateInfo_t, ptmp)
+    bSECTION_FOR_EACH(b_mod_state, bStateInfo_t *, pptmp)
     {
+        if (pptmp == NULL)
+        {
+            continue;
+        }
+        bStateInfo_t *ptmp = *pptmp;
         if (ptmp == NULL)
         {
             continue;
         }
-
         if (ptmp->state == state)
         {
             if (pbStateInfo != NULL)
@@ -133,7 +137,7 @@ int bStateInvokeEvent(uint32_t event, void *arg)
     {
         if (pbStateInfo->event_table.p_event_table[i].event == event)
         {
-            B_SAFE_INVOKE(pbStateInfo->event_table.p_event_table[i].handler, arg);
+            B_SAFE_INVOKE(pbStateInfo->event_table.p_event_table[i].handler, event, arg);
             break;
         }
     }
