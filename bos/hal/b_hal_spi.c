@@ -71,7 +71,7 @@ __WEAKDEF int bMcuSpiReceive(const bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t 
 
 int bHalSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {
-    return bHalSpiSetSpeed(spi_if, speed);
+    return bMcuSpiSetSpeed(spi_if, speed);
 }
 
 uint8_t bHalSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat)
@@ -94,7 +94,7 @@ uint8_t bHalSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat)
     }
     else
     {
-        tmp = bHalSpiTransfer(spi_if, dat);
+        tmp = bMcuSpiTransfer(spi_if, dat);
     }
     return tmp;
 }
@@ -116,7 +116,7 @@ int bHalSpiSend(const bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len)
     }
     else
     {
-        retval = bHalSpiSend(spi_if, pbuf, len);
+        retval = bMcuSpiSend(spi_if, pbuf, len);
     }
     return retval;
 }
@@ -138,7 +138,7 @@ int bHalSpiReceive(const bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len)
     }
     else
     {
-        retval = bHalSpiReceive(spi_if, pbuf, len);
+        retval = bMcuSpiReceive(spi_if, pbuf, len);
     }
     return retval;
 }

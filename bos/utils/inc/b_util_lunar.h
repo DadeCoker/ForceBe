@@ -80,10 +80,10 @@ int bSolar2Lunar(uint16_t syear, uint8_t smonth, uint8_t sday, bLunarInfo_t *plu
  * \}
  */
 
-#endif
-
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

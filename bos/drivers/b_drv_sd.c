@@ -32,6 +32,8 @@
 /*Includes ----------------------------------------------*/
 #include "drivers/inc/b_drv_sd.h"
 
+#include "utils/inc/b_util_log.h"
+
 /**
  * \addtogroup B_DRIVER
  * \{

@@ -34,6 +34,7 @@
 #if _UGUI_ENABLE
 #include "core/inc/b_core.h"
 #include "drivers/inc/b_driver.h"
+#include "utils/inc/b_util_log.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -157,10 +158,8 @@ static void _bGUI_TouchExec()
     }
     else
     {
-        AdVal.x_ad =
-            (AdVal.x_ad - X_TOUCH_AD_MIN) * LCD_X_SIZE / (X_TOUCH_AD_MAX - X_TOUCH_AD_MIN);
-        AdVal.y_ad =
-            (AdVal.y_ad - Y_TOUCH_AD_MIN) * LCD_Y_SIZE / (Y_TOUCH_AD_MAX - Y_TOUCH_AD_MIN);
+        AdVal.x_ad = (AdVal.x_ad - X_TOUCH_AD_MIN) * LCD_X_SIZE / (X_TOUCH_AD_MAX - X_TOUCH_AD_MIN);
+        AdVal.y_ad = (AdVal.y_ad - Y_TOUCH_AD_MIN) * LCD_Y_SIZE / (Y_TOUCH_AD_MAX - Y_TOUCH_AD_MIN);
 #if (_LCD_DISP_MODE == 0)
         tmp        = AdVal.x_ad;
         AdVal.x_ad = AdVal.y_ad;

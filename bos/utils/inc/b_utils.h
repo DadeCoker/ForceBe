@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_util_fifo.h
+ * \file        b_utils.h
  * \version     v0.0.1
  * \date        2019/12/23
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,78 +28,17 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTIL_FIFO_H__
-#define __B_UTIL_FIFO_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#ifndef __B_UTILS_H__
+#define __B_UTILS_H__
 /*Includes ----------------------------------------------*/
-#include "b_type.h"
-/**
- * \addtogroup B_UTILS
- * \{
- */
 
-/**
- * \addtogroup FIFO
- * \{
- */
-
-/**
- * \defgroup FIFO_Exported_TypesDefinitions
- * \{
- */
-typedef struct
-{
-    uint8_t *         pbuf;
-    uint16_t          size;
-    volatile uint16_t r_index;
-    volatile uint16_t w_index;
-} bFIFO_Info_t;
-
-typedef bFIFO_Info_t bFIFO_Instance_t;
-/**
- * \}
- */
-
-/**
- * \defgroup FIFO_Exported_Defines
- * \{
- */
-#define bFIFO_INSTANCE(name, _fifo_size)     \
-    static uint8_t   fifo##name[_fifo_size]; \
-    bFIFO_Instance_t name = {.pbuf = fifo##name, .size = _fifo_size, .r_index = 0, .w_index = 0};
-
-/**
- * \}
- */
-
-/**
- * \defgroup FIFO_Exported_Functions
- * \{
- */
-///< pFIFO_Instance \ref bFIFO_INSTANCE
-int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen);
-int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance);
-int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#ifdef __cplusplus
-}
-#endif
+#include "b_util_fifo.h"
+#include "b_util_i2c.h"
+#include "b_util_log.h"
+#include "b_util_lunar.h"
+#include "b_util_spi.h"
+#include "b_util_uart.h"
+#include "b_util_utc.h"
 
 #endif
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

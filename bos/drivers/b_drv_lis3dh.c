@@ -34,6 +34,9 @@
 
 #include <string.h>
 
+#include "utils/inc/b_util_log.h"
+
+
 /**
  * \addtogroup B_DRIVER
  * \{
