@@ -89,7 +89,7 @@ typedef bKVStruct_t bKVInstance_t;
  */
 #define bKV_INSTANCE(name, dev_no, addr, size, e_size) \
     bKVInstance_t name = {                             \
-        .init_f = 0, .dev = dev_no, .address = addr, .total_size = size, erase_size = e_size};
+        .init_f = 0, .dev = dev_no, .address = addr, .total_size = size, .erase_size = e_size};
 
 /**
  * \}
