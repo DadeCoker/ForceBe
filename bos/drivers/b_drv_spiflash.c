@@ -120,9 +120,9 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
 {
     sfud_err           result = SFUD_SUCCESS;
     bSPIFLASH_HalIf_t *_if    = (bSPIFLASH_HalIf_t *)spi->_hal_if;
-    bHalQSPICmdInfo_t info;
-    uint8_t *ptr = (uint8_t *)write_buf;
-    size_t count = 0;
+    bHalQSPICmdInfo_t  info;
+    uint8_t           *ptr   = (uint8_t *)write_buf;
+    size_t             count = 0;
     if ((write_size && write_buf == NULL) || (read_size && read_buf == NULL))
     {
         return SFUD_ERR_WRITE;
@@ -130,7 +130,7 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
     if (_if->is_spi == 0)
     {
         info.instruction = ptr[0];
-        info.imode = B_HAL_QSPI_MODE_1LINE;
+        info.imode       = B_HAL_QSPI_MODE_1LINE;
         count++;
         /* get address */
         if (write_size > 1)
@@ -139,7 +139,7 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
             {
                 /* address size is 3 Byte */
                 info.address = (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
-                info.adsize = B_HAL_QSPI_SIZE_24BIT;
+                info.adsize  = B_HAL_QSPI_SIZE_24BIT;
                 count += 3;
             }
             else
@@ -152,12 +152,12 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
         {
             /* no address stage */
             info.address = 0;
-            info.admode = B_HAL_QSPI_MODE_NONE;
-            info.adsize = 0;
+            info.admode  = B_HAL_QSPI_MODE_NONE;
+            info.adsize  = 0;
         }
         info.alternate = 0;
-        info.abmode = B_HAL_QSPI_MODE_NONE;
-        info.absize = 0;
+        info.abmode    = B_HAL_QSPI_MODE_NONE;
+        info.absize    = 0;
         if (write_buf && read_buf)
         {
             /* recv data */
@@ -204,7 +204,7 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
             /* set send buf and send size */
             info.dsize = write_size - count;
             bHalQSPISendCmd(_if->_if._qspi, &info);
-            
+
             if (write_size - count > 0)
             {
                 if (bHalQSPITransmitData(_if->_if._qspi, (uint8_t *)(ptr + count)) < 0)
@@ -276,20 +276,20 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
 static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
 {
     bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
-    uint8_t cmd = 0xab;
+    uint8_t           cmd = 0xab;
     bHalQSPICmdInfo_t info;
     if (_if->is_spi == 0)
     {
-        info.abmode = B_HAL_QSPI_MODE_NONE;
-        info.absize = 0;
-        info.address = 0;
-        info.admode = B_HAL_QSPI_MODE_NONE;
-        info.adsize = 0;
-        info.alternate = 0;
-        info.dmode = B_HAL_QSPI_MODE_NONE;
-        info.dsize = 0;
-        info.dummy = 0;
-        info.imode = B_HAL_QSPI_MODE_1LINE;
+        info.abmode      = B_HAL_QSPI_MODE_NONE;
+        info.absize      = 0;
+        info.address     = 0;
+        info.admode      = B_HAL_QSPI_MODE_NONE;
+        info.adsize      = 0;
+        info.alternate   = 0;
+        info.dmode       = B_HAL_QSPI_MODE_NONE;
+        info.dsize       = 0;
+        info.dummy       = 0;
+        info.imode       = B_HAL_QSPI_MODE_1LINE;
         info.instruction = cmd;
         bHalQSPISendCmd(_if->_if._qspi, &info);
     }
@@ -306,20 +306,20 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
 static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
 {
     bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
-    uint8_t cmd = 0xb9;
+    uint8_t           cmd = 0xb9;
     bHalQSPICmdInfo_t info;
     if (_if->is_spi == 0)
     {
-        info.abmode = B_HAL_QSPI_MODE_NONE;
-        info.absize = 0;
-        info.address = 0;
-        info.admode = B_HAL_QSPI_MODE_NONE;
-        info.adsize = 0;
-        info.alternate = 0;
-        info.dmode = B_HAL_QSPI_MODE_NONE;
-        info.dsize = 0;
-        info.dummy = 0;
-        info.imode = B_HAL_QSPI_MODE_1LINE;
+        info.abmode      = B_HAL_QSPI_MODE_NONE;
+        info.absize      = 0;
+        info.address     = 0;
+        info.admode      = B_HAL_QSPI_MODE_NONE;
+        info.adsize      = 0;
+        info.alternate   = 0;
+        info.dmode       = B_HAL_QSPI_MODE_NONE;
+        info.dsize       = 0;
+        info.dummy       = 0;
+        info.imode       = B_HAL_QSPI_MODE_1LINE;
         info.instruction = cmd;
         bHalQSPISendCmd(_if->_if._qspi, &info);
     }
