@@ -149,7 +149,6 @@ static void _bButtonCallback(void *p)
             bButtonEventInfo[btn->id].handler((0x0001 << btn->event), btn->click_cnt);
         }
     }
-    b_log("id: [%d]  event: [%d]  repeat: %d\r\n", btn->id, btn->event, btn->click_cnt);
 }
 
 /**

@@ -151,7 +151,7 @@ int bSDB_Write(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf)
         return -1;
     }
 
-    bCMD_Erase_t cmd_s;
+    bFlashErase_t cmd_s;
     cmd_s.addr = pSDB_Instance->address;
     cmd_s.num  = 1;
 

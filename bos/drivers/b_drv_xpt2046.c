@@ -125,15 +125,15 @@ static uint16_t _bXPT2046ReadVal(uint8_t r)
 
 static int _bXPT2046Read(bXPT2046_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    bTouchAD_ReadStruct_t *pxy = (bTouchAD_ReadStruct_t *)pbuf;
+    bTouchAdVal_t *pxy = (bTouchAdVal_t *)pbuf;
 
-    if (len < sizeof(bTouchAD_ReadStruct_t) || pbuf == NULL)
+    if (len < sizeof(bTouchAdVal_t) || pbuf == NULL)
     {
         return -1;
     }
     pxy->x_ad = _bXPT2046ReadVal(XPT2046_X);
     pxy->y_ad = _bXPT2046ReadVal(XPT2046_Y);
-    return sizeof(bTouchAD_ReadStruct_t);
+    return sizeof(bTouchAdVal_t);
 }
 
 static int _bXPT2046Close(bXPT2046_Driver_t *pdrv)

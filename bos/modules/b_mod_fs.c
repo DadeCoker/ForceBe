@@ -166,7 +166,7 @@ int _bFS_DeviceErase(const struct lfs_config *c, lfs_block_t block)
     int          fd     = -1;
     int          retval = LFS_ERR_OK;
     uint32_t     e_size = 4096;
-    bCMD_Erase_t cmd;
+    bFlashErase_t cmd;
     fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
     if (fd >= 0)
     {

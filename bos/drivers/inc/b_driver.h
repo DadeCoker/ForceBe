@@ -83,7 +83,7 @@ typedef int (*pbDriverInit_t)(void);
 typedef struct
 {
     uint8_t config_val;
-} bCameraCfgStruct_t;
+} bCameraCfg_t;
 
 typedef struct
 {
@@ -91,14 +91,14 @@ typedef struct
     uint16_t yoff;
     uint16_t xsize;
     uint16_t ysize;
-} bCameraCfgOutsize_t;
+} bCameraOutsize_t;
 
 // Flash
 typedef struct
 {
     uint32_t addr;
     uint32_t num;
-} bCMD_Erase_t;
+} bFlashErase_t;
 
 // GSensor
 typedef struct
@@ -112,26 +112,26 @@ typedef struct
 {
     uint8_t fifo_mode;
     uint8_t fifo_length;
-} bGSensorCfgFIFO_t;
+} bGSensorFifo_t;
 
 // LCD
 typedef struct
 {
     uint16_t color;
-} bLCD_WriteStruct_t;
+} bLcdWrite_t;
 
 typedef struct
 {
     uint16_t reg;
     uint16_t dat;
-} bLCD_RwAddrStruct_t;
+} bLcdRWAddress_t;
 
 // Touch
 typedef struct
 {
     uint16_t x_ad;
     uint16_t y_ad;
-} bTouchAD_ReadStruct_t;
+} bTouchAdVal_t;
 
 /**
  * \}
@@ -144,16 +144,16 @@ typedef struct
 
 //-----------------------------------------COMMAND--
 // Camera
-#define bCMD_CONF_LIGHTMODE 0   // bCameraCfgStruct_t
-#define bCMD_CONF_COLOR_SAT 1   // bCameraCfgStruct_t
-#define bCMD_CONF_BRIGHTNESS 2  // bCameraCfgStruct_t
-#define bCMD_CONF_CONTRAST 3    // bCameraCfgStruct_t
-#define bCMD_CONF_SHARPNESS 4   // bCameraCfgStruct_t
-#define bCMD_CONF_FLASH_LED 5   // bCameraCfgStruct_t
+#define bCMD_CONF_LIGHTMODE 0   // bCameraCfg_t
+#define bCMD_CONF_COLOR_SAT 1   // bCameraCfg_t
+#define bCMD_CONF_BRIGHTNESS 2  // bCameraCfg_t
+#define bCMD_CONF_CONTRAST 3    // bCameraCfg_t
+#define bCMD_CONF_SHARPNESS 4   // bCameraCfg_t
+#define bCMD_CONF_FLASH_LED 5   // bCameraCfg_t
 #define bCMD_CONF_OUTSIZE 6
 
 // Flash
-#define bCMD_ERASE_SECTOR 0      // <==> bCMD_Erase_t
+#define bCMD_ERASE_SECTOR 0      // <==> bFlashErase_t
 #define bCMD_GET_SECTOR_SIZE 1   // <==> uint32_t
 #define bCMD_GET_SECTOR_COUNT 2  // <==> uint32_t
 
@@ -161,7 +161,7 @@ typedef struct
 #define bCMD_CFG_ODR 0        // uint16_t Hz
 #define bCMD_CFG_FS 1         // uint8_t g
 #define bCMD_CFG_POWERDOWN 2  // no param
-#define bCMD_CFG_FIFO 3       // bGSensorCfgFIFO_t
+#define bCMD_CFG_FIFO 3       // bGSensorFifo_t
 
 /**
  * \}

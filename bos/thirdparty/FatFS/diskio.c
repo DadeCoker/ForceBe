@@ -135,7 +135,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
         case DEV_SPIFLASH:
         {
             // translate the arguments here
-            bCMD_Erase_t cmd_erase;
+            bFlashErase_t cmd_erase;
             uint32_t     e_size = 0;
             fd                  = bOpen(SPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)

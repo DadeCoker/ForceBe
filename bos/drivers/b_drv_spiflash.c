@@ -247,7 +247,7 @@ static int _bSPIFLASH_Ctl(bSPIFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
         {
             if (param)
             {
-                bCMD_Erase_t *perase_param = (bCMD_Erase_t *)param;
+                bFlashErase_t *perase_param = (bFlashErase_t *)param;
                 sfud_erase(flash, perase_param->addr, perase_param->num * flash->chip.erase_gran);
                 retval = 0;
             }

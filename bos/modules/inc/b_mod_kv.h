@@ -63,13 +63,13 @@ typedef struct
     uint32_t id;
     uint32_t address;
     uint32_t len;
+    uint32_t real_len;
     uint32_t statu;
 } bKV_Index_t;
 
 typedef struct
 {
     uint8_t  status;
-    uint8_t  align;
     uint32_t index;
     int      dev_no;
     uint32_t str_address;
@@ -104,6 +104,8 @@ typedef struct
 
 #define bKV_HEAD_STR "B_KV"
 
+#define bKV_ALIGN_4BYTES(n) (((n) + 3) / 4 * 4)
+
 /**
  * \}
  */
@@ -113,7 +115,7 @@ typedef struct
  * \{
  */
 
-int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size, uint8_t align);
+int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
 int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len);
 int bKV_Get(const char *key, uint8_t *pvalue);
 int bKV_Delete(const char *key);

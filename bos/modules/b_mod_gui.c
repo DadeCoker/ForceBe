@@ -134,8 +134,8 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
 
 static void _bGUI_TouchExec()
 {
-    int                   fd = -1;
-    bTouchAD_ReadStruct_t bTouchAD_ReadStruct;
+    int           fd = -1;
+    bTouchAdVal_t AdVal;
 #if (_LCD_DISP_MODE == 0)
     uint16_t tmp;
 #endif
@@ -148,25 +148,25 @@ static void _bGUI_TouchExec()
     {
         return;
     }
-    bRead(fd, (uint8_t *)&bTouchAD_ReadStruct, sizeof(bTouchAD_ReadStruct_t));
+    bRead(fd, (uint8_t *)&AdVal, sizeof(bTouchAdVal_t));
     bClose(fd);
-    if (bTouchAD_ReadStruct.x_ad < _X_TOUCH_AD_MIN || bTouchAD_ReadStruct.x_ad >= _X_TOUCH_AD_MAX ||
-        bTouchAD_ReadStruct.y_ad < _Y_TOUCH_AD_MIN || bTouchAD_ReadStruct.y_ad >= _Y_TOUCH_AD_MAX)
+    if (AdVal.x_ad < _X_TOUCH_AD_MIN || AdVal.x_ad >= _X_TOUCH_AD_MAX ||
+        AdVal.y_ad < _Y_TOUCH_AD_MIN || AdVal.y_ad >= _Y_TOUCH_AD_MAX)
     {
         UG_TouchUpdate(_LCD_X_SIZE, _LCD_Y_SIZE, TOUCH_STATE_RELEASED);
     }
     else
     {
-        bTouchAD_ReadStruct.x_ad = (bTouchAD_ReadStruct.x_ad - _X_TOUCH_AD_MIN) * _LCD_X_SIZE /
-                                   (_X_TOUCH_AD_MAX - _X_TOUCH_AD_MIN);
-        bTouchAD_ReadStruct.y_ad = (bTouchAD_ReadStruct.y_ad - _Y_TOUCH_AD_MIN) * _LCD_Y_SIZE /
-                                   (_Y_TOUCH_AD_MAX - _Y_TOUCH_AD_MIN);
+        AdVal.x_ad =
+            (AdVal.x_ad - _X_TOUCH_AD_MIN) * _LCD_X_SIZE / (_X_TOUCH_AD_MAX - _X_TOUCH_AD_MIN);
+        AdVal.y_ad =
+            (AdVal.y_ad - _Y_TOUCH_AD_MIN) * _LCD_Y_SIZE / (_Y_TOUCH_AD_MAX - _Y_TOUCH_AD_MIN);
 #if (_LCD_DISP_MODE == 0)
-        tmp                      = bTouchAD_ReadStruct.x_ad;
-        bTouchAD_ReadStruct.x_ad = bTouchAD_ReadStruct.y_ad;
-        bTouchAD_ReadStruct.y_ad = _LCD_X_SIZE - 1 - tmp;
+        tmp        = AdVal.x_ad;
+        AdVal.x_ad = AdVal.y_ad;
+        AdVal.y_ad = _LCD_X_SIZE - 1 - tmp;
 #endif
-        UG_TouchUpdate(bTouchAD_ReadStruct.x_ad, bTouchAD_ReadStruct.y_ad, TOUCH_STATE_PRESSED);
+        UG_TouchUpdate(AdVal.x_ad, AdVal.y_ad, TOUCH_STATE_PRESSED);
     }
 }
 

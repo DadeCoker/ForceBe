@@ -186,7 +186,7 @@ int bSDA_Write(bSDA_Instance_t *pSDA_Instance, uint32_t utc, uint8_t *pbuf)
         return -1;
     }
 
-    bCMD_Erase_t cmd_s;
+    bFlashErase_t cmd_s;
     cmd_s.addr = address;
     cmd_s.num  = 1;
     bLseek(d_fd, address);

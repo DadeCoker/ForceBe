@@ -193,10 +193,10 @@ static void _bOLED_Fill(uint8_t fill_data)
 
 static int _bOLEDWrite(bOLED_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t            x      = addr % _LCD_X_SIZE;
-    uint16_t            y      = addr / _LCD_X_SIZE;
-    bLCD_WriteStruct_t *pcolor = (bLCD_WriteStruct_t *)pbuf;
-    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLCD_WriteStruct_t))
+    uint16_t     x      = addr % _LCD_X_SIZE;
+    uint16_t     y      = addr / _LCD_X_SIZE;
+    bLcdWrite_t *pcolor = (bLcdWrite_t *)pbuf;
+    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
     }

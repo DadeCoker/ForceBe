@@ -108,7 +108,7 @@ static void _bLcdWriteData(uint16_t dat)
 {
     if (bILI9320_HalIf.is_rw_addr)
     {
-        ((bLCD_RwAddrStruct_t *)bILI9320_HalIf._if.rw_addr)->dat = dat;
+        ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->dat = dat;
     }
     else
     {
@@ -127,7 +127,7 @@ static void _bLcdWriteCmd(uint16_t cmd)
 
     if (bILI9320_HalIf.is_rw_addr)
     {
-        ((bLCD_RwAddrStruct_t *)bILI9320_HalIf._if.rw_addr)->reg = cmd;
+        ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->reg = cmd;
     }
     else
     {
@@ -147,7 +147,7 @@ static uint16_t _bLcdReadData()
 
     if (bILI9320_HalIf.is_rw_addr)
     {
-        dat = ((bLCD_RwAddrStruct_t *)bILI9320_HalIf._if.rw_addr)->dat;
+        dat = ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->dat;
     }
     else
     {
@@ -171,7 +171,7 @@ static uint16_t _bLcdReadCmd()
 
     if (bILI9320_HalIf.is_rw_addr)
     {
-        cmd = ((bLCD_RwAddrStruct_t *)bILI9320_HalIf._if.rw_addr)->reg;
+        cmd = ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->reg;
     }
     else
     {
@@ -204,10 +204,10 @@ static void _bILI9320SetCursor(uint16_t Xpos, uint16_t Ypos)
 
 static int _bILI9320Write(bILI9320_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t            x      = addr % _LCD_X_SIZE;
-    uint16_t            y      = addr / _LCD_X_SIZE;
-    bLCD_WriteStruct_t *pcolor = (bLCD_WriteStruct_t *)pbuf;
-    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLCD_WriteStruct_t))
+    uint16_t     x      = addr % _LCD_X_SIZE;
+    uint16_t     y      = addr / _LCD_X_SIZE;
+    bLcdWrite_t *pcolor = (bLcdWrite_t *)pbuf;
+    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
     }
