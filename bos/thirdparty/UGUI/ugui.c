@@ -49,7 +49,7 @@
 /* -------------------------------------------------------------------------------- */
 #include "ugui.h"
 #if _UGUI_ENABLE
-#include "algo_utf8_unicode.h"
+#include "algorithm/inc/algo_utf8_unicode.h"
 
 /* Static functions */
 UG_RESULT _UG_WindowDrawTitle(UG_WINDOW* wnd);

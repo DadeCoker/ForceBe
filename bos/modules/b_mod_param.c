@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_param.h"
+#include "modules/inc/b_mod_param.h"
 #if _PARAM_ENABLE
 #if (_NR_MICRO_SHELL_ENABLE == 0)
 #error "please enable _NR_MICRO_SHELL_ENABLE"
@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "b_mod_shell.h"
+#include "modules/inc/b_mod_shell.h"
 /**
  * \addtogroup BABYOS
  * \{

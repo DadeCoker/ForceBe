@@ -30,9 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_xm128.h"
+#include "modules/inc/b_mod_xm128.h"
+
+#include "core/inc/b_section.h"
+
 #if _XMODEM128_ENABLE
-#include "b_utils.h"
+#include "b_hal.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -145,9 +148,9 @@ static void _bXmodem128Timeout()
     {
         return;
     }
-    if (bUtilGetTick() - bXmodem128Info.tick >= MS2TICKS(1000))
+    if (bHalGetSysTick() - bXmodem128Info.tick >= MS2TICKS(1000))
     {
-        bXmodem128Info.tick = bUtilGetTick();
+        bXmodem128Info.tick = bHalGetSysTick();
         if (bXmodem128Info.tt_count >= 10)
         {
             bXmodem128Info.tt_count = 0;
@@ -197,7 +200,7 @@ int bXmodem128Start()
     if (bXmodem128Info.statu == XM_S_NULL)
     {
         bXmodem128Info.send_f(XMODEM128_NAK);
-        bXmodem128Info.tick         = bUtilGetTick();
+        bXmodem128Info.tick         = bHalGetSysTick();
         bXmodem128Info.next_number  = 0;
         bXmodem128Info.frame_number = 0;
         bXmodem128Info.statu        = XM_S_WAIT_START;
@@ -227,7 +230,7 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
     {
         return -1;
     }
-    bXmodem128Info.tick     = bUtilGetTick();
+    bXmodem128Info.tick     = bHalGetSysTick();
     bXmodem128Info.tt_count = 0;
 
     if (bXmodem128Info.statu == XM_S_WAIT_START)

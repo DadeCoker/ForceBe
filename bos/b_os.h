@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_drv_class_gsensor.h
+ * \file        b_os.h
  * \version     v0.0.1
- * \date        2020/06/08
+ * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2020 Bean
+ * Copyright (c) 2019 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,61 +28,57 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_CLASS_GSENSOR_H__
-#define __B_DRV_CLASS_GSENSOR_H__
+#ifndef __B_OS_H__
+#define __B_OS_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_driver.h"
+#include <stdint.h>
+
+#include "b_config.h"
 #include "b_hal.h"
-#include "b_utils.h"
+
+#ifndef _BOS_ALGO_ENABLE
+#define _BOS_ALGO_ENABLE (0)
+#endif
+
+#ifndef _BOS_MODULES_ENABLE
+#define _BOS_MODULES_ENABLE (0)
+#endif
+
 /**
- * \addtogroup B_DRIVER
+ * \addtogroup BABYOS
  * \{
  */
 
 /**
- * \defgroup GSENSOR_Exported_TypesDefinitions
+ * \addtogroup BOS
  * \{
  */
+#define BOS_PERIODIC_TASK(pf, ms)                         \
+    {                                                     \
+        static uint32_t tick##pf = 0;                     \
+        if (bHalGetSysTick() - tick##pf > (MS2TICKS(ms))) \
+        {                                                 \
+            tick##pf = bHalGetSysTick();                  \
+            pf();                                         \
+        }                                                 \
+    }
 
-typedef struct
-{
-    int16_t x_mg;
-    int16_t y_mg;
-    int16_t z_mg;
-} bGsensor3Axis_t;
+#if _BOS_ALGO_ENABLE
+#include "algorithm/inc/algorithm.h"
+#endif
 
-typedef struct
-{
-    uint8_t fifo_mode;
-    uint8_t fifo_length;
-} bGSensorCfgFIFO_t;
+#include "core/inc/b_core.h"
+#include "core/inc/b_device.h"
+#include "drivers/inc/b_driver.h"
 
-/**
- * \}
- */
-
-/**
- * \defgroup GSENSOR_Exported_Defines
- * \{
- */
-#define bCMD_CFG_ODR 0        // uint16_t   (x)Hz
-#define bCMD_CFG_FS 1         // uint8_t   (x)g
-#define bCMD_CFG_POWERDOWN 2  // no param
-#define bCMD_CFG_FIFO 3       // bGSensorCfgFIFO_t
-/**
- * \}
- */
-
-/**
- * \defgroup GSENSOR_Exported_Functions
- * \{
- */
-void bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number);
+#if _BOS_MODULES_ENABLE
+#include "modules/inc/b_modules.h"
+#endif
 
 /**
  * \}

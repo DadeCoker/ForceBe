@@ -30,7 +30,8 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_pcf8574.h"
+#include "drivers/inc/b_drv_pcf8574.h"
+
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -72,7 +73,8 @@
  * \defgroup PCF8574_Private_Variables
  * \{
  */
-bPCF8574_Driver_t bPCF8574_Driver;
+const static bPCF8574_HalIf_t bPCF8574_HalIf = HAL_PCF8574_IF;
+bPCF8574_Driver_t             bPCF8574_Driver;
 /**
  * \}
  */
@@ -99,7 +101,7 @@ static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, 
         return -1;
     }
 
-    tmp = bHalI2C_ReceiveByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR);
+    tmp = bHalI2C_ReceiveByte(bPCF8574_HalIf.iic, bPCF8574_HalIf.addr);
     if (pbuf[0])
     {
         tmp |= 1 << off;
@@ -108,7 +110,7 @@ static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, 
     {
         tmp &= ~(1 << off);
     }
-    bHalI2C_SendByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR, tmp);
+    bHalI2C_SendByte(bPCF8574_HalIf.iic, bPCF8574_HalIf.addr, tmp);
     return len;
 }
 
@@ -119,7 +121,7 @@ static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
     {
         return -1;
     }
-    tmp = bHalI2C_ReceiveByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR);
+    tmp = bHalI2C_ReceiveByte(bPCF8574_HalIf.iic, bPCF8574_HalIf.addr);
     if (tmp & (1 << off))
     {
         pbuf[0] = 1;

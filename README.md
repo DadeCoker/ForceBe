@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v5.1.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v6.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -120,7 +120,7 @@ git clone https://gitee.com/notrynohigh/BabyOS_Hal.git		 //克隆后切换到对
 
 ```C
 //例如使用滴答定时器，中断服务函数调用：void bHalIncSysTick(void);
-
+//完成b_hal.c里面us级别的延时函数，us延时未采用定时器，依赖于具体平台
 //注：定时器的周期与b_config.h里_TICK_FRQ_HZ要匹配
 ```
 
@@ -145,12 +145,15 @@ B_DEVICE_REG(SPIFLASH, bSPIFLASH_Driver[0], "flash")
 
 ##   5.修改硬件接口
 
-b_hal.h中根据实际连接图修改GPIO和SPI号
-
 ```C
-#define HAL_SPIFLASH_QSPI_EN            0
-#define HAL_SPIFLASH_TOTAL_NUMBER       1 
-#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN12}},}   
+//b_hal_if.h 填写驱动需要的硬件接口。每个驱动的.h文件里有所需接口的数据结构（bXXXX_HalIf_t）
+//定义硬件接口的宏也有统一名命规则：HAL_XXXX_IF 可以在每个驱动文件.c找到。
+#define HAL_SPIFLASH_QSPI_EN 0
+#define HAL_SPIFLASH_TOTAL_NUMBER 1
+#define HAL_SPIFLASH_IF                                         \
+    {                                                           \
+        {._if.spi = B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}, 1}, \
+    }  
 ```
 
 ## 6.修改硬件抽象层SPI部分
@@ -274,6 +277,18 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 https://www.bilibili.com/video/BV1pt4y1Q7vz/       【视频教程，移植BabyOS】
 
+（V6.0.0之后的版本，在添加头文件路径方面做了优化)
+
+仅需要添加如下3个路径：
+
+```c
+BabyOS/bos/
+BabyOS_Hal/inc/
+BabyOS_Config/
+```
+
+
+
 # BabyOS私有协议上位机Demo
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol>
@@ -344,4 +359,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2021.01 | 去掉多余的文件，修改section部分的内容。                      |      |
 | 2021.02 | 增加vscode+arm-gcc+openocd 编译调试的例子。doc目录增加sections链接文件以及示例makefile等 |      |
 | 2021.05 | 支持编译器AC6                                                |      |
+| 2021.06 | 大版本更新，对整体代码重新梳理一遍。可使用MCU内部FLASH使用KV存储、完善驱动部分等... |      |
 

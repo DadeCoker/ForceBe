@@ -30,12 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_kv.h"
+#include "modules/inc/b_mod_kv.h"
 #if _KV_ENABLE
 #include <string.h>
 
-#include "b_core.h"
-#include "b_driver.h"
+#include "core/inc/b_core.h"
+#include "drivers/inc/b_driver.h"
 
 /**
  * \addtogroup BABYOS
@@ -173,7 +173,7 @@ static int _bKV_ISFirstTime(int fd)
 
 static int _bKV_ClearSector(int fd, uint8_t t)
 {
-    bCMD_Erase_t cmd;
+    bFlashErase_t cmd;
     int          retval = -1;
     if (bKV_Info.e_size == 0)
     {
@@ -414,30 +414,30 @@ static int _bKV_ArrangeSpace(int fd)
 static int _bKV_AddNew(int fd, uint32_t id, uint8_t *pbuf, uint16_t len)
 {
     bKV_Index_t tmp;
-
-    if (bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
+    tmp.len = bKV_ALIGN_4BYTES(len);
+    if (bKV_Info.d_index + tmp.len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
         bKV_Info.t_index >= bKV_Info.t_max)
     {
         _bKV_ArrangeSpace(fd);
     }
 
-    if (bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
+    if (bKV_Info.d_index + tmp.len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
         bKV_Info.t_index >= bKV_Info.t_max)
     {
         return -1;
     }
 
-    tmp.address = bKV_Info.d_index;
-    tmp.id      = id;
-    tmp.len     = len;
+    tmp.address  = bKV_Info.d_index;
+    tmp.id       = id;
+    tmp.real_len = len;
 
     bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size +
                    bKV_Info.t_index * sizeof(bKV_Index_t));
     bWrite(fd, (uint8_t *)&tmp, sizeof(bKV_Index_t) - sizeof(uint32_t));
-    bKV_Info.d_index += len;
+    bKV_Info.d_index += tmp.len;
     bKV_Info.t_index += 1;
     bLseek(fd, tmp.address);
-    bWrite(fd, pbuf, len);
+    bWrite(fd, pbuf, tmp.len);
     b_log_w("n: t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);
     return 0;
 }
@@ -445,15 +445,16 @@ static int _bKV_AddNew(int fd, uint32_t id, uint8_t *pbuf, uint16_t len)
 static int _bKV_ModifyValue(int fd, uint32_t index, bKV_Index_t t, uint32_t id, uint8_t *pbuf,
                             uint16_t len)
 {
-    int retval = 0;
-    if (len > t.len || (bKV_Info.e_size > 0))
+    int      retval  = 0;
+    uint16_t len_tmp = bKV_ALIGN_4BYTES(len);
+    if (len_tmp > t.len || (bKV_Info.e_size > 0))
     {
-        if (bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
+        if (bKV_Info.d_index + len_tmp > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
             (bKV_Info.t_index >= bKV_Info.t_max && bKV_Info.e_size > 0))
         {
             _bKV_ArrangeSpace(fd);
         }
-        if (bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
+        if (bKV_Info.d_index + len_tmp > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
             (bKV_Info.t_index >= bKV_Info.t_max && bKV_Info.e_size > 0))
         {
             return -1;
@@ -462,21 +463,22 @@ static int _bKV_ModifyValue(int fd, uint32_t index, bKV_Index_t t, uint32_t id, 
 
     if (bKV_Info.e_size == 0)
     {
-        if (len <= t.len)
+        t.len      = len_tmp;
+        t.real_len = len;
+        if (len_tmp <= t.len)
         {
-            t.len = len;
+            ;
         }
         else
         {
-            t.len     = len;
             t.address = bKV_Info.d_index;
-            bKV_Info.d_index += len;
+            bKV_Info.d_index += t.len;
         }
         bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size +
                        index * sizeof(bKV_Index_t));
         bWrite(fd, (uint8_t *)&t, sizeof(bKV_Index_t) - sizeof(uint32_t));
         bLseek(fd, t.address);
-        bWrite(fd, pbuf, len);
+        bWrite(fd, pbuf, t.len);
     }
     else
     {
@@ -494,7 +496,7 @@ static int _bKV_Get(int fd, bKV_Index_t t, uint8_t *pbuf)
 {
     int retval = 0;
     bLseek(fd, t.address);
-    retval = bRead(fd, pbuf, t.len);
+    retval = bRead(fd, pbuf, t.real_len);
     return retval;
 }
 

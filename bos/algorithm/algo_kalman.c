@@ -1,6 +1,6 @@
 /* Kalman filters. */
 
-#include "algo_kalman.h"
+#include "algorithm/inc/algo_kalman.h"
 
 KalmanFilter alloc_filter(int state_dimension, int observation_dimension)
 {

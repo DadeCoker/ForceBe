@@ -30,7 +30,8 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_fm25cl.h"
+#include "drivers/inc/b_drv_fm25cl.h"
+
 /**
  * \addtogroup BABYOS
  * \{

@@ -30,9 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_device.h"
+#include "core/inc/b_device.h"
 
-#include <string.h>
+#include "drivers/inc/b_driver.h"
+
+
 /**
  * \addtogroup BABYOS
  * \{

@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_util_spi.h"
+#include "utils/inc/b_util_spi.h"
 
 /**
  * \addtogroup B_UTILS

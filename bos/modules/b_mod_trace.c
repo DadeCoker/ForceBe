@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_trace.h"
+#include "modules/inc/b_mod_trace.h"
 #if _CMBACKTRACE_ENABLE
 
 /**

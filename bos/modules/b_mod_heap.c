@@ -106,7 +106,7 @@
  * memory management pages of http://www.FreeRTOS.org for more information.
  */
 /*Includes ----------------------------------------------*/
-#include "b_mod_heap.h"
+#include "modules/inc/b_mod_heap.h"
 #if _HEAP_ENABLE
 #include <stdlib.h>
 /**

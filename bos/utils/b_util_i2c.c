@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_util_i2c.h"
+#include "utils/inc/b_util_i2c.h"
 
 /**
  * \addtogroup B_UTILS

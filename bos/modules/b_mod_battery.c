@@ -30,9 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_battery.h"
+#include "modules/inc/b_mod_battery.h"
 
-#include "b_utils.h"
+#include "b_hal.h"
+#include "core/inc/b_section.h"
+
 #if _BATTERY_ENABLE
 /**
  * \addtogroup BABYOS
@@ -106,9 +108,9 @@ static void _bBatteryCalculate()
     uint32_t        mv      = 0;
     uint16_t        min_tmp = 0xffff, max_tmp = 0, tmp = 0, i;
     static uint32_t tick = (uint32_t)(0 - MS2TICKS(_BATTERY_D_CYCLE));
-    if (bUtilGetTick() - tick >= MS2TICKS(_BATTERY_D_CYCLE))
+    if (bHalGetSysTick() - tick >= MS2TICKS(_BATTERY_D_CYCLE))
     {
-        tick = bUtilGetTick();
+        tick = bHalGetSysTick();
         for (i = 0; i < 5; i++)
         {
             if (bpBatteryGetmV)

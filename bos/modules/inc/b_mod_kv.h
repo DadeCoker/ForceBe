@@ -63,6 +63,7 @@ typedef struct
     uint32_t id;
     uint32_t address;
     uint32_t len;
+    uint32_t real_len;
     uint32_t statu;
 } bKV_Index_t;
 
@@ -102,6 +103,8 @@ typedef struct
 #define bKV_SECTOR_ALL 0X0F
 
 #define bKV_HEAD_STR "B_KV"
+
+#define bKV_ALIGN_4BYTES(n) (((n) + 3) / 4 * 4)
 
 /**
  * \}

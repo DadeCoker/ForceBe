@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algo_sort.h"
+#include "algorithm/inc/algo_sort.h"
 
 /**
  * \addtogroup ALGORITHM

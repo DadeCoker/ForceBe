@@ -36,7 +36,8 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_driver.h"
+#include <stdint.h>
+#include <string.h>
 /**
  * \addtogroup BABYOS
  * \{
@@ -65,33 +66,6 @@ typedef enum
 #include "b_device_list.h"
     bDEV_MAX_NUM
 } bDeviceName_t;
-
-/**
- * \}
- */
-
-/**
- * \defgroup DEVICE_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup DEVICE_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup DEVICE_Exported_Variables
- * \{
- */
 
 /**
  * \}

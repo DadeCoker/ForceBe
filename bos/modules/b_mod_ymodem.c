@@ -30,10 +30,15 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_ymodem.h"
+#include "modules/inc/b_mod_ymodem.h"
+
+#include "core/inc/b_section.h"
+
 #if _YMODEM_ENABLE
-#include "b_utils.h"
-#include "string.h"
+#include <string.h>
+
+#include "b_hal.h"
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -163,9 +168,9 @@ static void _bYmodemTimeout()
     {
         return;
     }
-    if (bUtilGetTick() - bYmodemInfo.tick >= MS2TICKS(2000))
+    if (bHalGetSysTick() - bYmodemInfo.tick >= MS2TICKS(2000))
     {
-        bYmodemInfo.tick = bUtilGetTick();
+        bYmodemInfo.tick = bHalGetSysTick();
 
         if (bYmodemInfo.tt_count >= 10)
         {
@@ -226,7 +231,7 @@ int bYmodemStart()
     if (bYmodemInfo.statu == YM_S_NULL)
     {
         bYmodemInfo.send_f(YMODEM_C);
-        bYmodemInfo.tick        = bUtilGetTick();
+        bYmodemInfo.tick        = bHalGetSysTick();
         bYmodemInfo.statu       = YM_S_WAIT_NAME;
         bYmodemInfo.next_number = 0;
         bYmodemInfo.tt_count    = 0;
@@ -257,7 +262,7 @@ int bYmodemParse(uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    bYmodemInfo.tick     = bUtilGetTick();
+    bYmodemInfo.tick     = bHalGetSysTick();
     bYmodemInfo.tt_count = 0;
 
     if (bYmodemInfo.statu == YM_S_WAIT_NAME)

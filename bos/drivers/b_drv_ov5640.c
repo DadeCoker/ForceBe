@@ -30,10 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_ov5640.h"
+#include "drivers/inc/b_drv_ov5640.h"
 
-#include "b_drv_ov5640af.h"
-#include "b_drv_ov5640cfg.h"
+#include "drivers/inc/b_drv_ov5640af.h"
+#include "drivers/inc/b_drv_ov5640cfg.h"
+
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -75,7 +76,8 @@
  * \defgroup OV5640_Private_Variables
  * \{
  */
-bOV5640_Driver_t bOV5640_Driver;
+const static bOV5640_HalIf_t bOV5640_HalIf = HAL_OV5640_IF;
+bOV5640_Driver_t             bOV5640_Driver;
 
 const static uint8_t OV5640_LightModeTable[5][7] = {
     0x04, 0X00, 0X04, 0X00, 0X04, 0X00, 0X00,  // Auto
@@ -115,29 +117,29 @@ const static uint8_t OV5640_SaturationTable[7][6] = {
 
 static void _OV5640_WriteReg(uint16_t reg, uint8_t data)
 {
-    SCCB_Start(HAL_OV5640_SCCB);
-    SCCB_SendByte(HAL_OV5640_SCCB, HAL_OV5640_SCCB_ADDR);
-    SCCB_SendByte(HAL_OV5640_SCCB, reg >> 8);
-    SCCB_SendByte(HAL_OV5640_SCCB, reg);
-    SCCB_SendByte(HAL_OV5640_SCCB, data);
-    SCCB_Stop(HAL_OV5640_SCCB);
+    SCCB_Start(bOV5640_HalIf.sccb);
+    SCCB_SendByte(bOV5640_HalIf.sccb, bOV5640_HalIf.sccb_addr);
+    SCCB_SendByte(bOV5640_HalIf.sccb, reg >> 8);
+    SCCB_SendByte(bOV5640_HalIf.sccb, reg);
+    SCCB_SendByte(bOV5640_HalIf.sccb, data);
+    SCCB_Stop(bOV5640_HalIf.sccb);
 }
 
 static uint8_t _OV5640_ReadReg(uint16_t reg)
 {
     uint8_t val = 0;
-    SCCB_Start(HAL_OV5640_SCCB);
-    SCCB_SendByte(HAL_OV5640_SCCB, HAL_OV5640_SCCB_ADDR);
-    SCCB_SendByte(HAL_OV5640_SCCB, reg >> 8);
-    SCCB_SendByte(HAL_OV5640_SCCB, reg);
-    SCCB_Stop(HAL_OV5640_SCCB);
+    SCCB_Start(bOV5640_HalIf.sccb);
+    SCCB_SendByte(bOV5640_HalIf.sccb, bOV5640_HalIf.sccb_addr);
+    SCCB_SendByte(bOV5640_HalIf.sccb, reg >> 8);
+    SCCB_SendByte(bOV5640_HalIf.sccb, reg);
+    SCCB_Stop(bOV5640_HalIf.sccb);
 
-    SCCB_Start(HAL_OV5640_SCCB);
-    SCCB_SendByte(HAL_OV5640_SCCB, HAL_OV5640_SCCB_ADDR | 0x1);
+    SCCB_Start(bOV5640_HalIf.sccb);
+    SCCB_SendByte(bOV5640_HalIf.sccb, bOV5640_HalIf.sccb_addr | 0x1);
 
-    val = SCCB_ReceiveByte(HAL_OV5640_SCCB);
-    SCCB_NoAck(HAL_OV5640_SCCB);
-    SCCB_Stop(HAL_OV5640_SCCB);
+    val = SCCB_ReceiveByte(bOV5640_HalIf.sccb);
+    SCCB_NoAck(bOV5640_HalIf.sccb);
+    SCCB_Stop(bOV5640_HalIf.sccb);
     return val;
 }
 
@@ -316,7 +318,7 @@ static uint8_t _OV5640_FocusInit()
     do
     {
         state = _OV5640_ReadReg(0x3029);
-        bUtilDelayMS(5);
+        bHalDelayMs(5);
         i++;
         if (i > 1000)
             return 1;
@@ -397,10 +399,10 @@ int bOV5640_Init()
 {
     uint16_t reg, i;
 
-    bHalGPIO_WritePin(HAL_OV5640_RESET_PORT, HAL_OV5640_RESET_PIN, 0);
-    bUtilDelayMS(20);
-    bHalGPIO_WritePin(HAL_OV5640_RESET_PORT, HAL_OV5640_RESET_PIN, 1);
-    bUtilDelayMS(20);
+    bHalGPIO_WritePin(bOV5640_HalIf.reset.port, bOV5640_HalIf.reset.pin, 0);
+    bHalDelayMs(20);
+    bHalGPIO_WritePin(bOV5640_HalIf.reset.port, bOV5640_HalIf.reset.pin, 1);
+    bHalDelayMs(20);
 
     reg = _OV5640_ReadReg(OV5640_CHIPIDH);
     reg <<= 8;
@@ -416,7 +418,7 @@ int bOV5640_Init()
 
     _OV5640_WriteReg(0x3103, 0X11);
     _OV5640_WriteReg(0X3008, 0X82);
-    bUtilDelayMS(10);
+    bHalDelayMs(10);
 
     for (i = 0; i < sizeof(ov5640_uxga_init_reg_tbl) / 4; i++)
     {

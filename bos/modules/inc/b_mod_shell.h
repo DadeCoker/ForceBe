@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _NR_MICRO_SHELL_ENABLE
-#include "nr_micro_shell.h"
+#include "thirdparty/nr_micro_shell/inc/nr_micro_shell.h"
 /**
  * \addtogroup BABYOS
  * \{

@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_class_camera.h"
+#include "drivers/inc/b_driver.h"
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -51,8 +51,15 @@ extern "C" {
  * \defgroup OV5640_Exported_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    bHalGPIOInstance_t reset;
+    bHalSCCBNumber_t   sccb;
+    uint8_t            sccb_addr;
+} bOV5640_HalIf_t;
 
 typedef bDriverInterface_t bOV5640_Driver_t;
+
 /**
  * \}
  */
@@ -65,6 +72,7 @@ typedef bDriverInterface_t bOV5640_Driver_t;
 #define OV5640_CHIPIDH 0X300A
 #define OV5640_CHIPIDL 0X300B
 #define OV5640_ID 0X5640
+
 /**
  * \}
  */

@@ -30,12 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_sdb.h"
+#include "modules/inc/b_mod_sdb.h"
 #if (_SAVE_DATA_ENABLE && _SAVE_DATA_B_ENABLE)
 #include <string.h>
 
-#include "b_core.h"
-#include "b_driver.h"
+#include "core/inc/b_core.h"
+#include "drivers/inc/b_driver.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -151,7 +151,7 @@ int bSDB_Write(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf)
         return -1;
     }
 
-    bCMD_Erase_t cmd_s;
+    bFlashErase_t cmd_s;
     cmd_s.addr = pSDB_Instance->address;
     cmd_s.num  = 1;
 

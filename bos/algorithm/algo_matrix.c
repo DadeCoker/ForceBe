@@ -1,6 +1,6 @@
 /* Matrix math. */
 
-#include "algo_matrix.h"
+#include "algorithm/inc/algo_matrix.h"
 
 #include <assert.h>
 #include <math.h>

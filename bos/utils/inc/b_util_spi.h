@@ -36,8 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#include "b_hal_gpio.h"
+#include "b_hal.h"
 
 /**
  * \addtogroup B_UTILS
@@ -61,33 +60,6 @@ typedef struct
     uint8_t            CPOL;
     uint8_t            CPHA;
 } bUtilSPI_t;
-/**
- * \}
- */
-
-/**
- * \defgroup SPI_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup SPI_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup SPI_Exported_Variables
- * \{
- */
-
 /**
  * \}
  */

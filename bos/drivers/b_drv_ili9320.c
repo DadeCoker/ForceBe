@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_ili9320.h"
+#include "drivers/inc/b_drv_ili9320.h"
 
 /**
  * \addtogroup BABYOS
@@ -84,7 +84,8 @@
  * \defgroup ILI9320_Private_Variables
  * \{
  */
-bILI9320_Driver_t bILI9320_Driver;
+const static bILI9320_HalIf_t bILI9320_HalIf = HAL_ILI9320_IF;
+bILI9320_Driver_t             bILI9320_Driver;
 /**
  * \}
  */
@@ -103,30 +104,115 @@ bILI9320_Driver_t bILI9320_Driver;
  * \{
  */
 
+static void _bLcdWriteData(uint16_t dat)
+{
+    if (bILI9320_HalIf.is_rw_addr)
+    {
+        ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->dat = dat;
+    }
+    else
+    {
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 1);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
+        bHalGPIO_Write(bILI9320_HalIf._if._io.data.port, dat);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 1);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
+    }
+}
+
+static void _bLcdWriteCmd(uint16_t cmd)
+{
+
+    if (bILI9320_HalIf.is_rw_addr)
+    {
+        ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->reg = cmd;
+    }
+    else
+    {
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
+        bHalGPIO_Write(bILI9320_HalIf._if._io.data.port, cmd);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 1);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
+    }
+}
+
+static uint16_t _bLcdReadData()
+{
+    uint16_t dat;
+
+    if (bILI9320_HalIf.is_rw_addr)
+    {
+        dat = ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->dat;
+    }
+    else
+    {
+        bHalGPIO_Config(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
+                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 1);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
+        dat = bHalGPIO_Read(bILI9320_HalIf._if._io.data.port);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
+        bHalGPIO_Config(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
+                        B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+    }
+    return dat;
+}
+
+static uint16_t _bLcdReadCmd()
+{
+    uint16_t cmd;
+
+    if (bILI9320_HalIf.is_rw_addr)
+    {
+        cmd = ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->reg;
+    }
+    else
+    {
+        bHalGPIO_Config(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
+                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
+        cmd = bHalGPIO_Read(bILI9320_HalIf._if._io.data.port);
+        bHalGPIO_WritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
+        bHalGPIO_Config(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
+                        B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+    }
+    return cmd;
+}
+
 static void _bILI9320WriteReg(uint16_t reg, uint16_t dat)
 {
-    bHalLcdWriteCmd(reg);
-    bHalLcdWriteData(dat);
+    _bLcdWriteCmd(reg);
+    _bLcdWriteData(dat);
 }
 
 static void _bILI9320SetCursor(uint16_t Xpos, uint16_t Ypos)
 {
     _bILI9320WriteReg(0X20, Xpos);
     _bILI9320WriteReg(0X21, Ypos);
-    bHalLcdWriteCmd(0X22);
+    _bLcdWriteCmd(0X22);
 }
 
 static int _bILI9320Write(bILI9320_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t            x      = addr % _LCD_X_SIZE;
-    uint16_t            y      = addr / _LCD_X_SIZE;
-    bLCD_WriteStruct_t *pcolor = (bLCD_WriteStruct_t *)pbuf;
-    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLCD_WriteStruct_t))
+    uint16_t     x      = addr % _LCD_X_SIZE;
+    uint16_t     y      = addr / _LCD_X_SIZE;
+    bLcdWrite_t *pcolor = (bLcdWrite_t *)pbuf;
+    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
     }
     _bILI9320SetCursor(x, y);
-    bHalLcdWriteData(pcolor->color);
+    _bLcdWriteData(pcolor->color);
     return 2;
 }
 
@@ -141,8 +227,8 @@ static int _bILI9320Write(bILI9320_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf,
 int bILI9320_Init()
 {
     uint16_t id;
-    bHalLcdWriteCmd(0x0);
-    id = bHalLcdReadData();
+    _bLcdWriteCmd(0x0);
+    id = _bLcdReadData();
     b_log("id:%x\r\n", id);
     if (id != 0x9320)
     {
@@ -161,9 +247,9 @@ int bILI9320_Init()
     _bILI9320WriteReg(0x0c, (1 << 0));  // Extern Display Interface Contral 1.(0x0000)
     _bILI9320WriteReg(0x0d, 0x0000);    // Frame Maker Position.
     _bILI9320WriteReg(0x0f, 0x0000);    // Extern Display Interface Contral 2.
-    bUtilDelayMS(50);
+    bHalDelayMs(50);
     _bILI9320WriteReg(0x07, 0x0101);  // Display Contral.
-    bUtilDelayMS(50);
+    bHalDelayMs(50);
     _bILI9320WriteReg(
         0x10, (1 << 12) | (0 << 8) | (1 << 7) | (1 << 6) | (0 << 4));  // Power Control 1.(0x16b0)
     _bILI9320WriteReg(0x11, 0x0007);                                   // Power Control 2.(0x0001)

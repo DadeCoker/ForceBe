@@ -29,13 +29,12 @@
 #ifndef _SFUD_DEF_H_
 #define _SFUD_DEF_H_
 
-#include <sfud_cfg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "sfud_cfg.h"
 #include "sfud_flash_def.h"
-
 
 #ifdef __cplusplus
 extern "C" {

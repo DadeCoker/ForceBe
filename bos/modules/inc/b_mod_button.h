@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _FLEXIBLEBUTTON_ENABLE
-#include "flexible_button.h"
+#include "thirdparty/FlexibleButton/flexible_button.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -55,11 +55,42 @@ extern "C" {
  */
 
 /**
+ * \defgroup BUTTON_Exported_TypesDefinitions
+ * \{
+ */
+
+typedef void (*pBtnEventHandler_t)(uint16_t event, uint8_t param);
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup BUTTON_Exported_Defines
+ * \{
+ */
+
+#define BTN_EVENT_DOWN (0x001)
+#define BTN_EVENT_CLICK (0x002)
+#define BTN_EVENT_DOUBLE_CLICK (0x004)
+#define BTN_EVENT_REPEAT_CLICK (0x008)
+#define BTN_EVENT_SHORT (0x010)
+#define BTN_EVENT_SHORT_UP (0x020)
+#define BTN_EVENT_LONG (0x040)
+#define BTN_EVENT_LONG_UP (0x080)
+#define BTN_EVENT_LONGLONG (0x100)
+#define BTN_EVENT_LONGLONG_UP (0x200)
+
+/**
+ * \}
+ */
+
+/**
  * \defgroup BUTTON_Exported_Functions
  * \{
  */
-int  bButtonInit(void);
-void bButtonCallback(void *p);
+int  bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms);
+void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler);
 /**
  * \}
  */

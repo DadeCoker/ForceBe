@@ -30,9 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_error.h"
+#include "modules/inc/b_mod_error.h"
 
-#include "b_utils.h"
+#include "b_hal.h"
+#include "core/inc/b_section.h"
+
 #if _ERROR_MANAGE_ENABLE
 /**
  * \addtogroup BABYOS
@@ -107,7 +109,7 @@ static void _bErrorCore()
 {
     uint32_t i    = 0;
     uint32_t tick = 0;
-    tick          = bUtilGetTick();
+    tick          = bHalGetSysTick();
     for (i = 0; i < _ERROR_Q_LENGTH; i++)
     {
         if (bErrorRecord[i].err == INVALID_ERR)
@@ -180,7 +182,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
     {
         if (bErrorRecord[i].err == err)
         {
-            tick = bUtilGetTick() - bErrorRecord[i].s_tick;
+            tick = bHalGetSysTick() - bErrorRecord[i].s_tick;
             if (tick > bErrorRecord[i].d_tick)
             {
                 bErrorRecord[i].s_tick = 0;

@@ -30,7 +30,10 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_event.h"
+#include "modules/inc/b_mod_event.h"
+
+#include "core/inc/b_section.h"
+
 #if _EVENT_MANAGE_ENABLE
 /**
  * \addtogroup BABYOS

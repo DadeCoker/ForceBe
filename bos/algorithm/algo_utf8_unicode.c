@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algo_utf8_unicode.h"
+#include "algorithm/inc/algo_utf8_unicode.h"
 
 #include <string.h>
 /**
