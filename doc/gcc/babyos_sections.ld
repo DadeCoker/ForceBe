@@ -35,4 +35,12 @@ SECTIONS
     KEEP(*(SORT(.b_mod_shell*)))
     PROVIDE(__stop_b_mod_shell = .);
   } > FLASH
+
+  .b_hal_gpio :
+  {
+    PROVIDE(__start_b_hal_gpio = .);
+    KEEP(*(SORT(.b_hal_gpio*)))
+    PROVIDE(__stop_b_hal_gpio = .);
+  } > FLASH
+
 }
