@@ -55,7 +55,45 @@
  * \defgroup MODBUS_Private_TypesDefinitions
  * \{
  */
+#pragma pack(1)
 
+typedef struct
+{
+    uint8_t  addr;
+    uint8_t  func;
+    uint16_t reg;  // Big endian
+    uint16_t num;  // Big endian
+    uint16_t crc;  // Little endian
+} bMB_RTU_ReadRegs_t;
+
+typedef struct
+{
+    uint8_t addr;
+    uint8_t func;
+    uint8_t len;
+    uint8_t buf[1];
+} bMB_RTU_ReadRegsAck_t;
+
+typedef struct
+{
+    uint8_t  addr;
+    uint8_t  func;
+    uint16_t reg;  // Big endian
+    uint16_t num;  // Big endian
+    uint8_t  len;
+    uint8_t  param[1];
+} bMB_RTU_WriteRegs_t;
+
+typedef struct
+{
+    uint8_t  addr;
+    uint8_t  func;
+    uint16_t reg;  // Big endian
+    uint16_t num;  // Big endian
+    uint16_t crc;  // Little endian
+} bMB_RTU_WriteRegsAck_t;
+
+#pragma pack()
 /**
  * \}
  */

@@ -60,7 +60,7 @@ extern "C" {
  * \defgroup PARAM_Exported_TypesDefinitions
  * \{
  */
-typedef struct bParamStruct
+typedef struct
 {
     uint8_t size;
     char*   name;
