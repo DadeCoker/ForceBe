@@ -32,7 +32,7 @@
 #define __FLEXIBLE_BUTTON_H__
 
 #include <stdint.h>
-
+#include <string.h>
 #include "b_config.h"
 
 #if _FLEXIBLEBUTTON_ENABLE

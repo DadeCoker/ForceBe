@@ -46,7 +46,7 @@
  * 1: is pressed
  * 0: is not pressed
  */
-#define BTN_IS_PRESSED(i) (g_btn_status_reg & (1 << i))
+#define BTN_IS_PRESSED(i) (g_btn_status_reg.btn[((i) / 8)] & (1 << ((i) % 8)))
 
 enum FLEX_BTN_STAGE
 {
@@ -55,7 +55,12 @@ enum FLEX_BTN_STAGE
     FLEX_BTN_STAGE_MULTIPLE_CLICK = 2
 };
 
-typedef uint32_t btn_type_t;
+#define TYPE_N_BYTE (32)
+
+typedef struct
+{
+    uint8_t btn[TYPE_N_BYTE];
+}btn_type_t;
 
 static flex_button_t* btn_head = NULL;
 
@@ -68,7 +73,7 @@ static flex_button_t* btn_head = NULL;
  * First registered button, the logic level of the button pressed is
  * at the low bit of g_logic_level.
  */
-btn_type_t g_logic_level = (btn_type_t)0;
+btn_type_t g_logic_level;
 
 /**
  * g_btn_status_reg
@@ -78,7 +83,7 @@ btn_type_t g_logic_level = (btn_type_t)0;
  * First registered button, the pressing state of the button is
  * at the low bit of g_btn_status_reg.
  */
-btn_type_t g_btn_status_reg = (btn_type_t)0;
+btn_type_t g_btn_status_reg;
 
 static uint8_t button_cnt = 0;
 
@@ -90,9 +95,17 @@ static uint8_t button_cnt = 0;
  */
 int32_t flex_button_register(flex_button_t* button)
 {
+    static uint8_t init_flag = 0;
     flex_button_t* curr = btn_head;
 
-    if (!button || (button_cnt > sizeof(btn_type_t) * 8))
+    if(init_flag == 0)
+    {
+        init_flag = 1;
+        memset(&g_logic_level, 0, sizeof(btn_type_t));
+        memset(&g_btn_status_reg, 0, sizeof(btn_type_t));
+    }
+    
+    if (!button)
     {
         return -1;
     }
@@ -122,7 +135,7 @@ int32_t flex_button_register(flex_button_t* button)
      * First registered button, the logic level of the button pressed is
      * at the low bit of g_logic_level.
      */
-    g_logic_level |= (button->pressed_logic_level << button_cnt);
+    g_logic_level.btn[(button_cnt / 8)] |= (button->pressed_logic_level << (button_cnt % 8));
     button_cnt++;
 
     return button_cnt;
@@ -140,15 +153,20 @@ static void flex_button_read(void)
     flex_button_t* target;
 
     /* The button that was registered first, the button value is in the low position of raw_data */
-    btn_type_t raw_data = 0;
+    btn_type_t raw_data;
 
+    memset(&raw_data, 0, sizeof(btn_type_t));
+    
     for (target = btn_head, i = button_cnt - 1;
          (target != NULL) && (target->usr_button_read != NULL); target = target->next, i--)
     {
-        raw_data = raw_data | ((target->usr_button_read)(target) << i);
+        raw_data.btn[(i / 8)] = raw_data.btn[(i / 8)] | ((target->usr_button_read)(target) << (i % 8));
     }
 
-    g_btn_status_reg = (~raw_data) ^ g_logic_level;
+    for(i = 0;i < TYPE_N_BYTE;i++)
+    {
+        g_btn_status_reg.btn[i] = (~raw_data.btn[i]) ^ g_logic_level.btn[i];
+    }
 }
 
 /**
