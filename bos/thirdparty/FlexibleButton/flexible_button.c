@@ -90,7 +90,7 @@ static uint8_t button_cnt = 0;
  * @brief Register a user button
  * 
  * @param button: button structure instance
- * @return Number of keys that have been registered
+ * @return Number of keys that have been registered, or -1 when error
 */
 int32_t flex_button_register(flex_button_t *button)
 {
@@ -146,9 +146,9 @@ static void flex_button_read(void)
     /* The button that was registered first, the button value is in the low position of raw_data */
     btn_type_t raw_data = 0;
 
-    for(target = btn_head, i = 0;
+    for(target = btn_head, i = button_cnt - 1;
         (target != NULL) && (target->usr_button_read != NULL);
-        target = target->next, i++)
+        target = target->next, i--)
     {
         raw_data = raw_data | ((target->usr_button_read)(target) << i);
     }
@@ -169,7 +169,7 @@ static uint8_t flex_button_process(void)
     uint8_t active_btn_cnt = 0;
     flex_button_t* target;
     
-    for (target = btn_head, i = 0; target != NULL; target = target->next, i ++)
+    for (target = btn_head, i = button_cnt - 1; target != NULL; target = target->next, i--)
     {
         if (target->status > FLEX_BTN_STAGE_DEFAULT)
         {
