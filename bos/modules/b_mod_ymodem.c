@@ -58,7 +58,35 @@
  * \defgroup YMODEM_Private_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    uint8_t soh;
+    uint8_t number;
+    uint8_t xnumber;
+    uint8_t dat[128];
+    uint8_t crc_h;
+    uint8_t crc_l;
+} bYmodem128Struct_t;
 
+typedef struct
+{
+    uint8_t stx;
+    uint8_t number;
+    uint8_t xnumber;
+    uint8_t dat[1024];
+    uint8_t crc_h;
+    uint8_t crc_l;
+} bYmodem1kStruct_t;
+ 
+typedef struct
+{
+    pymcb_t  cb;
+    pymsend  send_f;
+    uint8_t  statu;
+    uint8_t  tt_count;
+    uint8_t  next_number;
+    uint32_t tick;
+} bYmodemInfo_t;
 /**
  * \}
  */

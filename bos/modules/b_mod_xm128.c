@@ -55,7 +55,25 @@
  * \defgroup XMODEM128_Private_TypesDefinitions
  * \{
  */
-
+typedef struct
+{
+    uint8_t soh;
+    uint8_t number;
+    uint8_t xnumber;
+    uint8_t dat[128];
+    uint8_t check;
+} bXmodem128Struct_t; 
+ 
+typedef struct
+{
+    pcb_t    cb;
+    psend    send_f;
+    uint8_t  statu;
+    uint8_t  tt_count;
+    uint8_t  next_number;
+    uint32_t frame_number;
+    uint32_t tick;
+} bXmodem128Info_t;
 /**
  * \}
  */
