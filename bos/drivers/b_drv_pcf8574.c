@@ -152,7 +152,7 @@ int bPCF8574_Init()
     return 0;
 }
 
-bDRIVER_REG_INIT(bPCF8574_Init);
+bDRIVER_REG_INIT_0(bPCF8574_Init);
 
 /**
  * \}
