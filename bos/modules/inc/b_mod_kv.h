@@ -40,8 +40,6 @@ extern "C" {
 
 #include "b_config.h"
 
-#define _KV_ENABLE 1
-
 #if (defined(_KV_ENABLE) && (_KV_ENABLE == 1))
 
 /**
@@ -102,6 +100,11 @@ typedef bKVStruct_t bKVInstance_t;
  * \{
  */
 int bKVInit(bKVInstance_t *pinstance);
+int bKVGetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32_t len,
+                uint32_t *prlen);
+int bKVSetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32_t len);
+int bKVDeleteValue(bKVInstance_t *pinstance, const char *key);
+int bKVGetValueLength(bKVInstance_t *pinstance, const char *key);
 /**
  * \}
  */

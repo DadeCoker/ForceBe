@@ -84,6 +84,9 @@ config _KV_ENABLE
     bool "KV Enable/Disable"
     default n
     depends on _BOS_MODULES_ENABLE
+    select _BOS_ALGO_ENABLE
+    select _ALGO_CRC_ENABLE
+    select _ALGO_MD5_ENABLE
 
 config _XMODEM128_ENABLE
     bool "XMODEM128 Enable/Disable"
