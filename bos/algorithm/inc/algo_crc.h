@@ -51,6 +51,21 @@ extern "C" {
  */
 
 /**
+ * \defgroup CRC_Exported_Typedefines
+ * \{
+ */
+typedef struct
+{
+    uint8_t  type;
+    uint8_t  flag;
+    uint32_t crc;
+} algo_crc_sbs_t;
+
+/**
+ * \}
+ */
+
+/**
  * \defgroup CRC_Exported_Defines
  * \{
  */
@@ -71,10 +86,12 @@ extern "C" {
 #define ALGO_CRC32 (13)             // Initial value 0xffffffff
 #define ALGO_CRC32_MPEG2 (14)       // Initial value 0xffffffff
 
-#define INITIAL_VALUE_IS_FF(t)                                                            \
+#define CRC_INITIAL_VALUE_IS_FF(t)                                                        \
     (((t) == ALGO_CRC8_ROHC) || ((t) == ALGO_CRC16_USB) || ((t) == ALGO_CRC16_MODBUS) ||  \
      ((t) == ALGO_CRC16_CCITT_FALSE) || ((t) == ALGO_CRC16_X25) || ((t) == ALGO_CRC32) || \
      ((t) == ALGO_CRC32_MPEG2))
+
+#define CRC_REG_SBS_HANDLE(name, crc_type) algo_crc_sbs_t name = {.type = crc_type, .flag = 0}
 
 /**
  * \}
@@ -85,7 +102,17 @@ extern "C" {
  * \{
  */
 
-uint32_t crc_calculate(uint8_t type, uint32_t crc_val, uint8_t *pbuf, uint32_t len);
+/**
+ * \brief CRC 直接计算
+ * \return uint32_t
+ */
+uint32_t crc_calculate(uint8_t type, uint8_t *pbuf, uint32_t len);
+
+/**
+ * \brief CRC 分段计算
+ * \param handle 通过 CRC_REG_SBS_HANDLE 创建后传入指针
+ */
+void crc_calculate_sbs(algo_crc_sbs_t *phandle, uint8_t *pbuf, uint32_t len);
 
 /**
  * \}

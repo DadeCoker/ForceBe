@@ -89,10 +89,11 @@
  * Name:    CRC-8               x8+x2+x+1
  *          Initial value 0x00
  */
-uint8_t crc8_d(uint8_t crc_8, uint8_t *data, uint32_t length)
+uint8_t crc8_d(uint8_t crc_8, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t i;
     uint8_t crc = crc_8;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -111,10 +112,14 @@ uint8_t crc8_d(uint8_t crc_8, uint8_t *data, uint32_t length)
  * Name:    CRC-8/ITU           x8+x2+x+1
  *          Initial value 0x00
  *****************************************************************************/
-uint8_t crc8_itu(uint8_t crc_8, uint8_t *data, uint32_t length)
+uint8_t crc8_itu(uint8_t crc_8, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t i;
     uint8_t crc = crc_8;  // Initial value
+    if (flag)
+    {
+        crc = crc ^ 0x55;
+    }
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -133,10 +138,11 @@ uint8_t crc8_itu(uint8_t crc_8, uint8_t *data, uint32_t length)
  * Name:    CRC-8/ROHC          x8+x2+x+1
  *          Initial value 0xff
  */
-uint8_t crc8_rohc(uint8_t crc_8, uint8_t *data, uint32_t length)
+uint8_t crc8_rohc(uint8_t crc_8, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t i;
     uint8_t crc = crc_8;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -156,10 +162,11 @@ uint8_t crc8_rohc(uint8_t crc_8, uint8_t *data, uint32_t length)
  *          Initial value 0x00
  *****************************************************************************/
 
-uint8_t crc8_maxim(uint8_t crc_8, uint8_t *data, uint32_t length)
+uint8_t crc8_maxim(uint8_t crc_8, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t i;
     uint8_t crc = crc_8;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -178,10 +185,11 @@ uint8_t crc8_maxim(uint8_t crc_8, uint8_t *data, uint32_t length)
  * Name:    CRC-16/IBM          x16+x15+x2+1
  *          Initial value 0x00
  ****************************************************************************/
-uint16_t crc16_ibm(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_ibm(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -200,10 +208,14 @@ uint16_t crc16_ibm(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/MAXIM          x16+x15+x2+1
  *          Initial value 0x00
  *****************************************************************************/
-uint16_t crc16_maxim(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_maxim(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    if (flag)
+    {
+        crc = ~crc;
+    }
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -222,10 +234,14 @@ uint16_t crc16_maxim(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/USB          x16+x15+x2+1
  *          Initial value 0xffff
  *****************************************************************************/
-uint16_t crc16_usb(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_usb(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    if (flag)
+    {
+        crc = ~crc;
+    }
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -244,10 +260,11 @@ uint16_t crc16_usb(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/MODBUS       x16+x15+x2+1
  *          Initial value 0xffff
  *****************************************************************************/
-uint16_t crc16_modbus(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_modbus(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -266,10 +283,11 @@ uint16_t crc16_modbus(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/CCITT        x16+x12+x5+1
  *          Initial value 0x00
  *****************************************************************************/
-uint16_t crc16_ccitt(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_ccitt(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -288,10 +306,11 @@ uint16_t crc16_ccitt(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/CCITT-FALSE   x16+x12+x5+1
  *          Initial value 0xffff
  *****************************************************************************/
-uint16_t crc16_ccitt_false(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_ccitt_false(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= (uint16_t)(*data++) << 8;  // crc ^= (uint6_t)(*data)<<8; data++;
@@ -310,10 +329,14 @@ uint16_t crc16_ccitt_false(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/X25          x16+x12+x5+1
  *          Initial value 0xffff
  *****************************************************************************/
-uint16_t crc16_x25(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_x25(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    if (flag)
+    {
+        crc = ~crc;
+    }
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -332,10 +355,11 @@ uint16_t crc16_x25(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/XMODEM       x16+x12+x5+1
  *          Initial value 0x00
  *****************************************************************************/
-uint16_t crc16_xmodem(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_xmodem(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= (uint16_t)(*data++) << 8;  // crc ^= (uint16_t)(*data)<<8; data++;
@@ -354,10 +378,14 @@ uint16_t crc16_xmodem(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-16/DNP          x16+x13+x12+x11+x10+x8+x6+x5+x2+1
  *          Initial value 0x00
  *****************************************************************************/
-uint16_t crc16_dnp(uint16_t crc_16, uint8_t *data, uint32_t length)
+uint16_t crc16_dnp(uint16_t crc_16, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint16_t crc = crc_16;  // Initial value
+    if (flag)
+    {
+        crc = ~crc;
+    }
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -376,10 +404,14 @@ uint16_t crc16_dnp(uint16_t crc_16, uint8_t *data, uint32_t length)
  * Name:    CRC-32  x32+x26+x23+x22+x16+x12+x11+x10+x8+x7+x5+x4+x2+x+1
  *          Initial value 0xffffffff
  *****************************************************************************/
-uint32_t crc32_d(uint32_t crc_32, uint8_t *data, uint32_t length)
+uint32_t crc32_d(uint32_t crc_32, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint32_t crc = crc_32;  // Initial value
+    if (flag)
+    {
+        crc = ~crc;
+    }
     while (length--)
     {
         crc ^= *data++;  // crc ^= *data; data++;
@@ -398,10 +430,11 @@ uint32_t crc32_d(uint32_t crc_32, uint8_t *data, uint32_t length)
  * Name:    CRC-32/MPEG-2  x32+x26+x23+x22+x16+x12+x11+x10+x8+x7+x5+x4+x2+x+1
  *          Initial value 0xffffffff
  *****************************************************************************/
-uint32_t crc32_mpeg_2(uint32_t crc_32, uint8_t *data, uint32_t length)
+uint32_t crc32_mpeg_2(uint32_t crc_32, uint8_t *data, uint32_t length, uint8_t flag)
 {
     uint8_t  i;
     uint32_t crc = crc_32;  // Initial value
+    (void)flag;
     while (length--)
     {
         crc ^= (uint32_t)(*data++) << 24;  // crc ^=(uint32_t)(*data)<<24; data++;
@@ -443,89 +476,207 @@ uint32_t crc32_mpeg_2(uint32_t crc_32, uint8_t *data, uint32_t length)
 #define ALGO_CRC32_MPEG2 (14)       // Initial value 0xffffffff
  */
 
-uint32_t crc_calculate(uint8_t type, uint32_t crc_val, uint8_t *pbuf, uint32_t len)
+uint32_t crc_calculate(uint8_t type, uint8_t *pbuf, uint32_t len)
 {
-    uint32_t retval = 0;
+    uint32_t retval  = 0;
+    uint32_t crc_val = 0;
     if (pbuf == NULL || len == 0)
     {
         return 0;
+    }
+    if (CRC_INITIAL_VALUE_IS_FF(type))
+    {
+        crc_val = 0xffffffff;
     }
     switch (type)
     {
         case ALGO_CRC8:
         {
-            retval = crc8_d(crc_val & 0xff, pbuf, len);
+            retval = crc8_d(crc_val & 0xff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC8_ITU:
         {
-            retval = crc8_itu(crc_val & 0xff, pbuf, len);
+            retval = crc8_itu(crc_val & 0xff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC8_ROHC:
         {
-            retval = crc8_rohc(crc_val & 0xff, pbuf, len);
+            retval = crc8_rohc(crc_val & 0xff, pbuf, len, 0);
+        }
+        break;
+        case ALGO_CRC8_MAXIM:
+        {
+            retval = crc8_maxim(crc_val & 0xff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_IBM:
         {
-            retval = crc16_ibm(crc_val & 0xffff, pbuf, len);
+            retval = crc16_ibm(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_MAXIM:
         {
-            retval = crc16_maxim(crc_val & 0xffff, pbuf, len);
+            retval = crc16_maxim(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_USB:
         {
-            retval = crc16_usb(crc_val & 0xffff, pbuf, len);
+            retval = crc16_usb(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_MODBUS:
         {
-            retval = crc16_modbus(crc_val & 0xffff, pbuf, len);
+            retval = crc16_modbus(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_CCITT:
         {
-            retval = crc16_ccitt(crc_val & 0xffff, pbuf, len);
+            retval = crc16_ccitt(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_CCITT_FALSE:
         {
-            retval = crc16_ccitt_false(crc_val & 0xffff, pbuf, len);
+            retval = crc16_ccitt_false(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_X25:
         {
-            retval = crc16_x25(crc_val & 0xffff, pbuf, len);
+            retval = crc16_x25(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_XMODEM:
         {
-            retval = crc16_xmodem(crc_val & 0xffff, pbuf, len);
+            retval = crc16_xmodem(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC16_DNP:
         {
-            retval = crc16_dnp(crc_val & 0xffff, pbuf, len);
+            retval = crc16_dnp(crc_val & 0xffff, pbuf, len, 0);
         }
         break;
         case ALGO_CRC32:
         {
-            retval = crc32_d(crc_val, pbuf, len);
+            retval = crc32_d(crc_val, pbuf, len, 0);
         }
         break;
         case ALGO_CRC32_MPEG2:
         {
-            retval = crc32_mpeg_2(crc_val, pbuf, len);
+            retval = crc32_mpeg_2(crc_val, pbuf, len, 0);
         }
         break;
         default:
             break;
     }
     return retval;
+}
+
+void crc_calculate_sbs(algo_crc_sbs_t *phandle, uint8_t *pbuf, uint32_t len)
+{
+    uint32_t crc_val = 0, retval = 0;
+    uint8_t  flag = 0;
+    if (phandle == NULL || pbuf == NULL || len == 0)
+    {
+        return;
+    }
+    flag = (phandle->flag != 0);
+    if (flag)
+    {
+        crc_val = phandle->crc;
+    }
+    else
+    {
+        if (CRC_INITIAL_VALUE_IS_FF(phandle->type))
+        {
+            crc_val = 0xffffffff;
+        }
+        phandle->flag = 1;
+    }
+
+    switch (phandle->type)
+    {
+        case ALGO_CRC8:
+        {
+            retval = crc8_d(crc_val & 0xff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC8_ITU:
+        {
+            retval = crc8_itu(crc_val & 0xff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC8_ROHC:
+        {
+            retval = crc8_rohc(crc_val & 0xff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC8_MAXIM:
+        {
+            retval = crc8_maxim(crc_val & 0xff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_IBM:
+        {
+            retval = crc16_ibm(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_MAXIM:
+        {
+            retval = crc16_maxim(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_USB:
+        {
+            retval = crc16_usb(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_MODBUS:
+        {
+            retval = crc16_modbus(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_CCITT:
+        {
+            retval = crc16_ccitt(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_CCITT_FALSE:
+        {
+            retval = crc16_ccitt_false(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_X25:
+        {
+            retval = crc16_x25(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_XMODEM:
+        {
+            retval = crc16_xmodem(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC16_DNP:
+        {
+            retval = crc16_dnp(crc_val & 0xffff, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC32:
+        {
+            retval = crc32_d(crc_val, pbuf, len, flag);
+        }
+        break;
+        case ALGO_CRC32_MPEG2:
+        {
+            retval = crc32_mpeg_2(crc_val, pbuf, len, flag);
+        }
+        break;
+        default:
+        {
+            retval = crc_val;
+        }
+        break;
+    }
+    phandle->crc = retval;
 }
 
 /**

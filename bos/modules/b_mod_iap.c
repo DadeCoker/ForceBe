@@ -69,6 +69,9 @@
 #if ((RECEIVE_FIRMWARE_MODE == 1) && (IAP_FILE_CACHE == 0))
 #error IAP configuration is invalid
 #endif
+
+#define IAP_CRC32_TYPE (ALGO_CRC32)
+
 /**
  * \}
  */
@@ -110,15 +113,7 @@ static uint8_t bIsBoot = 0;
  */
 /**
  * \brief 计算CRC32
- * \param init_crc 第一次计算，初始CRC传入0xffffffff
  */
-#define IAP_CRC32_INIT_VAL (0xffffffff)
-
-static uint32_t _bIapCalCRC32(uint32_t init_crc, uint8_t *pbuf, uint32_t len)
-{
-    return crc_calculate(ALGO_CRC32, init_crc, pbuf, len);
-}
-
 static int _bIapEraseSpace()
 {
 #if (IAP_FILE_CACHE == 0 || IAP_FILE_CACHE == 1)
@@ -197,7 +192,7 @@ static int _bIapSetStat(uint8_t s)
     bIapFlag.stat = s;
     bHalFlashUnlock();
     bHalFlashErase(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, 1);
-    bIapFlag.fcrc = _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)&bIapFlag,
+    bIapFlag.fcrc = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)&bIapFlag,
                                   sizeof(bIapFlag_t) - sizeof(bIapFlag.fcrc));
     bHalFlashWrite(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t));
     bHalFlashLock();
@@ -213,13 +208,7 @@ static int _IapCheckFwData()
     uint32_t tmp_len = 0, r_len = 0;
     uint8_t  tmp[64];
 #endif
-    uint32_t tmp_crc = IAP_CRC32_INIT_VAL;
-
-    if (!INITIAL_VALUE_IS_FF(bIapFlag.info.crc_type))
-    {
-        tmp_crc = 0;
-    }
-
+    CRC_REG_SBS_HANDLE(tmp_crc, bIapFlag.info.crc_type);
 #if (IAP_FILE_CACHE == 2)
     fd = bOpen(bIapFlag.cache_dev, BCORE_FLAG_RW);
     if (fd == -1)
@@ -231,11 +220,11 @@ static int _IapCheckFwData()
     {
         r_len = ((bIapFlag.info.len - tmp_len) > 64) ? 64 : (bIapFlag.info.len - tmp_len);
         bRead(fd, tmp, r_len);
-        tmp_crc = crc_calculate(bIapFlag.info.crc_type, tmp_crc, tmp, r_len);
+        crc_calculate_sbs(&tmp_crc, tmp, r_len);
         tmp_len += r_len;
     }
     bClose(fd);
-    if (tmp_crc != bIapFlag.info.crc)
+    if (tmp_crc.crc != bIapFlag.info.crc)
     {
         return -1;
     }
@@ -248,8 +237,9 @@ static int _IapCheckFwData()
     {
         addr = IAP_FW_SAVE_ADDR;
     }
-    tmp_crc = crc_calculate(bIapFlag.info.crc_type, tmp_crc, (uint8_t *)addr, bIapFlag.info.len);
-    if (tmp_crc != bIapFlag.info.crc)
+
+    if (crc_calculate(bIapFlag.info.crc_type, (uint8_t *)addr, bIapFlag.info.len) !=
+        bIapFlag.info.crc)
     {
         return -1;
     }
@@ -303,7 +293,7 @@ static int _IapCopyFwData()
         bClose(fd);
         bHalFlashLock();
 #endif
-        tmp_crc = _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)APP_START_ADDR, bIapFlag.info.len);
+        tmp_crc = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)APP_START_ADDR, bIapFlag.info.len);
         if (tmp_crc != bIapFlag.info.crc)
         {
             retval = -1;
@@ -368,7 +358,7 @@ static int _IapCopyBackupData()
         bClose(fd);
         bHalFlashLock();
 #endif
-        tmp_crc = _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
+        tmp_crc = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
         if (tmp_crc != bIapFlag.backup.fcrc)
         {
             retval = -1;
@@ -397,9 +387,9 @@ static void _IapBackupFirmware()
     uint32_t      rtmp = 0;
     uint32_t      rlen = 0;
 #endif
-    uint32_t tmp_crc = IAP_CRC32_INIT_VAL;
+    CRC_REG_SBS_HANDLE(tmp_crc, IAP_CRC32_TYPE);
 
-    if (((uint32_t)_bIapCalCRC32) < APP_START_ADDR)
+    if (((uint32_t)_bIapSetStat) < APP_START_ADDR)
     {
         return;
     }
@@ -421,8 +411,7 @@ static void _IapBackupFirmware()
                            (IAP_BACKUP_SIZE + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
             bHalFlashWrite(addr, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
             bHalFlashLock();
-            tmp_crc =
-                _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)(IAP_BACKUP_ADDR), IAP_BACKUP_SIZE);
+            tmp_crc.crc = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)(IAP_BACKUP_ADDR), IAP_BACKUP_SIZE);
 #elif (IAP_BACKUP_LOCATION == 1)
             fd = bOpen(bIapFlag.backup_dev, BCORE_FLAG_RW);
             if (fd == -1)
@@ -443,17 +432,17 @@ static void _IapBackupFirmware()
             {
                 rlen = (IAP_BACKUP_SIZE - rtmp > 64) ? 64 : (IAP_BACKUP_SIZE - rtmp);
                 bRead(fd, tmp, rlen);
-                tmp_crc = _bIapCalCRC32(tmp_crc, tmp, rlen);
+                crc_calculate_sbs(&tmp_crc, tmp, rlen);
                 rtmp += rlen;
             }
             bClose(fd);
 #endif
-            if (tmp_crc == bIapFlag.backup.fcrc)
+            if (tmp_crc.crc == bIapFlag.backup.fcrc)
             {
                 bIapFlag.backup.flag = B_IAP_BACKUP_VALID;
                 bHalFlashUnlock();
                 bHalFlashErase(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, 1);
-                bIapFlag.fcrc = _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)&bIapFlag,
+                bIapFlag.fcrc = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)&bIapFlag,
                                               sizeof(bIapFlag_t) - sizeof(bIapFlag.fcrc));
                 bHalFlashWrite(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, (uint8_t *)&bIapFlag,
                                sizeof(bIapFlag_t));
@@ -706,13 +695,13 @@ int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time
 {
     int      retval = 0;
     uint32_t check  = 0;
-    if (((uint32_t)_bIapCalCRC32) < APP_START_ADDR)
+    if (((uint32_t)_bIapSetStat) < APP_START_ADDR)
     {
         bIsBoot = 1;
     }
     bHalFlashInit();
     bHalFlashRead(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t));
-    check = _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)&bIapFlag,
+    check = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)&bIapFlag,
                           sizeof(bIapFlag_t) - sizeof(bIapFlag.fcrc));
     if (check != bIapFlag.fcrc)
     {
@@ -727,7 +716,7 @@ int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time
         {
             bIapFlag.backup.flag = B_IAP_BACKUP_EN;
             bIapFlag.backup.fcrc =
-                _bIapCalCRC32(IAP_CRC32_INIT_VAL, (uint8_t *)(APP_START_ADDR), IAP_BACKUP_SIZE);
+                crc_calculate(IAP_CRC32_TYPE, (uint8_t *)(APP_START_ADDR), IAP_BACKUP_SIZE);
         }
     }
 #endif
