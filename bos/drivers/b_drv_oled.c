@@ -178,19 +178,73 @@ static void _bOLEDDrawPixel(uint8_t x, uint8_t y, uint8_t t)
     _bOLED_WriteData(tmp);
 }
 
-static void _bOLED_Fill(uint8_t fill_data)
+static int _bOLEDFillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
-    uint8_t m, n;
-    for (m = 0; m < 8; m++)
+    int      i = 0, j = 0;
+    uint16_t tmp = 0;
+    uint16_t index;
+    if (x1 > x2)
     {
-        _bOLED_WriteCmd(0xb0 + m);  /// page0-page1
-        _bOLED_WriteCmd(0x00);      /// low column start address
-        _bOLED_WriteCmd(0x10);      /// high column start address
-        for (n = 0; n < 128; n++)
+        tmp = x1;
+        x1  = x2;
+        x2  = tmp;
+    }
+    if (y1 > y2)
+    {
+        tmp = y1;
+        y1  = y2;
+        y2  = tmp;
+    }
+
+    if (x2 >= LCD_X_SIZE || y2 >= LCD_Y_SIZE)
+    {
+        return -1;
+    }
+    for (i = x1; i <= x2; i++)
+    {
+        for (j = y1; j <= y2; j++)
         {
-            _bOLED_WriteData(fill_data);
+            index = (j / 8) * LCD_X_SIZE + i;
+            if (color)
+            {
+                bOLED_Buff[index] |= 1 << (j % 8);
+            }
+            else
+            {
+                bOLED_Buff[index] &= ~(1 << (j % 8));
+            }
         }
     }
+    for (i = 0; i < (LCD_Y_SIZE / 8); i++)
+    {
+        _bOLED_WriteCmd(0xb0 + i);  /// page0-page1
+        _bOLED_WriteCmd(0x00);      /// low column start address
+        _bOLED_WriteCmd(0x10);      /// high column start address
+        for (j = 0; j < LCD_X_SIZE; j++)
+        {
+            _bOLED_WriteData(bOLED_Buff[i * LCD_X_SIZE + j]);
+        }
+    }
+    return 0;
+}
+
+static int _bOLEDCtl(bOLED_Driver_t *pdrv, uint8_t cmd, void *param)
+{
+    int             retval = -1;
+    bLcdRectInfo_t *pinfo  = (bLcdRectInfo_t *)param;
+    switch (cmd)
+    {
+        case bCMD_FILL_RECT:
+            if (param == NULL)
+            {
+                return -1;
+            }
+            retval = _bOLEDFillRect(pinfo->x1, pinfo->y1, pinfo->x2, pinfo->y2, pinfo->color);
+            break;
+        default:
+            break;
+    }
+    return retval;
 }
 
 static int _bOLEDWrite(bOLED_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
@@ -251,12 +305,11 @@ int bOLED_Init()
     bOLED_Driver.init    = bOLED_Init;
     bOLED_Driver.close   = NULL;
     bOLED_Driver.read    = NULL;
-    bOLED_Driver.ctl     = NULL;
+    bOLED_Driver.ctl     = _bOLEDCtl;
     bOLED_Driver.open    = NULL;
     bOLED_Driver.write   = _bOLEDWrite;
     bOLED_Driver.status  = 0;
     bOLED_Driver._hal_if = (void *)&bOLED_HalIf;
-    _bOLED_Fill(0);
     return 0;
 }
 
