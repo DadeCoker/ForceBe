@@ -1,9 +1,9 @@
 /**
  *!
- * \file        b_drv_lis3dh.c
+ * \file        b_drv_l3gd20.c
  * \version     v0.0.1
- * \date        2020/06/08
- * \author      Bean(notrynohigh@outlook.com)
+ * \date        2021/04/26
+ * \author      poly(baoli.chen@outlook.com)
  *******************************************************************************
  * @attention
  *
