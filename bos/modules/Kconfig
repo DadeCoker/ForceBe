@@ -119,6 +119,7 @@ config _PARAM_ENABLE
     bool "Tuning Parameters Enable/Disable"
     default n
     depends on _BOS_MODULES_ENABLE
+    select _NR_MICRO_SHELL_ENABLE
 
 config _STATE_ENABLE
     bool "State Machine Enable/Disable"
