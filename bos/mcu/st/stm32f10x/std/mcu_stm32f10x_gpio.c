@@ -58,7 +58,7 @@ static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t di
         }
         else if (pull == B_HAL_GPIO_PULLDOWN)
         {
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD
+            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
         }
         else
         {

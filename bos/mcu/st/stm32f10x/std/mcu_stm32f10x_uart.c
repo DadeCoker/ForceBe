@@ -36,6 +36,10 @@
 #if (_MCU_PLATFORM == 1001)
 #include "stm32f10x.h"
 
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
 static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
     int i = 0;

@@ -52,58 +52,55 @@ static int _FlashInit()
 
 static int _FlashUnlock()
 {
-    int retval = -1;
-    if (HAL_FLASH_Unlock() == HAL_OK)
-    {
-        retval = 0;
-    }
+    int retval = 0;
+    FLASH_Unlock();
     return retval;
 }
 
 static int _FlashLock()
 {
-    int retval = -1;
-    if (HAL_FLASH_Lock() == HAL_OK)
-    {
-        retval = 0;
-    }
+    int retval = 0;
+    FLASH_Lock();
     return retval;
 }
 
 static int _FlashErase(uint32_t raddr, uint8_t pages)
 {
-    int                    retval = -1;
-    FLASH_EraseInitTypeDef EraseInit;
-    uint32_t               PageError;
-
-    EraseInit.NbPages     = pages;
-    EraseInit.PageAddress = page_addr;
-    EraseInit.TypeErase   = FLASH_TYPEERASE_PAGES;
-
-    if (HAL_FLASHEx_Erase(&EraseInit, &PageError) == HAL_OK)
+    int     retval = 0;
+    uint8_t i      = 0;
+    raddr = _FLASH_BASE_ADDR + raddr;
+    raddr      = raddr / _FLASH_PAGE_SIZE * _FLASH_PAGE_SIZE;
+    for (i = 0; i < pages; i++)
     {
-        retval = 0;
+        if (FLASH_COMPLETE == FLASH_ErasePage(raddr))
+        {
+            raddr += _FLASH_PAGE_SIZE;
+        }
+        else
+        {
+            retval = -1;
+            break;
+        }
     }
     return retval;
 }
 
 static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 {
-    int      retval = -1;
-    uint64_t wdata  = 0;
+    uint16_t wdata  = 0;
     uint16_t wlen = (len + 1) / 2, i = 0;
-
-    if (pbuf == NULL || (addr & 0x1))
+    raddr = _FLASH_BASE_ADDR + raddr;
+    if (pbuf == NULL || (raddr & 0x1))
     {
         return -1;
     }
 
     for (i = 0; i < wlen; i++)
     {
-        wdata = pbuf[i * 2 + 1];
-        wdata = (wdata << 8) | pbuf[i * 2];
-        HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr, wdata);
-        addr += 2;
+        wdata = (wdata << 8) | pbuf[i * 2 + 1];
+        wdata = (wdata << 8) | pbuf[i * 2 + 0];
+        FLASH_ProgramHalfWord(raddr, wdata);
+        raddr += 2;
     }
     return (wlen * 2);
 }
@@ -114,7 +111,8 @@ static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    memcpy(pbuf, (const uint8_t *)addr, len);
+    raddr = _FLASH_BASE_ADDR + raddr;
+    memcpy(pbuf, (const uint8_t *)raddr, len);
     return len;
 }
 
