@@ -32,12 +32,12 @@
 
 #if _FLEXIBLEBUTTON_ENABLE
 
-#define EVENT_SET_AND_EXEC_CB(btn, evt)   \
-    do                                    \
-    {                                     \
-        btn->event = evt;                 \
-        if (btn->cb)                      \
-            btn->cb((flex_button_t*)btn); \
+#define EVENT_SET_AND_EXEC_CB(btn, evt)         \
+    do                                          \
+    {                                           \
+        btn->event = evt;                       \
+        if (flex_callback)                      \
+            flex_callback((flex_button_t*)btn); \
     } while (0)
 
 /**
@@ -60,9 +60,17 @@ enum FLEX_BTN_STAGE
 typedef struct
 {
     uint8_t btn[TYPE_N_BYTE];
-}btn_type_t;
+} btn_type_t;
 
 static flex_button_t* btn_head = NULL;
+
+static uint16_t max_multiple_clicks_interval = MAX_MULTIPLE_CLICKS_INTERVAL;
+static uint16_t short_press_start_tick       = (FLEX_MS_TO_SCAN_CNT(FLEX_BTN_SHORT_XMS));
+static uint16_t long_press_start_tick        = (FLEX_MS_TO_SCAN_CNT(FLEX_BTN_LONG_XMS));
+static uint16_t long_hold_start_tick         = (FLEX_MS_TO_SCAN_CNT(FLEX_BTN_LLONG_XMS));
+
+static flex_button_response_callback flex_callback      = NULL;
+static flex_button_read_function     flex_read_function = NULL;
 
 /**
  * g_logic_level
@@ -96,15 +104,15 @@ static uint8_t button_cnt = 0;
 int32_t flex_button_register(flex_button_t* button)
 {
     static uint8_t init_flag = 0;
-    flex_button_t* curr = btn_head;
+    flex_button_t* curr      = btn_head;
 
-    if(init_flag == 0)
+    if (init_flag == 0)
     {
         init_flag = 1;
         memset(&g_logic_level, 0, sizeof(btn_type_t));
         memset(&g_btn_status_reg, 0, sizeof(btn_type_t));
     }
-    
+
     if (!button)
     {
         return -1;
@@ -123,13 +131,12 @@ int32_t flex_button_register(flex_button_t* button)
      * First registered button is at the end of the 'linked list'.
      * btn_head points to the head of the 'linked list'.
      */
-    button->next                         = btn_head;
-    button->status                       = FLEX_BTN_STAGE_DEFAULT;
-    button->event                        = FLEX_BTN_PRESS_NONE;
-    button->scan_cnt                     = 0;
-    button->click_cnt                    = 0;
-    button->max_multiple_clicks_interval = MAX_MULTIPLE_CLICKS_INTERVAL;
-    btn_head                             = button;
+    button->next      = btn_head;
+    button->status    = FLEX_BTN_STAGE_DEFAULT;
+    button->event     = FLEX_BTN_PRESS_NONE;
+    button->scan_cnt  = 0;
+    button->click_cnt = 0;
+    btn_head          = button;
 
     /**
      * First registered button, the logic level of the button pressed is
@@ -156,14 +163,14 @@ static void flex_button_read(void)
     btn_type_t raw_data;
 
     memset(&raw_data, 0, sizeof(btn_type_t));
-    
-    for (target = btn_head, i = button_cnt - 1;
-         (target != NULL) && (target->usr_button_read != NULL); target = target->next, i--)
+
+    for (target = btn_head, i = button_cnt - 1; (target != NULL) && (flex_read_function != NULL);
+         target = target->next, i--)
     {
-        raw_data.btn[(i / 8)] = raw_data.btn[(i / 8)] | ((target->usr_button_read)(target) << (i % 8));
+        raw_data.btn[(i / 8)] = raw_data.btn[(i / 8)] | ((flex_read_function)(target) << (i % 8));
     }
 
-    for(i = 0;i < TYPE_N_BYTE;i++)
+    for (i = 0; i < TYPE_N_BYTE; i++)
     {
         g_btn_status_reg.btn[i] = (~raw_data.btn[i]) ^ g_logic_level.btn[i];
     }
@@ -189,7 +196,7 @@ static uint8_t flex_button_process(void)
             target->scan_cnt++;
             if (target->scan_cnt >= ((1 << (sizeof(target->scan_cnt) * 8)) - 1))
             {
-                target->scan_cnt = target->long_hold_start_tick;
+                target->scan_cnt = long_hold_start_tick;
             }
         }
 
@@ -217,7 +224,7 @@ static uint8_t flex_button_process(void)
                 {
                     if (target->click_cnt > 0) /* multiple click */
                     {
-                        if (target->scan_cnt > target->max_multiple_clicks_interval)
+                        if (target->scan_cnt > max_multiple_clicks_interval)
                         {
                             EVENT_SET_AND_EXEC_CB(target,
                                                   target->click_cnt < FLEX_BTN_PRESS_REPEAT_CLICK
@@ -230,21 +237,21 @@ static uint8_t flex_button_process(void)
                             target->click_cnt = 0;
                         }
                     }
-                    else if (target->scan_cnt >= target->long_hold_start_tick)
+                    else if (target->scan_cnt >= long_hold_start_tick)
                     {
                         if (target->event != FLEX_BTN_PRESS_LONG_HOLD)
                         {
                             EVENT_SET_AND_EXEC_CB(target, FLEX_BTN_PRESS_LONG_HOLD);
                         }
                     }
-                    else if (target->scan_cnt >= target->long_press_start_tick)
+                    else if (target->scan_cnt >= long_press_start_tick)
                     {
                         if (target->event != FLEX_BTN_PRESS_LONG_START)
                         {
                             EVENT_SET_AND_EXEC_CB(target, FLEX_BTN_PRESS_LONG_START);
                         }
                     }
-                    else if (target->scan_cnt >= target->short_press_start_tick)
+                    else if (target->scan_cnt >= short_press_start_tick)
                     {
                         if (target->event != FLEX_BTN_PRESS_SHORT_START)
                         {
@@ -254,17 +261,17 @@ static uint8_t flex_button_process(void)
                 }
                 else /* button up */
                 {
-                    if (target->scan_cnt >= target->long_hold_start_tick)
+                    if (target->scan_cnt >= long_hold_start_tick)
                     {
                         EVENT_SET_AND_EXEC_CB(target, FLEX_BTN_PRESS_LONG_HOLD_UP);
                         target->status = FLEX_BTN_STAGE_DEFAULT;
                     }
-                    else if (target->scan_cnt >= target->long_press_start_tick)
+                    else if (target->scan_cnt >= long_press_start_tick)
                     {
                         EVENT_SET_AND_EXEC_CB(target, FLEX_BTN_PRESS_LONG_UP);
                         target->status = FLEX_BTN_STAGE_DEFAULT;
                     }
-                    else if (target->scan_cnt >= target->short_press_start_tick)
+                    else if (target->scan_cnt >= short_press_start_tick)
                     {
                         EVENT_SET_AND_EXEC_CB(target, FLEX_BTN_PRESS_SHORT_UP);
                         target->status = FLEX_BTN_STAGE_DEFAULT;
@@ -287,7 +294,7 @@ static uint8_t flex_button_process(void)
                 }
                 else
                 {
-                    if (target->scan_cnt > target->max_multiple_clicks_interval)
+                    if (target->scan_cnt > max_multiple_clicks_interval)
                     {
                         EVENT_SET_AND_EXEC_CB(target,
                                               target->click_cnt < FLEX_BTN_PRESS_REPEAT_CLICK
@@ -337,6 +344,17 @@ uint8_t flex_button_scan(void)
 {
     flex_button_read();
     return flex_button_process();
+}
+
+int32_t flex_button_reg_function(flex_button_response_callback cb, flex_button_read_function read_f)
+{
+    if (cb == NULL || read_f == NULL)
+    {
+        return -1;
+    }
+    flex_callback      = cb;
+    flex_read_function = read_f;
+    return 0;
 }
 
 #endif

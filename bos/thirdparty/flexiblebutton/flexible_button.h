@@ -33,6 +33,7 @@
 
 #include <stdint.h>
 #include <string.h>
+
 #include "b_config.h"
 
 #if _FLEXIBLEBUTTON_ENABLE
@@ -40,9 +41,10 @@
 #define FLEX_MS_TO_SCAN_CNT(ms) (ms / (1000 / FLEX_BTN_SCAN_FREQ_HZ))
 
 /* Multiple clicks interval, default 300ms */
-#define MAX_MULTIPLE_CLICKS_INTERVAL (FLEX_MS_TO_SCAN_CNT(300))
+#define MAX_MULTIPLE_CLICKS_INTERVAL (FLEX_MS_TO_SCAN_CNT(MULTIPLE_CLICKS_INTERVAL_XMS))
 
 typedef void (*flex_button_response_callback)(void*);
+typedef uint8_t (*flex_button_read_function)(void*);
 
 typedef enum
 {
@@ -125,29 +127,19 @@ typedef enum
 typedef struct flex_button
 {
     struct flex_button* next;
-
-    uint8_t (*usr_button_read)(void*);
-    flex_button_response_callback cb;
-
-    uint16_t scan_cnt;
-    uint16_t click_cnt;
-    uint16_t max_multiple_clicks_interval;
-
-    uint16_t debounce_tick;
-    uint16_t short_press_start_tick;
-    uint16_t long_press_start_tick;
-    uint16_t long_hold_start_tick;
-
-    uint8_t id;
-    uint8_t pressed_logic_level : 1;
-    uint8_t event : 4;
-    uint8_t status : 3;
+    uint16_t            scan_cnt;
+    uint16_t            click_cnt;
+    uint8_t             id;
+    uint8_t             pressed_logic_level : 1;
+    uint8_t             event : 4;
+    uint8_t             status : 3;
 } flex_button_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+int32_t             flex_button_reg_function(flex_button_response_callback cb,
+                                             flex_button_read_function     read_f);
 int32_t             flex_button_register(flex_button_t* button);
 flex_button_event_t flex_button_event_read(flex_button_t* button);
 uint8_t             flex_button_scan(void);

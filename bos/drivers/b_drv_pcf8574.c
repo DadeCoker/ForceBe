@@ -148,7 +148,7 @@ int bPCF8574_Init(bDriverInterface_t *pdrv)
     bDRIVER_GET_HALIF(_if, bPCF8574_HalIf_t, pdrv);
     pdrv->read  = _bPCF8574Read;
     pdrv->write = _bPCF8574Write;
-    bHalI2CWriteByte(_if, 0);
+    bHalI2CWriteByte(_if, PCF8574_DEFAULT_OUTPUT);
     return 0;
 }
 

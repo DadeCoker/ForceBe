@@ -59,7 +59,15 @@ extern "C" {
  * \{
  */
 
-typedef void (*pBtnEventHandler_t)(uint8_t id, uint16_t event, uint8_t param);
+typedef void (*pBtnEventHandler_t)(uint32_t dev_no, uint8_t sub_id, uint16_t event, uint8_t param);
+
+typedef struct bButtonInstance
+{
+    uint32_t                dev_no;
+    uint16_t                event;
+    pBtnEventHandler_t      handler;
+    struct bButtonInstance *next;
+} bButtonInstance_t;
 
 /**
  * \}
@@ -81,6 +89,26 @@ typedef void (*pBtnEventHandler_t)(uint8_t id, uint16_t event, uint8_t param);
 #define BTN_EVENT_LONGLONG (0x100)
 #define BTN_EVENT_LONGLONG_UP (0x200)
 
+#define bBUTTON_ADD_KEY(dev, e, e_handler) \
+    static flex_button_t     button_##dev; \
+    static bButtonInstance_t key_##dev = { \
+        .dev_no  = dev,                    \
+        .event   = e,                      \
+        .handler = e_handler,              \
+        .next    = NULL,                   \
+    };                                     \
+    bButtonAddKey(&key_##dev, &button_##dev_no)
+
+#define bBUTTON_ADD_MATRIXKEYS(dev, e, e_handler)                                  \
+    static flex_button_t     button_##dev[MATRIX_KEYS_ROWS * MATRIX_KEYS_COLUMNS]; \
+    static bButtonInstance_t key_##dev = {                                         \
+        .dev_no  = dev,                                                            \
+        .event   = e,                                                              \
+        .handler = e_handler,                                                      \
+        .next    = NULL,                                                           \
+    };                                                                             \
+    bButtonAddMatrixKeys(&key_##dev, button_##dev_no)
+
 /**
  * \}
  */
@@ -89,8 +117,9 @@ typedef void (*pBtnEventHandler_t)(uint8_t id, uint16_t event, uint8_t param);
  * \defgroup BUTTON_Exported_Functions
  * \{
  */
-int  bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms);
-void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler);
+// 请不要直接调用下面这两个函数。使用bBUTTON_ADD_KEY和bBUTTON_ADD_MATRIXKEYS代替
+int bButtonAddKey(bButtonInstance_t *pbutton, flex_button_t *pflex);
+int bButtonAddMatrixKeys(bButtonInstance_t *pbutton, flex_button_t *pflex);
 /**
  * \}
  */

@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_device_list.h
+ * \file        b_drv_key.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,39 +28,52 @@
  * SOFTWARE.
  *******************************************************************************
  */
+#ifndef __B_DRV_KEY_H__
+#define __B_DRV_KEY_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*Includes ----------------------------------------------*/
+#include "drivers/inc/b_driver.h"
 /**
-typedef enum
-{
-    B_DRIVER_NULL = 0,
-    B_DRIVER_24CXX,
-    B_DRIVER_DS18B20,
-    B_DRIVER_ESP12F,
-    B_DRIVER_FM25CL,
-    B_DRIVER_ILI9320,
-    B_DRIVER_ILI9341,
-    B_DRIVER_KEY,
-    B_DRIVER_LIS3DH,
-    B_DRIVER_MATRIXKEYS,
-    B_DRIVER_MCUFLASH,
-    B_DRIVER_OLED,
-    B_DRIVER_PCF8574,
-    B_DRIVER_SD,
-    B_DRIVER_SPIFLASH,
-    B_DRIVER_SSD1289,
-    B_DRIVER_ST7789,
-    B_DRIVER_TESTFLASH,
-    B_DRIVER_XPT2046,
-    B_DRIVER_NUMBER
-} bDriverNumber_t;
-*/
-/**
-    B_DEVICE_REG(dev_1, bDriverNumber_t, "description")
-    .....
-    B_DEVICE_REG(dev_n, bDriverNumber_t, "description")
+ * \addtogroup B_DRIVER
+ * \{
  */
 
-B_DEVICE_REG(bTESTFLASH, B_DRIVER_TESTFLASH, "testflash")
+/**
+ * \addtogroup KEY
+ * \{
+ */
 
-#undef B_DEVICE_REG
+/**
+ * \defgroup KEY_Exported_TypesDefinitions
+ * \{
+ */
+//<HALIF 1 GPIO
+typedef struct
+{
+    bHalGPIOPort_t port;
+    bHalGPIOPin_t  pin;
+    uint8_t        level;
+} bKEY_HalIf_t;
+/**
+ * \}
+ */
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/

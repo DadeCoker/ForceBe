@@ -75,6 +75,12 @@
         },                                              \
     }
 
+#define HAL_MATRIXKEYS_IF                                                                          \
+    {                                                                                              \
+        .rows = 4, .columns = 4, .row_io = {{B_HAL_GPIOE, B_HAL_PIN8}, {B_HAL_GPIOE, B_HAL_PIN9}}, \
+        .column_io = {{B_HAL_GPIOE, B_HAL_PIN10}, {B_HAL_GPIOE, B_HAL_PIN11}},                     \
+    }
+
 #define HAL_MCUFLASH_IF \
     {                   \
         0               \
@@ -99,11 +105,12 @@
 
 #define HAL_SD_IF                                        \
     {                                                    \
-        .is_spi = 1, ._if._spi = {                       \
+        .is_spi   = 1,                                   \
+        ._if._spi = {                                    \
             .is_simulation = 0,                          \
             .cs            = {B_HAL_GPIOD, B_HAL_PIN11}, \
             ._if.spi       = B_HAL_SPI_1,                \
-        }                                                \
+        },                                               \
     }
 
 #define HAL_SPIFLASH_IF                                 \
@@ -116,9 +123,9 @@
         },                                              \
     }
 
-#define HAL_TESTFLASH_IF            \
-    {                               \
-        .e_size = 4096, .w_size = 1 \
+#define HAL_TESTFLASH_IF             \
+    {                                \
+        .e_size = 4096, .w_size = 1, \
     }
 
 #define HAL_XPT2046_IF                                                               \

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_drv_button.c
+ * \file        b_drv_matrixkeys.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "drivers/inc/b_drv_button.h"
+#include "drivers/inc/b_drv_matrixkeys.h"
 
 /**
  * \addtogroup B_DRIVER
@@ -38,30 +38,12 @@
  */
 
 /**
- * \addtogroup BUTTON
+ * \addtogroup MATRIXKEYS
  * \{
  */
 
 /**
- * \defgroup BUTTON_Private_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup BUTTON_Private_Defines
- * \{
- */
-#define DRIVER_NAME BUTTON
-/**
- * \}
- */
-
-/**
- * \defgroup BUTTON_Private_Macros
+ * \defgroup MATRIXKEYS_Private_TypesDefinitions
  * \{
  */
 
@@ -70,16 +52,16 @@
  */
 
 /**
- * \defgroup BUTTON_Private_Variables
+ * \defgroup MATRIXKEYS_Private_Defines
  * \{
  */
-bDRIVER_HALIF_TABLE(bBUTTON_HalIf_t, DRIVER_NAME);
+#define DRIVER_NAME MATRIXKEYS
 /**
  * \}
  */
 
 /**
- * \defgroup BUTTON_Private_FunctionPrototypes
+ * \defgroup MATRIXKEYS_Private_Macros
  * \{
  */
 
@@ -88,19 +70,59 @@ bDRIVER_HALIF_TABLE(bBUTTON_HalIf_t, DRIVER_NAME);
  */
 
 /**
- * \defgroup BUTTON_Private_Functions
+ * \defgroup MATRIXKEYS_Private_Variables
+ * \{
+ */
+bDRIVER_HALIF_TABLE(bMATRIXKEYS_HalIf_t, DRIVER_NAME);
+/**
+ * \}
+ */
+
+/**
+ * \defgroup MATRIXKEYS_Private_FunctionPrototypes
  * \{
  */
 
-static int _bBUTTONRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+/**
+ * \}
+ */
+
+/**
+ * \defgroup MATRIXKEYS_Private_Functions
+ * \{
+ */
+
+static int _bMatrixKesyRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
-    if (len == 0)
+    bDRIVER_GET_HALIF(_if, bMATRIXKEYS_HalIf_t, pdrv);
+    uint8_t  row   = off / _if->columns;
+    uint8_t  col   = off % _if->columns;
+    uint16_t index = 0;
+    if (len == 0 || row >= _if->rows)
     {
         return -1;
     }
-    bDRIVER_GET_HALIF(_if, bBUTTON_HalIf_t, pdrv);
-    pbuf[0] = (bHalGpioReadPin(_if->port, _if->pin) == _if->level);
-    return 1;
+
+    if ((off + len) > (_if->columns * _if->rows))
+    {
+        len = (_if->columns * _if->rows) - off;
+    }
+
+    for (; row < _if->rows; row++)
+    {
+        bHalGpioConfig(_if->row_io[row].port, _if->row_io[row].pin, B_HAL_GPIO_OUTPUT,
+                       B_HAL_GPIO_NOPULL);
+        bHalGpioWritePin(_if->row_io[row].port, _if->row_io[row].pin, 0);
+        for (; col < _if->columns; col++)
+        {
+            pbuf[index++] =
+                (0 == bHalGpioReadPin(_if->column_io[col].port, _if->column_io[col].pin));
+        }
+        bHalGpioConfig(_if->row_io[row].port, _if->row_io[row].pin, B_HAL_GPIO_INPUT,
+                       B_HAL_GPIO_PULLUP);
+        col = 0;
+    }
+    return len;
 }
 
 /**
@@ -108,17 +130,17 @@ static int _bBUTTONRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, u
  */
 
 /**
- * \addtogroup BUTTON_Exported_Functions
+ * \addtogroup MATRIXKEYS_Exported_Functions
  * \{
  */
-int bBUTTON_Init(bDriverInterface_t *pdrv)
+int bMATRIXKEYS_Init(bDriverInterface_t *pdrv)
 {
-    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bBUTTON_Init);
-    pdrv->read = _bBUTTONRead;
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bMATRIXKEYS_Init);
+    pdrv->read = _bMatrixKesyRead;
     return 0;
 }
 
-bDRIVER_REG_INIT(B_DRIVER_BUTTON, bBUTTON_Init);
+bDRIVER_REG_INIT(B_DRIVER_MATRIXKEYS, bMATRIXKEYS_Init);
 
 /**
  * \}

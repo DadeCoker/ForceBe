@@ -36,8 +36,9 @@
 
 #include "b_section.h"
 
-
 #if _FLEXIBLEBUTTON_ENABLE
+#include "core/inc/b_core.h"
+#include "core/inc/b_device.h"
 #include "hal/inc/b_hal.h"
 /**
  * \addtogroup BABYOS
@@ -58,27 +59,6 @@
  * \defgroup BUTTON_Private_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    bHalGPIOPort_t port;
-    bHalGPIOPin_t  pin;
-    uint8_t        logic_level;
-} bButtonInfo_t;
-
-#if _MATRIXKEY_ENABLE
-typedef struct
-{
-    bHalGPIOInstance_t Rows[MATRIXKEY_ROWS];
-    bHalGPIOInstance_t Columns[MATRIXKEY_COLUMNS];
-}bMatrixKeyInfo_t;
-#endif
-
-
-typedef struct
-{
-    uint16_t           event;
-    pBtnEventHandler_t handler;
-} bButtonEventInfo_t;
 
 /**
  * \}
@@ -88,21 +68,7 @@ typedef struct
  * \defgroup BUTTON_Private_Defines
  * \{
  */
-#if _MATRIXKEY_ENABLE
 
-#if (MATRIXKEY_ROWS == 0 || MATRIXKEY_COLUMNS == 0)
-#error ROWS and COLUMNS Must be greater than zero
-#endif
-
-#define BUTTON_NUM (FLEX_BTN_NUMBER + ((MATRIXKEY_ROWS) * (MATRIXKEY_COLUMNS)))
-#else
-
-#if (FLEX_BTN_NUMBER == 0)
-#error FLEX_BTN_NUMBER Must be greater than zero
-#endif
-
-#define BUTTON_NUM (FLEX_BTN_NUMBER)
-#endif
 /**
  * \}
  */
@@ -120,16 +86,9 @@ typedef struct
  * \defgroup BUTTON_Private_Variables
  * \{
  */
-static flex_button_t       bButtonList[BUTTON_NUM];
-static bButtonEventInfo_t  bButtonEventInfo[BUTTON_NUM];
 
-#if (FLEX_BTN_NUMBER > 0)
-const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
-#endif
-
-#if _MATRIXKEY_ENABLE
-const static bMatrixKeyInfo_t bMatrixKeyInfo = HAL_B_MATRIXKEY_GPIO;
-#endif
+static bButtonInstance_t *pButtonHead     = NULL;
+static uint8_t            bButtonInitFlag = 0;
 /**
  * \}
  */
@@ -147,30 +106,44 @@ const static bMatrixKeyInfo_t bMatrixKeyInfo = HAL_B_MATRIXKEY_GPIO;
  * \defgroup BUTTON_Private_Functions
  * \{
  */
-#if (FLEX_BTN_NUMBER > 0) 
-static uint8_t _bButtonRead(void *p)
-{ 
-    flex_button_t *btn = (flex_button_t *)p;
-    return bHalGpioReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
-}
-#endif
 
-#if _MATRIXKEY_ENABLE
-static uint8_t _bMatrixKeyRead(void *p)
+static bButtonInstance_t *_bButtonFindInstance(void *pflex, uint8_t id)
 {
-    uint8_t tmp = 1;
-    flex_button_t *btn = (flex_button_t *)p;
-    uint8_t id = btn->id - FLEX_BTN_NUMBER;
-    uint8_t row = 0, col = 0;
-    row = id / MATRIXKEY_COLUMNS;
-    col = id % MATRIXKEY_COLUMNS;
-    bHalGpioConfig(bMatrixKeyInfo.Rows[row].port, bMatrixKeyInfo.Rows[row].pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
-    bHalGpioWritePin(bMatrixKeyInfo.Rows[row].port, bMatrixKeyInfo.Rows[row].pin, 0);
-    tmp = bHalGpioReadPin(bMatrixKeyInfo.Columns[col].port, bMatrixKeyInfo.Columns[col].pin);
-    bHalGpioConfig(bMatrixKeyInfo.Rows[row].port, bMatrixKeyInfo.Rows[row].pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_PULLUP);
+    bDeviceMsg_t       msg;
+    bButtonInstance_t *p = pButtonHead;
+    pflex                = (void *)(((uint32_t)pflex) - id * sizeof(flex_button_t));
+    while (p != NULL)
+    {
+        bDeviceReadMessage(p->dev_no, &msg);
+        if (msg._p == pflex)
+        {
+            break;
+        }
+        p = p->next;
+    }
+    return p;
+}
+
+static uint8_t _bButtonRead(void *p)
+{
+    int                fd        = -1;
+    uint8_t            tmp       = 0;
+    flex_button_t     *btn       = (flex_button_t *)p;
+    bButtonInstance_t *pinstance = _bButtonFindInstance(p, btn->id);
+    if (pinstance == NULL)
+    {
+        return 0;
+    }
+    fd = bOpen(pinstance->dev_no, BCORE_FLAG_R);
+    if (fd < 0)
+    {
+        return 0;
+    }
+    bLseek(fd, btn->id);
+    bRead(fd, &tmp, 1);
+    bClose(fd);
     return tmp;
 }
-#endif
 
 static void _bButtonCore()
 {
@@ -186,16 +159,17 @@ BOS_REG_POLLING_FUNC(_bButtonCore);
 
 static void _bButtonCallback(void *p)
 {
-    flex_button_t *btn = (flex_button_t *)p;
-    if (btn->id >= BUTTON_NUM)
+    flex_button_t     *btn       = (flex_button_t *)p;
+    bButtonInstance_t *pinstance = _bButtonFindInstance(p, btn->id);
+    if (pinstance == NULL)
     {
         return;
     }
-    if (bButtonEventInfo[btn->id].event & (0x0001 << btn->event))
+    if (pinstance->event & (0x0001 << btn->event))
     {
-        if (bButtonEventInfo[btn->id].handler)
+        if (pinstance->handler)
         {
-            bButtonEventInfo[btn->id].handler(btn->id, (0x0001 << btn->event), btn->click_cnt);
+            pinstance->handler(pinstance->dev_no, btn->id, (0x0001 << btn->event), btn->click_cnt);
         }
     }
 }
@@ -208,51 +182,68 @@ static void _bButtonCallback(void *p)
  * \addtogroup BUTTON_Exported_Functions
  * \{
  */
-
-int bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms)
+int bButtonAddKey(bButtonInstance_t *pbutton, flex_button_t *pflex)
 {
-    int i = 0;
-#if (FLEX_BTN_NUMBER > 0)     
-    for (i = 0; i < FLEX_BTN_NUMBER; i++)
+    bDeviceMsg_t msg;
+    if (pbutton == NULL || pflex == NULL)
     {
-        bButtonList[i].id                     = i;
-        bButtonList[i].pressed_logic_level    = bButtonInfo[i].logic_level;
-        bButtonList[i].usr_button_read        = _bButtonRead;
-        bButtonList[i].cb                     = _bButtonCallback;
-        bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(short_xms);
-        bButtonList[i].long_press_start_tick  = FLEX_MS_TO_SCAN_CNT(long_xms);
-        bButtonList[i].long_hold_start_tick   = FLEX_MS_TO_SCAN_CNT(llong_xms);
-        flex_button_register(&bButtonList[i]);
-        bButtonEventInfo[i].handler = NULL;
-        bButtonEventInfo[i].event   = 0;
+        return -1;
     }
-#endif    
-#if _MATRIXKEY_ENABLE  
-    for(;i < BUTTON_NUM;i++)
+    if (bButtonInitFlag == 0)
     {
-        bButtonList[i].id                     = i;
-        bButtonList[i].pressed_logic_level    = 0;
-        bButtonList[i].usr_button_read        = _bMatrixKeyRead;
-        bButtonList[i].cb                     = _bButtonCallback;
-        bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(short_xms);
-        bButtonList[i].long_press_start_tick  = FLEX_MS_TO_SCAN_CNT(long_xms);
-        bButtonList[i].long_hold_start_tick   = FLEX_MS_TO_SCAN_CNT(llong_xms);
-        flex_button_register(&bButtonList[i]);
-        bButtonEventInfo[i].handler = NULL;
-        bButtonEventInfo[i].event   = 0;
+        flex_button_reg_function(_bButtonCallback, _bButtonRead);
+        bButtonInitFlag = 1;
     }
-#endif    
+    if (pButtonHead == NULL)
+    {
+        pButtonHead       = pbutton;
+        pButtonHead->next = NULL;
+    }
+    else
+    {
+        pbutton->next     = pButtonHead->next;
+        pButtonHead->next = pbutton;
+    }
+    msg._p = pflex;
+    bDeviceWriteMessage(pbutton->dev_no, &msg);
+    pflex->id                  = 0;
+    pflex->pressed_logic_level = 1;
+    flex_button_register(pflex);
     return 0;
 }
 
-void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler)
+int bButtonAddMatrixKeys(bButtonInstance_t *pbutton, flex_button_t *pflex)
 {
-    if (id >= BUTTON_NUM || handler == NULL)
+    bDeviceMsg_t msg;
+    int          i = 0;
+    if (pbutton == NULL || pflex == NULL)
     {
-        return;
+        return -1;
     }
-    bButtonEventInfo[id].event   = event;
-    bButtonEventInfo[id].handler = handler;
+    if (bButtonInitFlag == 0)
+    {
+        flex_button_reg_function(_bButtonCallback, _bButtonRead);
+        bButtonInitFlag = 1;
+    }
+    if (pButtonHead == NULL)
+    {
+        pButtonHead       = pbutton;
+        pButtonHead->next = NULL;
+    }
+    else
+    {
+        pbutton->next     = pButtonHead->next;
+        pButtonHead->next = pbutton;
+    }
+    msg._p = pflex;
+    bDeviceWriteMessage(pbutton->dev_no, &msg);
+    for (i = 0; i < (MATRIX_KEYS_ROWS * MATRIX_KEYS_COLUMNS); i++)
+    {
+        pflex->id                  = i;
+        pflex->pressed_logic_level = 1;
+        flex_button_register(pflex);
+    }
+    return 0;
 }
 
 /**

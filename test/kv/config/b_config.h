@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70410
+#define FW_VERSION 70412
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -94,6 +94,18 @@
 //<o> AT Command Retry Count
 #define AT_RETRY_COUNT 2
 //</e>
+
+//</h>
+
+//<h> Drivers Configuration
+
+//<o> PCF8574 Default Output Value
+#define PCF8574_DEFAULT_OUTPUT 0
+
+//<o> Maximum number of rows of matrix keys
+#define MATRIX_KEYS_ROWS 4
+//<o> Maximum number of columns of matrix keys
+#define MATRIX_KEYS_COLUMNS 4
 
 //</h>
 
@@ -275,18 +287,17 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE 0
+#define _FLEXIBLEBUTTON_ENABLE 1
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ 50
-//<o> Number of Buttons
-#define FLEX_BTN_NUMBER 4
-//<e> MatrixKey Enable/Disable
-#define _MATRIXKEY_ENABLE 0
-//<o> Number of Matrix Rows
-#define MATRIXKEY_ROWS 2
-//<o> Number of Matrix Columns
-#define MATRIXKEY_COLUMNS 2
-//</e>
+//<o> Short Press Time, default xms
+#define FLEX_BTN_SHORT_XMS 1000
+//<o> Long Press Time, default xms
+#define FLEX_BTN_LONG_XMS 3000
+//<o> LongLong Press Time, default xms
+#define FLEX_BTN_LLONG_XMS 5000
+//<o> Multiple clicks interval, default xms
+#define MULTIPLE_CLICKS_INTERVAL_XMS 300
 //</e>
 
 //<e> UGUI Enable/Disable

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_drv_24cxx.h
+ * \file        b_drv_key.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,52 +28,108 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_BUTTON_H__
-#define __B_DRV_BUTTON_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*Includes ----------------------------------------------*/
-#include "drivers/inc/b_driver.h"
+#include "drivers/inc/b_drv_key.h"
+
 /**
  * \addtogroup B_DRIVER
  * \{
  */
 
 /**
- * \addtogroup BUTTON
+ * \addtogroup KEY
  * \{
  */
 
 /**
- * \defgroup BUTTON_Exported_TypesDefinitions
+ * \defgroup KEY_Private_TypesDefinitions
  * \{
  */
-//<HALIF 1 GPIO
-typedef struct
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup KEY_Private_Defines
+ * \{
+ */
+#define DRIVER_NAME KEY
+/**
+ * \}
+ */
+
+/**
+ * \defgroup KEY_Private_Macros
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup KEY_Private_Variables
+ * \{
+ */
+bDRIVER_HALIF_TABLE(bKEY_HalIf_t, DRIVER_NAME);
+/**
+ * \}
+ */
+
+/**
+ * \defgroup KEY_Private_FunctionPrototypes
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup KEY_Private_Functions
+ * \{
+ */
+
+static int _bKeyRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
-    bHalGPIOPort_t port;
-    bHalGPIOPin_t  pin;
-    uint8_t        level;
-} bBUTTON_HalIf_t;
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#ifdef __cplusplus
+    if (len == 0)
+    {
+        return -1;
+    }
+    bDRIVER_GET_HALIF(_if, bKEY_HalIf_t, pdrv);
+    pbuf[0] = (bHalGpioReadPin(_if->port, _if->pin) == _if->level);
+    return 1;
 }
-#endif
 
-#endif
+/**
+ * \}
+ */
+
+/**
+ * \addtogroup KEY_Exported_Functions
+ * \{
+ */
+int bKEY_Init(bDriverInterface_t *pdrv)
+{
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bKEY_Init);
+    pdrv->read = _bKeyRead;
+    return 0;
+}
+
+bDRIVER_REG_INIT(B_DRIVER_KEY, bKEY_Init);
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/

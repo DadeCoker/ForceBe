@@ -81,13 +81,14 @@ extern "C" {
 #endif
 
 #include "drivers/inc/b_drv_24cxx.h"
-#include "drivers/inc/b_drv_button.h"
 #include "drivers/inc/b_drv_ds18b20.h"
 #include "drivers/inc/b_drv_esp12f.h"
 #include "drivers/inc/b_drv_fm25cl.h"
 #include "drivers/inc/b_drv_ili9320.h"
 #include "drivers/inc/b_drv_ili9341.h"
+#include "drivers/inc/b_drv_key.h"
 #include "drivers/inc/b_drv_lis3dh.h"
+#include "drivers/inc/b_drv_matrixkeys.h"
 #include "drivers/inc/b_drv_mcuflash.h"
 #include "drivers/inc/b_drv_oled.h"
 #include "drivers/inc/b_drv_pcf8574.h"
