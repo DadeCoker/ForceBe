@@ -54,6 +54,7 @@ extern "C" {
 #include "b_mod_sdb.h"
 #include "b_mod_shell.h"
 #include "b_mod_timer.h"
+#include "b_mod_trace.h"
 #include "b_mod_utc.h"
 #include "b_mod_xm128.h"
 #include "b_mod_ymodem.h"
