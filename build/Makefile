@@ -150,17 +150,17 @@ core/fast:
 .PHONY : core/fast
 
 #=============================================================================
-# Target rules for targets named hal
+# Target rules for targets named utils
 
 # Build rule for target.
-hal: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 hal
-.PHONY : hal
+utils: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 utils
+.PHONY : utils
 
 # fast build rule for target.
-hal/fast:
-	$(MAKE) -f bos/hal/CMakeFiles/hal.dir/build.make bos/hal/CMakeFiles/hal.dir/build
-.PHONY : hal/fast
+utils/fast:
+	$(MAKE) -f bos/utils/CMakeFiles/utils.dir/build.make bos/utils/CMakeFiles/utils.dir/build
+.PHONY : utils/fast
 
 #=============================================================================
 # Target rules for targets named driver
@@ -201,6 +201,19 @@ thirdparty/fast:
 	$(MAKE) -f bos/thirdparty/CMakeFiles/thirdparty.dir/build.make bos/thirdparty/CMakeFiles/thirdparty.dir/build
 .PHONY : thirdparty/fast
 
+#=============================================================================
+# Target rules for targets named hal
+
+# Build rule for target.
+hal: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 hal
+.PHONY : hal
+
+# fast build rule for target.
+hal/fast:
+	$(MAKE) -f bos_hal/CMakeFiles/hal.dir/build.make bos_hal/CMakeFiles/hal.dir/build
+.PHONY : hal/fast
+
 # target to build an object file
 main.o:
 	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/main.o
@@ -227,10 +240,11 @@ help:
 	@echo "... babyos"
 	@echo "... algorithm"
 	@echo "... core"
-	@echo "... hal"
+	@echo "... utils"
 	@echo "... driver"
 	@echo "... module"
 	@echo "... thirdparty"
+	@echo "... hal"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -36,10 +36,11 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/r/Desktop/BabyOS/build/bos/algorithm/cmake_install.cmake")
   include("/home/r/Desktop/BabyOS/build/bos/core/cmake_install.cmake")
-  include("/home/r/Desktop/BabyOS/build/bos/hal/cmake_install.cmake")
+  include("/home/r/Desktop/BabyOS/build/bos/utils/cmake_install.cmake")
   include("/home/r/Desktop/BabyOS/build/bos/drivers/cmake_install.cmake")
   include("/home/r/Desktop/BabyOS/build/bos/modules/cmake_install.cmake")
   include("/home/r/Desktop/BabyOS/build/bos/thirdparty/cmake_install.cmake")
+  include("/home/r/Desktop/BabyOS/build/bos_hal/cmake_install.cmake")
 
 endif()
 

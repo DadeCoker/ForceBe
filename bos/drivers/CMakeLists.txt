@@ -10,7 +10,13 @@ SET(LIBDRIVER_SRC camera/b_drv_ov5640.c
 		gsensor/b_drv_lis3dh.c
 		touch/b_drv_xpt2046.c)
 
-INCLUDE_DIRECTORIES(inc ../config/ ../modules/inc/ ../core/inc/ ../hal/hal/inc/ ../hal/utils/inc/ ../algorithm/inc/
+INCLUDE_DIRECTORIES(inc 
+			../../bos_config/ 
+			../modules/inc/ 
+			../core/inc/ 
+			../../bos_hal/inc/ 
+			../utils/inc/ 
+			../algorithm/inc/
 			../thirdparty/SFUD/inc/)
 
 ADD_LIBRARY(driver SHARED ${LIBDRIVER_SRC})

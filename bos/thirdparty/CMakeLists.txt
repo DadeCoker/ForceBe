@@ -17,12 +17,12 @@ SET(LIBTHIRDPARY_SRC CmBacktrace/cm_backtrace.c
 		   SFUD/sfud_sfdp.c
 		   UGUI/ugui.c)
 
-INCLUDE_DIRECTORIES(../config/ 
+INCLUDE_DIRECTORIES(../../bos_config/ 
 			../modules/inc/
 			../algorithm/inc/
 			../core/inc/
-			../hal/hal/inc/
-			../hal/utils/inc/
+			../../bos_hal/inc/
+			../utils/inc/
 			../drivers/inc/
 			../thirdparty/SFUD/inc/
 			../thirdparty/CmBacktrace/

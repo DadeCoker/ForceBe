@@ -10,12 +10,12 @@ set(CMAKE_C_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
-  "../bos/config"
+  "../bos_config"
   "../bos/modules/inc"
   "../bos/algorithm/inc"
   "../bos/core/inc"
-  "../bos/hal/hal/inc"
-  "../bos/hal/utils/inc"
+  "../bos/utils/inc"
+  "../bos_hal/inc"
   "../bos/drivers/inc"
   "../bos/thirdparty/SFUD/inc"
   "../bos/thirdparty/CmBacktrace"
@@ -33,7 +33,8 @@ set(CMAKE_TARGET_LINKED_INFO_FILES
   "/home/r/Desktop/BabyOS/build/bos/core/CMakeFiles/core.dir/DependInfo.cmake"
   "/home/r/Desktop/BabyOS/build/bos/drivers/CMakeFiles/driver.dir/DependInfo.cmake"
   "/home/r/Desktop/BabyOS/build/bos/modules/CMakeFiles/module.dir/DependInfo.cmake"
-  "/home/r/Desktop/BabyOS/build/bos/hal/CMakeFiles/hal.dir/DependInfo.cmake"
+  "/home/r/Desktop/BabyOS/build/bos_hal/CMakeFiles/hal.dir/DependInfo.cmake"
+  "/home/r/Desktop/BabyOS/build/bos/utils/CMakeFiles/utils.dir/DependInfo.cmake"
   "/home/r/Desktop/BabyOS/build/bos/thirdparty/CMakeFiles/thirdparty.dir/DependInfo.cmake"
   )
 

@@ -34,10 +34,10 @@ set(CMAKE_C_COMPILER_ID "GNU")
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
   "../bos/modules/inc"
-  "../bos/modules/../config"
+  "../bos/modules/../../bos_config"
   "../bos/modules/../core/inc"
-  "../bos/modules/../hal/hal/inc"
-  "../bos/modules/../hal/utils/inc"
+  "../bos/modules/../../bos_hal/inc"
+  "../bos/modules/../utils/inc"
   "../bos/modules/../algorithm/inc"
   "../bos/modules/../thirdparty/SFUD/inc"
   "../bos/modules/../thirdparty/CmBacktrace"

@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC   -shared -Wl,-soname,libutils.so -o libutils.so CMakeFiles/utils.dir/b_util_at.o CMakeFiles/utils.dir/b_util_delay.o CMakeFiles/utils.dir/b_util_i2c.o CMakeFiles/utils.dir/b_util_spi.o 

@@ -7,9 +7,9 @@
 /home/r/Desktop/BabyOS/build/bos/core/CMakeFiles/rebuild_cache.dir
 /home/r/Desktop/BabyOS/build/bos/core/CMakeFiles/edit_cache.dir
 /home/r/Desktop/BabyOS/build/bos/core/CMakeFiles/core.dir
-/home/r/Desktop/BabyOS/build/bos/hal/CMakeFiles/edit_cache.dir
-/home/r/Desktop/BabyOS/build/bos/hal/CMakeFiles/rebuild_cache.dir
-/home/r/Desktop/BabyOS/build/bos/hal/CMakeFiles/hal.dir
+/home/r/Desktop/BabyOS/build/bos/utils/CMakeFiles/edit_cache.dir
+/home/r/Desktop/BabyOS/build/bos/utils/CMakeFiles/rebuild_cache.dir
+/home/r/Desktop/BabyOS/build/bos/utils/CMakeFiles/utils.dir
 /home/r/Desktop/BabyOS/build/bos/drivers/CMakeFiles/rebuild_cache.dir
 /home/r/Desktop/BabyOS/build/bos/drivers/CMakeFiles/edit_cache.dir
 /home/r/Desktop/BabyOS/build/bos/drivers/CMakeFiles/driver.dir
@@ -19,3 +19,6 @@
 /home/r/Desktop/BabyOS/build/bos/thirdparty/CMakeFiles/edit_cache.dir
 /home/r/Desktop/BabyOS/build/bos/thirdparty/CMakeFiles/rebuild_cache.dir
 /home/r/Desktop/BabyOS/build/bos/thirdparty/CMakeFiles/thirdparty.dir
+/home/r/Desktop/BabyOS/build/bos_hal/CMakeFiles/edit_cache.dir
+/home/r/Desktop/BabyOS/build/bos_hal/CMakeFiles/rebuild_cache.dir
+/home/r/Desktop/BabyOS/build/bos_hal/CMakeFiles/hal.dir

@@ -94,7 +94,8 @@ babyos: bos/algorithm/libalgorithm.so
 babyos: bos/core/libcore.so
 babyos: bos/drivers/libdriver.so
 babyos: bos/modules/libmodule.so
-babyos: bos/hal/libhal.so
+babyos: bos_hal/libhal.so
+babyos: bos/utils/libutils.so
 babyos: bos/thirdparty/libthirdparty.so
 babyos: CMakeFiles/babyos.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable babyos"

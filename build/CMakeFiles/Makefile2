@@ -65,10 +65,11 @@ CMAKE_BINARY_DIR = /home/r/Desktop/BabyOS/build
 # All Build rule for target.
 CMakeFiles/babyos.dir/all: bos/algorithm/CMakeFiles/algorithm.dir/all
 CMakeFiles/babyos.dir/all: bos/core/CMakeFiles/core.dir/all
-CMakeFiles/babyos.dir/all: bos/hal/CMakeFiles/hal.dir/all
+CMakeFiles/babyos.dir/all: bos/utils/CMakeFiles/utils.dir/all
 CMakeFiles/babyos.dir/all: bos/drivers/CMakeFiles/driver.dir/all
 CMakeFiles/babyos.dir/all: bos/modules/CMakeFiles/module.dir/all
 CMakeFiles/babyos.dir/all: bos/thirdparty/CMakeFiles/thirdparty.dir/all
+CMakeFiles/babyos.dir/all: bos_hal/CMakeFiles/hal.dir/all
 	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/depend
 	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=9,10 "Built target babyos"
@@ -81,7 +82,7 @@ all: CMakeFiles/babyos.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/babyos.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 83
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 84
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/babyos.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 0
 .PHONY : CMakeFiles/babyos.dir/rule
@@ -212,57 +213,57 @@ clean: bos/core/CMakeFiles/core.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Directory level rules for directory bos/hal
+# Directory level rules for directory bos/utils
 
 # Convenience name for "all" pass in the directory.
-bos/hal/all: bos/hal/CMakeFiles/hal.dir/all
+bos/utils/all: bos/utils/CMakeFiles/utils.dir/all
 
-.PHONY : bos/hal/all
+.PHONY : bos/utils/all
 
 # Convenience name for "clean" pass in the directory.
-bos/hal/clean: bos/hal/CMakeFiles/hal.dir/clean
+bos/utils/clean: bos/utils/CMakeFiles/utils.dir/clean
 
-.PHONY : bos/hal/clean
+.PHONY : bos/utils/clean
 
 # Convenience name for "preinstall" pass in the directory.
-bos/hal/preinstall:
+bos/utils/preinstall:
 
-.PHONY : bos/hal/preinstall
+.PHONY : bos/utils/preinstall
 
 #=============================================================================
-# Target rules for target bos/hal/CMakeFiles/hal.dir
+# Target rules for target bos/utils/CMakeFiles/utils.dir
 
 # All Build rule for target.
-bos/hal/CMakeFiles/hal.dir/all:
-	$(MAKE) -f bos/hal/CMakeFiles/hal.dir/build.make bos/hal/CMakeFiles/hal.dir/depend
-	$(MAKE) -f bos/hal/CMakeFiles/hal.dir/build.make bos/hal/CMakeFiles/hal.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=27,28,29,30,31,32,33,34,35,36,37,38,39 "Built target hal"
-.PHONY : bos/hal/CMakeFiles/hal.dir/all
+bos/utils/CMakeFiles/utils.dir/all:
+	$(MAKE) -f bos/utils/CMakeFiles/utils.dir/build.make bos/utils/CMakeFiles/utils.dir/depend
+	$(MAKE) -f bos/utils/CMakeFiles/utils.dir/build.make bos/utils/CMakeFiles/utils.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=80,81,82,83,84 "Built target utils"
+.PHONY : bos/utils/CMakeFiles/utils.dir/all
 
 # Include target in all.
-all: bos/hal/CMakeFiles/hal.dir/all
+all: bos/utils/CMakeFiles/utils.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-bos/hal/CMakeFiles/hal.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 13
-	$(MAKE) -f CMakeFiles/Makefile2 bos/hal/CMakeFiles/hal.dir/all
+bos/utils/CMakeFiles/utils.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 5
+	$(MAKE) -f CMakeFiles/Makefile2 bos/utils/CMakeFiles/utils.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 0
-.PHONY : bos/hal/CMakeFiles/hal.dir/rule
+.PHONY : bos/utils/CMakeFiles/utils.dir/rule
 
 # Convenience name for target.
-hal: bos/hal/CMakeFiles/hal.dir/rule
+utils: bos/utils/CMakeFiles/utils.dir/rule
 
-.PHONY : hal
-
-# clean rule for target.
-bos/hal/CMakeFiles/hal.dir/clean:
-	$(MAKE) -f bos/hal/CMakeFiles/hal.dir/build.make bos/hal/CMakeFiles/hal.dir/clean
-.PHONY : bos/hal/CMakeFiles/hal.dir/clean
+.PHONY : utils
 
 # clean rule for target.
-clean: bos/hal/CMakeFiles/hal.dir/clean
+bos/utils/CMakeFiles/utils.dir/clean:
+	$(MAKE) -f bos/utils/CMakeFiles/utils.dir/build.make bos/utils/CMakeFiles/utils.dir/clean
+.PHONY : bos/utils/CMakeFiles/utils.dir/clean
+
+# clean rule for target.
+clean: bos/utils/CMakeFiles/utils.dir/clean
 
 .PHONY : clean
 
@@ -346,7 +347,7 @@ bos/modules/preinstall:
 bos/modules/CMakeFiles/module.dir/all:
 	$(MAKE) -f bos/modules/CMakeFiles/module.dir/build.make bos/modules/CMakeFiles/module.dir/depend
 	$(MAKE) -f bos/modules/CMakeFiles/module.dir/build.make bos/modules/CMakeFiles/module.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64 "Built target module"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60 "Built target module"
 .PHONY : bos/modules/CMakeFiles/module.dir/all
 
 # Include target in all.
@@ -401,7 +402,7 @@ bos/thirdparty/preinstall:
 bos/thirdparty/CMakeFiles/thirdparty.dir/all:
 	$(MAKE) -f bos/thirdparty/CMakeFiles/thirdparty.dir/build.make bos/thirdparty/CMakeFiles/thirdparty.dir/depend
 	$(MAKE) -f bos/thirdparty/CMakeFiles/thirdparty.dir/build.make bos/thirdparty/CMakeFiles/thirdparty.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83 "Built target thirdparty"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79 "Built target thirdparty"
 .PHONY : bos/thirdparty/CMakeFiles/thirdparty.dir/all
 
 # Include target in all.
@@ -428,6 +429,61 @@ bos/thirdparty/CMakeFiles/thirdparty.dir/clean:
 
 # clean rule for target.
 clean: bos/thirdparty/CMakeFiles/thirdparty.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory bos_hal
+
+# Convenience name for "all" pass in the directory.
+bos_hal/all: bos_hal/CMakeFiles/hal.dir/all
+
+.PHONY : bos_hal/all
+
+# Convenience name for "clean" pass in the directory.
+bos_hal/clean: bos_hal/CMakeFiles/hal.dir/clean
+
+.PHONY : bos_hal/clean
+
+# Convenience name for "preinstall" pass in the directory.
+bos_hal/preinstall:
+
+.PHONY : bos_hal/preinstall
+
+#=============================================================================
+# Target rules for target bos_hal/CMakeFiles/hal.dir
+
+# All Build rule for target.
+bos_hal/CMakeFiles/hal.dir/all:
+	$(MAKE) -f bos_hal/CMakeFiles/hal.dir/build.make bos_hal/CMakeFiles/hal.dir/depend
+	$(MAKE) -f bos_hal/CMakeFiles/hal.dir/build.make bos_hal/CMakeFiles/hal.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/r/Desktop/BabyOS/build/CMakeFiles --progress-num=27,28,29,30,31,32,33,34,35 "Built target hal"
+.PHONY : bos_hal/CMakeFiles/hal.dir/all
+
+# Include target in all.
+all: bos_hal/CMakeFiles/hal.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+bos_hal/CMakeFiles/hal.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 9
+	$(MAKE) -f CMakeFiles/Makefile2 bos_hal/CMakeFiles/hal.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/r/Desktop/BabyOS/build/CMakeFiles 0
+.PHONY : bos_hal/CMakeFiles/hal.dir/rule
+
+# Convenience name for target.
+hal: bos_hal/CMakeFiles/hal.dir/rule
+
+.PHONY : hal
+
+# clean rule for target.
+bos_hal/CMakeFiles/hal.dir/clean:
+	$(MAKE) -f bos_hal/CMakeFiles/hal.dir/build.make bos_hal/CMakeFiles/hal.dir/clean
+.PHONY : bos_hal/CMakeFiles/hal.dir/clean
+
+# clean rule for target.
+clean: bos_hal/CMakeFiles/hal.dir/clean
 
 .PHONY : clean
 

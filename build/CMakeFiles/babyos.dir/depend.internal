@@ -10,8 +10,6 @@ CMakeFiles/babyos.dir/main.o
  ../bos/algorithm/inc/algo_sort.h
  ../bos/algorithm/inc/algo_speedpid.h
  ../bos/algorithm/inc/algorithm.h
- ../bos/config/b_config.h
- ../bos/config/b_device_list.h
  ../bos/core/inc/b_common.h
  ../bos/core/inc/b_core.h
  ../bos/core/inc/b_device.h
@@ -23,19 +21,6 @@ CMakeFiles/babyos.dir/main.o
  ../bos/drivers/inc/b_drv_class_io.h
  ../bos/drivers/inc/b_drv_class_lcd.h
  ../bos/drivers/inc/b_drv_class_touch.h
- ../bos/hal/hal/inc/b_hal.h
- ../bos/hal/hal/inc/b_hal_gpio.h
- ../bos/hal/hal/inc/b_hal_i2c.h
- ../bos/hal/hal/inc/b_hal_lcd.h
- ../bos/hal/hal/inc/b_hal_qspi.h
- ../bos/hal/hal/inc/b_hal_sccb.h
- ../bos/hal/hal/inc/b_hal_spi.h
- ../bos/hal/hal/inc/b_hal_uart.h
- ../bos/hal/utils/inc/b_util_at.h
- ../bos/hal/utils/inc/b_util_delay.h
- ../bos/hal/utils/inc/b_util_i2c.h
- ../bos/hal/utils/inc/b_util_spi.h
- ../bos/hal/utils/inc/b_utils.h
  ../bos/modules/inc/b_mod_battery.h
  ../bos/modules/inc/b_mod_button.h
  ../bos/modules/inc/b_mod_error.h
@@ -77,4 +62,19 @@ CMakeFiles/babyos.dir/main.o
  ../bos/thirdparty/qpn/inc/qpn.h
  ../bos/thirdparty/qpn/inc/qpn_conf.h
  ../bos/thirdparty/qpn/inc/qvn.h
+ ../bos/utils/inc/b_util_at.h
+ ../bos/utils/inc/b_util_delay.h
+ ../bos/utils/inc/b_util_i2c.h
+ ../bos/utils/inc/b_util_spi.h
+ ../bos/utils/inc/b_utils.h
+ ../bos_config/b_config.h
+ ../bos_config/b_device_list.h
+ ../bos_hal/inc/b_hal.h
+ ../bos_hal/inc/b_hal_gpio.h
+ ../bos_hal/inc/b_hal_i2c.h
+ ../bos_hal/inc/b_hal_lcd.h
+ ../bos_hal/inc/b_hal_qspi.h
+ ../bos_hal/inc/b_hal_sccb.h
+ ../bos_hal/inc/b_hal_spi.h
+ ../bos_hal/inc/b_hal_uart.h
  /home/r/Desktop/BabyOS/main.c

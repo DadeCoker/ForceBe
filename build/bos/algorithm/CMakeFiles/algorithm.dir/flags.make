@@ -6,5 +6,5 @@ C_FLAGS = -fPIC
 
 C_DEFINES = -Dalgorithm_EXPORTS
 
-C_INCLUDES = -I/home/r/Desktop/BabyOS/bos/algorithm/inc -I/home/r/Desktop/BabyOS/bos/algorithm/../config -I/home/r/Desktop/BabyOS/bos/algorithm/../modules/inc -I/home/r/Desktop/BabyOS/bos/algorithm/../core/inc 
+C_INCLUDES = -I/home/r/Desktop/BabyOS/bos/algorithm/inc -I/home/r/Desktop/BabyOS/bos/algorithm/../../bos_config -I/home/r/Desktop/BabyOS/bos/algorithm/../modules/inc -I/home/r/Desktop/BabyOS/bos/algorithm/../core/inc 
 

@@ -1,17 +1,18 @@
 PROJECT(BABYOS)
 ADD_SUBDIRECTORY(bos/algorithm)
 ADD_SUBDIRECTORY(bos/core)
-ADD_SUBDIRECTORY(bos/hal/)
+ADD_SUBDIRECTORY(bos/utils/)
 ADD_SUBDIRECTORY(bos/drivers)
 ADD_SUBDIRECTORY(bos/modules)
 ADD_SUBDIRECTORY(bos/thirdparty)
+ADD_SUBDIRECTORY(bos_hal)
 
-INCLUDE_DIRECTORIES(bos/config/ 
+INCLUDE_DIRECTORIES(bos_config/ 
 			bos/modules/inc/
 			bos/algorithm/inc/
 			bos/core/inc/
-			bos/hal/hal/inc/
-			bos/hal/utils/inc/
+			bos/utils/inc/
+			bos_hal/inc/
 			bos/drivers/inc/
 			bos/thirdparty/SFUD/inc/
 			bos/thirdparty/CmBacktrace/
@@ -25,4 +26,4 @@ INCLUDE_DIRECTORIES(bos/config/
 
 
 ADD_EXECUTABLE(babyos main.c)
-TARGET_LINK_LIBRARIES(babyos algorithm core driver module hal thirdparty)
+TARGET_LINK_LIBRARIES(babyos algorithm core driver module hal utils thirdparty)
