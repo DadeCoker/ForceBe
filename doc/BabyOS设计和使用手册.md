@@ -2000,7 +2000,7 @@ uint8_t * bMempList2Array(const bMempList_t *phead);
 
 
 
-## 7.8 b_util_memp
+## 7.8 b_util_uart
 
 ### 7.8.1 数据结构
 
