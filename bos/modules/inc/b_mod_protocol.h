@@ -60,13 +60,15 @@ extern "C" {
  * \defgroup PROTOCOL_Exported_TypesDefinitions
  * \{
  */
-
-#if _PROTO_FID_SIZE == 2
-typedef uint16_t bProtoID_t;
-#define INVALID_ID 0XFFFF
+ #if _PROTO_FID_SIZE == 1
+	typedef uint8_t bProtoID_t;
+	#define INVALID_ID 0XFF
+#elif _PROTO_FID_SIZE == 2
+	typedef uint16_t bProtoID_t;
+	#define INVALID_ID 0XFFFF
 #else
-typedef uint32_t bProtoID_t;
-#define INVALID_ID 0XFFFFFFFF
+	typedef uint32_t bProtoID_t;
+	#define INVALID_ID 0XFFFFFFFF
 #endif
 
 #if _PROTO_FLEN_SIZE == 1

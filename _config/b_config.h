@@ -123,7 +123,7 @@
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
-#define PROTO_FID_SIZE 4
+#define _PROTO_FID_SIZE 4
 //<o> Size of The Len Field
 //<1=> 1Byte
 //<2=> 2Bytes
