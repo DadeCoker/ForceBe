@@ -153,12 +153,13 @@ static int _bXPT2046Close(bXPT2046_Driver_t *pdrv)
 int bXPT2046_Init()
 {
     _bXPT2046ReadVal(XPT2046_I);
+    bXPT2046_Driver.status  = 0;
+    bXPT2046_Driver.init    = bXPT2046_Init;
     bXPT2046_Driver.close   = _bXPT2046Close;
     bXPT2046_Driver.read    = _bXPT2046Read;
     bXPT2046_Driver.ctl     = NULL;
     bXPT2046_Driver.open    = NULL;
     bXPT2046_Driver.write   = NULL;
-    bXPT2046_Driver.status  = 0;
     bXPT2046_Driver._hal_if = (void *)&bXPT2046_HalIf;
     return 0;
 }

@@ -63,6 +63,7 @@ extern "C" {
 typedef struct bDriverIf
 {
     int status;
+    int (*init)(void);
     int (*open)(struct bDriverIf *pdrv);
     int (*close)(struct bDriverIf *pdrv);
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);

@@ -120,6 +120,10 @@ int bClose(int fd);
 
 int bInit(void);
 int bExec(void);
+int bReinit(uint8_t dev_no);
+
+int bModifyHalIf(uint8_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval,
+                 uint8_t len);
 
 /**
  * \}

@@ -236,6 +236,7 @@ static int _bDS18B20Read(bDS18B20_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
 int bDS18B20_Init()
 {
     bDS18B20_Driver.status  = 0;
+    bDS18B20_Driver.init    = bDS18B20_Init;
     bDS18B20_Driver.read    = _bDS18B20Read;
     bDS18B20_Driver.write   = NULL;
     bDS18B20_Driver.open    = NULL;

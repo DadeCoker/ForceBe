@@ -144,6 +144,7 @@ int bMCUFLASH_Init()
 {
     int retval               = 0;
     bMCUFLASH_Driver.status  = 0;
+    bMCUFLASH_Driver.init    = bMCUFLASH_Init;
     bMCUFLASH_Driver.close   = _bMCUFLASHClose;
     bMCUFLASH_Driver.read    = _bMCUFLASHRead;
     bMCUFLASH_Driver.ctl     = _bMCUFLASHCtl;

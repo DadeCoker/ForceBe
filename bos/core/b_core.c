@@ -322,6 +322,11 @@ int bInit()
     return bDeviceInit();
 }
 
+int bReinit(uint8_t dev_no)
+{
+    return bDeviceReinit(dev_no);
+}
+
 /**
  * \brief  Call this function inside the while(1)
  * \retval Result
@@ -335,6 +340,23 @@ int bExec()
         (*polling)();
     }
     return 0;
+}
+
+/**
+ * \brief  eg. bModifyHalIf(OLED, sizeof(bOLED_HalIf_t),
+ *                           (uint8_t)(&(((bOLED_HalIf_t *)0)->_if._i2c.dev_addr)),
+ *                            &dev_addr, 1);
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bModifyHalIf(uint8_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval, uint8_t len)
+{
+    if ((off + len) > type_size || pval == NULL || len == 0 || type_size == 0)
+    {
+        return -1;
+    }
+    return bDeviceModifyHalIf(dev_no, off, pval, len);
 }
 
 /**

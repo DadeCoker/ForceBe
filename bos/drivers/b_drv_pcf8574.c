@@ -144,6 +144,7 @@ static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
 int bPCF8574_Init()
 {
     bPCF8574_Driver.status  = 0;
+    bPCF8574_Driver.init    = bPCF8574_Init;
     bPCF8574_Driver.close   = NULL;
     bPCF8574_Driver.read    = _bPCF8574Read;
     bPCF8574_Driver.ctl     = NULL;

@@ -246,6 +246,7 @@ int bOLED_Init()
 
     memset(bOLED_Buff, 0, sizeof(bOLED_Buff));
 
+    bOLED_Driver.init    = bOLED_Init;
     bOLED_Driver.close   = NULL;
     bOLED_Driver.read    = NULL;
     bOLED_Driver.ctl     = NULL;

@@ -468,6 +468,7 @@ int bSD_Init()
         return -1;
     }
     bSD_Driver.status  = 0;
+    bSD_Driver.init    = bSD_Init;
     bSD_Driver.close   = NULL;
     bSD_Driver.read    = _bSD_Read;
     bSD_Driver.ctl     = NULL;

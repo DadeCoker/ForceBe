@@ -360,6 +360,7 @@ int bLIS3DH_Init()
     uint8_t id = 0;
 
     bLIS3DH_Driver.status  = 0;
+    bLIS3DH_Driver.init    = bLIS3DH_Init;
     bLIS3DH_Driver.read    = _bLis3dhRead;
     bLIS3DH_Driver.write   = NULL;
     bLIS3DH_Driver.open    = NULL;
@@ -370,7 +371,7 @@ int bLIS3DH_Init()
     if ((id = _bLis3dhGetID()) != LIS3DH_ID)
     {
         b_log_e("id:%x\r\n", id);
-        id = id;
+        id                    = id;
         bLIS3DH_Driver.status = -1;
         return -1;
     }

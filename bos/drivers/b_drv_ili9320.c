@@ -195,15 +195,15 @@ static uint16_t _bLcdReadCmd()
     }
     else
     {
-        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
+        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port,
+bILI9320_HalIf._if._io.data.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin,
+0); bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+0); bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
         cmd = bHalGPIODriver.pGpioReadPort(bILI9320_HalIf._if._io.data.port);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
-        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+1); bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
                         B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
     }
     return cmd;
@@ -305,6 +305,7 @@ int bILI9320_Init()
     _bILI9320WriteReg(0x07, 0x0173);                //(0x0173)
 
     bILI9320_Driver.status  = 0;
+    bILI9320_Driver.init    = bILI9320_Init;
     bILI9320_Driver.close   = NULL;
     bILI9320_Driver.read    = NULL;
     bILI9320_Driver.ctl     = NULL;
