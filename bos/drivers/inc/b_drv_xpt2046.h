@@ -60,8 +60,6 @@ extern "C" {
 //<HALIF 1 SPI
 typedef bHalSPIIf_t bXPT2046_HalIf_t;
 
-typedef bDriverInterface_t bXPT2046_Driver_t;
-
 /**
  * \}
  */

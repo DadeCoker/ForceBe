@@ -63,8 +63,6 @@ typedef struct
     uint8_t is_spi;
 } bLIS3DH_HalIf_t;
 
-typedef bDriverInterface_t bLIS3DH_Driver_t;
-
 typedef struct
 {
     uint8_t not_used_01 : 7;

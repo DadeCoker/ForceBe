@@ -60,8 +60,6 @@ extern "C" {
 //<HALIF 1 LCD
 typedef bLCD_HalIf_t bSSD1289_HalIf_t;
 
-typedef bDriverInterface_t bSSD1289_Driver_t;
-
 /**
  * \}
  */

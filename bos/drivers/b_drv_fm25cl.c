@@ -120,7 +120,7 @@ static void _FM25_WR_Lock(bFM25CL_HalIf_t *_if)
 static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, uint32_t len)
 {
     uint8_t cmd[3];
-    bDRV_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
+    bDRIVER_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
 
     cmd[0] = SFC_READ;
     cmd[1] = (uint8_t)(addr >> 8);
@@ -136,7 +136,7 @@ static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, 
 static int _FM25_WritBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pdat, uint32_t len)
 {
     uint8_t cmd[3];
-    bDRV_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
+    bDRIVER_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
     _FM25_WR_Enable(_if);
     //-----------------------------------------------------------
     cmd[0] = SFC_WRITE;

@@ -64,13 +64,14 @@ extern "C" {
 typedef struct bDriverIf
 {
     int status;
-    int (*init)(void);
+    int (*init)(struct bDriverIf *pdrv);
     int (*open)(struct bDriverIf *pdrv);
     int (*close)(struct bDriverIf *pdrv);
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
     int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
     int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
-    void *_hal_if;
+    void   *hal_if;
+    uint8_t drv_no;
     union
     {
         uint32_t v;
@@ -78,7 +79,34 @@ typedef struct bDriverIf
     } _private;
 } bDriverInterface_t;
 
-typedef int (*pbDriverInit_t)(void);
+typedef enum
+{
+    B_DRIVER_NULL = 0,
+    B_DRIVER_SPIFLASH,
+    B_DRIVER_FM25CL,
+    B_DRIVER_24CXX,
+    B_DRIVER_SD,
+    B_DRIVER_MCUFLASH,
+    B_DRIVER_TESTFLASH,
+    B_DRIVER_SSD1289,
+    B_DRIVER_ILI9341,
+    B_DRIVER_ILI9320,
+    B_DRIVER_ST7789,
+    B_DRIVER_OLED,
+    B_DRIVER_XPT2046,
+    B_DRIVER_PCF8574,
+    B_DRIVER_LIS3DH,
+    B_DRIVER_DS18B20,
+    B_DRIVER_ESP12F,
+    B_DRIVER_NUMBER
+} bDriverNumber_t;
+
+typedef struct
+{
+    bDriverNumber_t drv_number;
+    int (*init)(bDriverInterface_t *pdrv);
+} bDriverRegInit_t;
+
 /**
  * \}
  */
@@ -87,6 +115,29 @@ typedef int (*pbDriverInit_t)(void);
  * \defgroup DRIVER_Exported_Defines
  * \{
  */
+#define _bDRIVER_HALIF_TABLE(halif_type, drv_name) \
+    HALIF_KEYWORD halif_type bHalIf_##drv_name[] = {HAL_##drv_name##_IF}
+#define bDRIVER_HALIF_TABLE(halif_type, drv_name) _bDRIVER_HALIF_TABLE(halif_type, drv_name)
+
+#define _bDRIVER_HALIF_INSTANCE(drv_name, drv_no) (void *)&bHalIf_##drv_name[drv_no]
+#define bDRIVER_HALIF_INSTANCE(drv_name, drv_no) _bDRIVER_HALIF_INSTANCE(drv_name, drv_no)
+
+#define _bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f)                         \
+    do                                                                       \
+    {                                                                        \
+        pdrv->status     = 0;                                                \
+        pdrv->init       = init_f;                                           \
+        pdrv->open       = NULL;                                             \
+        pdrv->close      = NULL;                                             \
+        pdrv->ctl        = NULL;                                             \
+        pdrv->write      = NULL;                                             \
+        pdrv->read       = NULL;                                             \
+        pdrv->hal_if     = _bDRIVER_HALIF_INSTANCE(drv_name, pdrv->drv_no); \
+        pdrv->_private.v = 0;                                                \
+    } while (0)
+#define bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f) _bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f)
+
+#define bDRIVER_GET_HALIF(name, type, pdrv) type *name = (type *)((pdrv)->hal_if)
 
 /**
  * \}
@@ -96,46 +147,15 @@ typedef int (*pbDriverInit_t)(void);
  * \defgroup DRIVER_Exported_Macros
  * \{
  */
-#define bDRIVER_REG_INIT_0(func) \
-    bSECTION_ITEM_REGISTER_FLASH(driver_init_0, pbDriverInit_t, CONCAT_2(init0, func)) = func
+#define bDRIVER_REG_INIT_0(drv_num, init_f)                                                  \
+    bSECTION_ITEM_REGISTER_FLASH(driver_init_0, bDriverRegInit_t, CONCAT_2(init0, func)) = { \
+        drv_num, init_f}
 
-#define bDRIVER_REG_INIT(func) \
-    bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func)) = func
+#define bDRIVER_REG_INIT(drv_num, init_f)                                                         \
+    bSECTION_ITEM_REGISTER_FLASH(driver_init, bDriverRegInit_t, CONCAT_2(init, func)) = {drv_num, \
+                                                                                         init_f}
 
 #define bDRIVER_REG_INIT_1 bDRIVER_REG_INIT
-
-#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)((pdrv)->_hal_if)
-/**
- * \}
- */
-
-/**
- * \defgroup DRIVER_Exported_Variables
- * \{
- */
-
-extern bDriverInterface_t bSPIFLASH_Driver[];
-extern bDriverInterface_t bFM25CL_Driver[];
-extern bDriverInterface_t b24CXX_Driver[];
-extern bDriverInterface_t bSD_Driver;
-extern bDriverInterface_t bMCUFLASH_Driver;
-extern bDriverInterface_t bTESTFLASH_Driver;
-
-extern bDriverInterface_t bSSD1289_Driver;
-extern bDriverInterface_t bILI9341_Driver;
-extern bDriverInterface_t bILI9320_Driver;
-extern bDriverInterface_t bST7789_Driver;
-extern bDriverInterface_t bOLED_Driver;
-
-extern bDriverInterface_t bXPT2046_Driver;
-
-extern bDriverInterface_t bPCF8574_Driver;
-
-extern bDriverInterface_t bLIS3DH_Driver;
-
-extern bDriverInterface_t bDS18B20_Driver;
-
-extern bDriverInterface_t bESP12F_Driver;
 /**
  * \}
  */

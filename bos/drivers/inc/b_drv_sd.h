@@ -56,13 +56,12 @@ typedef struct
 {
     union
     {
-        bHalSPIIf_t _spi;
+        bHalSPIIf_t      _spi;
         bHalSDIONumber_t _sdio;
-    }_if;
+    } _if;
     uint8_t is_spi;
-}bSD_HalIf_t;   
+} bSD_HalIf_t;
 
-typedef bDriverInterface_t bSD_Driver_t;
 /**
  * \}
  */

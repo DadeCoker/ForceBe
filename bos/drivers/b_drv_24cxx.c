@@ -55,7 +55,7 @@
  * \defgroup 24CXX_Private_Defines
  * \{
  */
-
+#define DRIVER_NAME 24CXX
 /**
  * \}
  */
@@ -73,9 +73,7 @@
  * \defgroup 24CXX_Private_Variables
  * \{
  */
-
-HALIF_KEYWORD b24CXX_HalIf_t b24CXX_HalIfTable[] = HAL_24CXX_IF;
-b24CXX_Driver_t              b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t)];
+bDRIVER_HALIF_TABLE(b24CXX_HalIf_t, DRIVER_NAME);
 /**
  * \}
  */
@@ -94,11 +92,11 @@ b24CXX_Driver_t              b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b2
  * \{
  */
 
-static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+static int _b24CXXWrite(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     uint8_t  l_c = off % 8;
     uint16_t i   = 0;
-    bDRV_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
+    bDRIVER_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
     if (len <= l_c)
     {
         bHalI2CMemWrite(_if, off, pbuf, len);
@@ -126,9 +124,9 @@ static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint
     return len;
 }
 
-static int _b24CXXRead(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+static int _b24CXXRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
-    bDRV_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
+    bDRIVER_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
     bHalI2CMemRead(_if, off, pbuf, len);
     return len;
 }
@@ -141,24 +139,15 @@ static int _b24CXXRead(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint3
  * \addtogroup 24CXX_Exported_Functions
  * \{
  */
-int b24CXX_Init()
+int b24CXX_Init(bDriverInterface_t *pdrv)
 {
-    uint8_t i = 0, num_drv = sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t);
-    for (i = 0; i < num_drv; i++)
-    {
-        b24CXX_Driver[i].status  = 0;
-        b24CXX_Driver[i].init    = b24CXX_Init;
-        b24CXX_Driver[i].close   = NULL;
-        b24CXX_Driver[i].read    = _b24CXXRead;
-        b24CXX_Driver[i].ctl     = NULL;
-        b24CXX_Driver[i].open    = NULL;
-        b24CXX_Driver[i].write   = _b24CXXWrite;
-        b24CXX_Driver[i]._hal_if = (void *)&b24CXX_HalIfTable[i];
-    }
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, b24CXX_Init);
+    pdrv->read  = _b24CXXRead;
+    pdrv->write = _b24CXXWrite;
     return 0;
 }
 
-bDRIVER_REG_INIT(b24CXX_Init);
+bDRIVER_REG_INIT(B_DRIVER_24CXX, b24CXX_Init);
 
 /**
  * \}

@@ -59,8 +59,6 @@ extern "C" {
  */
 //<HALIF 1 LCD
 typedef bLCD_HalIf_t bILI9341_HalIf_t;
-
-typedef bDriverInterface_t bILI9341_Driver_t;
 /**
  * \}
  */

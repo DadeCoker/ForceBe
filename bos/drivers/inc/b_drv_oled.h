@@ -68,7 +68,6 @@ typedef struct
     uint8_t is_spi;
 } bOLED_HalIf_t;
 
-typedef bDriverInterface_t bOLED_Driver_t;
 /**
  * \}
  */

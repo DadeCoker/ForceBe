@@ -65,8 +65,6 @@ typedef struct
     uint32_t w_size;  // 支持单次写入的宽度 B : 1 2 4 8
 } bTESTFLASH_HalIf_t;
 
-typedef bDriverInterface_t bTESTFLASH_Driver_t;
-
 /**
  * \}
  */

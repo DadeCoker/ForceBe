@@ -51,7 +51,7 @@ extern "C" {
  * \defgroup MCUFLASH_Exported_TypesDefinitions
  * \{
  */
-typedef bDriverInterface_t bMCUFLASH_Driver_t;
+
 /**
  * \}
  */

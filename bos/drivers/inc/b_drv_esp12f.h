@@ -59,8 +59,6 @@ extern "C" {
  */
 //<HALIF 1 UART
 typedef bHalUartNumber_t bESP12F_HalIf_t;
-
-typedef bDriverInterface_t bESP12F_Driver_t;
 /**
  * \}
  */

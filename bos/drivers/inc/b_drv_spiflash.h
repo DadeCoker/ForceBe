@@ -68,8 +68,6 @@ typedef struct
     uint8_t is_spi;
 } bSPIFLASH_HalIf_t;
 
-typedef bDriverInterface_t bSPIFLASH_Driver_t;
-
 /**
  * \}
  */

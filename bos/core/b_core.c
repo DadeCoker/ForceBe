@@ -321,7 +321,7 @@ int bInit()
     b_log("HW:%d.%d.%d FW:%d.%d.%d COMPILE:%s-%s\r\n", (HW_VERSION / 10000),
           (HW_VERSION % 10000) / 100, HW_VERSION % 100, (FW_VERSION / 10000),
           (FW_VERSION % 10000) / 100, FW_VERSION % 100, __DATE__, __TIME__);
-    b_log("device number:%d\r\n", bDEV_MAX_NUM);
+    b_log("device number:%d\r\n", B_REG_DRV_NUMBER);
     return bDeviceInit();
 }
 

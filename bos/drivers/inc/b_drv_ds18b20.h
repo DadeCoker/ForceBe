@@ -55,8 +55,6 @@ extern "C" {
 //<HALIF 1 GPIO
 typedef bHalGPIOInstance_t bDS18B20_HalIf_t;
 
-typedef bDriverInterface_t bDS18B20_Driver_t;
-
 /**
  * \}
  */

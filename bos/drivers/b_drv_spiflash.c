@@ -275,7 +275,7 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
 /****************************************************driver interface******/
 static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
 {
-    bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
+    bDRIVER_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     uint8_t           cmd = 0xab;
     bHalQSPICmdInfo_t info;
     if (_if->is_spi == 0)
@@ -305,7 +305,7 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
 
 static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
 {
-    bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
+    bDRIVER_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     uint8_t           cmd = 0xb9;
     bHalQSPICmdInfo_t info;
     if (_if->is_spi == 0)
