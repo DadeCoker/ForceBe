@@ -150,7 +150,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 
         MCU_FLASH->SR |= 0xFC;
         MCU_FLASH->CR |= (0x00000001 << 0);
-        *((volatile uint32_t *)raddr) = wdata;
+        *((volatile uint16_t *)raddr) = wdata;
 
         timeout = FLASH_PG_TIMEOUT;
         while (((MCU_FLASH->SR) & 0x01) != 0 && timeout > 0)
