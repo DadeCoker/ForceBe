@@ -118,6 +118,10 @@ Include头文件 `b_os.h`
 
 ## 4.3 配置接口&注册设备
 
+可以由配置工具生成如下代码。配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1
+
+![](https://images.gitee.com/uploads/images/2021/1212/020923_ec27eb55_1789704.png)
+
 加入drivers内文件至工程后，则需要配置驱动的接口：`b_hal_if.h`
 
 例如24C02芯片，IIC引脚 PB6-SCL   PB7-SDA
@@ -129,8 +133,8 @@ Include头文件 `b_os.h`
         {                                                        \
             .dev_addr               = 0xa0,                      \
             .is_simulation          = 1,                         \
-            ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7}, \
             ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN6}, \
+            ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7}, \
         },                                                       \
     }
 ```
@@ -138,7 +142,7 @@ Include头文件 `b_os.h`
 注册设备：`b_device_list.h`
 
 ```C
-B_DEVICE_REG(_24C02, b24CXX_Driver[0], "24c02")
+B_DEVICE_REG(b24CXX, b24CXX_Driver[0], "24cxx")
 ```
 
 ## 4.4 使用设备
@@ -204,6 +208,8 @@ r:4
 <https://gitee.com/notrynohigh/BabyOS_Example>  【基于STM32F107CV】
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 【BabyOS私有协议上位机Demo】
+
+https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1【BabyOS配置工具】
 
 
 
@@ -275,4 +281,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2021.07 | 修改gcc环境下链接文件的修改方法                              |      |
 | 2021.10 | 修改将分离的两个仓库内容重新加入进来，改变HAL代码的方式以及各个驱动的接口结构。V7.0.0 |      |
 | 2021.11 | 针对警告和报错点进行优化, mcu目录下的代码默认用寄存器操作方式 |      |
+| 2021.12 | 优化整体结构，增加对应配置工具，方便使用。                   |      |
 
