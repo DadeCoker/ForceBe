@@ -238,11 +238,7 @@ int bGUI_Init(int lcd, int touch)
 
 #include "b_device.h"
 
-#if __GNUC__
-int __attribute__((weak)) UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
-#else
-__weak int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
-#endif
+__WEAKDEF int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     int fd = -1;
     fd     = bOpen(SPIFLASH, BCORE_FLAG_RW);

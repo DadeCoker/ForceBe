@@ -151,11 +151,7 @@ int bButtonInit()
     return 0;
 }
 
-#if __GNUC__
-void __attribute__((weak)) bButtonCallback(void *p)
-#else
-__weak void bButtonCallback(void *p)
-#endif
+__WEAKDEF void bButtonCallback(void *p)
 {
     flex_button_t *btn = (flex_button_t *)p;
     b_log("id: [%d]  event: [%d]  repeat: %d\n", btn->id, btn->event, btn->click_cnt);

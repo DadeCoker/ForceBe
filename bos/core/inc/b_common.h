@@ -66,9 +66,15 @@ typedef void (*pbPoling_t)(void);
  * \defgroup COMMON_Exported_Defines
  * \{
  */
+#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__GNUC__)
+#define __WEAKDEF __attribute__((weak))
+#else
+#define __WEAKDEF __weak
+#endif
 
 #if defined(__ICCARM__)
-// Enable IAR language extensions
 #pragma language = extended
 #endif
 

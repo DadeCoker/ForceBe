@@ -81,11 +81,7 @@ static void     make_adress_byte_array(const sfud_flash *flash, uint32_t addr, u
 extern void sfud_log_debug(const char *file, const long line, const char *format, ...);
 extern void sfud_log_info(const char *format, ...);
 
-#if __GNUC__
-sfud_err __attribute__((weak)) sfud_spi_port_init(sfud_flash *flash)
-#else
-__weak sfud_err sfud_spi_port_init(sfud_flash *flash)
-#endif
+__WEAKDEF sfud_err sfud_spi_port_init(sfud_flash *flash)
 {
     return SFUD_ERR_NOT_FOUND;
 }
