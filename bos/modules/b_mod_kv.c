@@ -62,6 +62,7 @@ typedef enum
 {
     KV_SECTOR_STA_WRITABLE,
     KV_SECTOR_STA_FULL,
+    KV_SECTOR_STA_MESSY,
     KV_SECTOR_STA_NUM
 } bKVSectorStat_t;
 
@@ -119,7 +120,7 @@ typedef struct
 #define B_KV_KEY_LENGTH(len) ((uint8_t)(((len) >> 24) & 0xff))
 #define B_KV_VALUE_LENGTH(len) ((len)&0x00ffffff)
 
-#define B_KV_SECTOR_NUM(i) (i->total_size / i->erase_size)
+#define B_KV_SECTOR_NUM(i) ((i->erase_size == 0) ? 1 : (i->total_size / i->erase_size))
 
 /**
  * \}
@@ -230,8 +231,31 @@ static int _bKVSetSectorState(bKVInstance_t *pinstance, uint32_t sector_index, b
     return 0;
 }
 
-static int _bKVSectorDefrag()
+static int _bKVSectorDefrag(bKVInstance_t *pinstance)
 {
+    int             i = 0;
+    bKVSectorHead_t sector_head;
+    pinstance->write_index = -1;
+    if (pinstance->empty_count > 1)
+    {
+        for (i = 0; i < B_KV_SECTOR_NUM(pinstance); i--)
+        {
+            _bKVReadSectorHead(pinstance, i, &sector_head);
+            if (B_KV_STA_IS_FULL(sector_head.state[KV_SECTOR_STA_FULL]))
+            {
+                continue;
+            }
+            pinstance->write_index = i;
+            if (sector_head.state[KV_SECTOR_STA_WRITABLE] != B_KV_STA_WRITABLE)
+            {
+                pinstance->empty_count -= 1;
+            }
+            break;
+        }
+    }
+    else if (pinstance->empty_count == 1)
+    {
+    }
 }
 
 /**
@@ -244,9 +268,7 @@ static int _bKVSectorDefrag()
  */
 int bKVInit(bKVInstance_t *pinstance)
 {
-    int             retval = -1, i = 0;
-    uint32_t        sector_count = 0;
-    uint32_t        empty_count  = 0;
+    int             i = 0;
     bKVSectorHead_t sector_head;
 
     if (pinstance == NULL)
@@ -258,19 +280,18 @@ int bKVInit(bKVInstance_t *pinstance)
         return -1;
     }
     pinstance->write_index = -1;
-    if (pinstance->erase_size == 0)
-    {
-        pinstance->erase_size = pinstance->total_size / 2
-    }
-    sector_count = pinstance->total_size / pinstance->erase_size;
-    for (i = 0; i < sector_count; i++)
+    pinstance->empty_count = 0;
+
+    b_log("b_kv:0x%x %dB e_size %dB sector %d\r\n", pinstance->address, pinstance->total_size,
+          pinstance->erase_size, B_KV_SECTOR_NUM(pinstance));
+    for (i = 0; i < B_KV_SECTOR_NUM(pinstance); i++)
     {
         _bKVReadSectorHead(pinstance, i, &sector_head);
         if (sector_head.flag != B_KV_FLAG)
         {
             _bKVEraseSector(pinstance, i);
             _bKVSetSectorFlag(pinstance, i);
-            empty_count += 1;
+            pinstance->empty_count += 1;
             continue;
         }
         if (B_KV_STA_IS_FULL(sector_head.state[KV_SECTOR_STA_FULL]))
@@ -282,18 +303,14 @@ int bKVInit(bKVInstance_t *pinstance)
             pinstance->write_index = i;
             continue;
         }
-        empty_count += 1;
+        pinstance->empty_count += 1;
     }
-
+    b_log("b_kv:%d %d\r\n", pinstance->write_index, pinstance->empty_count);
     if (pinstance->write_index >= 0)
     {
         return 0;
     }
-
-    if (empty_count <= 1)
-    {
-        ;  // 增加整理区块
-    }
+    return _bKVSectorDefrag(pinstance);
 }
 /**
  * \}
