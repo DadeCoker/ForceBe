@@ -33,53 +33,79 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 #include "utils/inc/b_util_spi.h"
-#if (_MCU_PLATFORM == 1001)
-#include "stm32f10x.h"
+
+#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
+     _MCU_PLATFORM == 1004)
 
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
 
+//         Register Address
+
+#define SPI1_BASE_ADDR (0x40013000)
+#define SPI2_BASE_ADDR (0x40003800)
+#define SPI3_BASE_ADDR (0x40003C00)
+
+typedef struct
+{
+    volatile uint16_t CR1;
+    uint16_t          RESERVED0;
+    volatile uint16_t CR2;
+    uint16_t          RESERVED1;
+    volatile uint16_t SR;
+    uint16_t          RESERVED2;
+    volatile uint16_t DR;
+    uint16_t          RESERVED3;
+    volatile uint16_t CRCPR;
+    uint16_t          RESERVED4;
+    volatile uint16_t RXCRCR;
+    uint16_t          RESERVED5;
+    volatile uint16_t TXCRCR;
+    uint16_t          RESERVED6;
+    volatile uint16_t I2SCFGR;
+    uint16_t          RESERVED7;
+    volatile uint16_t I2SPR;
+    uint16_t          RESERVED8;
+} McuSpiReg_t;
+
+#define MCU_SPI1 ((McuSpiReg_t *)SPI1_BASE_ADDR)
+#define MCU_SPI2 ((McuSpiReg_t *)SPI2_BASE_ADDR)
+#define MCU_SPI3 ((McuSpiReg_t *)SPI3_BASE_ADDR)
+
+static McuSpiReg_t *SpiTable[3] = {MCU_SPI1, MCU_SPI2, MCU_SPI3};
+
 static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {
-    uint16_t SpeedVal = 1;
+    uint16_t     SpeedVal = 1;
+    McuSpiReg_t *pSpi     = NULL;
     if (IS_NULL(spi_if) || (speed >= B_HAL_SPI_SPEED_INVALID))
     {
         return -1;
     }
-    
-    if(speed == B_HAL_SPI_SLOW)
+    if (speed == B_HAL_SPI_SLOW)
     {
         SpeedVal = 6;
     }
-    
-    switch (spi_if->_if.spi)
+    if (spi_if->_if.spi > B_HAL_SPI_3)
     {
-        case B_HAL_SPI_1:
-            while(SPI1->SR & 0x80);
-            SPI1->CR1 &= ~(0x7 << 3);
-            SPI1->CR1 |= SpeedVal << 3;
-            break;
-        case B_HAL_SPI_2:
-            while(SPI2->SR & 0x80);
-            SPI2->CR1 &= ~(0x7 << 3);
-            SPI2->CR1 |= SpeedVal << 3;
-            break;
-        case B_HAL_SPI_3:
-            while(SPI3->SR & 0x80);
-            SPI3->CR1 &= ~(0x7 << 3);
-            SPI3->CR1 |= SpeedVal << 3;
-            break;        
-        default:
-            break;
+        return -1;
     }
+    pSpi = SpiTable[spi_if->_if.spi];
+    while (pSpi->SR & 0x80)
+    {
+        ;
+    }
+    pSpi->CR1 &= ~(0x7 << 3);
+    pSpi->CR1 |= (SpeedVal << 3);
     return 0;
 }
 
 static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    uint8_t    tmp;
-    bUtilSPI_t simulating_spi;
+    uint8_t      tmp;
+    bUtilSPI_t   simulating_spi;
+    McuSpiReg_t *pSpi = NULL;
     if (IS_NULL(spi_if))
     {
         return 0;
@@ -95,35 +121,21 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
     }
     else
     {
-        switch (spi_if->_if.spi)
+        if (spi_if->_if.spi > B_HAL_SPI_3)
         {
-            case B_HAL_SPI_1:
-                while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET)
-                    ;
-                SPI_I2S_SendData(SPI1, dat);
-                while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET)
-                    ;
-                tmp = SPI_I2S_ReceiveData(SPI1);
-                break;
-            case B_HAL_SPI_2:
-                while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET)
-                    ;
-                SPI_I2S_SendData(SPI2, dat);
-                while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET)
-                    ;
-                tmp = SPI_I2S_ReceiveData(SPI2);
-                break;
-            case B_HAL_SPI_3:
-                while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET)
-                    ;
-                SPI_I2S_SendData(SPI3, dat);
-                while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET)
-                    ;
-                tmp = SPI_I2S_ReceiveData(SPI3);
-                break;
-            default:
-                break;
+            return 0;
         }
+        pSpi = SpiTable[spi_if->_if.spi];
+        while ((pSpi->SR & 0x02) == 0)
+        {
+            ;
+        }
+        pSpi->DR = dat;
+        while ((pSpi->SR & 0x01) == 0)
+        {
+            ;
+        }
+        tmp = pSpi->DR;
     }
     return tmp;
 }

@@ -231,8 +231,6 @@ Button 功能模块基于开源项目FlexibleButton，<https://github.com/murphy
 
 GUI功能模块基于开源项目uGUI, <https://github.com/achimdoebler/UGUI>, 感谢作者Achimdoebler
 
-Hardfault跟踪功能模块基于开源项目CmBacktrace,<https://gitee.com/Armink/CmBacktrace>, 感谢作者Armink
-
 SPIFlash驱动基于开源项目SFUD,https://gitee.com/Armink/SFUD 感谢作者Armink
 
 FS功能模块是基于FatFS和LittleFS,方便用户使用:
@@ -274,5 +272,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2021.06 | 大版本更新，对整体代码重新梳理一遍。可使用MCU内部FLASH使用KV存储、完善驱动部分等... |      |
 | 2021.07 | 修改gcc环境下链接文件的修改方法                              |      |
 | 2021.10 | 修改将分离的两个仓库内容重新加入进来，改变HAL代码的方式以及各个驱动的接口结构。V7.0.0 |      |
-| 2021.11 | 针对警告和报错点进行优化                                     |      |
+| 2021.11 | 针对警告和报错点进行优化, mcu目录下的代码默认用寄存器操作方式 |      |
 

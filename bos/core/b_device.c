@@ -117,7 +117,11 @@ bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);
 
 static int _bDriverNullInit()
 {
-    return -1;
+    if(strcmp(bDeviceDescTable[0], "null") == 0)
+    {
+        b_log_i("No device is registered\r\n");
+    }
+    return 0;
 }
 
 bDRIVER_REG_INIT_0(_bDriverNullInit);

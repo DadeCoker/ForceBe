@@ -33,84 +33,123 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (_MCU_PLATFORM == 1001)
-#include "stm32f10x.h"
+#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
+     _MCU_PLATFORM == 1004)
 
-static void* GPIO_PortTable[] = {GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF, GPIOG};
+//         Register Address
+
+#define GPIO_REG_OFF (0x400UL)
+#define GPIO_REG_BASE (0x40010800UL)
+
+typedef struct
+{
+    volatile uint32_t CRL;
+    volatile uint32_t CRH;
+    volatile uint32_t IDR;
+    volatile uint32_t ODR;
+    volatile uint32_t BSRR;
+    volatile uint32_t BRR;
+    volatile uint32_t LCKR;
+} McuGpioReg_t;
 
 static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
                         bHalGPIOPull_t pull)
 {
-    GPIO_InitTypeDef GPIO_InitStructure;
+    uint32_t      dir_val  = 4;
+    uint32_t      pull_val = 0;
+    McuGpioReg_t *pGpio    = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
+
     if (!B_HAL_GPIO_ISVALID(port, pin))
     {
         return;
     }
+
     if (dir == B_HAL_GPIO_OUTPUT)
     {
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+        dir_val = (pin == B_HAL_PINAll) ? 0x33333333 : 3;
     }
-    else
+    else if (pull != B_HAL_GPIO_NOPULL)
     {
+        dir_val  = (pin == B_HAL_PINAll) ? 0x88888888 : 8;
+        pull_val = (pin == B_HAL_PINAll) ? 0xFFFF : (0X0001 << pin);
+
         if (pull == B_HAL_GPIO_PULLUP)
         {
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-        }
-        else if (pull == B_HAL_GPIO_PULLDOWN)
-        {
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+            pGpio->BSRR = pull_val;
         }
         else
         {
-            GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+            pGpio->BRR = pull_val;
         }
     }
-    GPIO_InitStructure.GPIO_Pin   = (pin == B_HAL_PINAll) ? 0xffff : (0x0001 << pin);
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIO_PortTable[port], &GPIO_InitStructure);
+
+    if (pin == B_HAL_PINAll)
+    {
+        pGpio->CRL = dir_val;
+        pGpio->CRH = dir_val;
+    }
+    else
+    {
+        if (pin < B_HAL_PIN8)
+        {
+            pGpio->CRL &= ~(0x0000000F << (pin * 4));
+            pGpio->CRL |= (dir_val << (pin * 4));
+        }
+        else
+        {
+            pGpio->CRH &= ~(0x0000000F << (pin * 4));
+            pGpio->CRH |= (dir_val << (pin * 4));
+        }
+    }
 }
 
 static void _GpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
 {
-    if (!B_HAL_GPIO_ISVALID(port, pin))
+    uint32_t      cs_val = 0x00000001 << pin;
+    McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
+    if (!B_HAL_GPIO_ISVALID(port, pin) || pin == B_HAL_PINAll)
     {
         return;
     }
-    if (s)
+    if (s == 0)
     {
-        GPIO_SetBits(GPIO_PortTable[port], 0x0001 << pin);
+        cs_val <<= 16;
     }
-    else
-    {
-        GPIO_ResetBits(GPIO_PortTable[port], 0x0001 << pin);
-    }
+    pGpio->BSRR = cs_val;
 }
 
 static uint8_t _GpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 {
-    if (!B_HAL_GPIO_ISVALID(port, pin))
+    uint32_t      id_val = 0;
+    McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
+    if (!B_HAL_GPIO_ISVALID(port, pin) || pin == B_HAL_PINAll)
     {
         return 0;
     }
-    return GPIO_ReadInputDataBit(GPIO_PortTable[port], 0x0001 << pin);
+    id_val = pGpio->IDR;
+    return ((id_val & (0x0001 << pin)) != 0);
 }
 
 static void _GpioWrite(bHalGPIOPort_t port, uint16_t dat)
 {
+    McuGpioReg_t *pGpio = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (!B_HAL_GPIO_ISVALID(port, 0))
     {
         return;
     }
-    GPIO_Write(GPIO_PortTable[port], dat);
+    pGpio->ODR = dat;
 }
 
 static uint16_t _GpioRead(bHalGPIOPort_t port)
 {
+    uint32_t      id_val = 0;
+    McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (!B_HAL_GPIO_ISVALID(port, 0))
     {
         return 0;
     }
-    return GPIO_ReadInputData(GPIO_PortTable[port]);
+    id_val = pGpio->IDR;
+    return (id_val & 0xffff);
 }
 
 bHalGPIODriver_t bHalGPIODriver = {

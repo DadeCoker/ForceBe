@@ -38,8 +38,8 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
-#include "hal/inc/b_hal.h"
 #include "core/inc/b_section.h"
+#include "hal/inc/b_hal.h"
 
 /**
  * \addtogroup BABYOS
@@ -145,7 +145,10 @@ typedef struct
 #define bCMD_CFG_FS 1         // uint8_t g
 #define bCMD_CFG_POWERDOWN 2  // none
 #define bCMD_CFG_FIFO 3       // bGSensorFifo_t
-#define bCMD_SIG_INT 4       // none
+#define bCMD_SIG_INT 4        // none
+
+// Sensor
+#define bCMD_SENSOR_START 0
 
 /**
  * \}
@@ -162,7 +165,6 @@ typedef struct
     bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func)) = func
 
 #define bDRIVER_REG_INIT_1 bDRIVER_REG_INIT
-
 
 #define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)(pdrv->_hal_if)
 /**

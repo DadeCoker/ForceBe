@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_n32l40x_uart.c
+ * \file        mcu_stm32f10x_uart.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,7 +33,8 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (_MCU_PLATFORM == 2001)
+#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
+     _MCU_PLATFORM == 1004)
 
 #ifndef NULL
 #define NULL ((void *)0)
@@ -44,24 +45,24 @@
 #define UART1_BASE_ADDR (0x40013800)
 #define UART2_BASE_ADDR (0x40004400)
 #define UART3_BASE_ADDR (0x40004800)
-#define UART4_BASE_ADDR (0x40015000)
-#define UART5_BASE_ADDR (0x40015400)
+#define UART4_BASE_ADDR (0x40004C00)
+#define UART5_BASE_ADDR (0x40005000)
 
 typedef struct
 {
-    volatile uint16_t STS;
+    volatile uint16_t SR;
     uint16_t          RESERVED0;
-    volatile uint16_t DAT;
+    volatile uint16_t DR;
     uint16_t          RESERVED1;
-    volatile uint16_t BRCF;
+    volatile uint16_t BRR;
     uint16_t          RESERVED2;
-    volatile uint16_t CTRL1;
+    volatile uint16_t CR1;
     uint16_t          RESERVED3;
-    volatile uint16_t CTRL2;
+    volatile uint16_t CR2;
     uint16_t          RESERVED4;
-    volatile uint16_t CTRL3;
+    volatile uint16_t CR3;
     uint16_t          RESERVED5;
-    volatile uint16_t GTP;
+    volatile uint16_t GTPR;
     uint16_t          RESERVED6;
 } McuUartReg_t;
 
@@ -86,7 +87,7 @@ static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
     for (i = 0; i < len; i++)
     {
         timeout = 0x000B0000;
-        while (timeout > 0 && ((pUart->STS & (0x1 << 6)) == 0))
+        while (timeout > 0 && ((pUart->SR & (0x1 << 6)) == 0))
         {
             timeout--;
         }
@@ -94,7 +95,7 @@ static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
         {
             return -2;
         }
-        pUart->DAT = pbuf[i];
+        pUart->DR = pbuf[i];
     }
     return len;
 }
@@ -112,7 +113,7 @@ static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     for (i = 0; i < len; i++)
     {
         timeout = 0x000B0000;
-        while (timeout > 0 && ((pUart->STS & (0x1 << 5)) == 0))
+        while (timeout > 0 && ((pUart->SR & (0x1 << 5)) == 0))
         {
             timeout--;
         }
@@ -120,7 +121,7 @@ static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
         {
             return -2;
         }
-        pbuf[i] = pUart->DAT;
+        pbuf[i] = pUart->DR;
     }
     return len;
 }

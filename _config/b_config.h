@@ -37,17 +37,19 @@
 //<o> Hardware version
 #define HW_VERSION 211031
 //<o> Firmware version
-#define FW_VERSION 70000
+#define FW_VERSION 70100
 //</h>
 
 //<h> Platform Configuration
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ 1000
 //<o> MCU Platform
-//<1001=> STM32F10X STD
-//<1002=> STM32F1XX HAL
+//<1001=> STM32F10X_LD
+//<1002=> STM32F10X_MD
+//<1003=> STM32F10X_HD
+//<1004=> STM32F10X_CL
 //<2001=> NATION_F40X
-#define _MCU_PLATFORM 1001
+#define _MCU_PLATFORM 1004
 //</h>
 
 //<h> Modules Configuration
@@ -215,12 +217,6 @@
 #define FLEX_BTN_NUMBER 3
 //</e>
 
-//<e> QPN Enable/Disable
-#define _QPN_ENABLE 0
-//<o> How often ISR_TIMER_COMPA_vect() and qpn_run() is called (ms)
-#define QPN_PER_SEC 10
-//</e>
-
 //<e> UGUI Enable/Disable
 #define _UGUI_ENABLE 0
 //<o> X PHYSICAL SIZE
@@ -255,22 +251,6 @@
 #define _ENCODING 0
 //<o> XBF Base Address
 #define _XBF_FILE_ADDR 0
-//</e>
-
-//<e> CmBacktrace Enable/Disable
-#define _CMBACKTRACE_ENABLE 0
-
-//<o> CMB_CPU_ARM_CORTEX_M?
-//<0=> ARM_CORTEX_M0
-//<1=> ARM_CORTEX_M3
-//<2=> ARM_CORTEX_M4
-//<3=> ARM_CORTEX_M7
-#define CMB_CPU_PLATFORM_TYPE 1
-
-//<o> Print Language
-//<0=> English
-//<1=> Chinese
-#define CMB_PRINT_LANGUAGE 1
 //</e>
 
 //<e> FS Enable/Disable

@@ -1,14 +1,13 @@
 /**
  *!
- * \file        b_mod_qpn.h
- * \version     v0.0.2
- * \date        2020/05/09
- * \author      Alex_Shen(bestnike@126.com)
- * \note        modified: 2020.05.10 notrynohigh v0.0.2
+ * \file        mcu_stm32f10x_it.c
+ * \version     v0.0.1
+ * \date        2020/03/25
+ * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2020 Alex_Shen
+ * Copyright (c) 2020 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,76 +21,36 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SUARTL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_MOD_QPN__
-#define __B_MOD_QPN__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
-#if _QPN_ENABLE
-#include "thirdparty/qpn/inc/qpn.h" /* QP-nano API */
+#include "hal/inc/b_hal_it.h"
 
-/**
- * \addtogroup BABYOS
- * \{
- */
+#if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
+     _MCU_PLATFORM == 1004)
 
-/**
- * \addtogroup MODULES
- * \{
- */
-
-/**
- * \addtogroup QPN
- * \{
- */
-
-/**
- * \defgroup QPN_Exported_TypesDefinitions
- * \{
- */
-typedef void (*AO_InitFunc_t)(void);
-
-/**
- * \}
- */
-
-/**
- * \defgroup QPN_Exported_Functions
- * \{
- */
-void bQPN_Init(void);
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#endif
-
-#ifdef __cplusplus
+static void _IntEnable()
+{
+    ;
 }
-#endif
+
+static void _IntDisable()
+{
+    ;
+}
+
+bHalITDriver_t bHalITDriver = {
+    .pIntEnable  = _IntEnable,
+    .pIntDisable = _IntDisable,
+};
 
 #endif
-/************************ Copyright (c) 2020 Alex_Shen *****END OF FILE****/
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/

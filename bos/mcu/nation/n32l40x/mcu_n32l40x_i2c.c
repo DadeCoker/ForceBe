@@ -34,7 +34,6 @@
 #include "hal/inc/b_hal_i2c.h"
 #include "utils/inc/b_util_i2c.h"
 #if (_MCU_PLATFORM == 2001)
-#include "n32l40x.h"
 
 static void _I2CSendByte(bHalI2CIf_t *pi2c_if, uint8_t dat)
 {

@@ -1,6 +1,7 @@
 #ifndef __UGUI_CONFIG_H
 #define __UGUI_CONFIG_H
 #include "b_config.h"
+#include <stdint.h>
 #if _UGUI_ENABLE
 /* -------------------------------------------------------------------------------- */
 /* -- CONFIG SECTION                                                             -- */
