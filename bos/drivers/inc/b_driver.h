@@ -96,6 +96,7 @@ typedef struct
 
 typedef struct
 {
+    uint8_t fifo_en;
     uint8_t fifo_mode;
     uint8_t fifo_length;
 } bGSensorFifo_t;
@@ -136,16 +137,15 @@ typedef struct
 
 //-----------------------------------------COMMAND--
 // Flash
-#define bCMD_ERASE_SECTOR 0      // <==> bFlashErase_t
-#define bCMD_GET_SECTOR_SIZE 1   // <==> uint32_t
-#define bCMD_GET_SECTOR_COUNT 2  // <==> uint32_t
+#define bCMD_ERASE_SECTOR 0      // bFlashErase_t
+#define bCMD_GET_SECTOR_SIZE 1   // uint32_t
+#define bCMD_GET_SECTOR_COUNT 2  // uint32_t
 
 // Gsensor
 #define bCMD_CFG_ODR 0        // uint16_t Hz
 #define bCMD_CFG_FS 1         // uint8_t g
-#define bCMD_CFG_POWERDOWN 2  // none
-#define bCMD_CFG_FIFO 3       // bGSensorFifo_t
-#define bCMD_SIG_INT 4        // none
+#define bCMD_CFG_FIFO 2       // bGSensorFifo_t
+#define bCMD_CFG_POWERDOWN 3  // none
 
 // Sensor
 #define bCMD_SENSOR_START 0
@@ -192,7 +192,6 @@ extern bDriverInterface_t bXPT2046_Driver;
 extern bDriverInterface_t bPCF8574_Driver;
 
 extern bDriverInterface_t bLIS3DH_Driver;
-extern bDriverInterface_t bL3GD20_Driver;
 
 extern bDriverInterface_t bDS18B20_Driver;
 /**
