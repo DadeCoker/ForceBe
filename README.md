@@ -19,9 +19,9 @@ _/____/___(___(_(___/_(___/_(____/___(____/___
 
 BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
 
-**对项目而言，缩短开发周期**。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
+对项目而言，缩短开发周期。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
 
-**对工程师而言，减少重复工作**。调试过的功能模块和驱动代码放入BabyOS中管理，以后项目可以直接使用，去掉重复调试的工作。
+对开发而言，减少重复工作。调试过的功能模块和驱动代码放入BabyOS中管理，以后项目可以直接使用。
 
 # 1 代码结构
 
@@ -55,9 +55,7 @@ MCU开发项目。编译器勾选C99
 
 # 4 BabyOS手册
 
-移步查看《BabyOS设计和使用手册》：
-
- [BabyOS设计和使用手册](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md)
+ [《BabyOS设计和使用手册》](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md)
 
 [1.项目介绍](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#1-%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D)
 
@@ -77,21 +75,13 @@ MCU开发项目。编译器勾选C99
 
 视频教程一共有四讲（可以在哔哩哔哩网站搜索BabyOS）：
 
-第一讲介绍BabyOS，主要介绍项目发起的背景和项目的定位。
+[第一讲介绍BabyOS，主要介绍项目发起的背景和项目的定位。](https://www.bilibili.com/video/BV1Ff4y1o7bZ?share_source=copy_web)
 
-https://www.bilibili.com/video/BV1Ff4y1o7bZ?share_source=copy_web
+[第二讲BabyOS的快速体验和进阶体验，根据手册的第2、3、4章节内容进行讲解以及实操演示。](https://www.bilibili.com/video/BV1Lg411f7cH?share_source=copy_web)
 
-第二讲BabyOS的快速体验和进阶体验，根据手册的第2、3、4章节内容进行讲解以及实操演示。
+[第三讲BabyOS的功能概述，根据手册的第5章节内容进行讲解。对BabyOS各个部分的设计进行讲解。](https://www.bilibili.com/video/BV1iU4y1q7EJ?share_source=copy_web)
 
-https://www.bilibili.com/video/BV1Lg411f7cH?share_source=copy_web
-
-第三讲BabyOS的功能概述，根据手册的第5章节内容进行讲解。对BabyOS各个部分的设计进行讲解。
-
-https://www.bilibili.com/video/BV1iU4y1q7EJ?share_source=copy_web
-
-第四讲BabyOS的功能组件，根据手册的第6、7章节内容进行讲解，对modules目录和utils目录的内容进行讲解。
-
-https://www.bilibili.com/video/BV1JZ4y1Y7S7?share_source=copy_web
+[第四讲BabyOS的功能组件，根据手册的第6、7章节内容进行讲解，对modules目录和utils目录的内容进行讲解。](https://www.bilibili.com/video/BV1JZ4y1Y7S7?share_source=copy_web)
 
 # 6 BabyOS例程
 
