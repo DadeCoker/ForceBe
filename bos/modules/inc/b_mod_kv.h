@@ -102,7 +102,7 @@ typedef bKVStruct_t bKVInstance_t;
 int bKVInit(bKVInstance_t *pinstance);
 int bKVGetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32_t len,
                 uint32_t *prlen);
-int bKVSetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32_t len);
+int bKVSetValue(bKVInstance_t *pinstance, const char *key, const uint8_t *pbuf, uint32_t len);
 int bKVDeleteValue(bKVInstance_t *pinstance, const char *key);
 int bKVGetValueLength(bKVInstance_t *pinstance, const char *key);
 /**

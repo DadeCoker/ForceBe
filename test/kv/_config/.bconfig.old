@@ -47,8 +47,7 @@ _BOS_MODULES_ENABLE=y
 # _MODBUS_ENABLE is not set
 # _PROTO_ENABLE is not set
 _KV_ENABLE=y
-_KV_ENCRYPT_ENABLE=y
-_KV_ENCRYPT_KEY=111
+# _KV_ENCRYPT_ENABLE is not set
 # _XMODEM128_ENABLE is not set
 # _YMODEM_ENABLE is not set
 # _MENU_ENABLE is not set

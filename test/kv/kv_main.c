@@ -34,6 +34,9 @@ int main()
     port_init();
     bInit();
     bKVInit(&gKVInstance);
+
+    bKVSetValue(&gKVInstance, "name", "hello world", strlen("hello world"));
+
     while (1)
     {
         bExec();

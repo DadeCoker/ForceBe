@@ -88,6 +88,16 @@ config _KV_ENABLE
     select _ALGO_CRC_ENABLE
     select _ALGO_MD5_ENABLE
 
+config _KV_ENCRYPT_ENABLE
+    bool "KV Data Encryption"
+    default n
+    depends on _KV_ENABLE
+
+config _KV_ENCRYPT_KEY
+    int "Key 0~255"
+    default 111
+    depends on _KV_ENCRYPT_ENABLE
+
 config _XMODEM128_ENABLE
     bool "XMODEM128 Enable/Disable"
     default n
