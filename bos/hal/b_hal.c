@@ -49,6 +49,7 @@
  * \defgroup HAL_Private_Variables
  * \{
  */
+static volatile uint32_t bSysTickOvr   = 0;
 static volatile uint32_t bSysTick      = 0;
 static uint32_t          bUsDelayParam = 10;
 /**
@@ -91,11 +92,22 @@ void bHalInit()
 void bHalIncSysTick()
 {
     bSysTick += 1;
+    if(bSysTick == 0)
+    {
+        bSysTickOvr += 1;
+    }
 }
 
 uint32_t bHalGetSysTick()
 {
     return bSysTick;
+}
+
+uint64_t bHalGetSysTickPlus()
+{
+    uint64_t tick = bSysTickOvr;
+    tick = bSysTick + (tick << (8 * sizeof(uint32_t)));
+    return tick;
 }
 
 void bHalDelayMs(uint16_t xms)

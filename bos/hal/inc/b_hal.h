@@ -97,6 +97,7 @@ typedef struct
  * \{
  */
 #define MS2TICKS(m) (m / (1000 / TICK_FRQ_HZ))
+#define TICKS2MS(t) (t * (1000 / TICK_FRQ_HZ))
 
 #if (defined(_HALIF_VARIABLE_ENABLE) && (_HALIF_VARIABLE_ENABLE == 1))
 #define HALIF_KEYWORD static
@@ -122,6 +123,7 @@ void     bHalInit(void);
 void     bHalDelayMs(uint16_t xms);
 void     bHalDelayUs(uint32_t xus);
 uint32_t bHalGetSysTick(void);
+uint64_t bHalGetSysTickPlus(void);
 
 /**
  * \}

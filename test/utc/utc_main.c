@@ -9,30 +9,32 @@
  */
 #include "../port.h"
 #include "b_os.h"
+#include <time.h>
+
+static void time_print()
+{
+    bUTC_DateTime_t tm;
+    bUTC_t utc = bUTC_GetTime();
+    bUTC2Struct(&tm, utc, 8);
+    b_log("%d-%d-%d %d:%d:%d [%d]\r\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, tm.week);
+}
 
 int main()
 {
-    bUTC_DateTime_t tm;
-    bUTC_t utc = 1680019757;
     port_init();
     bInit();
-     
-    bUTC2Struct(&tm, utc, 8);
 
-    b_log("%d-%d-%d %d:%d:%d [%d]\r\n", tm.year, tm.month, tm.day, tm.hour, tm.minute, tm.second, tm.week);
+    time_t ctm = time(NULL);
+    b_log("ctm:%d\r\n", ctm);
 
-    tm.year = 2023;
-    tm.month = 3;
-    tm.day = 29;
-    tm.hour = 0;
-    tm.minute = 9;
-    tm.second = 17;
-    bUTC_t test_utc = bStruct2UTC(tm, 8);
-    b_log("utc: %d\r\n", test_utc);
+    bUTC_SetTime(ctm);
+
+    time_print();
 
     while (1)
     {
         bExec();
+        BOS_PERIODIC_TASK(time_print, 3000);
     }
     return 0;
 }

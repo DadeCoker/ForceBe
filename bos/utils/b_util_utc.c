@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "utils/inc/b_util_utc.h"
-
+#include "hal/inc/b_hal.h"
 /**
  * \addtogroup B_UTILS
  * \{
@@ -47,6 +47,16 @@
  * \{
  */
 
+/**
+ * \}
+ */
+
+/**
+ * \defgroup UTC_Private_Variables
+ * \{
+ */
+static uint64_t bBaseUTC  = 0;
+static uint64_t bBaseTick = 0;
 /**
  * \}
  */
@@ -93,6 +103,19 @@ static uint8_t _bUTC_CalendarMonthDays(uint8_t lpyr, uint8_t month)
  * \addtogroup UTC_Exported_Functions
  * \{
  */
+
+void bUTC_SetTime(bUTC_t utc)
+{
+    bBaseUTC  = utc;
+    bBaseTick = bHalGetSysTickPlus();
+}
+
+
+bUTC_t bUTC_GetTime()
+{
+    bUTC_t utc = bBaseUTC + (TICKS2MS(bHalGetSysTickPlus() - bBaseTick)) / 1000;
+    return utc;
+}
 
 /**
  * \brief UTC to date struct \ref bUTC_DateTime_t
