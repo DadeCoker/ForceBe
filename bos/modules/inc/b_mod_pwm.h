@@ -102,6 +102,7 @@ int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler1, pPwmHa
 int bSoftPwmStop(bSoftPwmInstance_t *pPwmInstance);
 int bSoftPwmReset(bSoftPwmInstance_t *pPwmInstance);
 int bSoftPwmSetPeriod(bSoftPwmInstance_t *pPwmInstance, uint32_t ms);
+int bSoftPwmSetCcr(bSoftPwmInstance_t *pPwmInstance, uint32_t ms);
 /**
  * \}
  */

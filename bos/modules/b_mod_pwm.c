@@ -224,6 +224,16 @@ int bSoftPwmSetPeriod(bSoftPwmInstance_t *pPwmInstance, uint32_t ms)
     return 0;
 }
 
+int bSoftPwmSetCcr(bSoftPwmInstance_t *pPwmInstance, uint32_t ms)
+{
+    if (pPwmInstance == NULL)
+    {
+        return -1;
+    }
+    pPwmInstance->ccr = ms;
+    return 0;
+}
+
 /**
  * \}
  */
