@@ -81,6 +81,7 @@ extern "C" {
 #endif
 
 #include "drivers/inc/b_drv_24cxx.h"
+#include "drivers/inc/b_drv_button.h"
 #include "drivers/inc/b_drv_ds18b20.h"
 #include "drivers/inc/b_drv_esp12f.h"
 #include "drivers/inc/b_drv_fm25cl.h"
