@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _FLEXIBLEBUTTON_ENABLE
-#include "thirdparty/FlexibleButton/flexible_button.h"
+#include "thirdparty/flexiblebutton/flexible_button.h"
 /**
  * \addtogroup BABYOS
  * \{

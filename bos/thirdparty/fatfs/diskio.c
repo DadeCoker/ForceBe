@@ -1,3 +1,5 @@
+#include "b_os.h"
+#include "ff.h" /* Obtains integer types */
 /*-----------------------------------------------------------------------*/
 /* Low level disk I/O module skeleton for FatFs     (C)ChaN, 2019        */
 /*-----------------------------------------------------------------------*/
@@ -7,10 +9,6 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 #include "diskio.h" /* Declarations of disk functions */
-
-#include "b_os.h"
-#include "ff.h" /* Obtains integer types */
-
 /* Definitions of physical drive number for each drive */
 
 /*-----------------------------------------------------------------------*/

@@ -43,8 +43,8 @@ extern "C" {
 #if _FS_ENABLE
 
 #if (FS_SELECT == 0)
-#include "thirdparty/FatFS/diskio.h"
-#include "thirdparty/FatFS/ff.h"
+#include "thirdparty/fatfs/diskio.h"
+#include "thirdparty/fatfs/ff.h"
 
 #endif
 

@@ -41,7 +41,7 @@ extern "C" {
 #include "b_config.h"
 
 #if _UGUI_ENABLE
-#include "thirdparty/UGUI/ugui.h"
+#include "thirdparty/ugui/ugui.h"
 /**
  * \addtogroup BABYOS
  * \{

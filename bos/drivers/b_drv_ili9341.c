@@ -142,7 +142,8 @@ static void _bLcdWriteGRam(uint16_t dat)
         bHalGpioWritePin(bILI9341_HalIf._if._spi.rs.port, bILI9341_HalIf._if._spi.rs.pin, 1);
         bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
                          0);
-        bHalSpiSend(&bILI9341_HalIf._if._spi._spi, (uint8_t *)&dat, 2);
+        bHalSpiSend(&bILI9341_HalIf._if._spi._spi, ((uint8_t *)&dat) + 1, 1);
+        bHalSpiSend(&bILI9341_HalIf._if._spi._spi, ((uint8_t *)&dat), 1);
         bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
                          1);
     }
@@ -202,7 +203,7 @@ static uint16_t _bLcdReadData()
 static int _bILI9341CheckId()
 {
     uint16_t id = 0x9341;
-    if(bILI9341_HalIf.if_type == LCD_IF_TYPE_IO || bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR)
+    if (bILI9341_HalIf.if_type == LCD_IF_TYPE_IO || bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         _bLcdWriteCmd(0XD3);
         id = _bLcdReadData();
@@ -213,11 +214,9 @@ static int _bILI9341CheckId()
     }
     else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_SPI)
     {
-        
     }
     return ((id == 0x9341) ? 0 : -1);
 }
-
 
 static void _bILI9341SetCursor(uint16_t Xpos, uint16_t Ypos)
 {
@@ -238,9 +237,9 @@ static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf,
     if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
-    }    
+    }
     _bILI9341SetCursor(x, y);
-    _bLcdWriteGRam(pcolor->color);   
+    _bLcdWriteGRam(pcolor->color);
     return 2;
 }
 
@@ -254,7 +253,7 @@ static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf,
  */
 
 int bILI9341_Init()
-{       
+{
     if (_bILI9341CheckId() < 0)
     {
         bILI9341_Driver.status = -1;
