@@ -5,13 +5,14 @@
 #define HAL_LOG_UART B_HAL_UART_1
 
 // 24cxx
-#define HAL_24CXX_IF                      \
-    {                                     \
-        {                                 \
-            .dev_addr      = 0xa0,        \
-            .is_simulation = 0,           \
-            ._if.i2c       = B_HAL_I2C_1, \
-        },                                \
+#define HAL_24CXX_IF                                             \
+    {                                                            \
+        {                                                        \
+            .dev_addr               = 0xa0,                      \
+            .is_simulation          = 1,                         \
+            ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7}, \
+            ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN6}, \
+        },                                                       \
     }
 
 // button
@@ -25,7 +26,7 @@
 // ds18b20
 #define HAL_DS18B20_IF                       \
     {                                        \
-        .sBusIo = {B_HAL_GPIOB, B_HAL_PIN0}, \
+        .sBusIo = {B_HAL_GPIOA, B_HAL_PIN4}, \
     }
 
 // fm25cl
@@ -75,8 +76,8 @@
 #define HAL_OLED_IF                                                                \
     {                                                                              \
         ._if._i2c.dev_addr = 0x78, ._if._i2c.is_simulation = 1,                    \
-        ._if._i2c._if.simulating_i2c.sda = {B_HAL_GPIOA, B_HAL_PIN10},             \
-        ._if._i2c._if.simulating_i2c.clk = {B_HAL_GPIOA, B_HAL_PIN9}, .is_spi = 0, \
+        ._if._i2c._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN1},              \
+        ._if._i2c._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN0}, .is_spi = 0, \
     }
 
 // ssd1289
@@ -101,15 +102,15 @@
     }
 
 // sd
-#define HAL_SD_IF                                                                    \
-    {                                                                                \
-        ._if.spi = B_HAL_SPI_1, .cs = {B_HAL_GPIOB, B_HAL_PIN9}, .is_simulation = 0, \
+#define HAL_SD_IF                                                                     \
+    {                                                                                 \
+        ._if.spi = B_HAL_SPI_1, .cs = {B_HAL_GPIOD, B_HAL_PIN11}, .is_simulation = 0, \
     }
 
 // xpt2046
 #define HAL_XPT2046_IF                                                               \
     {                                                                                \
-        ._if.spi = B_HAL_SPI_1, .cs = {B_HAL_GPIOB, B_HAL_PIN9}, .is_simulation = 0, \
+        ._if.spi = B_HAL_SPI_3, .cs = {B_HAL_GPIOC, B_HAL_PIN9}, .is_simulation = 0, \
     }
 
 #endif

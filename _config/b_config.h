@@ -7,7 +7,7 @@
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2021 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +35,9 @@
 
 //<h> Version Configuration
 //<o> Hardware version
-#define HW_VERSION 211026
+#define HW_VERSION 211031
 //<o> Firmware version
-#define FW_VERSION 60100
+#define FW_VERSION 70000
 //</h>
 
 //<h> Platform Configuration
@@ -47,7 +47,7 @@
 //<1001=> STM32F10X STD
 //<1002=> STM32F1XX HAL
 //<2001=> NATION_F40X
-#define _MCU_PLATFORM 2001
+#define _MCU_PLATFORM 1001
 //</h>
 
 //<h> Modules Configuration
