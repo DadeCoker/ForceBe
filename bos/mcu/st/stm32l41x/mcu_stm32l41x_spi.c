@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
 //         Register Address
 

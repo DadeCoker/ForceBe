@@ -35,7 +35,7 @@
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
 
-#if _ERROR_MANAGE_ENABLE
+#if (defined(_ERROR_MANAGE_ENABLE) && (_ERROR_MANAGE_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

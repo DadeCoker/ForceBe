@@ -39,13 +39,17 @@
 #include "../inc/ansi.h"
 #include "../inc/nr_micro_shell.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 #include "hal/inc/b_hal.h"
 
 void ansi_show_char(char ch)
 {
-#if NR_SHELL_ECHO_ENABLE
-    bHalUartSend(HAL_LOG_UART, (uint8_t *)&ch, 1);
+#if (defined(NR_SHELL_ECHO_ENABLE) && (NR_SHELL_ECHO_ENABLE == 1))
+#if defined(LOG_UART)
+    bHalUartSend(LOG_UART, (uint8_t *)&ch, 1);
+#else
+    (void)ch;
+#endif
 #endif
 }
 
@@ -129,7 +133,7 @@ void nr_ansi_in_up(ansi_st *ansi)
         nr_shell.cmd_his.index =
             (nr_shell.cmd_his.index > nr_shell.cmd_his.len) ? 1 : nr_shell.cmd_his.index;
 
-#if NR_SHLL_FULL_ANSI == 1
+#if (defined(NR_SHLL_FULL_ANSI) && (NR_SHLL_FULL_ANSI == 1))
         shell_printf("\033[%dD", ansi->p + 1);
         shell_printf(NR_ANSI_CLEAR_RIGHT);
 #else
@@ -154,7 +158,7 @@ void nr_ansi_in_down(ansi_st *ansi)
         nr_shell.cmd_his.index =
             (nr_shell.cmd_his.index == 0) ? nr_shell.cmd_his.len : nr_shell.cmd_his.index;
 
-#if NR_SHLL_FULL_ANSI == 1
+#if (defined(NR_SHLL_FULL_ANSI) && (NR_SHLL_FULL_ANSI == 1))
         shell_printf("\033[%dD", ansi->p + 1);
         shell_printf(NR_ANSI_CLEAR_RIGHT);
 #else
@@ -210,7 +214,7 @@ void nr_ansi_in_tab(ansi_st *ansi)
         }
         else
         {
-#if NR_SHLL_FULL_ANSI == 1
+#if (defined(NR_SHLL_FULL_ANSI) && (NR_SHLL_FULL_ANSI == 1))
             shell_printf("\033[%dD", ansi->p + 1);
             shell_printf(NR_ANSI_CLEAR_RIGHT);
 #else

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
 #include "cmsis_compiler.h"
 

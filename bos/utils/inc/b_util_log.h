@@ -75,31 +75,36 @@ extern "C" {
 
 #define B_LOG_PARAM_DEFAULT __FILE__, __func__, __LINE__
 
-#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE > 0))
-#if (_DEBUG_ENABLE <= 1)
+#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE == 1))
+
+#if ((defined(LOG_LEVEL_INFO)) && (LOG_LEVEL_INFO == 1))
+
 #define b_log_i(...) bLogOut(0, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
-#define b_log(...) bLogOut(3, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
-#else
-#define b_log_i(...)
-#define b_log(...)
-#endif
-
-#if (_DEBUG_ENABLE <= 2)
 #define b_log_w(...) bLogOut(1, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
-#else
-#define b_log_w(...)
-#endif
-
-#if (_DEBUG_ENABLE <= 3)
 #define b_log_e(...) bLogOut(2, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
+#define b_log(...) bLogOut(3, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
+
+#elif ((defined(LOG_LEVEL_WARNING)) && (LOG_LEVEL_WARNING == 1))
+
+#define b_log_i(...)
+#define b_log_w(...) bLogOut(1, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
+#define b_log_e(...) bLogOut(2, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
+#define b_log(...)
+
+#elif ((defined(LOG_LEVEL_ERROR)) && (LOG_LEVEL_ERROR == 1))
+
+#define b_log_i(...)
+#define b_log_w(...)
+#define b_log_e(...) bLogOut(2, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
+#define b_log(...)
+
 #else
-#define b_log_e(...)
-#endif
-#else
+
 #define b_log_i(...)
 #define b_log_w(...)
 #define b_log_e(...)
 #define b_log(...)
+
 #endif
 
 /**
@@ -110,7 +115,7 @@ extern "C" {
  * \defgroup LOG_Exported_Functions
  * \{
  */
-#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE > 0))
+#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE == 1))
 void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t line,
              const char *fmt, ...);
 void bLogOutput(void *p);

@@ -38,7 +38,7 @@
 
 #include "../inc/ansi.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 
 #ifdef NR_SHELL_USING_EXPORT_CMD
 NR_SHELL_CMD_EXPORT_START("/0", NULL);
@@ -52,8 +52,8 @@ shell_st nr_shell = {
 static char *nr_shell_strtok(char *string_org, const char *demial)
 {
     static unsigned char *last;
-    unsigned char *       str;
-    const unsigned char * ctrl = (const unsigned char *)demial;
+    unsigned char        *str;
+    const unsigned char  *ctrl = (const unsigned char *)demial;
     unsigned char         map[32];
     int                   count;
 
@@ -124,7 +124,7 @@ void shell_parser(shell_st *shell, char *str)
 {
     char        argc = 0;
     char        argv[NR_SHELL_CMD_LINE_MAX_LENGTH + NR_SHELL_CMD_PARAS_MAX_NUM];
-    char *      token = str;
+    char       *token = str;
     shell_fun_t fp;
     char        index = NR_SHELL_CMD_PARAS_MAX_NUM;
 
@@ -179,8 +179,8 @@ void shell_parser(shell_st *shell, char *str)
 
 char *shell_cmd_complete(shell_st *shell, char *str)
 {
-    char *        temp         = NULL;
-    char *        best_matched = NULL;
+    char         *temp         = NULL;
+    char         *best_matched = NULL;
     unsigned char min_position = 255;
 
     bSECTION_FOR_EACH(b_mod_shell, static_cmd_st, ptmp)

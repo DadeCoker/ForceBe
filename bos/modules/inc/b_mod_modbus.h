@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _MODBUS_ENABLE
+#if (defined(_MODBUS_ENABLE) && (_MODBUS_ENABLE == 1))
 
 /**
  * \addtogroup BABYOS

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (MCU_PLATFORM == 2001)
+#if (defined(NATION_L40X))
 
 //      Register Address
 

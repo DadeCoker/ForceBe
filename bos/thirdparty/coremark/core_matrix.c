@@ -18,7 +18,7 @@ Original Author: Shay Gal-on
 
 #include "b_config.h"
 
-#if _COREMARK_ENABLE
+#if (defined(_COREMARK_ENABLE) && (_COREMARK_ENABLE == 1))
 
 #include "coremark.h"
 /*
@@ -47,14 +47,13 @@ void   matrix_mul_matrix(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B);
 void   matrix_mul_matrix_bitextract(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B);
 void   matrix_add_const(ee_u32 N, MATDAT *A, MATDAT val);
 
-#define matrix_test_next(x)      (x + 1)
-#define matrix_clip(x, y)        ((y) ? (x)&0x0ff : (x)&0x0ffff)
-#define matrix_big(x)            (0xf000 | (x))
+#define matrix_test_next(x) (x + 1)
+#define matrix_clip(x, y) ((y) ? (x)&0x0ff : (x)&0x0ffff)
+#define matrix_big(x) (0xf000 | (x))
 #define bit_extract(x, from, to) (((x) >> (from)) & (~(0xffffffff << (to))))
 
 #if CORE_DEBUG
-void
-printmat(MATDAT *A, ee_u32 N, char *name)
+void printmat(MATDAT *A, ee_u32 N, char *name)
 {
     ee_u32 i, j;
     ee_printf("Matrix %s [%dx%d]:\n", name, N, N);
@@ -69,8 +68,7 @@ printmat(MATDAT *A, ee_u32 N, char *name)
         ee_printf("\n");
     }
 }
-void
-printmatC(MATRES *C, ee_u32 N, char *name)
+void printmatC(MATRES *C, ee_u32 N, char *name)
 {
     ee_u32 i, j;
     ee_printf("Matrix %s [%dx%d]:\n", name, N, N);
@@ -92,8 +90,7 @@ printmatC(MATRES *C, ee_u32 N, char *name)
         Iterate <matrix_test> N times,
         changing the matrix values slightly by a constant amount each time.
 */
-ee_u16
-core_bench_matrix(mat_params *p, ee_s16 seed, ee_u16 crc)
+ee_u16 core_bench_matrix(mat_params *p, ee_s16 seed, ee_u16 crc)
 {
     ee_u32  N   = p->N;
     MATRES *C   = p->C;
@@ -130,8 +127,7 @@ core_bench_matrix(mat_params *p, ee_s16 seed, ee_u16 crc)
 
         After the last step, matrix A is back to original contents.
 */
-ee_s16
-matrix_test(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B, MATDAT val)
+ee_s16 matrix_test(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B, MATDAT val)
 {
     ee_u16 crc     = 0;
     MATDAT clipval = matrix_big(val);
@@ -181,8 +177,7 @@ matrix_test(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B, MATDAT val)
         The seed parameter MUST be supplied from a source that cannot be
    determined at compile time
 */
-ee_u32
-core_init_matrix(ee_u32 blksize, void *memblk, ee_s32 seed, mat_params *p)
+ee_u32 core_init_matrix(ee_u32 blksize, void *memblk, ee_s32 seed, mat_params *p)
 {
     ee_u32  N = 0;
     MATDAT *A;
@@ -238,8 +233,7 @@ core_init_matrix(ee_u32 blksize, void *memblk, ee_s32 seed, mat_params *p)
 
         Otherwise, reset the accumulator and add 10 to the result.
 */
-ee_s16
-matrix_sum(ee_u32 N, MATRES *C, MATDAT clipval)
+ee_s16 matrix_sum(ee_u32 N, MATRES *C, MATDAT clipval)
 {
     MATRES tmp = 0, prev = 0, cur = 0;
     ee_s16 ret = 0;
@@ -269,8 +263,7 @@ matrix_sum(ee_u32 N, MATRES *C, MATDAT clipval)
         Multiply a matrix by a constant.
         This could be used as a scaler for instance.
 */
-void
-matrix_mul_const(ee_u32 N, MATRES *C, MATDAT *A, MATDAT val)
+void matrix_mul_const(ee_u32 N, MATRES *C, MATDAT *A, MATDAT val)
 {
     ee_u32 i, j;
     for (i = 0; i < N; i++)
@@ -285,8 +278,7 @@ matrix_mul_const(ee_u32 N, MATRES *C, MATDAT *A, MATDAT val)
 /* Function: matrix_add_const
         Add a constant value to all elements of a matrix.
 */
-void
-matrix_add_const(ee_u32 N, MATDAT *A, MATDAT val)
+void matrix_add_const(ee_u32 N, MATDAT *A, MATDAT val)
 {
     ee_u32 i, j;
     for (i = 0; i < N; i++)
@@ -303,8 +295,7 @@ matrix_add_const(ee_u32 N, MATDAT *A, MATDAT val)
         This is common in many simple filters (e.g. fir where a vector of
    coefficients is applied to the matrix.)
 */
-void
-matrix_mul_vect(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
+void matrix_mul_vect(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
 {
     ee_u32 i, j;
     for (i = 0; i < N; i++)
@@ -322,8 +313,7 @@ matrix_mul_vect(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
         Basic code is used in many algorithms, mostly with minor changes such as
    scaling.
 */
-void
-matrix_mul_matrix(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
+void matrix_mul_matrix(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
 {
     ee_u32 i, j, k;
     for (i = 0; i < N; i++)
@@ -344,8 +334,7 @@ matrix_mul_matrix(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
         Basic code is used in many algorithms, mostly with minor changes such as
    scaling.
 */
-void
-matrix_mul_matrix_bitextract(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
+void matrix_mul_matrix_bitextract(ee_u32 N, MATRES *C, MATDAT *A, MATDAT *B)
 {
     ee_u32 i, j, k;
     for (i = 0; i < N; i++)

@@ -18,7 +18,7 @@ Original Author: Shay Gal-on
 
 #include "b_config.h"
 
-#if _COREMARK_ENABLE
+#if (defined(_COREMARK_ENABLE) && (_COREMARK_ENABLE == 1))
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,12 +54,12 @@ volatile ee_s32 seed5_volatile = 0;
         Use lower values to increase resolution, but make sure that overflow does not occur.
         If there are issues with the return value overflowing, increase this value.
         */
-//#define NSECS_PER_SEC              CLOCKS_PER_SEC
-//#define CORETIMETYPE               clock_t
-//#define GETMYTIME(_t)              (*_t = clock())
-//#define MYTIMEDIFF(fin, ini)       ((fin) - (ini))
-//#define TIMER_RES_DIVIDER          1
-//#define SAMPLE_TIME_IMPLEMENTATION 1
+// #define NSECS_PER_SEC              CLOCKS_PER_SEC
+// #define CORETIMETYPE               clock_t
+// #define GETMYTIME(_t)              (*_t = clock())
+// #define MYTIMEDIFF(fin, ini)       ((fin) - (ini))
+// #define TIMER_RES_DIVIDER          1
+// #define SAMPLE_TIME_IMPLEMENTATION 1
 #define EE_TICKS_PER_SEC (TICK_FRQ_HZ)
 
 /** Define Host specific (POSIX), or target specific global time variables. */

@@ -36,7 +36,7 @@
 
 #include "b_config.h"
 
-#if _FLEXIBLEBUTTON_ENABLE
+#if (defined(_FLEXIBLEBUTTON_ENABLE) && (_FLEXIBLEBUTTON_ENABLE == 1))
 
 #define FLEX_MS_TO_SCAN_CNT(ms) (ms / (1000 / FLEX_BTN_SCAN_FREQ_HZ))
 

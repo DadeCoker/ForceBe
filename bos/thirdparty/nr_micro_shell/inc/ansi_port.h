@@ -41,7 +41,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "ansi.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 
 struct nr_ansi_struct;
 

@@ -35,7 +35,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (MCU_PLATFORM == 8001)
+#if (defined(TH32F50343))
 
 #define FLASH_BASE_ADDR (0x0000000UL)
 

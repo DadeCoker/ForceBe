@@ -29,7 +29,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _CJSON_ENABLE
+#if (defined(_CJSON_ENABLE) && (_CJSON_ENABLE == 1))
 
 #if !defined(__WINDOWS__) && \
     (defined(WIN32) || defined(WIN64) || defined(_MSC_VER) || defined(_WIN32))

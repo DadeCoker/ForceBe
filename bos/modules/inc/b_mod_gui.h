@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _UGUI_ENABLE
+#if (defined(_UGUI_ENABLE) && (_UGUI_ENABLE == 1))
 #include "thirdparty/ugui/ugui.h"
 /**
  * \addtogroup BABYOS

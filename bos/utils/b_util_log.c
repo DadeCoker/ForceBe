@@ -38,7 +38,7 @@
 
 #include "hal/inc/b_hal.h"
 
-#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE > 0))
+#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE == 1))
 
 /**
  * \addtogroup B_UTILS
@@ -109,16 +109,21 @@ static const char    bLogPrefix[3]     = {'I', 'W', 'E'};
  * \{
  */
 #if defined(__ARMCC_VERSION)
-    #define B_FPUTC int fputc(int c, FILE *f)
+#define B_FPUTC int fputc(int c, FILE *f)
 #elif defined(__GNUC__)
-    #define B_FPUTC int __io_putchar(int c)
+#define B_FPUTC int __io_putchar(int c)
 #else
-    #define B_FPUTC int fputc(int c, FILE *f)
+#define B_FPUTC int fputc(int c, FILE *f)
 #endif
-    
-B_FPUTC {
+
+B_FPUTC
+{
     uint8_t ch = c & 0xff;
-    bHalUartSend(HAL_LOG_UART, &ch, 1);
+#if defined(LOG_UART)
+    bHalUartSend(LOG_UART, &ch, 1);
+#else
+    (void)ch;
+#endif
     return c;
 }
 /**
@@ -132,7 +137,11 @@ B_FPUTC {
 
 void bLogOutput(void *p)
 {
-    bHalUartSend(HAL_LOG_UART, p, strlen(p));
+#if defined(LOG_UART)
+    bHalUartSend(LOG_UART, p, strlen(p));
+#else
+    (void)p;
+#endif
 }
 
 /**

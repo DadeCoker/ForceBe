@@ -31,9 +31,11 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_protocol.h"
-#if _PROTO_ENABLE
+#if (defined(_PROTO_ENABLE) && (_PROTO_ENABLE == 1))
 #include <string.h>
+
 #include "utils/inc/b_util_log.h"
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -66,7 +68,7 @@ typedef struct
  * \defgroup PROTOCOL_Private_Defines
  * \{
  */
-#if _PROTO_ENCRYPT_ENABLE
+#if (defined(_PROTO_ENCRYPT_ENABLE) && (_PROTO_ENCRYPT_ENABLE == 1))
 #define _PROTO_TEA_DELTA 0x9e3779b9
 const static uint32_t Keys[4] = {_SECRET_KEY1, _SECRET_KEY2, _SECRET_KEY3, _SECRET_KEY4};
 #endif
@@ -118,7 +120,7 @@ static uint8_t _bProtocolCalCheck(uint8_t *pbuf, bProtoLen_t len)
     return tmp;
 }
 
-#if _PROTO_ENCRYPT_ENABLE
+#if (defined(_PROTO_ENCRYPT_ENABLE) && (_PROTO_ENCRYPT_ENABLE == 1))
 static void _bProtocolEncryptGroup(uint32_t *text, uint32_t *key)
 {
     uint32_t sum = 0, v0 = text[0], v1 = text[1];
@@ -228,7 +230,7 @@ int bProtocolParse(uint8_t *pbuf, bProtoLen_t len)
     {
         return -1;
     }
-#if _PROTO_ENCRYPT_ENABLE
+#if (defined(_PROTO_ENCRYPT_ENABLE) && (_PROTO_ENCRYPT_ENABLE == 1))
     _bProtocolDecrypt(pbuf, len);
 #endif
     if (phead->head != PROTOCOL_HEAD ||
@@ -292,7 +294,7 @@ int bProtocolPack(uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *
     memcpy(&pbuf[sizeof(bProtocolHead_t)], param, param_size);
     length           = sizeof(bProtocolHead_t) + phead->len;
     pbuf[length - 1] = _bProtocolCalCheck(pbuf, length - 1);
-#if _PROTO_ENCRYPT_ENABLE
+#if (defined(_PROTO_ENCRYPT_ENABLE) && (_PROTO_ENCRYPT_ENABLE == 1))
     _bProtocolEncrypt(pbuf, length);
 #endif
     return length;

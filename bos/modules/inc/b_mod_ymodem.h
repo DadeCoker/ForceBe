@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _YMODEM_ENABLE
+#if (defined(_YMODEM_ENABLE) && (_YMODEM_ENABLE == 1))
 
 /**
  * \addtogroup BABYOS

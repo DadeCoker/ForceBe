@@ -33,13 +33,13 @@
 #include "b_config.h"
 #include "hal/inc/b_hal.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
-#if defined (USE_HAL_DRIVER)
+#if defined(USE_HAL_DRIVER)
 #include "stm32l4xx_hal.h"
 #endif
 
-#if defined (HAL_SD_MODULE_ENABLED) || defined (HAL_MMC_MODULE_ENABLED)
+#if defined(HAL_SD_MODULE_ENABLED) || defined(HAL_MMC_MODULE_ENABLED)
 
 extern SD_HandleTypeDef hsd1;
 
@@ -60,9 +60,9 @@ int bMcuSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr
         return -1;
     }
     tick = bHalGetSysTick();
-    while(HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
+    while (HAL_SD_GetCardState(&hsd1) != HAL_SD_CARD_TRANSFER)
     {
-        if(bHalGetSysTick() - tick >= MS2TICKS(5000))
+        if (bHalGetSysTick() - tick >= MS2TICKS(5000))
         {
             return -1;
         }

@@ -35,7 +35,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (MCU_PLATFORM == 1101)
+#if (defined(STM32G0X0))
 
 #define FLASH_BASE_ADDR (0x8000000UL)
 

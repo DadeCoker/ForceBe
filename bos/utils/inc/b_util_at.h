@@ -73,7 +73,7 @@ typedef void (*bAtCallback_t)(uint8_t id, uint8_t result, void *arg);
 /**
  * \}
  */
-#if _AT_ENABLE
+#if (defined(_AT_ENABLE) && (_AT_ENABLE == 1))
 /**
  * \defgroup AT_Exported_Functions
  * \{

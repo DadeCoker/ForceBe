@@ -41,7 +41,7 @@ extern "C" {
 #include "../../algorithm/inc/algo_crc.h"
 #include "b_config.h"
 
-#if _IAP_ENABLE
+#if (defined(_IAP_ENABLE) && (_IAP_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{
@@ -120,7 +120,7 @@ typedef struct
     bIapFwInfo_t     info;
     bIapBackupInof_t backup;
     uint32_t         percentage;
-    uint32_t         fcrc;       //crc
+    uint32_t         fcrc;  // crc
 } bIapFlag_t;
 
 #pragma pack()

@@ -4,42 +4,42 @@
 
 #include "b_config.h"
 
-#if _UGUI_ENABLE
+#if (defined(_UGUI_ENABLE) && (_UGUI_ENABLE == 1))
 /* -------------------------------------------------------------------------------- */
 /* -- CONFIG SECTION                                                             -- */
 /* -------------------------------------------------------------------------------- */
 
-//#define USE_MULTITASKING
+// #define USE_MULTITASKING
 
 /* Enable color mode */
-//#define USE_COLOR_RGB888   // RGB = 0xFF,0xFF,0xFF
+// #define USE_COLOR_RGB888   // RGB = 0xFF,0xFF,0xFF
 #define USE_COLOR_RGB565  // RGB = 0bRRRRRGGGGGGBBBBB
 
 /* Enable needed fonts here */
-//#define  USE_FONT_4X6
-//#define  USE_FONT_5X8
-//#define  USE_FONT_5X12
-#if GUI_FONT == 0
+// #define  USE_FONT_4X6
+// #define  USE_FONT_5X8
+// #define  USE_FONT_5X12
+#if defined(GUI_FONT_6X8)
 #define USE_FONT_6X8
 #endif
-//#define  USE_FONT_6X10
-//#define  USE_FONT_7X12
-//#define  USE_FONT_8X8
-//#define  USE_FONT_8X12_CYRILLIC
-//#define  USE_FONT_8X12
-#if GUI_FONT == 1
+// #define  USE_FONT_6X10
+// #define  USE_FONT_7X12
+// #define  USE_FONT_8X8
+// #define  USE_FONT_8X12_CYRILLIC
+// #define  USE_FONT_8X12
+#if defined(GUI_FONT_8X12)
 #define USE_FONT_8X12
 #endif
-//#define  USE_FONT_8X14
-//#define  USE_FONT_10X16
-#if GUI_FONT == 2
+// #define  USE_FONT_8X14
+// #define  USE_FONT_10X16
+#if defined(GUI_FONT_12X16)
 #define USE_FONT_12X16
 #endif
-//#define  USE_FONT_12X20
-//#define  USE_FONT_16X26
-//#define  USE_FONT_22X36
-//#define  USE_FONT_24X40
-//#define  USE_FONT_32X53
+// #define  USE_FONT_12X20
+// #define  USE_FONT_16X26
+// #define  USE_FONT_22X36
+// #define  USE_FONT_24X40
+// #define  USE_FONT_32X53
 
 /* Specify platform-dependent integer types here */
 

@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _MENU_ENABLE
+#if (defined(_MENU_ENABLE) && (_MENU_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

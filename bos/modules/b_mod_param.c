@@ -31,14 +31,16 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_param.h"
-#if _PARAM_ENABLE
+#if (defined(_PARAM_ENABLE) && (_PARAM_ENABLE == 1))
 #if (_NR_MICRO_SHELL_ENABLE == 0)
 #error "please enable _NR_MICRO_SHELL_ENABLE"
 #endif
 #include <stdlib.h>
 #include <string.h>
-#include "utils/inc/b_util_log.h"
+
 #include "modules/inc/b_mod_shell.h"
+#include "utils/inc/b_util_log.h"
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -130,10 +132,10 @@ static void _ShellParamHandle(char argc, char *argv)
                     memcpy(ptmp->addr, (void *)&val, ptmp->size);
                 }
                 else if (argc == 2)
-                {         
-                    tmp = _copy2int(ptmp->addr, ptmp->size);   
+                {
+                    tmp = _copy2int(ptmp->addr, ptmp->size);
                     tmp = tmp;
-                    b_log("%s:%d\r\n", ptmp->name, tmp);                  
+                    b_log("%s:%d\r\n", ptmp->name, tmp);
                 }
                 break;
             }

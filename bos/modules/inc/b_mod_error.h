@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _ERROR_MANAGE_ENABLE
+#if (defined(_ERROR_MANAGE_ENABLE) && (_ERROR_MANAGE_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _XMODEM128_ENABLE
+#if (defined(_XMODEM128_ENABLE) && (_XMODEM128_ENABLE == 1))
 
 /**
  * \addtogroup BABYOS

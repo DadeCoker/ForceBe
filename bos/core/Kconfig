@@ -1,0 +1,12 @@
+#版本配置，软硬件版本
+config HW_VERSION
+    int "Hardware version"
+    default 211212
+
+config FW_VERSION
+    int "Firmware version"
+    default 80106
+
+config FW_NAME
+    string "Firware Name"
+    default "BabyOS"

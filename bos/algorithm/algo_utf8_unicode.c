@@ -34,7 +34,7 @@
 
 #include <string.h>
 
-#if _ALGO_UNICODE_ENABLE
+#if (defined(_ALGO_UNICODE_ENABLE) && (_ALGO_UNICODE_ENABLE == 1))
 
 /**
  * \addtogroup ALGORITHM

@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _STATE_ENABLE
+#if (defined(_STATE_ENABLE) && (_STATE_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

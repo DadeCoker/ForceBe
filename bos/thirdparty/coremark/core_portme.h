@@ -24,7 +24,7 @@ Original Author: Shay Gal-on
 
 #include "b_config.h"
 
-#if _COREMARK_ENABLE
+#if (defined(_COREMARK_ENABLE) && (_COREMARK_ENABLE == 1))
 
 /************************/
 /* Data types and settings */

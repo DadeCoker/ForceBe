@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_fs.h"
-#if _FS_ENABLE
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1))
 #include <stdio.h>
 
 #include "utils/inc/b_util_log.h"
@@ -82,11 +82,11 @@
  * \defgroup FS_Private_Variables
  * \{
  */
-#if FS_SELECT == 0
+#if defined(FS_FATFS)
 static FATFS bFATFS_Table[E_DEV_NUMBER];
 #endif
 
-#if FS_SELECT == 1
+#if defined(FS_LITTLEFS)
 lfs_t bLittleFS;
 #endif
 
@@ -107,7 +107,7 @@ lfs_t bLittleFS;
  * \defgroup FS_Private_Functions
  * \{
  */
-#if FS_SELECT == 1
+#if defined(FS_LITTLEFS)
 #include "core/inc/b_core.h"
 
 static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off,
@@ -206,7 +206,7 @@ int _bFS_DeviceSync(const struct lfs_config *c)
  * \addtogroup FS_Exported_Functions
  * \{
  */
-#if FS_SELECT == 0
+#if defined(FS_FATFS)
 uint8_t bFileSystemWorkBuf[FF_MAX_SS];
 int     bFS_Init()
 {
@@ -259,7 +259,7 @@ int     bFS_Init()
     return 0;
 }
 
-#if _FS_TEST_ENABLE
+#if (defined(_FS_TEST_ENABLE) && (_FS_TEST_ENABLE == 1))
 FIL fil;
 int bFS_Test()
 {
@@ -305,7 +305,7 @@ int bFS_Test()
         return -1;
     }
     fr = f_close(&fil);
-    if(fr)
+    if (fr)
     {
         b_log_e("close %d\r\n", fr);
     }
@@ -320,7 +320,7 @@ int bFS_Test()
 
 #endif
 
-#if (FS_SELECT == 1)
+#if (defined(FS_LITTLEFS))
 // configuration of the filesystem is provided by this struct
 const struct lfs_config cfg = {
     // block device operations
@@ -354,7 +354,7 @@ int bFS_Init()
     return 0;
 }
 
-#if _FS_TEST_ENABLE
+#if (defined(_FS_TEST_ENABLE) && (_FS_TEST_ENABLE == 1))
 lfs_file_t file;
 int        bFS_Test()
 {

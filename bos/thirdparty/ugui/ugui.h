@@ -18,7 +18,7 @@
 #define __UGUI_H
 
 #include "ugui_config.h"
-#if _UGUI_ENABLE
+#if (defined(_UGUI_ENABLE) && (_UGUI_ENABLE == 1))
 
 /* -------------------------------------------------------------------------------- */
 /* -- µGUI FONTS                                                                 -- */
@@ -92,7 +92,7 @@ extern const UG_FONT FONT_24X40;
 #ifdef USE_FONT_32X53
 extern const UG_FONT FONT_32X53;
 #endif
-#if GUI_FONT == 3
+#if defined(GUI_FONT_XBF)
 extern UG_FONT bGUI_XBF_Font;
 #endif
 /* -------------------------------------------------------------------------------- */
@@ -875,7 +875,7 @@ typedef struct
 /* -------------------------------------------------------------------------------- */
 /* -- PROTOTYPES                                                                 -- */
 /* -------------------------------------------------------------------------------- */
-#if GUI_FONT == 3
+#if defined(GUI_FONT_XBF)
 
 typedef struct
 {

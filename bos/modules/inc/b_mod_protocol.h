@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _PROTO_ENABLE
+#if (defined(_PROTO_ENABLE) && (_PROTO_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

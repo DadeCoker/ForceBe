@@ -25,8 +25,6 @@
 
 /* disable warnings about old C89 functions in MSVC */
 
-
-
 #if !defined(_CRT_SECURE_NO_DEPRECATE) && defined(_MSC_VER)
 #define _CRT_SECURE_NO_DEPRECATE
 #endif
@@ -61,7 +59,7 @@
 
 #include "cjson.h"
 
-#if _CJSON_ENABLE
+#if (defined(_CJSON_ENABLE) && (_CJSON_ENABLE == 1))
 
 /* define our own boolean type */
 #ifdef true
@@ -167,7 +165,14 @@ typedef struct internal_hooks
     void *(CJSON_CDECL *reallocate)(void *pointer, size_t size);
 } internal_hooks;
 
-#if CJSON_MEM_FUNCTIONS == 0
+#if (defined(CJSON_MEM_USE_BMALLOC) && (CJSON_MEM_USE_BMALLOC == 1))
+
+#include "utils/inc/b_util_memp.h"
+#define internal_malloc bMalloc
+#define internal_free bFree
+#define internal_realloc NULL
+
+#else
 
 #if defined(_MSC_VER)
 /* work around MSVC error C2322: '...' address of dllimport '...' is not static */
@@ -188,12 +193,6 @@ static void *CJSON_CDECL internal_realloc(void *pointer, size_t size)
 #define internal_free free
 #define internal_realloc realloc
 #endif
-
-#else
-#include "utils/inc/b_util_memp.h"
-#define internal_malloc bMalloc
-#define internal_free bFree
-#define internal_realloc NULL
 
 #endif
 

@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "utils/inc/b_util_memp.h"
 
-#if _MEMP_ENABLE
+#if (defined(_MEMP_ENABLE) && (_MEMP_ENABLE == 1))
 
 /**
  * \addtogroup B_UTILS
@@ -236,7 +236,7 @@ void *bMalloc(uint32_t size)
     {
         return NULL;
     }
-#if _MEMP_MONITOR_ENABLE
+#if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
     _bMempMonitor();
 #endif
     return ((void *)(&bMempBuf[valid_index * MEMP_BLOCK_SIZE]));
@@ -253,7 +253,7 @@ void bFree(void *paddr)
     _bMempFree(index);
 }
 
-#if _MEMP_MONITOR_ENABLE
+#if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
 void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo)
 {
     if (pinfo == NULL)

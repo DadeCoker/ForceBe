@@ -34,7 +34,7 @@
 
 #include "b_section.h"
 
-#if _YMODEM_ENABLE
+#if (defined(_YMODEM_ENABLE) && (_YMODEM_ENABLE == 1))
 #include <string.h>
 
 #include "hal/inc/b_hal.h"
@@ -77,7 +77,7 @@ typedef struct
     uint8_t crc_h;
     uint8_t crc_l;
 } bYmodem1kStruct_t;
- 
+
 typedef struct
 {
     pymcb_t  cb;

@@ -17,9 +17,6 @@
 
 #include "b_config.h"
 
-// debug
-#define HAL_LOG_UART B_HAL_UART_1
-
 #define HAL_24CXX_IF                                                                               \
     {                                                                                              \
         .dev_addr = 0xa0, .is_simulation = 1, ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN6}, \

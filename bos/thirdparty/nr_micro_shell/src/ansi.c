@@ -37,12 +37,12 @@
 
 #include "../inc/ansi_port.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 
 ansi_st nr_ansi;
 
 const char nr_ansi_in_cmd[]                   = {'m', 'I', 'A', 'B', 'C', 'D', 'X', 'K', 'M', 'P',
-                               'J', '@', 'L', 'l', 'h', 'n', 'H', 's', 'u', '\0'};
+                                                 'J', '@', 'L', 'l', 'h', 'n', 'H', 's', 'u', '\0'};
 void (*const nr_ansi_in_cmd_fun[])(ansi_st *) = {
     nr_ansi_in_m_function, nr_ansi_in_I_function, nr_ansi_in_A_function, nr_ansi_in_B_function,
     nr_ansi_in_C_function, nr_ansi_in_D_function, nr_ansi_in_X_function, nr_ansi_in_K_function,

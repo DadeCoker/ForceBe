@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "inc/algo_sort.h"
 
-#if _ALGO_SORT_ENABLE
+#if (defined(_ALGO_SORT_ENABLE) && (_ALGO_SORT_ENABLE == 1))
 
 /**
  * \addtogroup ALGORITHM

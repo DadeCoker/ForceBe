@@ -1,0 +1,61 @@
+menu "Utils Configuration"
+config _DEBUG_ENABLE
+    bool "Debug Enable/Disable"
+    default y
+config LOG_UART
+    int "0-7:(B_HAL_UART_1-8) 8:(B_HAL_LPUART_1)"
+    default 0
+    depends on _DEBUG_ENABLE
+    range 0 8
+
+choice
+    prompt "log level"
+    depends on _DEBUG_ENABLE
+    default LOG_LEVEL_INFO
+    config LOG_LEVEL_INFO
+        bool "info level"
+    config LOG_LEVEL_WARNING
+        bool "warning level"
+    config LOG_LEVEL_ERROR
+        bool "error level"
+endchoice
+
+config LOG_BUF_SIZE
+    int "Log Buffer Size (B)"
+    default 256
+    depends on _DEBUG_ENABLE
+
+config _MEMP_ENABLE
+    bool "MemoryPool Enable/Disable"
+    default n
+
+config MEMP_BLOCK_SIZE
+    int "MemoryPool Block Size (B)"
+    default 32
+    depends on _MEMP_ENABLE
+
+config MEMP_MAX_SIZE
+    int "MemoryPool Max Size (B)"
+    default 1024
+    depends on _MEMP_ENABLE
+config _MEMP_MONITOR_ENABLE
+    bool "MemoryPool Monitor Enable/Disable"
+    default y
+    depends on _MEMP_ENABLE
+
+config _AT_ENABLE
+    bool "AT Enable/Disable"
+    default n
+    select _MEMP_ENABLE
+
+config AT_Q_LEN
+    int "AT Queue Length"
+    default 3
+    depends on _AT_ENABLE
+
+config AT_RETRY_COUNT
+    int "AT Command Retry Count"
+    default 2
+    depends on _AT_ENABLE
+
+endmenu

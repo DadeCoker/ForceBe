@@ -43,7 +43,7 @@ extern "C" {
 #include "utils/inc/b_util_log.h"
 #define NR_SHELL_CMD_LINE_MAX_LENGTH NR_ANSI_LINE_SIZE
 
-#if _DEBUG_ENABLE
+#if (defined(_DEBUG_ENABLE) && (_DEBUG_ENABLE == 1))
 #define shell_printf(fmt, args...) b_log(fmt, ##args);
 #endif
 

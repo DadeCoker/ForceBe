@@ -35,7 +35,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
 #define FLASH_BASE_ADDR (0x8000000UL)
 

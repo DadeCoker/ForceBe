@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 
-#if (MCU_PLATFORM == 2001)
+#if (defined(NATION_L40X))
 
 int bMcuSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {

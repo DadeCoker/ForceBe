@@ -35,7 +35,7 @@
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
 
-#if _PWM_ENABLE
+#if (defined(_PWM_ENABLE) && (_PWM_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

@@ -65,7 +65,7 @@ extern "C" {
 /**
  * \}
  */
-#if _ALGO_SORT_ENABLE
+#if (defined(_ALGO_SORT_ENABLE) && (_ALGO_SORT_ENABLE == 1))
 /**
  * \defgroup SORT_Exported_Functions
  * \{

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
 //      Register Address
 #define UART1_BASE_ADDR (0x40013800)
@@ -77,7 +77,7 @@ int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    if(uart == B_HAL_LPUART_1)
+    if (uart == B_HAL_LPUART_1)
     {
         pUart = MCU_LPUART1;
     }
@@ -110,7 +110,7 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    if(uart == B_HAL_LPUART_1)
+    if (uart == B_HAL_LPUART_1)
     {
         pUart = MCU_LPUART1;
     }

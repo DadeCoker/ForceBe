@@ -48,7 +48,7 @@
 //  Oct 11, 2014  V0.1  First release.
 /* -------------------------------------------------------------------------------- */
 #include "ugui.h"
-#if _UGUI_ENABLE
+#if (defined(_UGUI_ENABLE) && (_UGUI_ENABLE == 1))
 
 /* Static functions */
 UG_RESULT _UG_WindowDrawTitle(UG_WINDOW* wnd);
@@ -14026,10 +14026,10 @@ uint8_t UG_GetUnicode(char* str, uint32_t* unicode)
     *unicode        = chr;
     if (chr & 0x80)
     {
-#if GUI_ENCODING == 0
+#if defined(ENCODING_UTF_8)
         utf_num = _Utf82UnicodeSize(chr);
         _Utf82Unicode((const uint8_t*)str, unicode);
-#elif GUI_ENCODING == 1
+#elif defined(ENCODING_UNICODE)
         *unicode = ((uint16_t*)str)[0];
         utf_num  = 2;
 #endif
@@ -14081,7 +14081,7 @@ void UG_PutString(UG_S16 x, UG_S16 y, char* str)
 
 void UG_PutCharUnicode(uint32_t v, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc)
 {
-#if GUI_FONT == 3
+#if defined(GUI_FONT_XBF)
     uint8_t    i = 0, j = 0, k = 0;
     uint8_t    tmp_data = 0;
     XBF_Info_t info;
@@ -14589,9 +14589,9 @@ void _UG_PutText(UG_TEXT* txt)
 
             if (*c & 0x80)
             {
-#if GUI_ENCODING == 0
+#if defined(ENCODING_UTF_8)
                 c += _Utf82UnicodeSize(*c);
-#elif GUI_ENCODING == 1
+#elif defined(ENCODING_UNICODE)
                 c += 2;
 #endif
                 wl += wl;

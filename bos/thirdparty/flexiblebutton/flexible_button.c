@@ -30,7 +30,7 @@
 
 #include "flexible_button.h"
 
-#if _FLEXIBLEBUTTON_ENABLE
+#if (defined(_FLEXIBLEBUTTON_ENABLE) && (_FLEXIBLEBUTTON_ENABLE == 1))
 
 #define EVENT_SET_AND_EXEC_CB(btn, evt)         \
     do                                          \

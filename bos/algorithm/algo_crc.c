@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "inc/algo_crc.h"
 
-#if _ALGO_CRC_ENABLE
+#if (defined(_ALGO_CRC_ENABLE) && (_ALGO_CRC_ENABLE == 1))
 
 /**
  * \addtogroup ALGORITHM

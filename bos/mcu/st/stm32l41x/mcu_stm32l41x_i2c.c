@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_i2c.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
 uint8_t bMcuI2CReadByte(const bHalI2CIf_t *i2c_if)
 {

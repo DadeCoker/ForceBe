@@ -33,7 +33,8 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (MCU_PLATFORM == 1001 || MCU_PLATFORM == 1002 || MCU_PLATFORM == 1003 || MCU_PLATFORM == 1004)
+#if (defined(STM32F10X_LD) || defined(STM32F10X_MD) || defined(STM32F10X_HD) || \
+     defined(STM32F10X_CL))
 
 void bMcuIntEnable()
 {

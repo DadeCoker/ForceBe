@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _ADCHUB_ENABLE
+#if (defined(_ADCHUB_ENABLE) && (_ADCHUB_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

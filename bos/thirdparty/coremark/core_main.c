@@ -23,7 +23,7 @@ Original Author: Shay Gal-on
 
 #include "b_config.h"
 
-#if _COREMARK_ENABLE
+#if (defined(_COREMARK_ENABLE) && (_COREMARK_ENABLE == 1))
 
 #include "coremark.h"
 
@@ -38,23 +38,13 @@ Original Author: Shay Gal-on
         Returns:
         NULL.
 */
-static ee_u16 list_known_crc[]   = { (ee_u16)0xd4b0,
-                                   (ee_u16)0x3340,
-                                   (ee_u16)0x6a79,
-                                   (ee_u16)0xe714,
-                                   (ee_u16)0xe3c1 };
-static ee_u16 matrix_known_crc[] = { (ee_u16)0xbe52,
-                                     (ee_u16)0x1199,
-                                     (ee_u16)0x5608,
-                                     (ee_u16)0x1fd7,
-                                     (ee_u16)0x0747 };
-static ee_u16 state_known_crc[]  = { (ee_u16)0x5e47,
-                                    (ee_u16)0x39bf,
-                                    (ee_u16)0xe5a4,
-                                    (ee_u16)0x8e3a,
-                                    (ee_u16)0x8d84 };
-void *
-iterate(void *pres)
+static ee_u16 list_known_crc[]   = {(ee_u16)0xd4b0, (ee_u16)0x3340, (ee_u16)0x6a79, (ee_u16)0xe714,
+                                    (ee_u16)0xe3c1};
+static ee_u16 matrix_known_crc[] = {(ee_u16)0xbe52, (ee_u16)0x1199, (ee_u16)0x5608, (ee_u16)0x1fd7,
+                                    (ee_u16)0x0747};
+static ee_u16 state_known_crc[]  = {(ee_u16)0x5e47, (ee_u16)0x39bf, (ee_u16)0xe5a4, (ee_u16)0x8e3a,
+                                    (ee_u16)0x8d84};
+void         *iterate(void *pres)
 {
     ee_u32        i;
     ee_u16        crc;
@@ -79,7 +69,7 @@ iterate(void *pres)
 
 #if (SEED_METHOD == SEED_ARG)
 ee_s32 get_seed_args(int i, int argc, char *argv[]);
-#define get_seed(x)    (ee_s16) get_seed_args(x, argc, argv)
+#define get_seed(x) (ee_s16) get_seed_args(x, argc, argv)
 #define get_seed_32(x) get_seed_args(x, argc, argv)
 #else /* via function or volatile */
 ee_s32 get_seed_32(int i);
@@ -89,7 +79,7 @@ ee_s32 get_seed_32(int i);
 #if (MEM_METHOD == MEM_STATIC)
 ee_u8 static_memblk[TOTAL_DATA_SIZE];
 #endif
-char *mem_name[3] = { "Static", "Heap", "Stack" };
+char *mem_name[3] = {"Static", "Heap", "Stack"};
 /* Function: main
         Main entry routine for the benchmark.
         This function is responsible for the following steps:
@@ -149,15 +139,13 @@ main(int argc, char *argv[])
         results[0].execs = ALL_ALGORITHMS_MASK;
     }
     /* put in some default values based on one seed only for easy testing */
-    if ((results[0].seed1 == 0) && (results[0].seed2 == 0)
-        && (results[0].seed3 == 0))
+    if ((results[0].seed1 == 0) && (results[0].seed2 == 0) && (results[0].seed3 == 0))
     { /* performance run */
         results[0].seed1 = 0;
         results[0].seed2 = 0;
         results[0].seed3 = 0x66;
     }
-    if ((results[0].seed1 == 1) && (results[0].seed2 == 0)
-        && (results[0].seed3 == 0))
+    if ((results[0].seed1 == 1) && (results[0].seed2 == 0) && (results[0].seed3 == 0))
     { /* validation run */
         results[0].seed1 = 0x3415;
         results[0].seed2 = 0x3415;
@@ -215,8 +203,8 @@ for (i = 0; i < MULTITHREAD; i++)
         if ((1 << (ee_u32)i) & results[0].execs)
         {
             for (ctx = 0; ctx < MULTITHREAD; ctx++)
-                results[ctx].memblock[i + 1]
-                    = (char *)(results[ctx].memblock[0]) + results[0].size * j;
+                results[ctx].memblock[i + 1] =
+                    (char *)(results[ctx].memblock[0]) + results[0].size * j;
             j++;
         }
     }
@@ -225,21 +213,18 @@ for (i = 0; i < MULTITHREAD; i++)
     {
         if (results[i].execs & ID_LIST)
         {
-            results[i].list = core_list_init(
-                results[0].size, results[i].memblock[1], results[i].seed1);
+            results[i].list =
+                core_list_init(results[0].size, results[i].memblock[1], results[i].seed1);
         }
         if (results[i].execs & ID_MATRIX)
         {
-            core_init_matrix(results[0].size,
-                             results[i].memblock[2],
-                             (ee_s32)results[i].seed1
-                                 | (((ee_s32)results[i].seed2) << 16),
+            core_init_matrix(results[0].size, results[i].memblock[2],
+                             (ee_s32)results[i].seed1 | (((ee_s32)results[i].seed2) << 16),
                              &(results[i].mat));
         }
         if (results[i].execs & ID_STATE)
         {
-            core_init_state(
-                results[0].size, results[i].seed1, results[i].memblock[3]);
+            core_init_state(results[0].size, results[i].seed1, results[i].memblock[3]);
         }
     }
 
@@ -328,31 +313,23 @@ for (i = 0; i < MULTITHREAD; i++)
         for (i = 0; i < default_num_contexts; i++)
         {
             results[i].err = 0;
-            if ((results[i].execs & ID_LIST)
-                && (results[i].crclist != list_known_crc[known_id]))
+            if ((results[i].execs & ID_LIST) && (results[i].crclist != list_known_crc[known_id]))
             {
-                ee_printf("[%u]ERROR! list crc 0x%04x - should be 0x%04x\n",
-                          i,
-                          results[i].crclist,
+                ee_printf("[%u]ERROR! list crc 0x%04x - should be 0x%04x\n", i, results[i].crclist,
                           list_known_crc[known_id]);
                 results[i].err++;
             }
-            if ((results[i].execs & ID_MATRIX)
-                && (results[i].crcmatrix != matrix_known_crc[known_id]))
+            if ((results[i].execs & ID_MATRIX) &&
+                (results[i].crcmatrix != matrix_known_crc[known_id]))
             {
-                ee_printf("[%u]ERROR! matrix crc 0x%04x - should be 0x%04x\n",
-                          i,
-                          results[i].crcmatrix,
-                          matrix_known_crc[known_id]);
+                ee_printf("[%u]ERROR! matrix crc 0x%04x - should be 0x%04x\n", i,
+                          results[i].crcmatrix, matrix_known_crc[known_id]);
                 results[i].err++;
             }
-            if ((results[i].execs & ID_STATE)
-                && (results[i].crcstate != state_known_crc[known_id]))
+            if ((results[i].execs & ID_STATE) && (results[i].crcstate != state_known_crc[known_id]))
             {
-                ee_printf("[%u]ERROR! state crc 0x%04x - should be 0x%04x\n",
-                          i,
-                          results[i].crcstate,
-                          state_known_crc[known_id]);
+                ee_printf("[%u]ERROR! state crc 0x%04x - should be 0x%04x\n", i,
+                          results[i].crcstate, state_known_crc[known_id]);
                 results[i].err++;
             }
             total_errors += results[i].err;
@@ -366,19 +343,16 @@ for (i = 0; i < MULTITHREAD; i++)
     ee_printf("Total time (secs): %f\n", time_in_secs(total_time));
     if (time_in_secs(total_time) > 0)
         ee_printf("Iterations/Sec   : %f\n",
-                  default_num_contexts * results[0].iterations
-                      / time_in_secs(total_time));
+                  default_num_contexts * results[0].iterations / time_in_secs(total_time));
 #else
     ee_printf("Total time (secs): %d\n", time_in_secs(total_time));
     if (time_in_secs(total_time) > 0)
         ee_printf("Iterations/Sec   : %d\n",
-                  default_num_contexts * results[0].iterations
-                      / time_in_secs(total_time));
+                  default_num_contexts * results[0].iterations / time_in_secs(total_time));
 #endif
     if (time_in_secs(total_time) < 10)
     {
-        ee_printf(
-            "ERROR! Must execute for at least 10 secs for a valid result!\n");
+        ee_printf("ERROR! Must execute for at least 10 secs for a valid result!\n");
         total_errors++;
     }
 
@@ -412,10 +386,8 @@ for (i = 0; i < MULTITHREAD; i++)
         if (known_id == 3)
         {
             ee_printf("CoreMark 1.0 : %f / %s %s",
-                      default_num_contexts * results[0].iterations
-                          / time_in_secs(total_time),
-                      COMPILER_VERSION,
-                      COMPILER_FLAGS);
+                      default_num_contexts * results[0].iterations / time_in_secs(total_time),
+                      COMPILER_VERSION, COMPILER_FLAGS);
 #if defined(MEM_LOCATION) && !defined(MEM_LOCATION_UNSPEC)
             ee_printf(" / %s", MEM_LOCATION);
 #else

@@ -18,7 +18,7 @@ Original Author: Shay Gal-on
 
 #include "b_config.h"
 
-#if _COREMARK_ENABLE
+#if (defined(_COREMARK_ENABLE) && (_COREMARK_ENABLE == 1))
 
 #include "coremark.h"
 /* local functions */
@@ -46,13 +46,8 @@ the switch/if behaviour, we are using a small moore machine.
         Go over the input twice, once direct, and once after introducing some
    corruption.
 */
-ee_u16
-core_bench_state(ee_u32 blksize,
-                 ee_u8 *memblock,
-                 ee_s16 seed1,
-                 ee_s16 seed2,
-                 ee_s16 step,
-                 ee_u16 crc)
+ee_u16 core_bench_state(ee_u32 blksize, ee_u8 *memblock, ee_s16 seed1, ee_s16 seed2, ee_s16 step,
+                        ee_u16 crc)
 {
     ee_u32 final_counts[NUM_CORE_STATES];
     ee_u32 track_counts[NUM_CORE_STATES];
@@ -115,20 +110,13 @@ core_bench_state(ee_u32 blksize,
 }
 
 /* Default initialization patterns */
-static ee_u8 *intpat[4]
-    = { (ee_u8 *)"5012", (ee_u8 *)"1234", (ee_u8 *)"-874", (ee_u8 *)"+122" };
-static ee_u8 *floatpat[4] = { (ee_u8 *)"35.54400",
-                              (ee_u8 *)".1234500",
-                              (ee_u8 *)"-110.700",
-                              (ee_u8 *)"+0.64400" };
-static ee_u8 *scipat[4]   = { (ee_u8 *)"5.500e+3",
-                            (ee_u8 *)"-.123e-2",
-                            (ee_u8 *)"-87e+832",
-                            (ee_u8 *)"+0.6e-12" };
-static ee_u8 *errpat[4]   = { (ee_u8 *)"T0.3e-1F",
-                            (ee_u8 *)"-T.T++Tq",
-                            (ee_u8 *)"1T3.4e4z",
-                            (ee_u8 *)"34.0e-T^" };
+static ee_u8 *intpat[4]   = {(ee_u8 *)"5012", (ee_u8 *)"1234", (ee_u8 *)"-874", (ee_u8 *)"+122"};
+static ee_u8 *floatpat[4] = {(ee_u8 *)"35.54400", (ee_u8 *)".1234500", (ee_u8 *)"-110.700",
+                             (ee_u8 *)"+0.64400"};
+static ee_u8 *scipat[4]   = {(ee_u8 *)"5.500e+3", (ee_u8 *)"-.123e-2", (ee_u8 *)"-87e+832",
+                             (ee_u8 *)"+0.6e-12"};
+static ee_u8 *errpat[4]   = {(ee_u8 *)"T0.3e-1F", (ee_u8 *)"-T.T++Tq", (ee_u8 *)"1T3.4e4z",
+                             (ee_u8 *)"34.0e-T^"};
 
 /* Function: core_init_state
         Initialize the input data for the state machine.
@@ -140,8 +128,7 @@ static ee_u8 *errpat[4]   = { (ee_u8 *)"T0.3e-1F",
         The seed parameter MUST be supplied from a source that cannot be
    determined at compile time
 */
-void
-core_init_state(ee_u32 size, ee_s16 seed, ee_u8 *p)
+void core_init_state(ee_u32 size, ee_s16 seed, ee_u8 *p)
 {
     ee_u32 total = 0, next = 0, i;
     ee_u8 *buf = 0;
@@ -198,8 +185,7 @@ core_init_state(ee_u32 size, ee_s16 seed, ee_u8 *p)
 #endif
 }
 
-static ee_u8
-ee_isdigit(ee_u8 c)
+static ee_u8 ee_isdigit(ee_u8 c)
 {
     ee_u8 retval;
     retval = ((c >= '0') & (c <= '9')) ? 1 : 0;
@@ -217,10 +203,9 @@ ee_isdigit(ee_u8 c)
    end state is returned (either specific format determined or invalid).
 */
 
-enum CORE_STATE
-core_state_transition(ee_u8 **instr, ee_u32 *transition_count)
+enum CORE_STATE core_state_transition(ee_u8 **instr, ee_u32 *transition_count)
 {
-    ee_u8 *         str = *instr;
+    ee_u8          *str = *instr;
     ee_u8           NEXT_SYMBOL;
     enum CORE_STATE state = CORE_START;
     for (; *str && state != CORE_INVALID; str++)

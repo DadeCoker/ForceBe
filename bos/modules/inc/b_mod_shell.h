@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 #include "thirdparty/nr_micro_shell/inc/nr_micro_shell.h"
 /**
  * \addtogroup BABYOS

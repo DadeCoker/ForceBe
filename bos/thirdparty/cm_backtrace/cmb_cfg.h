@@ -33,10 +33,33 @@
 #include "utils/inc/b_util_log.h"
 /* print line, must config by user */
 
-#if _CMBACKTRACE_ENABLE
+#if (defined(_CMBACKTRACE_ENABLE) && (_CMBACKTRACE_ENABLE == 1))
 
-#define cmb_println(...)      do{b_log(__VA_ARGS__);b_log("\r\n");}while(0) 
+#define cmb_println(...)    \
+    do                      \
+    {                       \
+        b_log(__VA_ARGS__); \
+        b_log("\r\n");      \
+    } while (0)
 
+//<o> ARM Cortex M ?
+//<0=> ARM_CORTEX_M0
+//<1=> ARM_CORTEX_M3
+//<2=> ARM_CORTEX_M4
+//<3=> ARM_CORTEX_M7
+//<4=> ARM_CORTEX_M33
+#if defined(TRACE_ARM_CORTEX_M0)
+#define CMB_CPU_PLATFORM_TYPE 0
+#elif defined(TRACE_ARM_CORTEX_M3)
+#define CMB_CPU_PLATFORM_TYPE 1
+#elif defined(TRACE_ARM_CORTEX_M4)
+#define CMB_CPU_PLATFORM_TYPE 2
+#elif defined(TRACE_ARM_CORTEX_M7)
+#define CMB_CPU_PLATFORM_TYPE 3
+#elif defined(TRACE_ARM_CORTEX_M33)
+#define CMB_CPU_PLATFORM_TYPE 4
+#else
+#define CMB_CPU_PLATFORM_TYPE 1
 #endif
 
 #endif /* _CMB_CFG_H_ */

@@ -40,15 +40,15 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _FS_ENABLE
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1))
 
-#if (FS_SELECT == 0)
+#if (defined(FS_FATFS))
 #include "thirdparty/fatfs/ff.h"
 /*************************************/
 #include "thirdparty/fatfs/diskio.h"
 #endif
 
-#if (FS_SELECT == 1)
+#if (defined(FS_LITTLEFS))
 #include "thirdparty/littlefs/lfs.h"
 #endif
 
@@ -99,7 +99,7 @@ typedef enum
  * \{
  */
 
-#if FS_SELECT == 1
+#if defined(FS_LITTLEFS)
 extern lfs_t bLittleFS;
 #endif
 

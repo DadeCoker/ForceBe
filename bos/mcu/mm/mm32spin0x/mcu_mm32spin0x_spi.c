@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 
-#if (MCU_PLATFORM == 3002)
+#if (defined(MM32SPIN0X))
 
 int bMcuSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {

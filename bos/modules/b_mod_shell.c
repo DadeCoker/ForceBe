@@ -36,7 +36,7 @@
 
 #include "utils/inc/b_util_log.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

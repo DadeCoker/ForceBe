@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (MCU_PLATFORM == 4002)
+#if (defined(HC32L07X))
 
 void bMcuIntEnable()
 {

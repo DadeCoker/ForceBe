@@ -1,0 +1,9 @@
+menu "Hal Configuration"
+config TICK_FRQ_HZ
+    int "Tick Frequncy HZ"
+    default 1000
+
+config _HALIF_VARIABLE_ENABLE
+    bool "Hardware Interface Variable Enable/Disable"
+    default n
+endmenu

@@ -1,0 +1,205 @@
+#第三方代码配置
+menu "Thirdparty Configuration"
+
+config _CMBACKTRACE_ENABLE
+    bool "CmbackTrace Enable/Disable"
+    default n
+
+choice
+    prompt "ARM Cortex M ?"
+    depends on _CMBACKTRACE_ENABLE
+config TRACE_ARM_CORTEX_M0
+    bool "ARM_CORTEX_M0"
+config TRACE_ARM_CORTEX_M3
+    bool "ARM_CORTEX_M3"
+config TRACE_ARM_CORTEX_M4
+    bool "ARM_CORTEX_M4"
+config TRACE_ARM_CORTEX_M7
+    bool "ARM_CORTEX_M7"
+config TRACE_ARM_CORTEX_M33
+    bool "ARM_CORTEX_M33"
+endchoice
+
+config _NR_MICRO_SHELL_ENABLE
+    bool "NR Micro Shell Enable/Disable"
+    default n
+
+config NR_SHELL_USER_NAME
+    string "The user's name"
+    default "nr@bos:"
+    depends on _NR_MICRO_SHELL_ENABLE
+
+config NR_ANSI_LINE_SIZE
+    int "ANSI command line buffer size"
+    default 100
+    depends on _NR_MICRO_SHELL_ENABLE
+
+config NR_SHELL_USER_NAME_MAX_LENGTH
+    int "Maximum username length"
+    default 30
+    depends on _NR_MICRO_SHELL_ENABLE
+
+config NR_SHELL_CMD_PARAS_MAX_NUM
+    int "Maximum number of parameters in a command"
+    default 10
+    depends on _NR_MICRO_SHELL_ENABLE
+
+config NR_SHELL_MAX_CMD_HISTORY_NUM
+    int "History commands 0-3"
+    default 1
+    depends on _NR_MICRO_SHELL_ENABLE
+    range 0 3
+
+config NR_SHELL_CMD_HISTORY_BUF_LENGTH
+    int "History command cache length"
+    default 100
+    depends on _NR_MICRO_SHELL_ENABLE
+
+config NR_SHELL_END_OF_LINE
+    int "End of line 0(\\n) 1(\\r) 2(\\r\\n)"
+    default 1
+    depends on _NR_MICRO_SHELL_ENABLE
+    range 0 2
+
+config NR_SHLL_FULL_ANSI
+    bool "Support all ANSI codes enable/disable"
+    default y
+    depends on _NR_MICRO_SHELL_ENABLE
+
+config NR_SHELL_ECHO_ENABLE
+    bool "Echo enable/disable"
+    default y
+    depends on _NR_MICRO_SHELL_ENABLE
+
+
+config _FLEXIBLEBUTTON_ENABLE
+    bool "FlexibleButton Enable/Disable"
+    default n
+
+config FLEX_BTN_SCAN_FREQ_HZ
+    int "How often flex_button_scan () is called"
+    default 50
+    depends on _FLEXIBLEBUTTON_ENABLE
+
+config FLEX_BTN_SHORT_XMS
+    int "Short Press Time, default xms"
+    default 1000
+    depends on _FLEXIBLEBUTTON_ENABLE
+
+config FLEX_BTN_LONG_XMS
+    int "Long Press Time, default xms"
+    default 3000
+    depends on _FLEXIBLEBUTTON_ENABLE
+
+config FLEX_BTN_LLONG_XMS
+    int "LongLong Press Time, default xms"
+    default 5000
+    depends on _FLEXIBLEBUTTON_ENABLE    
+
+config MULTIPLE_CLICKS_INTERVAL_XMS
+    int "Multiple clicks interval, default xms"
+    default 300
+    depends on _FLEXIBLEBUTTON_ENABLE  
+
+
+config _UGUI_ENABLE
+    bool "UGUI Enable/Disable"
+    default n
+
+choice
+    prompt "Font"
+    depends on _UGUI_ENABLE
+config GUI_FONT_6X8
+    bool "FONT_6X8"
+config GUI_FONT_8X12
+    bool "FONT_8X12"
+config GUI_FONT_12X16
+    bool "FONT_12X16"
+config GUI_FONT_XBF
+    bool "FONT_XBF"
+endchoice
+
+choice
+    prompt "Encoding"
+    depends on _UGUI_ENABLE
+config ENCODING_UTF_8
+    bool "UTF-8"
+config ENCODING_UNICODE
+    bool "UNICODE"
+endchoice
+
+config XBF_FILE_ADDR
+    hex "XBF Base Address"
+    default 0x0
+    depends on _UGUI_ENABLE
+
+
+config _FS_ENABLE
+    bool "FS Enable/Disable"
+    default n
+
+config _FS_TEST_ENABLE
+    bool "bFS_Test() Enable/Disable"
+    default y
+    depends on _FS_ENABLE
+
+choice
+    prompt "FS Select"
+    depends on _FS_ENABLE
+config FS_FATFS
+    bool "FatFS"
+config FS_LITTLEFS
+    bool "LittleFS"
+endchoice
+
+config _SPIFLASH_ENABLE
+    bool "SPIFLASH Enable/Disable (Device No: bSPIFLASH)"
+    default y
+    depends on _FS_ENABLE
+
+config SPIFLASH_SIZE
+    int "SPI Flash x(MB)"
+    default 8
+    depends on _SPIFLASH_ENABLE
+
+config _SD_ENABLE
+    bool "SD Card Enable/Disable (Device No: bSD)"
+    default n
+    depends on _FS_ENABLE
+
+config SD_SIZE_XG
+    int "SD Card x(G)"
+    default 1
+    depends on _SD_ENABLE
+
+
+config _CJSON_ENABLE
+    bool "CJSON Enable/Disable"
+    default n
+
+config CJSON_MEM_USE_BMALLOC
+    bool "use bMalloc and bFree ?"
+    default n
+    depends on _CJSON_ENABLE
+    select _MEMP_ENABLE
+
+config _COREMARK_ENABLE
+    bool "COREMARK Enable/Disable"
+    default n
+
+config HAS_FLOAT
+    bool "HAS_FLOAT"
+    default y
+    depends on _COREMARK_ENABLE
+
+config COMPILER_VERSION
+    string "compiler version"
+    default "ARMCC V5.06"
+    depends on _COREMARK_ENABLE
+
+config COMPILER_FLAGS
+    string "compiler flags"
+    default "-O3"
+    depends on _COREMARK_ENABLE
+
+endmenu

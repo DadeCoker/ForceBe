@@ -62,7 +62,7 @@ typedef struct
 
 typedef struct bMempList
 {
-    uint8_t           *p;
+    uint8_t          *p;
     uint32_t          total_size;
     uint32_t          size;
     struct bMempList *next;
@@ -72,21 +72,21 @@ typedef struct bMempList
 /**
  * \}
  */
-#if _MEMP_ENABLE
+#if (defined(_MEMP_ENABLE) && (_MEMP_ENABLE == 1))
 /**
  * \defgroup MEMP_Exported_Functions
  * \{
  */
 void *bMalloc(uint32_t size);
 void  bFree(void *paddr);
-#if _MEMP_MONITOR_ENABLE
+#if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
 void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo);
 #endif
 int bMempListInit(bMempList_t *phead);
 int bMempListAdd(bMempList_t *phead, uint8_t *p, uint32_t len);
 int bMempListFree(bMempList_t *phead);
 
-uint8_t * bMempList2Array(const bMempList_t *phead);
+uint8_t *bMempList2Array(const bMempList_t *phead);
 /**
  * \}
  */
@@ -98,8 +98,6 @@ uint8_t * bMempList2Array(const bMempList_t *phead);
 /**
  * \}
  */
-
-
 
 #ifdef __cplusplus
 }

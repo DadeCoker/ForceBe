@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _PARAM_ENABLE
+#if (defined(_PARAM_ENABLE) && (_PARAM_ENABLE == 1))
 /**
  * \addtogroup BABYOS
  * \{

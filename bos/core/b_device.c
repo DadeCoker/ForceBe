@@ -324,7 +324,7 @@ int bDeviceModifyHalIf(uint32_t dev_no, uint32_t offset, const uint8_t *pVal, ui
         return -2;
     }
     halif_addr = ((uint32_t)bDriverInterfaceTable[dev_no].hal_if) + offset;
-#if _HALIF_VARIABLE_ENABLE
+#if (defined(_HALIF_VARIABLE_ENABLE) && (_HALIF_VARIABLE_ENABLE == 1))
     memcpy((uint8_t *)halif_addr, pVal, size);
     return 0;
 #else

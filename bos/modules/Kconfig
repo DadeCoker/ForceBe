@@ -1,0 +1,193 @@
+#模块配置
+menu "Modules Configuration"
+
+config _BOS_MODULES_ENABLE
+    bool "Modules Enable/Disable"
+    default y
+
+config _ADCHUB_ENABLE
+    bool "Adchub Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config FILTER_BUF_SIZE
+    int "Filter Buffer Size"
+    default 10
+    depends on _ADCHUB_ENABLE
+
+config _ERROR_MANAGE_ENABLE
+    bool "Error Manage Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config ERROR_Q_LENGTH
+    int "Error Queue Length"
+    default 10
+    depends on _ERROR_MANAGE_ENABLE
+
+config _MODBUS_ENABLE
+    bool "Modbus Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+    select _BOS_ALGO_ENABLE
+    select _ALGO_CRC_ENABLE
+
+config MODBUS_BUF_SIZE
+    int "Modbus Buffer Size"
+    default 200
+    depends on _MODBUS_ENABLE
+
+config _PROTO_ENABLE
+    bool "Protocol Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config PROTO_FID_SIZE
+    int "Size of The Device ID Field 2 or 4 Bytes"
+    default 4
+    depends on _PROTO_ENABLE
+    range 1 4
+
+config PROTO_FLEN_SIZE
+    int "Size of The Len Field 1 or 2 Bytes"
+    default 2
+    depends on _PROTO_ENABLE
+    range 1 2
+
+config _PROTO_ENCRYPT_ENABLE
+    bool "Encrypt Enable/Disable"
+    default n
+    depends on _PROTO_ENABLE
+
+config SECRET_KEY1
+    int "Secret Key 1"
+    default 1
+    depends on _PROTO_ENCRYPT_ENABLE
+
+config SECRET_KEY2
+    int "Secret Key 2"
+    default 22
+    depends on _PROTO_ENCRYPT_ENABLE
+
+config SECRET_KEY3
+    int "Secret Key 3"
+    default 333
+    depends on _PROTO_ENCRYPT_ENABLE
+
+config SECRET_KEY4
+    int "Secret Key 4"
+    default 4444
+    depends on _PROTO_ENCRYPT_ENABLE    
+
+
+config _KV_ENABLE
+    bool "KV Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _XMODEM128_ENABLE
+    bool "XMODEM128 Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _YMODEM_ENABLE
+    bool "YMODEM Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _MENU_ENABLE
+    bool "Menu Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config MENU_ITEM_NUMBER
+    int "Menu Item Number"
+    default 10
+    depends on _MENU_ENABLE
+
+config _TIMER_ENABLE
+    bool "Soft-timer Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _PWM_ENABLE
+    bool "Soft-pwm Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _PARAM_ENABLE
+    bool "Tuning Parameters Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _STATE_ENABLE
+    bool "State Machine Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+
+config _IAP_ENABLE
+    bool "IAP Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+    select _BOS_ALGO_ENABLE
+    select _ALGO_CRC_ENABLE
+
+config MCUFLASH_BASE_ADDR
+    hex "McuFlash Base Address"
+    default 0x8000000
+    depends on _IAP_ENABLE
+
+config BOOT_START_ADDR
+    hex "Bootloader Start Address"
+    default 0x8000000
+    depends on _IAP_ENABLE
+
+config IAP_FLAG_ADDR
+    hex "IAP Flag Address"
+    default 0x8014000
+    depends on _IAP_ENABLE
+
+config APP_START_ADDR
+    hex "App Start Address"
+    default 0x8014800
+    depends on _IAP_ENABLE
+
+config RECEIVE_FIRMWARE_MODE
+    int "Receive New Firmware 0(boot) 1(app)"
+    default 1
+    depends on _IAP_ENABLE
+    range 0 1
+
+config IAP_FILE_CACHE
+    int "File Cache 0(none) 1(on-chip flash) 2(spiflash)"
+    default 2
+    depends on _IAP_ENABLE
+    range 0 2
+
+config IAP_FW_SAVE_ADDR
+    hex "Firmware Save Address"
+    default 0x0
+    depends on _IAP_ENABLE
+
+config _BACKUP_ENABLE
+    bool "Backup Enable/Disable"
+    default n
+    depends on _IAP_ENABLE
+
+config IAP_BACKUP_LOCATION
+    int "Backup Location 0(on-chip flash) 1(spiflash)"
+    default 1
+    depends on _BACKUP_ENABLE
+    range 0 1
+
+config IAP_BACKUP_ADDR
+    hex "Backup Address"
+    default 0x32000
+    depends on _BACKUP_ENABLE
+
+config IAP_BACKUP_SIZE
+    hex "Backup Area Size"
+    default 0x14000
+    depends on _BACKUP_ENABLE  
+
+endmenu

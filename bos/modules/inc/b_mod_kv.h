@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _KV_ENABLE
+#if (defined(_KV_ENABLE) && (_KV_ENABLE == 1))
 
 /**
  * \addtogroup BABYOS

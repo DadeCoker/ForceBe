@@ -34,7 +34,7 @@
 
 #include "b_section.h"
 
-#if _XMODEM128_ENABLE
+#if (defined(_XMODEM128_ENABLE) && (_XMODEM128_ENABLE == 1))
 #include "hal/inc/b_hal.h"
 /**
  * \addtogroup BABYOS
@@ -62,8 +62,8 @@ typedef struct
     uint8_t xnumber;
     uint8_t dat[128];
     uint8_t check;
-} bXmodem128Struct_t; 
- 
+} bXmodem128Struct_t;
+
 typedef struct
 {
     pcb_t    cb;

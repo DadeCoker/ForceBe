@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _ALGO_SHA1_ENABLE
+#if (defined(_ALGO_SHA1_ENABLE) && (_ALGO_SHA1_ENABLE == 1))
 
 /**
  * \addtogroup ALGORITHM

@@ -102,7 +102,7 @@ typedef struct
 /**
  * \}
  */
-#if _ALGO_CRC_ENABLE
+#if (defined(_ALGO_CRC_ENABLE) && (_ALGO_CRC_ENABLE == 1))
 /**
  * \defgroup CRC_Exported_Functions
  * \{

@@ -34,7 +34,7 @@
 
 #include <string.h>
 
-#if _ALGO_BASE64_ENABLE
+#if (defined(_ALGO_BASE64_ENABLE) && (_ALGO_BASE64_ENABLE == 1))
 
 /**
  * \addtogroup ALGORITHM

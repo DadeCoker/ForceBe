@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (MCU_PLATFORM == 2101)
+#if (defined(NATION_G45X))
 
 //         Register Address
 
@@ -56,8 +56,8 @@ typedef struct
 
 void bMcuGpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir, bHalGPIOPull_t pull)
 {
-    uint32_t      dir_val  = 0;
-    McuGpioReg_t *pGpio    = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
+    uint32_t      dir_val = 0;
+    McuGpioReg_t *pGpio   = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (!B_HAL_GPIO_ISVALID(port, pin) || (port > B_HAL_GPIOG))
     {
         return;

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 
-#if (MCU_PLATFORM == 8001)
+#if (defined(TH32F50343))
 
 //         Register Address
 

@@ -33,11 +33,11 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (MCU_PLATFORM == 4002)
+#if (defined(HC32L07X))
 
 //      Register Address
-//第一个串口UART0; 对应 B_HAL_UART_1
-#define UART0_BASE_ADDR (0x40000000)  
+// 第一个串口UART0; 对应 B_HAL_UART_1
+#define UART0_BASE_ADDR (0x40000000)
 #define UART1_BASE_ADDR (0x40000100)
 #define UART2_BASE_ADDR (0x40006000)
 #define UART3_BASE_ADDR (0x40006400)
@@ -55,18 +55,17 @@ typedef struct
 
 typedef enum McuUartIrqSel
 {
-    MCU_UartRxIrq  = 0u,    	///<接收中断使能
-    MCU_UartTxIrq  = 1u,      ///<发送中断使能     
-    MCU_UartTxEIrq = 8u,   		///<TX空中断使能   
-}McuUartIrqSel_t;
-
+    MCU_UartRxIrq  = 0u,  ///< 接收中断使能
+    MCU_UartTxIrq  = 1u,  ///< 发送中断使能
+    MCU_UartTxEIrq = 8u,  ///< TX空中断使能
+} McuUartIrqSel_t;
 
 #define MCU_UART0 ((McuUartReg_t *)UART0_BASE_ADDR)
 #define MCU_UART1 ((McuUartReg_t *)UART1_BASE_ADDR)
 #define MCU_UART2 ((McuUartReg_t *)UART2_BASE_ADDR)
 #define MCU_UART3 ((McuUartReg_t *)UART3_BASE_ADDR)
 
-static McuUartReg_t *UartTable[4] = {MCU_UART0, MCU_UART1,MCU_UART2,MCU_UART3};
+static McuUartReg_t *UartTable[4] = {MCU_UART0, MCU_UART1, MCU_UART2, MCU_UART3};
 
 int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
@@ -126,53 +125,50 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
 int bMcuUartEnableRXIrq(bHalUartNumber_t uart)
 {
     McuUartReg_t *pUart = NULL;
-	  if (uart > B_HAL_UART_3 )
+    if (uart > B_HAL_UART_3)
     {
         return -1;
     }
-		pUart = UartTable[uart];
-		pUart->SCON |= ((1UL)<<(MCU_UartRxIrq));
-		return 0;
+    pUart = UartTable[uart];
+    pUart->SCON |= ((1UL) << (MCU_UartRxIrq));
+    return 0;
 }
 
 int bMcuUartDisableRXIrq(bHalUartNumber_t uart)
 {
     McuUartReg_t *pUart = NULL;
-		if (uart > B_HAL_UART_3 )
+    if (uart > B_HAL_UART_3)
     {
         return -1;
     }
-		pUart = UartTable[uart];
-		pUart->SCON &= (~(1UL<<(MCU_UartRxIrq)));
-		return 0;
+    pUart = UartTable[uart];
+    pUart->SCON &= (~(1UL << (MCU_UartRxIrq)));
+    return 0;
 }
-
-
 
 int bMcuUartEnableTXEIrq(bHalUartNumber_t uart)
 {
     McuUartReg_t *pUart = NULL;
-	  if (uart > B_HAL_UART_3 )
+    if (uart > B_HAL_UART_3)
     {
         return -1;
     }
-		pUart = UartTable[uart];
-		pUart->SCON |= ((1UL)<<(MCU_UartTxEIrq));
-		return 0;
+    pUart = UartTable[uart];
+    pUart->SCON |= ((1UL) << (MCU_UartTxEIrq));
+    return 0;
 }
 
 int bMcuUartDisableTXEIrq(bHalUartNumber_t uart)
 {
     McuUartReg_t *pUart = NULL;
-		if (uart > B_HAL_UART_3 )
+    if (uart > B_HAL_UART_3)
     {
         return -1;
     }
-		pUart = UartTable[uart];
-		pUart->SCON &= (~(1UL<<(MCU_UartTxEIrq)));
-		return 0;
+    pUart = UartTable[uart];
+    pUart->SCON &= (~(1UL << (MCU_UartTxEIrq)));
+    return 0;
 }
-
 
 #endif
 

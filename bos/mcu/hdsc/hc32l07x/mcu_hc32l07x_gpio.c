@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (MCU_PLATFORM == 4002)
+#if (defined(HC32L07X))
 
 //         Register Address
 

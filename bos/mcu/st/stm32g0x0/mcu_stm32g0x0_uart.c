@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (MCU_PLATFORM == 1101)
+#if (defined(STM32G0X0))
 
 //      Register Address
 #define UART1_BASE_ADDR (0x40013800)

@@ -17,7 +17,7 @@ Original Author: Shay Gal-on
 */
 #include "b_config.h"
 
-#if _COREMARK_ENABLE
+#if (defined(_COREMARK_ENABLE) && (_COREMARK_ENABLE == 1))
 #include "coremark.h"
 /*
 Topic: Description
@@ -55,47 +55,32 @@ input for the operation.
 list_head *core_list_find(list_head *list, list_data *info);
 list_head *core_list_reverse(list_head *list);
 list_head *core_list_remove(list_head *item);
-list_head *core_list_undo_remove(list_head *item_removed,
-                                 list_head *item_modified);
-list_head *core_list_insert_new(list_head * insert_point,
-                                list_data * info,
-                                list_head **memblock,
-                                list_data **datablock,
-                                list_head * memblock_end,
-                                list_data * datablock_end);
+list_head *core_list_undo_remove(list_head *item_removed, list_head *item_modified);
+list_head *core_list_insert_new(list_head *insert_point, list_data *info, list_head **memblock,
+                                list_data **datablock, list_head *memblock_end,
+                                list_data *datablock_end);
 typedef ee_s32 (*list_cmp)(list_data *a, list_data *b, core_results *res);
-list_head *core_list_mergesort(list_head *   list,
-                               list_cmp      cmp,
-                               core_results *res);
+list_head *core_list_mergesort(list_head *list, list_cmp cmp, core_results *res);
 
-ee_s16
-calc_func(ee_s16 *pdata, core_results *res)
+ee_s16 calc_func(ee_s16 *pdata, core_results *res)
 {
     ee_s16 data = *pdata;
     ee_s16 retval;
-    ee_u8  optype
-        = (data >> 7)
-          & 1;  /* bit 7 indicates if the function result has been cached */
-    if (optype) /* if cached, use cache */
+    ee_u8  optype = (data >> 7) & 1; /* bit 7 indicates if the function result has been cached */
+    if (optype)                      /* if cached, use cache */
         return (data & 0x007f);
     else
-    {                             /* otherwise calculate and cache the result */
-        ee_s16 flag = data & 0x7; /* bits 0-2 is type of function to perform */
-        ee_s16 dtype
-            = ((data >> 3)
-               & 0xf);       /* bits 3-6 is specific data for the operation */
-        dtype |= dtype << 4; /* replicate the lower 4 bits to get an 8b value */
+    {                                       /* otherwise calculate and cache the result */
+        ee_s16 flag  = data & 0x7;          /* bits 0-2 is type of function to perform */
+        ee_s16 dtype = ((data >> 3) & 0xf); /* bits 3-6 is specific data for the operation */
+        dtype |= dtype << 4;                /* replicate the lower 4 bits to get an 8b value */
         switch (flag)
         {
             case 0:
                 if (dtype < 0x22) /* set min period for bit corruption */
                     dtype = 0x22;
-                retval = core_bench_state(res->size,
-                                          res->memblock[3],
-                                          res->seed1,
-                                          res->seed2,
-                                          dtype,
-                                          res->crc);
+                retval = core_bench_state(res->size, res->memblock[3], res->seed1, res->seed2,
+                                          dtype, res->crc);
                 if (res->crcstate == 0)
                     res->crcstate = retval;
                 break;
@@ -119,8 +104,7 @@ calc_func(ee_s16 *pdata, core_results *res)
 
         Can be used by mergesort.
 */
-ee_s32
-cmp_complex(list_data *a, list_data *b, core_results *res)
+ee_s32 cmp_complex(list_data *a, list_data *b, core_results *res)
 {
     ee_s16 val1 = calc_func(&(a->data16), res);
     ee_s16 val2 = calc_func(&(b->data16), res);
@@ -132,8 +116,7 @@ cmp_complex(list_data *a, list_data *b, core_results *res)
 
         Can be used by mergesort.
 */
-ee_s32
-cmp_idx(list_data *a, list_data *b, core_results *res)
+ee_s32 cmp_idx(list_data *a, list_data *b, core_results *res)
 {
     if (res == NULL)
     {
@@ -143,8 +126,7 @@ cmp_idx(list_data *a, list_data *b, core_results *res)
     return a->idx - b->idx;
 }
 
-void
-copy_info(list_data *to, list_data *from)
+void copy_info(list_data *to, list_data *from)
 {
     to->data16 = from->data16;
     to->idx    = from->idx;
@@ -157,8 +139,7 @@ copy_info(list_data *to, list_data *from)
         - Single remove/reinsert
         * At the end of this function, the list is back to original state
 */
-ee_u16
-core_bench_list(core_results *res, ee_s16 finder_idx)
+ee_u16 core_bench_list(core_results *res, ee_s16 finder_idx)
 {
     ee_u16     retval = 0;
     ee_u16     found = 0, missed = 0;
@@ -249,14 +230,12 @@ core_bench_list(core_results *res, ee_s16 finder_idx)
         Pointer to the head of the list.
 
 */
-list_head *
-core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
+list_head *core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
 {
     /* calculated pointers for the list */
     ee_u32 per_item = 16 + sizeof(struct list_data_s);
-    ee_u32 size     = (blksize / per_item)
-                  - 2; /* to accommodate systems with 64b pointers, and make sure
-                          same code is executed, set max list elements */
+    ee_u32 size = (blksize / per_item) - 2; /* to accommodate systems with 64b pointers, and make
+                                               sure same code is executed, set max list elements */
     list_head *memblock_end  = memblock + size;
     list_data *datablock     = (list_data *)(memblock_end);
     list_data *datablock_end = datablock + size;
@@ -274,19 +253,16 @@ core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
     datablock++;
     info.idx    = 0x7fff;
     info.data16 = (ee_s16)0xffff;
-    core_list_insert_new(
-        list, &info, &memblock, &datablock, memblock_end, datablock_end);
+    core_list_insert_new(list, &info, &memblock, &datablock, memblock_end, datablock_end);
 
     /* then insert size items */
     for (i = 0; i < size; i++)
     {
         ee_u16 datpat = ((ee_u16)(seed ^ i) & 0xf);
-        ee_u16 dat
-            = (datpat << 3) | (i & 0x7); /* alternate between algorithms */
-        info.data16 = (dat << 8) | dat;  /* fill the data with actual data and
-                                            upper bits with rebuild value */
-        core_list_insert_new(
-            list, &info, &memblock, &datablock, memblock_end, datablock_end);
+        ee_u16 dat    = (datpat << 3) | (i & 0x7); /* alternate between algorithms */
+        info.data16   = (dat << 8) | dat;          /* fill the data with actual data and
+                                                      upper bits with rebuild value */
+        core_list_insert_new(list, &info, &memblock, &datablock, memblock_end, datablock_end);
     }
     /* and now index the list so we know initial seed order of the list */
     finder = list->next;
@@ -298,10 +274,9 @@ core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
         else
         {
             ee_u16 pat = (ee_u16)(i++ ^ seed); /* get a pseudo random number */
-            finder->info->idx = 0x3fff
-                                & (((i & 0x07) << 8)
-                                   | pat); /* make sure the mixed items end up
-                                              after the ones in sequence */
+            finder->info->idx =
+                0x3fff & (((i & 0x07) << 8) | pat); /* make sure the mixed items end up
+                                                       after the ones in sequence */
         }
         finder = finder->next;
     }
@@ -311,8 +286,7 @@ core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
     finder = list;
     while (finder)
     {
-        ee_printf(
-            "[%04x,%04x]", finder->info->idx, (ee_u16)finder->info->data16);
+        ee_printf("[%04x,%04x]", finder->info->idx, (ee_u16)finder->info->data16);
         finder = finder->next;
     }
     ee_printf("\n");
@@ -334,13 +308,9 @@ core_list_init(ee_u32 blksize, list_head *memblock, ee_s16 seed)
         Returns:
         Pointer to new item.
 */
-list_head *
-core_list_insert_new(list_head * insert_point,
-                     list_data * info,
-                     list_head **memblock,
-                     list_data **datablock,
-                     list_head * memblock_end,
-                     list_data * datablock_end)
+list_head *core_list_insert_new(list_head *insert_point, list_data *info, list_head **memblock,
+                                list_data **datablock, list_head *memblock_end,
+                                list_data *datablock_end)
 {
     list_head *newitem;
 
@@ -375,8 +345,7 @@ core_list_insert_new(list_head * insert_point,
         Returns:
         Removed item.
 */
-list_head *
-core_list_remove(list_head *item)
+list_head *core_list_remove(list_head *item)
 {
     list_data *tmp;
     list_head *ret = item->next;
@@ -406,8 +375,7 @@ core_list_remove(list_head *item)
         The item that was linked back to the list.
 
 */
-list_head *
-core_list_undo_remove(list_head *item_removed, list_head *item_modified)
+list_head *core_list_undo_remove(list_head *item_removed, list_head *item_modified)
 {
     list_data *tmp;
     /* swap data pointers */
@@ -433,8 +401,7 @@ core_list_undo_remove(list_head *item_removed, list_head *item_modified)
         Returns:
         Found item, or NULL if not found.
 */
-list_head *
-core_list_find(list_head *list, list_data *info)
+list_head *core_list_find(list_head *list, list_data *info)
 {
     if (info->idx >= 0)
     {
@@ -463,8 +430,7 @@ core_list_find(list_head *list, list_data *info)
         Found item, or NULL if not found.
 */
 
-list_head *
-core_list_reverse(list_head *list)
+list_head *core_list_reverse(list_head *list)
 {
     list_head *next = NULL, *tmp;
     while (list)
@@ -498,8 +464,7 @@ core_list_reverse(list_head *list)
         but the algorithm could theoretically modify where the list starts.
 
  */
-list_head *
-core_list_mergesort(list_head *list, list_cmp cmp, core_results *res)
+list_head *core_list_mergesort(list_head *list, list_cmp cmp, core_results *res)
 {
     list_head *p, *q, *e, *tail;
     ee_s32     insize, nmerges, psize, qsize, i;

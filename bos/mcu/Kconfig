@@ -1,0 +1,82 @@
+#选择厂商
+choice
+    prompt "Select Vendor"
+config VENDOR_UBUNTU
+    bool "ubuntu"
+config VENDOR_ST
+    bool "STMicroelectronics"
+config VENDOR_NATION
+    bool "Nationstech"
+config VENDOR_MM
+    bool "Mindmotion"
+config VENDOR_HC
+    bool "HDSC"
+config VENDOR_WCH
+    bool "WinChipHead"
+config VENDOR_HOLTEK
+    bool "holtek"
+endchoice
+
+#选择ST的芯片
+choice
+    prompt "Select ST Chip"
+    depends on VENDOR_ST
+config STM32F10X_LD
+    bool "STM32F10X_LD"
+config STM32F10X_MD
+    bool "STM32F10X_MD"
+config STM32F10X_HD
+    bool "STM32F10X_HD"
+config STM32F10X_CL
+    bool "STM32F10X_CL"
+config STM32G0X0
+    bool "STM32G0X0"
+config STM32L41X_L46X
+    bool "STM32L41X_L46X"
+endchoice
+
+#选择国民技术的芯片
+choice
+    prompt "Select Nation Chip"
+    depends on VENDOR_NATION
+config NATION_L40X
+    bool "NATION_L40X"
+config NATION_G45X
+    bool "NATION_G45X"
+endchoice
+
+#选择灵动微技术的芯片
+choice
+    prompt "Select Mindmotion Chip"
+    depends on VENDOR_MM
+config MM32SPIN2X
+    bool "MM32SPIN2X"
+config MM32SPIN0X
+    bool "MM32SPIN0X"
+endchoice
+
+#选择华大半导体技术的芯片
+choice
+    prompt "Select HDSC Chip"
+    depends on VENDOR_HC
+config HC32L13X
+    bool "HC32L13X"
+config HC32L07X
+    bool "HC32L07X"
+endchoice
+
+#选择沁恒微电子的芯片
+choice
+    prompt "Select WinChipHead Chip"
+    depends on VENDOR_WCH
+config CH32F103
+    bool "CH32F103"
+endchoice
+
+#选择合泰的芯片
+choice
+    prompt "Select holtek Chip"
+    depends on VENDOR_HOLTEK
+config TH32F50343
+    bool "TH32F50343"
+endchoice

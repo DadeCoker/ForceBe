@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_i2c.h"
 
-#if (MCU_PLATFORM == 3001)
+#if (defined(MM32SPIN2X))
 
 uint8_t bMcuI2CReadByte(const bHalI2CIf_t *i2c_if)
 {

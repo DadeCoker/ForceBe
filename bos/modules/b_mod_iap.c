@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_iap.h"
-#if _IAP_ENABLE
+#if (defined(_IAP_ENABLE) && (_IAP_ENABLE == 1))
 #include <string.h>
 
 #include "core/inc/b_core.h"
@@ -371,7 +371,7 @@ static int _IapCopyBackupData()
     return retval;
 }
 
-#if _BACKUP_ENABLE
+#if (defined(_BACKUP_ENABLE) && (_BACKUP_ENABLE == 1))
 
 static void _IapBackupFirmware()
 {
@@ -708,7 +708,7 @@ int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time
     {
         memset(&bIapFlag, 0, sizeof(bIapFlag_t));
     }
-#if _BACKUP_ENABLE
+#if (defined(_BACKUP_ENABLE) && (_BACKUP_ENABLE == 1))
     if (bIsBoot == 0)
     {
         bIapFlag.backup_dev    = backup_dev_no;

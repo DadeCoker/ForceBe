@@ -36,7 +36,7 @@
 
 #include "b_section.h"
 
-#if _FLEXIBLEBUTTON_ENABLE
+#if (defined(_FLEXIBLEBUTTON_ENABLE) && (_FLEXIBLEBUTTON_ENABLE == 1))
 #include "core/inc/b_core.h"
 #include "core/inc/b_device.h"
 #include "hal/inc/b_hal.h"

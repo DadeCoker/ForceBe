@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_trace.h"
-#if _CMBACKTRACE_ENABLE
+#if (defined(_CMBACKTRACE_ENABLE) && (_CMBACKTRACE_ENABLE == 1))
 
 /**
  * \addtogroup BABYOS

@@ -1,0 +1,15 @@
+#驱动配置
+
+menu "Drivers Configuration"
+
+config PCF8574_DEFAULT_OUTPUT
+    int "PCF8574 Default Output Value"
+    default 0
+
+config MATRIX_KEYS_ROWS
+    int "Maximum number of rows of matrix keys"
+    default 4
+config MATRIX_KEYS_COLUMNS
+    int "Maximum number of columns of matrix keys"
+    default 4
+endmenu

@@ -42,7 +42,7 @@ extern "C" {
 
 #include "nr_micro_shell_config.h"
 
-#if _NR_MICRO_SHELL_ENABLE
+#if (defined(_NR_MICRO_SHELL_ENABLE) && (_NR_MICRO_SHELL_ENABLE == 1))
 
 #define NR_ANSI_CTRL_MAX_LEN 20
 #define NR_ANSI_MAX_EX_DATA_NUM 1

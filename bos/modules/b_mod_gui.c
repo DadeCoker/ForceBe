@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_gui.h"
-#if _UGUI_ENABLE
+#if (defined(_UGUI_ENABLE) && (_UGUI_ENABLE == 1))
 #include "core/inc/b_core.h"
 #include "drivers/inc/b_driver.h"
 #include "utils/inc/b_util_log.h"
@@ -85,7 +85,7 @@
 static bGUIInstance_t *pGUIHead    = NULL;
 static bGUIInstance_t *pGUICurrent = NULL;
 
-#if GUI_FONT == 3
+#if defined(GUI_FONT_XBF)
 UG_FONT         bGUI_XBF_Font;
 static uint32_t bGUI_XBF_FontDevice = 0;
 #endif
@@ -285,13 +285,13 @@ int bGUIRegist(bGUIInstance_t *pInstance)
     UG_SetBackcolor(C_BLACK);
     UG_DriverRegister(DRIVER_FILL_FRAME, _LCD_FillRect);
 
-#if GUI_FONT == 0
+#if defined(GUI_FONT_6X8)
     UG_FontSelect(&FONT_6X8);
-#elif GUI_FONT == 1
+#elif defined(GUI_FONT_8X12)
     UG_FontSelect(&FONT_8X12);
-#elif GUI_FONT == 2
+#elif defined(GUI_FONT_12X16)
     UG_FontSelect(&FONT_12X16);
-#elif GUI_FONT == 3
+#elif defined(GUI_FONT_XBF)
     uint8_t xbf_info[18];
     if (0 > UG_ReadXBF(XBF_FILE_ADDR, xbf_info, 18))
     {
@@ -311,7 +311,7 @@ int bGUIRegist(bGUIInstance_t *pInstance)
     return 0;
 }
 
-#if GUI_FONT == 3
+#if defined(GUI_FONT_XBF)
 __WEAKDEF int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     int fd = -1;
@@ -376,7 +376,7 @@ int bGUIDispDir(uint32_t lcd_dev_no, uint8_t dir)
 
 int bGUISetFontDevice(uint32_t dev_no)
 {
-#if GUI_FONT == 3
+#if defined(GUI_FONT_XBF)
     bGUI_XBF_FontDevice = dev_no;
 #else
     (void)dev_no;

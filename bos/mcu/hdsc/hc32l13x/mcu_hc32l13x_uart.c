@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (MCU_PLATFORM == 4001)
+#if (defined(HC32L13X))
 
 //      Register Address
 

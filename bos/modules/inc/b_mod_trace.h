@@ -37,7 +37,7 @@ extern "C" {
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
-#if _CMBACKTRACE_ENABLE
+#if (defined(_CMBACKTRACE_ENABLE) && (_CMBACKTRACE_ENABLE == 1))
 #include "thirdparty/cm_backtrace/cm_backtrace.h"
 /**
  * \addtogroup BABYOS
@@ -58,7 +58,7 @@ extern "C" {
  * \defgroup TRACE_Exported_Functions
  * \{
  */
- 
+
 int bTraceInit(const char *pfw_name);
 
 /**

@@ -35,7 +35,7 @@
 
 #include <string.h>
 
-#if _ALGO_MD5_ENABLE
+#if (defined(_ALGO_MD5_ENABLE) && (_ALGO_MD5_ENABLE == 1))
 /**
  * \addtogroup ALGORITHM
  * \{

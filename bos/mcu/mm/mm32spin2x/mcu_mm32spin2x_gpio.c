@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (MCU_PLATFORM == 3001)
+#if (defined(MM32SPIN2X))
 
 //         Register Address
 

@@ -33,8 +33,8 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_qspi.h"
 
-#if (MCU_PLATFORM == 1201)
- 
+#if (defined(STM32L41X_L46X))
+
 typedef struct
 {
     volatile uint32_t CR;    /*!< QUADSPI Control register*/
@@ -116,11 +116,11 @@ int bMcuQSPISendCmd(const bHalQSPINumber_t qspi, const bHalQSPICmdInfo_t *pcmd)
     B_CLEAR_BIT(ccr_data, FMODE_BIT);
     B_CLEAR_BIT(ccr_data, DMODE_BIT);
 
-    if(pcmd->dmode != B_HAL_QSPI_MODE_NONE)
+    if (pcmd->dmode != B_HAL_QSPI_MODE_NONE)
     {
         B_SET_BIT(ccr_data, (pcmd->dmode & 0x3) << 24);
     }
-    
+
     if (pcmd->abmode != B_HAL_QSPI_MODE_NONE)
     {
         B_WRITE_REG(qspi_r->ABR, pcmd->alternate);

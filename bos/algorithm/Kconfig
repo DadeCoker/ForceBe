@@ -1,0 +1,41 @@
+#算法配置
+menu "Algorithm Configuration"
+config _BOS_ALGO_ENABLE
+    bool "Algorithm Enable/Disable"
+    default y
+
+config _ALGO_BASE64_ENABLE
+    bool "Algorithm base64 Enable/Disable"
+    default n
+    depends on _BOS_ALGO_ENABLE
+
+config _ALGO_SHA1_ENABLE
+    bool "Algorithm SHA1 Enable/Disable"
+    default n
+    depends on _BOS_ALGO_ENABLE
+
+
+config _ALGO_SORT_ENABLE
+    bool "Algorithm Sort Enable/Disable"
+    default n
+    depends on _BOS_ALGO_ENABLE
+
+
+config _ALGO_UNICODE_ENABLE
+    bool "Algorithm Unicode Enable/Disable"
+    default n
+    depends on _BOS_ALGO_ENABLE
+
+
+config _ALGO_MD5_ENABLE
+    bool "Algorithm MD5 Enable/Disable"
+    default n
+    depends on _BOS_ALGO_ENABLE
+
+
+config _ALGO_CRC_ENABLE
+    bool "Algorithm CRC Enable/Disable"
+    default n
+    depends on _BOS_ALGO_ENABLE
+
+endmenu

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (MCU_PLATFORM == 1201)
+#if (defined(STM32L41X_L46X))
 
 //         Register Address
 

@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_kv.h"
-#if _KV_ENABLE
+#if (defined(_KV_ENABLE) && (_KV_ENABLE == 1))
 #include <string.h>
 
 #include "core/inc/b_core.h"

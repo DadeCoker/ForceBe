@@ -18,7 +18,7 @@
 DSTATUS disk_status(BYTE pdrv /* Physical drive nmuber to identify the drive */
 )
 {
-#if _FS_ENABLE && (FS_SELECT == 0)
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1)) && (defined(FS_FATFS))
     DSTATUS stat = RES_OK;
     switch (pdrv)
     {
@@ -52,7 +52,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
                   UINT  count   /* Number of sectors to read */
 )
 {
-#if _FS_ENABLE && (FS_SELECT == 0)
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1)) && (defined(FS_FATFS))
     DRESULT res = RES_OK;
     int     fd  = -1;
     int     len = 0;
@@ -100,7 +100,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
                 bLseek(fd, sector);
                 len = bRead(fd, buff, count);
                 bClose(fd);
-                if(len < 0)
+                if (len < 0)
                 {
                     res = RES_ERROR;
                 }
@@ -132,7 +132,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
                    UINT        count   /* Number of sectors to write */
 )
 {
-#if _FS_ENABLE && (FS_SELECT == 0)
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1)) && (defined(FS_FATFS))
     DRESULT res = RES_OK;
     int     fd  = -1;
     int     len = 0;
@@ -184,7 +184,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
                 bLseek(fd, sector);
                 len = bWrite(fd, (uint8_t *)buff, count);
                 bClose(fd);
-                if(len < 0)
+                if (len < 0)
                 {
                     res = RES_ERROR;
                 }
@@ -215,7 +215,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
                    void *buff  /* Buffer to send/receive control data */
 )
 {
-#if _FS_ENABLE
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1))
     DRESULT res = RES_OK;
     switch (pdrv)
     {

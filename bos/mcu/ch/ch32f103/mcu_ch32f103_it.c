@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (MCU_PLATFORM == 7001)
+#if (defined(CH32F103))
 
 void bMcuIntEnable()
 {

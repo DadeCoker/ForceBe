@@ -98,7 +98,7 @@ typedef struct
  */
 #define MS2TICKS(m) (m / (1000 / TICK_FRQ_HZ))
 
-#if _HALIF_VARIABLE_ENABLE
+#if (defined(_HALIF_VARIABLE_ENABLE) && (_HALIF_VARIABLE_ENABLE == 1))
 #define HALIF_KEYWORD static
 #else
 #define HALIF_KEYWORD const static
@@ -113,9 +113,9 @@ typedef struct
  * \{
  */
 
-//移植时调用，TICK中断服务函数调用bHalIncSysTick
+// 移植时调用，TICK中断服务函数调用bHalIncSysTick
 void bHalIncSysTick(void);
-//弱函数，用户可重新实现此函数。bInit->bHalInit->bHalUserInit
+// 弱函数，用户可重新实现此函数。bInit->bHalInit->bHalUserInit
 void bHalUserInit(void);
 
 void     bHalInit(void);

@@ -40,7 +40,7 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _TIMER_ENABLE
+#if (defined(_TIMER_ENABLE) && (_TIMER_ENABLE == 1))
 
 /**
  * \addtogroup BABYOS

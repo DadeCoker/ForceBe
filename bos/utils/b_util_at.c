@@ -37,7 +37,7 @@
 #include "utils/inc/b_util_log.h"
 #include "utils/inc/b_util_memp.h"
 
-#if _AT_ENABLE
+#if (defined(_AT_ENABLE) && (_AT_ENABLE == 1))
 
 /**
  * \addtogroup B_UTILS

@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (MCU_PLATFORM == 3002)
+#if (defined(MM32SPIN0X))
 
 void bMcuIntEnable()
 {

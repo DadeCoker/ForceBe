@@ -35,21 +35,22 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (MCU_PLATFORM == 1001 || MCU_PLATFORM == 1002 || MCU_PLATFORM == 1003 || MCU_PLATFORM == 1004)
+#if (defined(STM32F10X_LD) || defined(STM32F10X_MD) || defined(STM32F10X_HD) || \
+     defined(STM32F10X_CL))
 
 #define FLASH_BASE_ADDR (0x8000000UL)
 
-#if (MCU_PLATFORM == 1003 || MCU_PLATFORM == 1004)
+#if (defined(STM32F10X_HD) || defined(STM32F10X_CL))
 #define FLASH_PAGE_SIZE (2048)
 #else
 #define FLASH_PAGE_SIZE (1024)
 #endif
 
-#if (MCU_PLATFORM == 1001)
+#if (defined(STM32F10X_LD))
 #define FLASH_MAX_SIZE (32 * 1024)
-#elif (MCU_PLATFORM == 1002)
+#elif (defined(STM32F10X_MD))
 #define FLASH_MAX_SIZE (128 * 1024)
-#elif (MCU_PLATFORM == 1003)
+#elif (defined(STM32F10X_HD))
 #define FLASH_MAX_SIZE (512 * 1024)
 #else
 #define FLASH_MAX_SIZE (256 * 1024)
