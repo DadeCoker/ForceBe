@@ -73,15 +73,13 @@ MCU开发项目。编译器勾选C99
 
 # 5 BabyOS教程
 
-视频教程一共有四讲（可以在哔哩哔哩网站搜索BabyOS）：
+[第一讲介绍BabyOS](https://www.bilibili.com/video/BV1Ff4y1o7bZ?share_source=copy_web)
 
-[第一讲介绍BabyOS，主要介绍项目发起的背景和项目的定位。](https://www.bilibili.com/video/BV1Ff4y1o7bZ?share_source=copy_web)
+[第二讲BabyOS的快速体验和进阶体验](https://www.bilibili.com/video/BV1Lg411f7cH?share_source=copy_web)
 
-[第二讲BabyOS的快速体验和进阶体验，根据手册的第2、3、4章节内容进行讲解以及实操演示。](https://www.bilibili.com/video/BV1Lg411f7cH?share_source=copy_web)
+[第三讲BabyOS的功能概述](https://www.bilibili.com/video/BV1iU4y1q7EJ?share_source=copy_web)
 
-[第三讲BabyOS的功能概述，根据手册的第5章节内容进行讲解。对BabyOS各个部分的设计进行讲解。](https://www.bilibili.com/video/BV1iU4y1q7EJ?share_source=copy_web)
-
-[第四讲BabyOS的功能组件，根据手册的第6、7章节内容进行讲解，对modules目录和utils目录的内容进行讲解。](https://www.bilibili.com/video/BV1JZ4y1Y7S7?share_source=copy_web)
+[第四讲BabyOS的功能组件](https://www.bilibili.com/video/BV1JZ4y1Y7S7?share_source=copy_web)
 
 # 6 BabyOS例程
 
