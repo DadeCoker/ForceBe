@@ -81,7 +81,7 @@
  * \defgroup SPIFLASH_Private_Variables
  * \{
  */
-static char                    bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][3];
+static char                    bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][4];
 static const bSPIFLASH_HalIf_t bSPIFLASH_HalIfTable[HAL_SPIFLASH_TOTAL_NUMBER] = HAL_SPIFLASH_IF;
 bSPIFLASH_Driver_t             bSPIFLASH_Driver[HAL_SPIFLASH_TOTAL_NUMBER];
 
