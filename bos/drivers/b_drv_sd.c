@@ -66,11 +66,7 @@
  * \defgroup SD_Private_Defines
  * \{
  */
-
 #define DRIVER_NAME SD
-
-#define SD_CS_SET() bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1)
-#define SD_CS_RESET() bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0)
 /**
  * \}
  */
@@ -103,7 +99,7 @@ static int _bSD_WaitReady(bDriverInterface_t *pdrv)
 {
     uint32_t tick = bHalGetSysTick();
     uint8_t  tmp  = 0;
-
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     for (;;)
     {
         tmp = bHalSpiTransfer(&_if->_if._spi, 0xff);
@@ -123,6 +119,7 @@ static void _bSD_SendDump(bDriverInterface_t *pdrv, uint8_t n)
 {
     uint8_t tmp = 0xff;
     uint8_t i   = 0;
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     for (i = 0; i < n; i++)
     {
         bHalSpiSend(&_if->_if._spi, &tmp, 1);
@@ -134,12 +131,13 @@ static int _bSD_PowerON(bDriverInterface_t *pdrv)
     uint8_t  tmp    = 0xff;
     uint8_t  cmd[6] = {CMD0, 0, 0, 0, 0, 0X95};
     uint32_t cnt;
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     bHalDelayMs(100);
     bHalSpiSetSpeed(&_if->_if._spi, B_HAL_SPI_SLOW);
-    SD_CS_SET();
-    _bSD_SendDump(10);
+    bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+    _bSD_SendDump(pdrv, 10);
 
-    SD_CS_RESET();
+    bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
 
     bHalSpiSend(&_if->_if._spi, cmd, 6);
     cnt = 0;
@@ -152,8 +150,8 @@ static int _bSD_PowerON(bDriverInterface_t *pdrv)
         }
         cnt++;
     }
-    SD_CS_SET();
-    _bSD_SendDump(1);
+    bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+    _bSD_SendDump(pdrv, 1);
     if (cnt >= 0x1fff)
     {
         return -1;
@@ -165,7 +163,8 @@ static int _bSD_SendCmd(bDriverInterface_t *pdrv, uint8_t cmd, uint32_t param, u
 {
     uint8_t cmd_table[6];
     uint8_t tmp, cnt;
-    if (_bSD_WaitReady() < 0)
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
+    if (_bSD_WaitReady(pdrv) < 0)
     {
         return -1;
     }
@@ -199,79 +198,79 @@ static int _bSD_Init(bDriverInterface_t *pdrv)
     int      retval = -1;
     uint32_t cnt    = 0;
     uint8_t  ocr[4];
-
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     if (_if->is_spi == 0)
     {
         return 0;
     }
-    if (_bSD_PowerON() < 0)
+    if (_bSD_PowerON(pdrv) < 0)
     {
         b_log_e("power on err\r\n");
         return -1;
     }
-    SD_CS_RESET();
-    retval = _bSD_SendCmd(CMD0, 0, 0x95);
+    bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+    retval = _bSD_SendCmd(pdrv, CMD0, 0, 0x95);
     if (retval < 0)
     {
-        SD_CS_SET();
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
         return -1;
     }
 
     if (retval == 1)
     {
-        retval = _bSD_SendCmd(CMD8, 0x1AA, 0x87);
+        retval = _bSD_SendCmd(pdrv, CMD8, 0x1AA, 0x87);
         if (retval < 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
     }
     else
     {
-        SD_CS_SET();
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
         return -1;
     }
 
     if (retval == 0x5)
     {
-        bSD_Driver._private.v = CT_SD1;
-        SD_CS_SET();
-        _bSD_SendDump(1);
+        pdrv->_private.v = CT_SD1;
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+        _bSD_SendDump(pdrv, 1);
         cnt = 0;
-        SD_CS_RESET();
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
         do
         {
-            retval = _bSD_SendCmd(CMD55, 0, 0);
+            retval = _bSD_SendCmd(pdrv, CMD55, 0, 0);
             if (retval < 0)
             {
-                SD_CS_SET();
+                bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
                 return -1;
             }
-            retval = _bSD_SendCmd(CMD41, 0, 0);
+            retval = _bSD_SendCmd(pdrv, CMD41, 0, 0);
             if (retval < 0)
             {
-                SD_CS_SET();
+                bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
                 return -1;
             }
             cnt++;
         } while ((retval != 0) && (cnt < 400));
         if (cnt >= 400)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
         bHalSpiSetSpeed(&_if->_if._spi, B_HAL_SPI_FAST);
-        _bSD_SendDump(1);
-        retval = _bSD_SendCmd(CMD59, 0, 0x95);
+        _bSD_SendDump(pdrv, 1);
+        retval = _bSD_SendCmd(pdrv, CMD59, 0, 0x95);
         if (retval < 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
-        retval = _bSD_SendCmd(CMD16, 512, 0x95);
+        retval = _bSD_SendCmd(pdrv, CMD16, 512, 0x95);
         if (retval < 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
     }
@@ -281,35 +280,35 @@ static int _bSD_Init(bDriverInterface_t *pdrv)
         ocr[1] = bHalSpiTransfer(&_if->_if._spi, 0xff);
         ocr[2] = bHalSpiTransfer(&_if->_if._spi, 0xff);
         ocr[3] = bHalSpiTransfer(&_if->_if._spi, 0xff);
-        SD_CS_SET();
-        _bSD_SendDump(1);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+        _bSD_SendDump(pdrv, 1);
         cnt = 0;
-        SD_CS_RESET();
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
         do
         {
-            retval = _bSD_SendCmd(CMD55, 0, 0);
+            retval = _bSD_SendCmd(pdrv, CMD55, 0, 0);
             if (retval < 0)
             {
-                SD_CS_SET();
+                bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
                 return -1;
             }
-            retval = _bSD_SendCmd(CMD41, 0x40000000, 0);
+            retval = _bSD_SendCmd(pdrv, CMD41, 0x40000000, 0);
             if (retval < 0)
             {
-                SD_CS_SET();
+                bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
                 return -1;
             }
             cnt++;
         } while ((retval != 0) && (cnt < 400));
         if (cnt >= 400)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
-        retval = _bSD_SendCmd(CMD58, 0, 0);
+        retval = _bSD_SendCmd(pdrv, CMD58, 0, 0);
         if (retval != 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
         ocr[0] = bHalSpiTransfer(&_if->_if._spi, 0xff);
@@ -318,17 +317,17 @@ static int _bSD_Init(bDriverInterface_t *pdrv)
         ocr[3] = bHalSpiTransfer(&_if->_if._spi, 0xff);
         if (ocr[0] & 0x40)
         {
-            bSD_Driver._private.v = CT_SDHC;
+            pdrv->_private.v = CT_SDHC;
         }
         else
         {
-            bSD_Driver._private.v = CT_SD2;
+            pdrv->_private.v = CT_SD2;
         }
     }
-    SD_CS_SET();
-    _bSD_SendDump(1);
+    bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+    _bSD_SendDump(pdrv, 1);
     bHalSpiSetSpeed(&_if->_if._spi, B_HAL_SPI_FAST);
-    b_log("sd type:%d\r\n", bSD_Driver._private.v);
+    b_log("sd type:%d\r\n", pdrv->_private.v);
     return 0;
 }
 
@@ -336,6 +335,7 @@ static int _bSD_WaitResponse(bDriverInterface_t *pdrv, uint8_t exp)
 {
     uint16_t cnt = 0;
     uint8_t  tmp;
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     do
     {
         tmp = bHalSpiTransfer(&_if->_if._spi, 0xff);
@@ -350,7 +350,8 @@ static int _bSD_WaitResponse(bDriverInterface_t *pdrv, uint8_t exp)
 
 static int _bSD_ReceiveData(bDriverInterface_t *pdrv, uint8_t *buff, uint16_t len)
 {
-    if (_bSD_WaitResponse(0xfe) < 0)
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
+    if (_bSD_WaitResponse(pdrv, 0xfe) < 0)
     {
         return -1;
     }
@@ -367,30 +368,31 @@ static int _bSD_ReceiveData(bDriverInterface_t *pdrv, uint8_t *buff, uint16_t le
 static int _bSD_ReadSingleBlock(bDriverInterface_t *pdrv, uint32_t sector, uint8_t *pbuf)
 {
     int retval = 0;
+    bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     if (_if->is_spi)
     {
-        if (bSD_Driver._private.v != CT_SDHC)
+        if (pdrv->_private.v != CT_SDHC)
         {
             sector = sector << 9;
         }
-        SD_CS_RESET();
-        retval = _bSD_SendCmd(CMD17, sector, 0);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+        retval = _bSD_SendCmd(pdrv, CMD17, sector, 0);
         if (retval != 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
-        SD_CS_SET();
-        _bSD_SendDump(1);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+        _bSD_SendDump(pdrv, 1);
 
-        SD_CS_RESET();
-        if (_bSD_ReceiveData(pbuf, 512) < 0)
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+        if (_bSD_ReceiveData(pdrv, pbuf, 512) < 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
-        SD_CS_SET();
-        _bSD_SendDump(1);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+        _bSD_SendDump(pdrv, 1);
     }
     return 512;
 }
@@ -402,29 +404,29 @@ static int _bSD_WriteSingleBlock(bDriverInterface_t *pdrv, uint32_t sector, uint
     bDRIVER_GET_HALIF(_if, bSD_HalIf_t, pdrv);
     if (_if->is_spi)
     {
-        if (bSD_Driver._private.v != CT_SDHC)
+        if (pdrv->_private.v != CT_SDHC)
         {
             sector = sector << 9;
         }
-        SD_CS_RESET();
-        retval = _bSD_SendCmd(CMD24, sector, 0);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+        retval = _bSD_SendCmd(pdrv, CMD24, sector, 0);
         if (retval != 0)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
-        SD_CS_SET();
-        _bSD_SendDump(1);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+        _bSD_SendDump(pdrv, 1);
 
-        SD_CS_RESET();
-        _bSD_SendDump(3);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 0);
+        _bSD_SendDump(pdrv, 3);
         bHalSpiTransfer(&_if->_if._spi, 0xfe);
         bHalSpiSend(&_if->_if._spi, pbuf, 512);
-        _bSD_SendDump(2);
+        _bSD_SendDump(pdrv, 2);
         retval = bHalSpiTransfer(&_if->_if._spi, 0xff);
         if ((retval & 0x1f) != 0x05)
         {
-            SD_CS_SET();
+            bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
             return -1;
         }
         cnt = 0;
@@ -433,12 +435,12 @@ static int _bSD_WriteSingleBlock(bDriverInterface_t *pdrv, uint32_t sector, uint
             cnt++;
             if (cnt >= 0xfffe)
             {
-                SD_CS_SET();
+                bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
                 return -1;
             }
         }
-        SD_CS_SET();
-        _bSD_SendDump(1);
+        bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
+        _bSD_SendDump(pdrv, 1);
     }
     return 0;
 }
@@ -514,7 +516,7 @@ int bSD_Init(bDriverInterface_t *pdrv)
     bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bSD_Init);
     pdrv->read  = _bSD_Read;
     pdrv->write = _bSD_Write;
-    if (_bSD_Init() < 0)
+    if (_bSD_Init(pdrv) < 0)
     {
         return -1;
     }

@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70410
+#define FW_VERSION 70411
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -60,7 +60,8 @@
 //<4002=> HC32L07X
 //<7001=> CH32F103
 //<8001=> TH32F50343
-#define MCU_PLATFORM 2101
+//<9999=> UBUNTU
+#define MCU_PLATFORM 9999
 //</h>
 
 //<h> Hal Configuration
@@ -92,8 +93,6 @@
 #define AT_Q_LEN 3
 //<o> AT Command Retry Count
 #define AT_RETRY_COUNT 2
-//<o> AT Callback Number
-#define AT_CALLBACK_NUMBER 2
 //</e>
 
 //</h>

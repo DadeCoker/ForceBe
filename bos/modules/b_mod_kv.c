@@ -33,9 +33,10 @@
 #include "modules/inc/b_mod_kv.h"
 #if _KV_ENABLE
 #include <string.h>
-#include "utils/inc/b_util_log.h"
+
 #include "core/inc/b_core.h"
 #include "drivers/inc/b_driver.h"
+#include "utils/inc/b_util_log.h"
 
 /**
  * \addtogroup BABYOS
@@ -69,7 +70,7 @@ typedef struct
 {
     uint8_t  status;
     uint32_t index;
-    int      dev_no;
+    uint32_t dev_no;
     uint32_t str_address;
     uint32_t ts_address;
     uint32_t te_address;
@@ -572,18 +573,12 @@ static void _bKV_InvalidTable(int fd)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
+int bKV_Init(uint32_t dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
 {
-    int retval      = 0;
-    int fd          = -1;
-    bKV_Info.status = bKV_ERROR;
-    if (dev_no < 0)
-    {
-        b_log_e("dev_no %d error\r\n", dev_no);
-        return -1;
-    }
-    bKV_Info.dev_no = dev_no;
-
+    int retval           = 0;
+    int fd               = -1;
+    bKV_Info.status      = bKV_ERROR;
+    bKV_Info.dev_no      = dev_no;
     bKV_Info.index       = 0;
     bKV_Info.e_size      = e_size;
     bKV_Info.str_address = s_addr;

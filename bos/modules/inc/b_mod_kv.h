@@ -84,7 +84,7 @@ extern "C" {
  * \{
  */
 
-int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
+int bKV_Init(uint32_t dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
 int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len);
 int bKV_Get(const char *key, uint8_t *pvalue);
 int bKV_Delete(const char *key);

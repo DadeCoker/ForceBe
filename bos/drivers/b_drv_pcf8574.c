@@ -144,7 +144,7 @@ static int _bPCF8574Read(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, 
  */
 int bPCF8574_Init(bDriverInterface_t *pdrv)
 {
-    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bOLED_Init);
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bPCF8574_Init);
     bDRIVER_GET_HALIF(_if, bPCF8574_HalIf_t, pdrv);
     pdrv->read  = _bPCF8574Read;
     pdrv->write = _bPCF8574Write;

@@ -88,7 +88,7 @@ extern "C" {
 
 typedef struct
 {
-    uint8_t  dev_no;                    //暂存新固件的设备号，不需要暂存可以忽略
+    uint32_t dev_no;                    //暂存新固件的设备号，不需要暂存可以忽略
     char     name[B_IAP_FILENAME_LEN];  //固件名，限制在64个字符
     uint32_t len;                       //固件长度
     uint32_t c_crc32;                   //固件数据CRC32校验值
@@ -96,7 +96,7 @@ typedef struct
 
 typedef struct
 {
-    uint8_t  dev_no;  //备份区额设备号
+    uint32_t dev_no;  //备份区额设备号
     uint8_t  flag;    //备份标志，0xAA表示存在有效备份
     uint32_t fcrc;    //备份区固件的crc32校验值
     uint32_t second;  //运行多少秒后进行备份
@@ -139,7 +139,7 @@ void bIapJump2App(void);
  * \param dev_no：固件暂存区的设备号
  *        注：暂存于内部FLASH 或 没有暂存区，dev_no = 0
  */
-int bIapInit(uint8_t dev_no);
+int bIapInit(uint32_t dev_no);
 /**
  * \return int 0：没有升级流程  1：升级流程正常运行中  -1：升级流程异常
  */
@@ -157,8 +157,7 @@ int bIapStart(bIapFwInfo_t *pinfo);
  * 不需要固件备份，便不需要调用此函数。
  * s: 正常工作s秒后，进行固件备份
  */
-int bIapBackupFwInit(uint8_t dev_no, uint32_t s);
-
+int bIapBackupFwInit(uint32_t dev_no, uint32_t s);
 
 /**
  * \brief 传入新固件的数据用于写入存储区域

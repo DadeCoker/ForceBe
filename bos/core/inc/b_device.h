@@ -95,16 +95,16 @@ typedef union
  * \{
  */
 int bDeviceInit(void);
-int bDeviceReinit(uint8_t no);
-int bDeviceOpen(uint8_t no);
-int bDeviceClose(uint8_t no);
-int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint32_t len);
-int bDeviceWrite(uint8_t no, uint32_t offset, uint8_t *pdata, uint32_t len);
-int bDeviceCtl(uint8_t no, uint8_t cmd, void *param);
-int bDeviceISNormal(uint8_t no);
-int bDeviceModifyHalIf(uint8_t no, uint32_t offset, const uint8_t *pVal, uint8_t size);
-int bDeviceReadMessage(uint8_t no, bDeviceMsg_t *pmsg);
-int bDeviceWriteMessage(uint8_t no, bDeviceMsg_t *pmsg);
+int bDeviceReinit(uint32_t dev_no);
+int bDeviceOpen(uint32_t dev_no);
+int bDeviceClose(uint32_t dev_no);
+int bDeviceRead(uint32_t dev_no, uint32_t offset, uint8_t *pdata, uint32_t len);
+int bDeviceWrite(uint32_t dev_no, uint32_t offset, uint8_t *pdata, uint32_t len);
+int bDeviceCtl(uint32_t dev_no, uint8_t cmd, void *param);
+int bDeviceISNormal(uint32_t dev_no);
+int bDeviceModifyHalIf(uint32_t dev_no, uint32_t offset, const uint8_t *pVal, uint8_t size);
+int bDeviceReadMessage(uint32_t dev_no, bDeviceMsg_t *pmsg);
+int bDeviceWriteMessage(uint32_t dev_no, bDeviceMsg_t *pmsg);
 /**
  * \}
  */

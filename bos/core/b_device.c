@@ -141,7 +141,7 @@ bDRIVER_REG_INIT(B_DRIVER_NULL, _bDriverNullInit);
  */
 int bDeviceInit()
 {
-    uint8_t i = 0, j = 0;
+    uint32_t i = 0, j = 0;
     memset(bDriverInterfaceTable, 0, sizeof(bDriverInterfaceTable));
     bSECTION_FOR_EACH(driver_init_0, bDriverRegInit_t, pdriver_init_0)
     {
@@ -151,6 +151,7 @@ int bDeviceInit()
             if (bDriverNumberTable[i] == pdriver_init_0->drv_number)
             {
                 bDriverInterfaceTable[i].drv_no = j++;
+                bDriverInterfaceTable[i].pdes   = bDeviceDescTable[i];
                 bDriverInterfaceTable[i].status = pdriver_init_0->init(&bDriverInterfaceTable[i]);
             }
         }
@@ -163,6 +164,7 @@ int bDeviceInit()
             if (bDriverNumberTable[i] == pdriver_init->drv_number)
             {
                 bDriverInterfaceTable[i].drv_no = j++;
+                bDriverInterfaceTable[i].pdes   = bDeviceDescTable[i];
                 bDriverInterfaceTable[i].status = pdriver_init->init(&bDriverInterfaceTable[i]);
             }
         }
@@ -170,142 +172,145 @@ int bDeviceInit()
     return 0;
 }
 
-int bDeviceReinit(uint8_t no)
+int bDeviceReinit(uint32_t dev_no)
 {
-    if (no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no].init == NULL)
+    if (bDriverInterfaceTable[dev_no].init == NULL)
     {
         return B_DEVICE_FUNC_NULL;
     }
-    return bDriverInterfaceTable[no].init(&bDriverInterfaceTable[no]);
+    bDriverInterfaceTable[dev_no].status =
+        bDriverInterfaceTable[dev_no].init(&bDriverInterfaceTable[dev_no]);
+    return bDriverInterfaceTable[dev_no].status;
 }
 
-int bDeviceOpen(uint8_t no)
+int bDeviceOpen(uint32_t dev_no)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no].status == 0)
+    if (bDriverInterfaceTable[dev_no].status == 0)
     {
-        if (bDriverInterfaceTable[no].open != NULL)
+        if (bDriverInterfaceTable[dev_no].open != NULL)
         {
-            retval = bDriverInterfaceTable[no].open(&bDriverInterfaceTable[no]);
+            retval = bDriverInterfaceTable[dev_no].open(&bDriverInterfaceTable[no]);
         }
     }
     else
     {
-        b_log_e("%s err\r\n", bDeviceDescTable[no]);
+        b_log_e("%s err\r\n", bDeviceDescTable[dev_no]);
         retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
-int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint32_t len)
+int bDeviceRead(uint32_t dev_no, uint32_t offset, uint8_t *pdata, uint32_t len)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (no >= B_REG_DRV_NUMBER || pdata == NULL)
+    if (dev_no >= B_REG_DRV_NUMBER || pdata == NULL)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no].status == 0)
+    if (bDriverInterfaceTable[dev_no].status == 0)
     {
-        if (bDriverInterfaceTable[no].read != NULL)
+        if (bDriverInterfaceTable[dev_no].read != NULL)
         {
-            retval = bDriverInterfaceTable[no].read(&bDriverInterfaceTable[no], offset, pdata, len);
+            retval = bDriverInterfaceTable[dev_no].read(&bDriverInterfaceTable[dev_no], offset,
+                                                        pdata, len);
         }
     }
     else
     {
-        b_log_e("%s err\r\n", bDeviceDescTable[no]);
+        b_log_e("%s err\r\n", bDeviceDescTable[dev_no]);
         retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
-int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint32_t len)
+int bDeviceWrite(uint32_t dev_no, uint32_t address, uint8_t *pdata, uint32_t len)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (no >= B_REG_DRV_NUMBER || pdata == NULL)
+    if (dev_no >= B_REG_DRV_NUMBER || pdata == NULL)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no].status == 0)
+    if (bDriverInterfaceTable[dev_no].status == 0)
     {
-        if (bDriverInterfaceTable[no].write != NULL)
+        if (bDriverInterfaceTable[dev_no].write != NULL)
         {
-            retval =
-                bDriverInterfaceTable[no].write(&bDriverInterfaceTable[no], address, pdata, len);
+            retval = bDriverInterfaceTable[dev_no].write(&bDriverInterfaceTable[dev_no], address,
+                                                         pdata, len);
         }
     }
     else
     {
-        b_log_e("%s err\r\n", bDeviceDescTable[no]);
+        b_log_e("%s err\r\n", bDeviceDescTable[dev_no]);
         retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
-int bDeviceClose(uint8_t no)
+int bDeviceClose(uint32_t dev_no)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no].status == 0)
+    if (bDriverInterfaceTable[dev_no].status == 0)
     {
-        if (bDriverInterfaceTable[no].close != NULL)
+        if (bDriverInterfaceTable[dev_no].close != NULL)
         {
-            retval = bDriverInterfaceTable[no].close(&bDriverInterfaceTable[no]);
+            retval = bDriverInterfaceTable[dev_no].close(&bDriverInterfaceTable[dev_no]);
         }
     }
     else
     {
-        b_log_e("%s err\r\n", bDeviceDescTable[no]);
+        b_log_e("%s err\r\n", bDeviceDescTable[dev_no]);
         retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
-int bDeviceCtl(uint8_t no, uint8_t cmd, void *param)
+int bDeviceCtl(uint32_t dev_no, uint8_t cmd, void *param)
 {
     int retval = B_DEVICE_FUNC_NULL;
-    if (no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no].status == 0)
+    if (bDriverInterfaceTable[dev_no].status == 0)
     {
-        if (bDriverInterfaceTable[no].ctl != NULL)
+        if (bDriverInterfaceTable[dev_no].ctl != NULL)
         {
-            retval = bDriverInterfaceTable[no].ctl(&bDriverInterfaceTable[no], cmd, param);
+            retval = bDriverInterfaceTable[dev_no].ctl(&bDriverInterfaceTable[dev_no], cmd, param);
         }
     }
     else
     {
-        b_log_e("%s err\r\n", bDeviceDescTable[no]);
+        b_log_e("%s err\r\n", bDeviceDescTable[dev_no]);
         retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
-int bDeviceModifyHalIf(uint8_t no, uint32_t offset, const uint8_t *pVal, uint8_t size)
+int bDeviceModifyHalIf(uint32_t dev_no, uint32_t offset, const uint8_t *pVal, uint8_t size)
 {
     uint32_t halif_addr = 0;
-    if (no >= B_REG_DRV_NUMBER || pVal == NULL || size == 0)
+    if (dev_no >= B_REG_DRV_NUMBER || pVal == NULL || size == 0)
     {
         return -1;
     }
-    if (bDriverInterfaceTable[no]._hal_if == NULL)
+    if (bDriverInterfaceTable[dev_no].hal_if == NULL)
     {
         return -2;
     }
-    halif_addr = ((uint32_t)bDriverInterfaceTable[no]._hal_if) + offset;
+    halif_addr = ((uint32_t)bDriverInterfaceTable[dev_no].hal_if) + offset;
 #if _HALIF_VARIABLE_ENABLE
     memcpy((uint8_t *)halif_addr, pVal, size);
     return 0;
@@ -315,14 +320,14 @@ int bDeviceModifyHalIf(uint8_t no, uint32_t offset, const uint8_t *pVal, uint8_t
 #endif
 }
 
-int bDeviceISNormal(uint8_t no)
+int bDeviceISNormal(uint32_t dev_no)
 {
-    if (no >= B_REG_DRV_NUMBER)
+    if (dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    b_log("%s :%d\r\n", bDeviceDescTable[no], bDriverInterfaceTable[no].status);
-    return bDriverInterfaceTable[no].status;
+    b_log("%s :%d\r\n", bDeviceDescTable[dev_no], bDriverInterfaceTable[dev_no].status);
+    return bDriverInterfaceTable[dev_no].status;
 }
 
 /**
@@ -331,13 +336,13 @@ int bDeviceISNormal(uint8_t no)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bDeviceReadMessage(uint8_t no, bDeviceMsg_t *pmsg)
+int bDeviceReadMessage(uint32_t dev_no, bDeviceMsg_t *pmsg)
 {
-    if (pmsg == NULL || no >= B_REG_DRV_NUMBER)
+    if (pmsg == NULL || dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    pmsg->v = bDriverInterfaceTable[no]._private.v;
+    pmsg->v = bDriverInterfaceTable[dev_no]._private.v;
     return 0;
 }
 
@@ -347,13 +352,13 @@ int bDeviceReadMessage(uint8_t no, bDeviceMsg_t *pmsg)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bDeviceWriteMessage(uint8_t no, bDeviceMsg_t *pmsg)
+int bDeviceWriteMessage(uint32_t dev_no, bDeviceMsg_t *pmsg)
 {
-    if (pmsg == NULL || no >= B_REG_DRV_NUMBER)
+    if (pmsg == NULL || dev_no >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
-    bDriverInterfaceTable[no]._private.v = pmsg->v;
+    bDriverInterfaceTable[dev_no]._private.v = pmsg->v;
     return 0;
 }
 

@@ -70,8 +70,9 @@ typedef struct bDriverIf
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
     int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
     int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
-    void   *hal_if;
-    uint8_t drv_no;
+    void    *hal_if;
+    char    *pdes;
+    uint32_t drv_no;
     union
     {
         uint32_t v;
@@ -140,7 +141,7 @@ typedef struct
 #define bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f) _bDRIVER_STRUCT_INIT(pdrv, drv_name, init_f)
 
 #define bDRIVER_GET_HALIF(name, type, pdrv) type *name = (type *)((pdrv)->hal_if)
-
+#define bDRIVER_GET_PRIVATE(name, type, pdrv) type *name = (type *)((pdrv)->_private._p)
 /**
  * \}
  */

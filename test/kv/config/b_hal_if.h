@@ -41,9 +41,83 @@
         .is_simulation = 0, .cs = {B_HAL_GPIOB, B_HAL_PIN1}, ._if.spi = B_HAL_SPI_1, \
     }
 
+#define HAL_ILI9320_IF                                       \
+    {                                                        \
+        .if_type = 2,                                        \
+        ._if._spi._spi =                                     \
+            {                                                \
+                .is_simulation = 0,                          \
+                .cs            = {B_HAL_GPIOD, B_HAL_PIN13}, \
+                ._if.spi       = B_HAL_SPI_1,                \
+            },                                               \
+        ._if._spi.rs = {B_HAL_GPIOD, B_HAL_PIN15},           \
+    }
+
+#define HAL_ILI9341_IF HAL_ILI9320_IF
+
+#define HAL_SSD1289_IF HAL_ILI9320_IF
+
+#define HAL_ST7789_IF HAL_ILI9320_IF
+
+#define HAL_LIS3DH_IF                                   \
+    {                                                   \
+        .is_spi   = 1,                                  \
+        ._if._spi = {                                   \
+            .is_simulation = 0,                         \
+            .cs            = {B_HAL_GPIOB, B_HAL_PIN1}, \
+            ._if.spi       = B_HAL_SPI_1,               \
+        },                                              \
+    }
+
+#define HAL_MCUFLASH_IF \
+    {                   \
+        0               \
+    }
+
+#define HAL_OLED_IF                                              \
+    {                                                            \
+        .is_spi   = 0,                                           \
+        ._if._i2c = {                                            \
+            .dev_addr               = 0x78,                      \
+            .is_simulation          = 1,                         \
+            ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN0}, \
+            ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN1}, \
+        },                                                       \
+    }
+
+#define HAL_PCF8574_IF                                                                             \
+    {                                                                                              \
+        .dev_addr = 0xa0, .is_simulation = 1, ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN6}, \
+        ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7},                                       \
+    }
+
+#define HAL_SD_IF                                        \
+    {                                                    \
+        .is_spi = 1, ._if._spi = {                       \
+            .is_simulation = 0,                          \
+            .cs            = {B_HAL_GPIOD, B_HAL_PIN11}, \
+            ._if.spi       = B_HAL_SPI_1,                \
+        }                                                \
+    }
+
+#define HAL_SPIFLASH_IF                                 \
+    {                                                   \
+        .is_spi   = 1,                                  \
+        ._if._spi = {                                   \
+            .is_simulation = 0,                         \
+            .cs            = {B_HAL_GPIOB, B_HAL_PIN9}, \
+            ._if.spi       = B_HAL_SPI_1,               \
+        },                                              \
+    }
+
 #define HAL_TESTFLASH_IF            \
     {                               \
         .e_size = 4096, .w_size = 1 \
+    }
+
+#define HAL_XPT2046_IF                                                               \
+    {                                                                                \
+        ._if.spi = B_HAL_SPI_3, .cs = {B_HAL_GPIOC, B_HAL_PIN9}, .is_simulation = 0, \
     }
 
 #endif

@@ -44,20 +44,27 @@
  */
 
 /**
- * \defgroup TESTFLASH_Private_TypesDefinitions
+ * \defgroup TESTFLASH_Private_Defines
  * \{
  */
 
+#define DRIVER_NAME TESTFLASH
+
+#define TEST_FLASH_SIZE (4 * 1024 * 1024)
+#define IS_VALID_W_SIZE(w) ((w) == 1 || (w) == 2 || (w) == 4 || (w) == 8)
 /**
  * \}
  */
 
 /**
- * \defgroup TESTFLASH_Private_Defines
+ * \defgroup TESTFLASH_Private_TypesDefinitions
  * \{
  */
-#define TEST_FLASH_SIZE (4 * 1024 * 1024)
-#define IS_VALID_W_SIZE(w) ((w) == 1 || (w) == 2 || (w) == 4 || (w) == 8)
+typedef struct
+{
+    uint8_t data[TEST_FLASH_SIZE];
+} bTestFlashPrivate_t;
+
 /**
  * \}
  */
@@ -75,9 +82,8 @@
  * \defgroup TESTFLASH_Private_Variables
  * \{
  */
-const static bTESTFLASH_HalIf_t bTESTFLASH_HalIf = HAL_TESTFLASH_IF;
-bTESTFLASH_Driver_t             bTESTFLASH_Driver;
-volatile static uint8_t         bTestFlashMemory[TEST_FLASH_SIZE];
+bDRIVER_HALIF_TABLE(bTESTFLASH_HalIf_t, DRIVER_NAME);
+static bTestFlashPrivate_t bTestFlashPrivate[bDRIVER_HALIF_NUM(bTESTFLASH_HalIf_t, DRIVER_NAME)];
 /**
  * \}
  */
@@ -96,77 +102,82 @@ volatile static uint8_t         bTestFlashMemory[TEST_FLASH_SIZE];
  * \{
  */
 
-static int _bTESTFLASHOpen(bTESTFLASH_Driver_t *pdrv)
+static int _bTESTFLASHOpen(bDriverInterface_t *pdrv)
 {
     return 0;
 }
 
-static int _bTESTFLASHClose(bTESTFLASH_Driver_t *pdrv)
+static int _bTESTFLASHClose(bDriverInterface_t *pdrv)
 {
     return 0;
 }
 
-static int _bTESTFLASHWrite(bTESTFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+static int _bTESTFLASHWrite(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     uint32_t i = 0;
+    bDRIVER_GET_HALIF(_if, bTESTFLASH_HalIf_t, pdrv);
+    bDRIVER_GET_PRIVATE(_private, bTestFlashPrivate_t, pdrv);
     if (off >= TEST_FLASH_SIZE)
     {
         return -1;
     }
-    len = (len + bTESTFLASH_HalIf.w_size - 1) / bTESTFLASH_HalIf.w_size;
+    len = (len + _if->w_size - 1) / _if->w_size;
     for (i = 0; i < len; i++)
     {
-        if ((off + (i * bTESTFLASH_HalIf.w_size)) >= TEST_FLASH_SIZE)
+        if ((off + (i * _if->w_size)) >= TEST_FLASH_SIZE)
         {
             break;
         }
-        if (bTESTFLASH_HalIf.w_size == 1)
+        if (_if->w_size == 1)
         {
-            if (((uint8_t *)bTestFlashMemory)[off + i] == 0xff)
+            if (((uint8_t *)_private->data)[off + i] == 0xff)
             {
-                ((uint8_t *)bTestFlashMemory)[off + i] = ((uint8_t *)pbuf)[i];
+                ((uint8_t *)_private->data)[off + i] = ((uint8_t *)pbuf)[i];
             }
         }
-        if (bTESTFLASH_HalIf.w_size == 2)
+        if (_if->w_size == 2)
         {
-            if (((uint16_t *)bTestFlashMemory)[off + i] == 0xffff)
+            if (((uint16_t *)_private->data)[off + i] == 0xffff)
             {
-                ((uint16_t *)bTestFlashMemory)[off + i] = ((uint16_t *)pbuf)[i];
+                ((uint16_t *)_private->data)[off + i] = ((uint16_t *)pbuf)[i];
             }
         }
-        if (bTESTFLASH_HalIf.w_size == 4)
+        if (_if->w_size == 4)
         {
-            if (((uint32_t *)bTestFlashMemory)[off + i] == 0xffffffff)
+            if (((uint32_t *)_private->data)[off + i] == 0xffffffff)
             {
-                ((uint32_t *)bTestFlashMemory)[off + i] = ((uint32_t *)pbuf)[i];
+                ((uint32_t *)_private->data)[off + i] = ((uint32_t *)pbuf)[i];
             }
         }
-        if (bTESTFLASH_HalIf.w_size == 8)
+        if (_if->w_size == 8)
         {
-            if (((uint64_t *)bTestFlashMemory)[off + i] == 0xffffffffffffffff)
+            if (((uint64_t *)_private->data)[off + i] == 0xffffffffffffffff)
             {
-                ((uint64_t *)bTestFlashMemory)[off + i] = ((uint64_t *)pbuf)[i];
+                ((uint64_t *)_private->data)[off + i] = ((uint64_t *)pbuf)[i];
             }
         }
     }
-    return (i * bTESTFLASH_HalIf.w_size);
+    return (i * _if->w_size);
 }
 
-static int _bTESTFLASHRead(bTESTFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+static int _bTESTFLASHRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
+    bDRIVER_GET_PRIVATE(_private, bTestFlashPrivate_t, pdrv);
     if (off >= TEST_FLASH_SIZE)
     {
         return -1;
     }
     len = (len > (TEST_FLASH_SIZE - off)) ? (TEST_FLASH_SIZE - off) : len;
-    memcpy(pbuf, (const void *)&bTestFlashMemory[off], len);
+    memcpy(pbuf, (const void *)&_private->data[off], len);
     return len;
 }
 
-static int _bTESTFLASHCtl(bTESTFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
+static int _bTESTFLASHCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
 {
     int retval = -1;
     int i      = 0;
+    bDRIVER_GET_HALIF(_if, bTESTFLASH_HalIf_t, pdrv);
+    bDRIVER_GET_PRIVATE(_private, bTestFlashPrivate_t, pdrv);
     switch (cmd)
     {
         case bCMD_ERASE_SECTOR:
@@ -177,17 +188,15 @@ static int _bTESTFLASHCtl(bTESTFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
                 bHalFlashErase(perase_param->addr, perase_param->num);
                 if (perase_param->addr < TEST_FLASH_SIZE)
                 {
-                    perase_param->addr =
-                        (perase_param->addr) / bTESTFLASH_HalIf.e_size * bTESTFLASH_HalIf.e_size;
+                    perase_param->addr = (perase_param->addr) / _if->e_size * _if->e_size;
                     for (i = 0; i < perase_param->num; i++)
                     {
-                        if ((perase_param->addr + i * bTESTFLASH_HalIf.e_size) >= TEST_FLASH_SIZE)
+                        if ((perase_param->addr + i * _if->e_size) >= TEST_FLASH_SIZE)
                         {
                             break;
                         }
-                        memset((void *)&bTestFlashMemory[perase_param->addr +
-                                                         i * bTESTFLASH_HalIf.e_size],
-                               0xff, bTESTFLASH_HalIf.e_size);
+                        memset((void *)&_private->data[perase_param->addr + i * _if->e_size], 0xff,
+                               _if->e_size);
                     }
                 }
                 retval = 0;
@@ -198,7 +207,7 @@ static int _bTESTFLASHCtl(bTESTFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
         {
             if (param)
             {
-                ((uint32_t *)param)[0] = bTESTFLASH_HalIf.e_size;
+                ((uint32_t *)param)[0] = _if->e_size;
                 retval                 = 0;
             }
         }
@@ -207,7 +216,7 @@ static int _bTESTFLASHCtl(bTESTFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
         {
             if (param)
             {
-                ((uint32_t *)param)[0] = TEST_FLASH_SIZE / bTESTFLASH_HalIf.e_size;
+                ((uint32_t *)param)[0] = TEST_FLASH_SIZE / _if->e_size;
                 retval                 = 0;
             }
         }
@@ -224,30 +233,28 @@ static int _bTESTFLASHCtl(bTESTFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
  * \addtogroup TESTFLASH_Exported_Functions
  * \{
  */
-int bTESTFLASH_Init()
+int bTESTFLASH_Init(bDriverInterface_t *pdrv)
 {
-    int retval = 0;
+    bTestFlashPrivate_t *pflash = NULL;
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bTESTFLASH_Init);
+    pdrv->close       = _bTESTFLASHClose;
+    pdrv->read        = _bTESTFLASHRead;
+    pdrv->ctl         = _bTESTFLASHCtl;
+    pdrv->open        = _bTESTFLASHOpen;
+    pdrv->write       = _bTESTFLASHWrite;
+    pdrv->_private._p = (void *)&bTestFlashPrivate[pdrv->drv_no];
 
-    if (!IS_VALID_W_SIZE(bTESTFLASH_HalIf.w_size))
+    pflash = (bTestFlashPrivate_t *)pdrv->_private._p;
+    memset(pflash->data, 0xff, TEST_FLASH_SIZE);
+
+    if (!IS_VALID_W_SIZE(((bTESTFLASH_HalIf_t *)pdrv->hal_if)->w_size))
     {
-        bTESTFLASH_Driver.status = -1;
         return -1;
     }
-
-    bTESTFLASH_Driver.status  = 0;
-    bTESTFLASH_Driver.init    = bTESTFLASH_Init;
-    bTESTFLASH_Driver.close   = _bTESTFLASHClose;
-    bTESTFLASH_Driver.read    = _bTESTFLASHRead;
-    bTESTFLASH_Driver.ctl     = _bTESTFLASHCtl;
-    bTESTFLASH_Driver.open    = _bTESTFLASHOpen;
-    bTESTFLASH_Driver.write   = _bTESTFLASHWrite;
-    bTESTFLASH_Driver._hal_if = NULL;
-
-    memset((void *)bTestFlashMemory, 0xff, TEST_FLASH_SIZE);
-    return retval;
+    return 0;
 }
 
-bDRIVER_REG_INIT(bTESTFLASH_Init);
+bDRIVER_REG_INIT(B_DRIVER_TESTFLASH, bTESTFLASH_Init);
 
 /**
  * \}

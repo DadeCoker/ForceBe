@@ -30,11 +30,12 @@
  */
 
 /**
-           for example !
-
-/////B_DEVICE_REG(dev, driver_interface, desc)
+    B_DEVICE_REG(dev_1, bDriverNumber_t, "description")
+    .....
+    B_DEVICE_REG(dev_n, bDriverNumber_t, "description")
  */
 
+B_DEVICE_REG(bTESTFLASH, bTESTFLASH_Driver, "testflash")
 
 #undef B_DEVICE_REG
 

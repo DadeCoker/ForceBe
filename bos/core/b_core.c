@@ -84,7 +84,7 @@
  * \{
  */
 
-static bCoreFd_t bCoreFdTable[BCORE_FD_MAX];
+static bCoreFd_t bCoreFdTable[B_REG_DRV_NUMBER];
 
 bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
 /**
@@ -111,21 +111,21 @@ static void _bCoreMonitor()
     ;
 }
 
-static int _bCoreCreateFd(uint8_t dev_no, uint8_t flag)
+static int _bCoreCreateFd(uint32_t dev_no, uint8_t flag)
 {
     int            i    = 0;
     int            fd   = -1;
     static uint8_t init = 0;
     if (init == 0)
     {
-        init = 1;
-        for (i = 0; i < BCORE_FD_MAX; i++)
+        for (i = 0; i < B_REG_DRV_NUMBER; i++)
         {
             bCoreFdTable[i].status = BCORE_STA_NULL;
         }
+        init = 1;
     }
 
-    for (i = 0; i < BCORE_FD_MAX; i++)
+    for (i = 0; i < B_REG_DRV_NUMBER; i++)
     {
         if (bCoreFdTable[i].status == BCORE_STA_OPEN)
         {
@@ -136,7 +136,7 @@ static int _bCoreCreateFd(uint8_t dev_no, uint8_t flag)
         }
     }
 
-    for (i = 0; i < BCORE_FD_MAX; i++)
+    for (i = 0; i < B_REG_DRV_NUMBER; i++)
     {
         if (bCoreFdTable[i].status == BCORE_STA_NULL)
         {
@@ -185,7 +185,7 @@ static int _bCoreDeleteFd(int fd)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bOpen(uint8_t dev_no, uint8_t flag)
+int bOpen(uint32_t dev_no, uint8_t flag)
 {
     int fd     = -1;
     int retval = 0;
@@ -210,12 +210,12 @@ int bOpen(uint8_t dev_no, uint8_t flag)
 int bRead(int fd, uint8_t *pdata, uint32_t len)
 {
     int retval;
-    if (fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
+    if (fd < 0 || fd >= B_REG_DRV_NUMBER || pdata == NULL)
     {
         return -1;
     }
 
-    if (bCoreFdTable[fd].flag == BCORE_FLAG_W || bCoreFdTable[fd].status == BCORE_STA_NULL)
+    if (!READ_IS_VALID(bCoreFdTable[fd].flag) || bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
@@ -231,12 +231,12 @@ int bRead(int fd, uint8_t *pdata, uint32_t len)
 int bWrite(int fd, uint8_t *pdata, uint32_t len)
 {
     int retval;
-    if (fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
+    if (fd < 0 || fd >= B_REG_DRV_NUMBER || pdata == NULL)
     {
         return -1;
     }
 
-    if (bCoreFdTable[fd].flag == BCORE_FLAG_R || bCoreFdTable[fd].status == BCORE_STA_NULL)
+    if (!WRITE_IS_VALID(bCoreFdTable[fd].flag) || bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
@@ -251,7 +251,7 @@ int bWrite(int fd, uint8_t *pdata, uint32_t len)
 
 int bLseek(int fd, uint32_t off)
 {
-    if (fd < 0 || fd >= BCORE_FD_MAX)
+    if (fd < 0 || fd >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
@@ -266,7 +266,7 @@ int bLseek(int fd, uint32_t off)
 
 int bCtl(int fd, uint8_t cmd, void *param)
 {
-    if (fd < 0 || fd >= BCORE_FD_MAX)
+    if (fd < 0 || fd >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
@@ -275,7 +275,7 @@ int bCtl(int fd, uint8_t cmd, void *param)
 
 int bClose(int fd)
 {
-    if (fd < 0 || fd >= BCORE_FD_MAX)
+    if (fd < 0 || fd >= B_REG_DRV_NUMBER)
     {
         return -1;
     }
@@ -291,7 +291,7 @@ int bClose(int fd)
 int bCoreIsIdle()
 {
     int i;
-    for (i = 0; i < BCORE_FD_MAX; i++)
+    for (i = 0; i < B_REG_DRV_NUMBER; i++)
     {
         if (bCoreFdTable[i].status == BCORE_STA_OPEN)
         {
@@ -325,7 +325,7 @@ int bInit()
     return bDeviceInit();
 }
 
-int bReinit(uint8_t dev_no)
+int bReinit(uint32_t dev_no)
 {
     return bDeviceReinit(dev_no);
 }

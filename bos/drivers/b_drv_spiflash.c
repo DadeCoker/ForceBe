@@ -53,6 +53,10 @@
  * \defgroup SPIFLASH_Private_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    sfud_flash sflash;
+} bSpiFlashPrivate_t;
 
 /**
  * \}
@@ -65,6 +69,9 @@
 #ifndef SFUD_USING_SFDP
 #err "please add sfud"
 #endif
+
+#define DRIVER_NAME SPIFLASH
+
 /**
  * \}
  */
@@ -87,12 +94,8 @@
 #define HAL_SPIFLASH_TOTAL_NUMBER 1
 #endif
 
-HALIF_KEYWORD bSPIFLASH_HalIf_t bSPIFLASH_HalIfTable[HAL_SPIFLASH_TOTAL_NUMBER] = HAL_SPIFLASH_IF;
-bSPIFLASH_Driver_t              bSPIFLASH_Driver[HAL_SPIFLASH_TOTAL_NUMBER];
-
-static char       bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][4];
-extern sfud_flash flash_table[];  // sfud
-
+bDRIVER_HALIF_TABLE(bSPIFLASH_HalIf_t, DRIVER_NAME);
+static bSpiFlashPrivate_t bSpiFlashPrivate[bDRIVER_HALIF_NUM(bSPIFLASH_HalIf_t, DRIVER_NAME)];
 /**
  * \}
  */
@@ -118,11 +121,12 @@ static void _bSPIFlashSPI_Unlock(const sfud_spi *spi)
 static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, size_t write_size,
                                  uint8_t *read_buf, size_t read_size)
 {
-    sfud_err           result = SFUD_SUCCESS;
-    bSPIFLASH_HalIf_t *_if    = (bSPIFLASH_HalIf_t *)spi->_hal_if;
-    bHalQSPICmdInfo_t  info;
-    uint8_t           *ptr   = (uint8_t *)write_buf;
-    size_t             count = 0;
+    sfud_err            result = SFUD_SUCCESS;
+    bDriverInterface_t *pdrv   = (bDriverInterface_t *)spi->user_data;
+    bHalQSPICmdInfo_t   info;
+    uint8_t            *ptr   = (uint8_t *)write_buf;
+    size_t              count = 0;
+    bDRIVER_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     if ((write_size && write_buf == NULL) || (read_size && read_buf == NULL))
     {
         return SFUD_ERR_WRITE;
@@ -230,24 +234,6 @@ static sfud_err _bSPIFlashSPI_WR(const sfud_spi *spi, const uint8_t *write_buf, 
     }
     return result;
 }
-
-#ifdef SFUD_USING_QSPI
-/**
- * read flash data by QSPI
- */
-static sfud_err _bSPIFlashQSPI_Read(const struct __sfud_spi *spi, uint32_t addr,
-                                    sfud_qspi_read_cmd_format *qspi_read_cmd_format,
-                                    uint8_t *read_buf, size_t read_size)
-{
-    sfud_err result = SFUD_SUCCESS;
-
-    /**
-     * add your qspi read flash data code
-     */
-
-    return result;
-}
-#endif /* SFUD_USING_QSPI */
 /**
  * \}
  */
@@ -259,21 +245,17 @@ static sfud_err _bSPIFlashQSPI_Read(const struct __sfud_spi *spi, uint32_t addr,
 
 sfud_err sfud_spi_port_init(sfud_flash *flash)
 {
-    sfud_err result = SFUD_SUCCESS;
-    flash->spi.wr   = _bSPIFlashSPI_WR;
-#if SFUD_USING_QSPI
-    flash->spi.qspi_read = _bSPIFlashQSPI_Read;  // Required when QSPI mode enable
-#endif
-    flash->spi.lock      = _bSPIFlashSPI_Lock;
-    flash->spi.unlock    = _bSPIFlashSPI_Unlock;
-    flash->spi.user_data = NULL;
-    flash->retry.delay   = NULL;
-    flash->retry.times   = 0xFFFFFFFF;  // Required
+    sfud_err result    = SFUD_SUCCESS;
+    flash->spi.wr      = _bSPIFlashSPI_WR;
+    flash->spi.lock    = _bSPIFlashSPI_Lock;
+    flash->spi.unlock  = _bSPIFlashSPI_Unlock;
+    flash->retry.delay = NULL;
+    flash->retry.times = 0xFFFFFFFF;  // Required
     return result;
 }
 
 /****************************************************driver interface******/
-static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
+static int _bSPIFLASH_Open(bDriverInterface_t *pdrv)
 {
     bDRIVER_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     uint8_t           cmd = 0xab;
@@ -303,7 +285,7 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
     return 0;
 }
 
-static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
+static int _bSPIFLASH_Close(bDriverInterface_t *pdrv)
 {
     bDRIVER_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
     uint8_t           cmd = 0xb9;
@@ -333,24 +315,24 @@ static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
     return 0;
 }
 
-static int _bSPIFLASH_ReadBuf(bSPIFLASH_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
+static int _bSPIFLASH_ReadBuf(bDriverInterface_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
-    sfud_flash *flash = (sfud_flash *)(pdrv->_private._p);
+    sfud_flash *flash = &((bSpiFlashPrivate_t *)(pdrv->_private._p))->sflash;
     sfud_read(flash, addr, len, pbuf);
     return len;
 }
 
-static int _bSPIFLASH_WriteBuf(bSPIFLASH_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
+static int _bSPIFLASH_WriteBuf(bDriverInterface_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
-    sfud_flash *flash = (sfud_flash *)(pdrv->_private._p);
+    sfud_flash *flash = &((bSpiFlashPrivate_t *)(pdrv->_private._p))->sflash;
     sfud_write(flash, addr, len, pbuf);
     return len;
 }
 
-static int _bSPIFLASH_Ctl(bSPIFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
+static int _bSPIFLASH_Ctl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
 {
     int         retval = -1;
-    sfud_flash *flash  = (sfud_flash *)(pdrv->_private._p);
+    sfud_flash *flash  = &((bSpiFlashPrivate_t *)(pdrv->_private._p))->sflash;
     switch (cmd)
     {
         case bCMD_ERASE_SECTOR:
@@ -393,50 +375,34 @@ static int _bSPIFLASH_Ctl(bSPIFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
  * \addtogroup SPIFLASH_Exported_Functions
  * \{
  */
-int bSPIFLASH_Init()
+int bSPIFLASH_Init(bDriverInterface_t *pdrv)
 {
-    size_t i = 0, number = sizeof(bSPIFLASH_HalIfTable) / sizeof(bSPIFLASH_HalIf_t);
-    int    retval = 0;
-    for (i = 0; i < number; i++)
-    {
-        sprintf(bSPIFlashName[i], "%03d", i);
-        flash_table[i].name        = bSPIFlashName[i];
-        flash_table[i].spi._hal_if = (void *)&bSPIFLASH_HalIfTable[i];
+    int                 retval = 0;
+    bSpiFlashPrivate_t *p_data;
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bSPIFLASH_Init);
+    pdrv->open        = _bSPIFLASH_Open;
+    pdrv->close       = _bSPIFLASH_Close;
+    pdrv->ctl         = _bSPIFLASH_Ctl;
+    pdrv->read        = _bSPIFLASH_ReadBuf;
+    pdrv->write       = _bSPIFLASH_WriteBuf;
+    pdrv->_private._p = (void *)&bSpiFlashPrivate[pdrv->drv_no];
 
-        bSPIFLASH_Driver[i].init        = bSPIFLASH_Init;
-        bSPIFLASH_Driver[i].open        = _bSPIFLASH_Open;
-        bSPIFLASH_Driver[i].close       = _bSPIFLASH_Close;
-        bSPIFLASH_Driver[i].ctl         = _bSPIFLASH_Ctl;
-        bSPIFLASH_Driver[i].read        = _bSPIFLASH_ReadBuf;
-        bSPIFLASH_Driver[i].write       = _bSPIFLASH_WriteBuf;
-        bSPIFLASH_Driver[i].status      = 0;
-        bSPIFLASH_Driver[i]._private._p = &flash_table[i];
-        bSPIFLASH_Driver[i]._hal_if     = (void *)&bSPIFLASH_HalIfTable[i];
-    }
+    p_data                       = (bSpiFlashPrivate_t *)(pdrv->_private._p);
+    p_data->sflash.index         = pdrv->drv_no;
+    p_data->sflash.name          = pdrv->pdes;
+    p_data->sflash.spi.user_data = (void *)pdrv;
 
-    for (i = 0; i < number; i++)
-    {
-        _bSPIFLASH_Open(&bSPIFLASH_Driver[i]);  // wakeup flash
-    }
+    _bSPIFLASH_Open(pdrv);
 
-    if (sfud_init() != SFUD_SUCCESS)
+    if (sfud_device_init(&p_data->sflash) != SFUD_SUCCESS)
     {
-        for (i = 0; i < number; i++)
-        {
-            bSPIFLASH_Driver[i].status = -1;
-        }
         retval = -1;
     }
-
-    for (i = 0; i < number; i++)
-    {
-        _bSPIFLASH_Close(&bSPIFLASH_Driver[i]);  // powerdown flash
-    }
-
+    _bSPIFLASH_Close(pdrv);
     return retval;
 }
 
-bDRIVER_REG_INIT(bSPIFLASH_Init);
+bDRIVER_REG_INIT(B_DRIVER_SPIFLASH, bSPIFLASH_Init);
 
 /**
  * \}

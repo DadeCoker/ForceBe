@@ -30,7 +30,6 @@
 
 #include <string.h>
 
-
 /* send dummy data for read data */
 #define DUMMY_DATA 0xFF
 
@@ -38,8 +37,6 @@
 //#error "Please configure the flash device information table in (in sfud_cfg.h)."
 //#endif
 
-/* user configured flash device information table */
-sfud_flash flash_table[SFUD_USING_FALSH_NUMBER];
 /* supported manufacturer information table */
 static const sfud_mf mf_table[] = SFUD_MF_TABLE;
 
@@ -115,73 +112,6 @@ sfud_err sfud_device_init(sfud_flash *flash)
     }
 
     return result;
-}
-
-/**
- * SFUD library initialize.
- *
- * @return result
- */
-sfud_err sfud_init(void)
-{
-    sfud_err cur_flash_result = SFUD_SUCCESS, all_flash_result = SFUD_SUCCESS;
-    size_t   i;
-
-    SFUD_DEBUG("Start initialize Serial Flash Universal Driver(SFUD) V%s.", SFUD_SW_VERSION);
-    SFUD_DEBUG("You can get the latest version on https://github.com/armink/SFUD .");
-    /* initialize all flash device in flash device table */
-    for (i = 0; i < sizeof(flash_table) / sizeof(sfud_flash); i++)
-    {
-        /* initialize flash device index of flash device information table */
-        flash_table[i].index = i;
-        cur_flash_result     = sfud_device_init(&flash_table[i]);
-
-        if (cur_flash_result != SFUD_SUCCESS)
-        {
-            all_flash_result = cur_flash_result;
-        }
-    }
-
-    return all_flash_result;
-}
-
-/**
- * get flash device by its index which in the flash information table
- *
- * @param index the index which in the flash information table  @see flash_table
- *
- * @return flash device
- */
-sfud_flash *sfud_get_device(size_t index)
-{
-    if (index < sfud_get_device_num())
-    {
-        return &flash_table[index];
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-/**
- * get flash device total number on flash device information table  @see flash_table
- *
- * @return flash device total number
- */
-size_t sfud_get_device_num(void)
-{
-    return sizeof(flash_table) / sizeof(sfud_flash);
-}
-
-/**
- * get flash device information table  @see flash_table
- *
- * @return flash device table pointer
- */
-const sfud_flash *sfud_get_device_table(void)
-{
-    return flash_table;
 }
 
 #ifdef SFUD_USING_QSPI

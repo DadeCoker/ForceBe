@@ -60,6 +60,9 @@
  * \defgroup XPT2046_Private_Defines
  * \{
  */
+
+#define DRIVER_NAME XPT2046
+
 #define XPT2046_I 0x80
 #define XPT2046_X 0xD0
 #define XPT2046_Y 0x90
@@ -80,8 +83,7 @@
  * \defgroup XPT2046_Private_Variables
  * \{
  */
-HALIF_KEYWORD bXPT2046_HalIf_t bXPT2046_HalIf = HAL_XPT2046_IF;
-bXPT2046_Driver_t              bXPT2046_Driver;
+bDRIVER_HALIF_TABLE(bXPT2046_HalIf_t, DRIVER_NAME);
 
 /**
  * \}
@@ -100,30 +102,33 @@ bXPT2046_Driver_t              bXPT2046_Driver;
  * \defgroup XPT2046_Private_Functions
  * \{
  */
-static void _bXPT2046_SPIW(uint8_t dat)
+static void _bXPT2046_SPIW(bDriverInterface_t *pdrv, uint8_t dat)
 {
-    bHalSpiSend(&bXPT2046_HalIf, &dat, 1);
+    bDRIVER_GET_HALIF(_if, bXPT2046_HalIf_t, pdrv);
+    bHalSpiSend(_if, &dat, 1);
 }
 
-static uint8_t _bXPT2046_SPIR()
+static uint8_t _bXPT2046_SPIR(bDriverInterface_t *pdrv)
 {
     uint8_t tmp;
-    bHalSpiReceive(&bXPT2046_HalIf, &tmp, 1);
+    bDRIVER_GET_HALIF(_if, bXPT2046_HalIf_t, pdrv);
+    bHalSpiReceive(_if, &tmp, 1);
     return tmp;
 }
 
-static uint16_t _bXPT2046ReadVal(uint8_t r)
+static uint16_t _bXPT2046ReadVal(bDriverInterface_t *pdrv, uint8_t r)
 {
     uint16_t l, h;
-    bHalGpioWritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 0);
-    _bXPT2046_SPIW(r);
-    h = _bXPT2046_SPIR();
-    l = _bXPT2046_SPIR();
-    bHalGpioWritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 1);
+    bDRIVER_GET_HALIF(_if, bXPT2046_HalIf_t, pdrv);
+    bHalGpioWritePin(_if->cs.port, _if->cs.pin, 0);
+    _bXPT2046_SPIW(pdrv, r);
+    h = _bXPT2046_SPIR(pdrv);
+    l = _bXPT2046_SPIR(pdrv);
+    bHalGpioWritePin(_if->cs.port, _if->cs.pin, 1);
     return ((h << 8) | (l)) >> 3;
 }
 
-static int _bXPT2046Read(bXPT2046_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
+static int _bXPT2046Read(bDriverInterface_t *pdrv, uint32_t addr, uint8_t *pbuf, uint32_t len)
 {
     bTouchAdVal_t *pxy = (bTouchAdVal_t *)pbuf;
 
@@ -131,14 +136,14 @@ static int _bXPT2046Read(bXPT2046_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, 
     {
         return -1;
     }
-    pxy->x_ad = _bXPT2046ReadVal(XPT2046_X);
-    pxy->y_ad = _bXPT2046ReadVal(XPT2046_Y);
+    pxy->x_ad = _bXPT2046ReadVal(pdrv, XPT2046_X);
+    pxy->y_ad = _bXPT2046ReadVal(pdrv, XPT2046_Y);
     return sizeof(bTouchAdVal_t);
 }
 
-static int _bXPT2046Close(bXPT2046_Driver_t *pdrv)
+static int _bXPT2046Close(bDriverInterface_t *pdrv)
 {
-    _bXPT2046ReadVal(XPT2046_I);
+    _bXPT2046ReadVal(pdrv, XPT2046_I);
     return 0;
 }
 
@@ -150,21 +155,16 @@ static int _bXPT2046Close(bXPT2046_Driver_t *pdrv)
  * \addtogroup XPT2046_Exported_Functions
  * \{
  */
-int bXPT2046_Init()
+int bXPT2046_Init(bDriverInterface_t *pdrv)
 {
-    _bXPT2046ReadVal(XPT2046_I);
-    bXPT2046_Driver.status  = 0;
-    bXPT2046_Driver.init    = bXPT2046_Init;
-    bXPT2046_Driver.close   = _bXPT2046Close;
-    bXPT2046_Driver.read    = _bXPT2046Read;
-    bXPT2046_Driver.ctl     = NULL;
-    bXPT2046_Driver.open    = NULL;
-    bXPT2046_Driver.write   = NULL;
-    bXPT2046_Driver._hal_if = (void *)&bXPT2046_HalIf;
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bXPT2046_Init);
+    pdrv->close = _bXPT2046Close;
+    pdrv->read  = _bXPT2046Read;
+    _bXPT2046ReadVal(pdrv, XPT2046_I);
     return 0;
 }
 
-bDRIVER_REG_INIT(bXPT2046_Init);
+bDRIVER_REG_INIT(B_DRIVER_XPT2046, bXPT2046_Init);
 
 /**
  * \}

@@ -37,13 +37,6 @@ extern "C" {
 
 /* ../src/sfup.c */
 /**
- * SFUD library initialize.
- *
- * @return result
- */
-sfud_err sfud_init(void);
-
-/**
  * SFUD initialize by flash device
  *
  * @param flash flash device
@@ -51,29 +44,6 @@ sfud_err sfud_init(void);
  * @return result
  */
 sfud_err sfud_device_init(sfud_flash *flash);
-
-/**
- * get flash device by its index which in the flash information table
- *
- * @param index the index which in the flash information table  @see flash_table
- *
- * @return flash device
- */
-sfud_flash *sfud_get_device(size_t index);
-
-/**
- * get flash device total number on flash device information table  @see flash_table
- *
- * @return flash device total number
- */
-size_t sfud_get_device_num(void);
-
-/**
- * get flash device information table  @see flash_table
- *
- * @return flash device table pointer
- */
-const sfud_flash *sfud_get_device_table(void);
 
 #ifdef SFUD_USING_QSPI
 /**

@@ -156,7 +156,7 @@ static void _bOLEDDrawPixel(bDriverInterface_t *pdrv, uint8_t x, uint8_t y, uint
     uint8_t  tmp = 0, off;
 
     index = (y / 8) * LCD_X_SIZE + x;
-    tmp   = ((bOledPrivate_t *)(pdrv->_private._p)).data[index];
+    tmp   = ((bOledPrivate_t *)(pdrv->_private._p))->data[index];
     off   = y % 8;
     if (t)
     {
@@ -167,7 +167,7 @@ static void _bOLEDDrawPixel(bDriverInterface_t *pdrv, uint8_t x, uint8_t y, uint
         tmp &= ~(1 << off);
     }
 
-    ((bOledPrivate_t *)(pdrv->_private._p)).data[index] = tmp;
+    ((bOledPrivate_t *)(pdrv->_private._p))->data[index] = tmp;
     _bOLEDSetCursor(pdrv, x, y / 8);
     _bOLED_WriteData(pdrv, tmp);
 }
@@ -202,11 +202,11 @@ static int _bOLEDFillRect(bDriverInterface_t *pdrv, uint16_t x1, uint16_t y1, ui
             index = (j / 8) * LCD_X_SIZE + i;
             if (color)
             {
-                bOLED_Buff[index] |= 1 << (j % 8);
+                ((bOledPrivate_t *)(pdrv->_private._p))->data[index] |= 1 << (j % 8);
             }
             else
             {
-                bOLED_Buff[index] &= ~(1 << (j % 8));
+                ((bOledPrivate_t *)(pdrv->_private._p))->data[index] &= ~(1 << (j % 8));
             }
         }
     }
@@ -217,7 +217,8 @@ static int _bOLEDFillRect(bDriverInterface_t *pdrv, uint16_t x1, uint16_t y1, ui
         _bOLED_WriteCmd(pdrv, 0x10);      /// high column start address
         for (j = 0; j < LCD_X_SIZE; j++)
         {
-            _bOLED_WriteData(bOLED_Buff[i * LCD_X_SIZE + j]);
+            _bOLED_WriteData(pdrv,
+                             ((bOledPrivate_t *)(pdrv->_private._p))->data[i * LCD_X_SIZE + j]);
         }
     }
     return 0;
@@ -234,7 +235,7 @@ static int _bOLEDCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
             {
                 return -1;
             }
-            retval = _bOLEDFillRect(pinfo->x1, pinfo->y1, pinfo->x2, pinfo->y2, pinfo->color);
+            retval = _bOLEDFillRect(pdrv, pinfo->x1, pinfo->y1, pinfo->x2, pinfo->y2, pinfo->color);
             break;
         default:
             break;
@@ -251,7 +252,7 @@ static int _bOLEDWrite(bDriverInterface_t *pdrv, uint32_t addr, uint8_t *pbuf, u
     {
         return -1;
     }
-    _bOLEDDrawPixel(x, y, pcolor->color);
+    _bOLEDDrawPixel(pdrv, x, y, pcolor->color);
     return 2;
 }
 /**
@@ -286,8 +287,8 @@ int bOLED_Init(bDriverInterface_t *pdrv)
     _bOLED_WriteCmd(pdrv, 0xa6);  ///--set normal display
     _bOLED_WriteCmd(pdrv, 0xa8);  ///--set multiplex ratio(1 to 64)
     _bOLED_WriteCmd(pdrv, 0x3F);  ///
-    _bOLED_WriteCmd(pdrv,
-                    0xa4);  /// 0xa4,Output follows RAM content;0xa5,Output ignores RAM content
+    _bOLED_WriteCmd(pdrv, 0xa4);  /// 0xa4,Output follows RAM content;
+                                  /// 0xa5,Output ignores RAM content
     _bOLED_WriteCmd(pdrv, 0xd3);  ///-set display offset
     _bOLED_WriteCmd(pdrv, 0x00);  ///-not offset
     _bOLED_WriteCmd(pdrv, 0xd5);  ///--set display clock divide ratio/oscillator frequency

@@ -275,8 +275,7 @@ typedef struct
 typedef struct __sfud_spi
 {
     /* SPI device name */
-    //    char *name;
-    void *_hal_if;
+    char *name;
     /* SPI bus write read data function */
     sfud_err (*wr)(const struct __sfud_spi *spi, const uint8_t *write_buf, size_t write_size,
                    uint8_t *read_buf, size_t read_size);

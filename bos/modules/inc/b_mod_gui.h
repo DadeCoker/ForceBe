@@ -64,8 +64,8 @@ extern "C" {
 
 typedef struct bGUIStruct
 {
-    const uint8_t      lcd_dev_no;
-    const uint8_t      touch_dev_no;
+    const uint32_t     lcd_dev_no;
+    const uint32_t     touch_dev_no;
     const int          touch_type;
     const uint16_t     lcd_x_size;
     const uint16_t     lcd_y_size;

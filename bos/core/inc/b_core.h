@@ -57,18 +57,11 @@ extern "C" {
  * \defgroup CORE_Exported_TypesDefinitions
  * \{
  */
-
 typedef struct
 {
-    uint8_t dev_no;
-    uint8_t name[8];
-} bCoreDevTable_t;
-
-typedef struct
-{
-    uint8_t  number;
     uint8_t  flag;
     uint8_t  status;
+    uint32_t number;
     uint32_t lseek;
 } bCoreFd_t;
 
@@ -87,8 +80,6 @@ typedef struct
 
 #define BCORE_STA_NULL 0
 #define BCORE_STA_OPEN 1
-
-#define BCORE_FD_MAX 10
 /**
  * \}
  */
@@ -98,6 +89,8 @@ typedef struct
  * \{
  */
 #define IS_VALID_FLAG(n) (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW)
+#define READ_IS_VALID(n) (n == BCORE_FLAG_R || n == BCORE_FLAG_RW)
+#define WRITE_IS_VALID(n) (n == BCORE_FLAG_W || n == BCORE_FLAG_RW)
 /**
  * \}
  */
@@ -107,7 +100,7 @@ typedef struct
  * \{
  */
 
-int bOpen(uint8_t dev_no, uint8_t flag);
+int bOpen(uint32_t dev_no, uint8_t flag);
 int bRead(int fd, uint8_t *pdata, uint32_t len);
 int bWrite(int fd, uint8_t *pdata, uint32_t len);
 int bCtl(int fd, uint8_t cmd, void *param);
@@ -116,9 +109,9 @@ int bClose(int fd);
 
 int bInit(void);
 int bExec(void);
-int bReinit(uint8_t dev_no);
+int bReinit(uint32_t dev_no);
 
-int bModifyHalIf(uint8_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval,
+int bModifyHalIf(uint32_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval,
                  uint8_t len);
 
 /**
