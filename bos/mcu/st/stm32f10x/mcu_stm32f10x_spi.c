@@ -103,6 +103,7 @@ static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 
 static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 {
+    int          i = 0;
     uint8_t      tmp;
     bUtilSPI_t   simulating_spi;
     McuSpiReg_t *pSpi = NULL;
@@ -136,6 +137,10 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
             ;
         }
         tmp = pSpi->DR;
+        for (i = 0; i < 8; i++)
+        {
+            ;
+        }
     }
     return tmp;
 }
