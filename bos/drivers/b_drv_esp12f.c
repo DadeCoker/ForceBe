@@ -222,6 +222,10 @@ static uint8_t _bEspNumLen(uint32_t n)
 {
     uint32_t t   = 1;
     uint8_t  len = 0;
+    if(n == 0)
+    {
+        return 1;
+    }
     while (n / t)
     {
         t *= 10;
