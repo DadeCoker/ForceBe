@@ -66,6 +66,13 @@ typedef enum
     KV_SECTOR_STA_NUM
 } bKVSectorStat_t;
 
+typedef enum
+{
+    KV_DATA_STA_MODIFY,
+    KV_DATA_STA_DELETE,
+    KV_DATA_STA_NUM
+} bKVDataStat_t;
+
 typedef struct
 {
     uint32_t flag;
@@ -232,6 +239,37 @@ static int _bKVSetSectorState(bKVInstance_t *pinstance, uint32_t sector_index, b
     return 0;
 }
 
+static int _bKVSetDataState(bKVInstance_t *pinstance, uint32_t addr, bKVDataStat_t sta,
+                            uint32_t param)
+{
+    uint32_t wdata = 0;
+    int      fd = -1, retval = -1;
+    addr = addr + sizeof(uint32_t);
+    if (sta == KV_DATA_STA_MODIFY)
+    {
+        wdata = B_KV_MODIFIED_FLAG;
+        wdata = (wdata << 24) | (param & 0xffffff);
+    }
+    else if (sta == KV_DATA_STA_DELETE)
+    {
+        wdata = B_KV_DELETED_FLAG;
+        wdata <<= 24;
+    }
+    fd = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    bLseek(fd, addr);
+    retval = bWrite(fd, (uint8_t *)&wdata, sizeof(uint32_t));
+    bClose(fd);
+    if (retval < 0)
+    {
+        return -1;
+    }
+    return 0;
+}
+
 static void _bKVFindMessyEmptySector(bKVInstance_t *pinstance, int *messy, int *empty, int sindex)
 {
     int             i = 0;
@@ -297,8 +335,8 @@ static int _bKVCheckValue(bKVInstance_t *pinstance, uint32_t addr, bKVDataHead_t
     uint32_t crc     = 0;
     uint32_t rlen    = 0;
     CRC_REG_SBS_HANDLE(kv_crc, ALGO_CRC32);
-    addr = addr + sizeof(bKVDataHead_t) + B_SIZE_ALIGNMENT(B_KV_KEY_LENGTH(head.len), 4);
-    if (B_SIZE_ALIGNMENT(B_KV_KEY_LENGTH(head.len) > pinstance->erase_size - sizeof(bKVSectorHead_t))
+    addr = addr + sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head);
+    if (B_KV_VALUE_RLEN(head) > pinstance->erase_size - sizeof(bKVSectorHead_t))
     {
         joint_f = 1;
     }
@@ -396,6 +434,47 @@ static int _bKVMoveData(bKVInstance_t *pinstance, int src, int des)
     }
     _bKVEraseSector(pinstance, src);
     _bKVSetSectorFlag(pinstance, src);
+    return (w_addr - (pinstance->address + des * pinstance->erase_size));
+}
+
+static int _bKVSectorDefragNoErase(bKVInstance_t *pinstance)
+{
+    int           retval = -1;
+    bKVDataHead_t head;
+    uint32_t      r_addr = pinstance->address + sizeof(bKVSectorHead_t);
+    uint32_t      w_addr = pinstance->address + sizeof(bKVSectorHead_t);
+    if (pinstance->write_index < 0 && pinstance->empty_count > 0)
+    {
+        pinstance->write_index = 0;
+        pinstance->empty_count = 0;
+        retval = _bKVSetSectorState(pinstance, pinstance->write_index, KV_SECTOR_STA_WRITABLE, 0);
+        pinstance->write_offset = sizeof(bKVSectorHead_t);
+        return retval;
+    }
+    while (r_addr < (pinstance->address + pinstance->total_size))
+    {
+        retval = _bKVReadDataHead(pinstance, r_addr, &head);
+        if (retval < 0)
+        {
+            return retval;
+        }
+        if (head.flag != B_KV_FLAG)
+        {
+            break;
+        }
+        if (head.state != B_KV_MODIFIED_FLAG && head.state != B_KV_DELETED_FLAG)
+        {
+            if (r_addr != w_addr)
+            {
+                _bKVCopyData(pinstance, r_addr, w_addr,
+                             sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head) + B_KV_VALUE_RLEN(head));
+                _bKVSetDataState(pinstance, r_addr, KV_DATA_STA_MODIFY, w_addr);
+            }
+            w_addr += sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head) + B_KV_VALUE_RLEN(head);
+        }
+        r_addr += sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head) + B_KV_VALUE_RLEN(head);
+    }
+    pinstance->write_offset = w_addr - pinstance->address;
     return 0;
 }
 
@@ -407,7 +486,7 @@ static int _bKVSectorDefrag(bKVInstance_t *pinstance)
     bKVSectorHead_t sector_head;
     if (pinstance->erase_size == 0)
     {
-        return 0;
+        return _bKVSectorDefragNoErase(pinstance);
     }
     if (pinstance->write_index != -1)
     {
@@ -424,21 +503,24 @@ static int _bKVSectorDefrag(bKVInstance_t *pinstance)
         {
             pinstance->write_index = eindex;
             pinstance->empty_count -= 1;
-            retval = 0;
+            pinstance->write_offset = sizeof(bKVSectorHead_t);
+            retval                  = 0;
         }
     }
     else if (pinstance->empty_count == 1)
     {
         if (mindex != -1 && eindex != -1)
         {
-            if (0 == (retval = _bKVMoveData(pinstance, mindex, eindex)))
+            if (0 < (retval = _bKVMoveData(pinstance, mindex, eindex)))
             {
-                pinstance->write_index = eindex;
+                pinstance->write_index  = eindex;
+                pinstance->write_offset = retval;
+                retval                  = 0;
             }
         }
     }
 
-    b_log("ret:%d windex:%d\r\n", retval, pinstance->write_index);
+    b_log("ret:%d windex:%d off:%d\r\n", retval, pinstance->write_index, pinstance->write_offset);
 
     return retval;
 }
@@ -553,23 +635,12 @@ static int _bKVFindKey(bKVInstance_t *pinstance, const char *key, uint32_t *padd
                 }
                 continue;
             }
-            if (data_head.state == B_KV_MODIFIED_FLAG)
-            {
-                if (data_head.addr == B_KV_INVALID_ADDR)
-                {
-                    break;
-                }
-                else
-                {
-                    r_index = data_head.addr;
-                    continue;
-                }
-            }
+
             *paddr = pinstance->address + i * pinstance->erase_size + r_index;
             if (_bKVReconfirmKey(pinstance, i, key, *paddr + sizeof(bKVDataHead_t),
                                  data_head.key_len) == 0)
             {
-                return 0;
+                ;
             }
             else
             {
@@ -583,7 +654,21 @@ static int _bKVFindKey(bKVInstance_t *pinstance, const char *key, uint32_t *padd
                     r_index += sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(data_head) +
                                B_KV_VALUE_RLEN(data_head);
                 }
+                continue;
             }
+            if (data_head.state == B_KV_MODIFIED_FLAG)
+            {
+                if (data_head.addr == B_KV_INVALID_ADDR)
+                {
+                    break;
+                }
+                else
+                {
+                    r_index = data_head.addr;
+                    continue;
+                }
+            }
+            return 0;
         }
     }
     return -1;
@@ -638,6 +723,218 @@ static int _bKVReadData(bKVInstance_t *pinstance, uint32_t addr, bKVDataHead_t h
     return 0;
 }
 
+static int _bKVFindWriteOffset(bKVInstance_t *pinstance)
+{
+    bKVDataHead_t head;
+    uint32_t      raddr = 0, roffset = 0;
+    uint32_t      range = 0;
+    roffset             = sizeof(bKVSectorHead_t);
+    raddr = pinstance->address + pinstance->write_index * pinstance->erase_size + roffset;
+    range = (pinstance->erase_size > 0) ? pinstance->erase_size : pinstance->total_size;
+    while (roffset < range)
+    {
+        if (0 == _bKVReadDataHead(pinstance, raddr, &head))
+        {
+            if (head.flag != B_KV_FLAG)
+            {
+                pinstance->write_offset = roffset;
+                return 0;
+            }
+            else
+            {
+                if (head.joint_f)
+                {
+                    roffset += sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head) + B_KV_JVALUE_RLEN(head);
+                }
+                else
+                {
+                    roffset += sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head) + B_KV_VALUE_RLEN(head);
+                }
+            }
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    pinstance->write_offset = range;
+    return 0;
+}
+
+static int _bKVCompValue(bKVInstance_t *pinstance, uint32_t addr, uint8_t *pbuf, uint32_t len)
+{
+    uint8_t       tmp[32], rtmp_len = 0;
+    int           i = 0, j = 0, k = 0, fd = -1;
+    int           retval  = -1;
+    uin32_t       r_index = 0;
+    uint32_t      r_addr = 0, cmp_len = 0;
+    bKVDataHead_t head;
+    retval = _bKVReadDataHead(pinstance, addr, &head);
+    if (retval < 0)
+    {
+        return retval;
+    }
+    if (head.value_len != len)
+    {
+        return -1;
+    }
+    fd = bOpen(pinstance->dev, BCORE_FLAG_R);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    if (head.joint_f)
+    {
+        for (i = 0; i < B_KV_JVALUE_SECOTR_NUM(pinstance, head); i++)
+        {
+            bLseek(fd, addr + sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head) + i * sizeof(uint32_t));
+            bRead(fd, &r_addr, sizeof(uint32_t));
+            cmp_len = ((len - r_index) > B_KV_SECTOR_DATA_SIZE(pinstance))
+                          ? (B_KV_SECTOR_DATA_SIZE(pinstance))
+                          : (len - r_index);
+            j       = 0;
+            bLseek(fd, r_addr + sizeof(bKVSectorHead_t));
+            while (j < cmp_len)
+            {
+                rtmp_len = ((cmp_len - j) > sizeof(tmp)) ? sizeof(tmp) : (cmp_len - j);
+                bRead(fd, tmp, rtmp_len);
+                for (k = 0; k < rtmp_len; k++)
+                {
+                    if (tmp[k] != pbuf[r_index + k])
+                    {
+                        return -1;
+                    }
+                }
+                j += rtmp_len;
+                r_index += rtmp_len;
+            }
+        }
+    }
+    else
+    {
+        bLseek(fd, addr + sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head));
+        j = 0;
+        while (j < len)
+        {
+            rtmp_len = ((len - j) > sizeof(tmp)) ? sizeof(tmp) : (len - j);
+            bRead(fd, tmp, rtmp_len);
+            for (k = 0; k < rtmp_len; k++)
+            {
+                if (tmp[k] != pbuf[j + k])
+                {
+                    return -1;
+                }
+            }
+            j += rtmp_len;
+        }
+    }
+    bClose(fd);
+    return 0;
+}
+
+static int _bKVAddValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32_t len)
+{
+    int retval = -1, fd = -1;
+    int valid = (pinstance->erase_size == 0) ? (pinstance->total_size - pinstance->write_offset)
+                                             : (pinstance->erase_size - pinstance->write_offset);
+    uint32_t kv_len =
+        sizeof(bKVDataHead_t) + B_SIZE_ALIGNMENT(strlen(key), 4) + B_SIZE_ALIGNMENT(len, 4);
+    uint32_t w_addr    = 0;
+    int32_t  old_addr  = -1;
+    uint32_t empty_num = 0;
+
+    retval = _bKVFindKey(pinstance, key, (uint32_t *)&old_addr);
+    if (retval == 0)
+    {
+        if ((old_addr > pinstance->address &&
+             old_addr < (pinstance->address + pinstance->total_size)))
+        {
+            if (0 == _bKVCompValue(pinstance, (uint32_t)old_addr, pbuf, len))
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        old_addr = -1;
+    }
+
+    if (pinstance->erase_size > 0)
+    {
+        if (len > B_KV_SECTOR_DATA_SIZE(pinstance))
+        {
+            empty_num =
+                ((len + B_KV_SECTOR_DATA_SIZE(pinstance) - 1) / B_KV_SECTOR_DATA_SIZE(i)) if ()(
+                    (len + B_KV_SECTOR_DATA_SIZE(pinstance) - 1) / B_KV_SECTOR_DATA_SIZE());
+            if (empty_num >= pinstance->empty_count)
+            {
+                return -1;
+            }
+        }
+    }
+
+    if (kv_len > valid)
+    {
+        retval = _bKVSectorDefrag(pinstance);
+        if (retval < 0)
+        {
+            return retval;
+        }
+        valid = (pinstance->erase_size == 0) ? (pinstance->total_size - pinstance->write_offset)
+                                             : (pinstance->erase_size - pinstance->write_offset);
+        if (kv_len > valid)
+        {
+            return -2;
+        }
+    }
+
+    if (old_addr != -1)
+    {
+        if (pinstance->erase_size == 0)
+        {
+            retval =
+                _bKVSetDataState(pinstance, old_addr, KV_DATA_STA_MODIFY, pinstance->write_offset);
+        }
+        else
+        {
+            if (((old_addr - pinstance->address) / pinstance->erase_size) != pinstance->write_index)
+            {
+                retval = _bKVSetDataState(pinstance, old_addr, KV_DATA_STA_MODIFY, 0xffffff);
+            }
+            else
+            {
+                retval = _bKVSetDataState(pinstance, old_addr, KV_DATA_STA_MODIFY,
+                                          pinstance->write_offset);
+            }
+        }
+
+        if (retval < 0)
+        {
+            return retval;
+        }
+    }
+    w_addr = pinstanc->address + pinstance->write_index * pinstance->erase_size +
+             pinstance->write_offset;
+    fd = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    bLseek(fd, w_addr);
+    retval = bWrite(fd, pbuf, len);
+    bClose(fd);
+    if (retval < 0)
+    {
+        return -1;
+    }
+    return 0;
+}
+
 /**
  * \}
  */
@@ -660,12 +957,16 @@ int bKVInit(bKVInstance_t *pinstance)
         return -1;
     }
 
-    pinstance->write_index = -1;
-    pinstance->empty_count = 0;
+    pinstance->write_index  = -1;
+    pinstance->write_offset = sizeof(bKVSectorHead_t);
+    pinstance->empty_count  = 0;
 
     b_log("b_kv:0x%x %dB e_size %dB sector %d\r\n", pinstance->address, pinstance->total_size,
           pinstance->erase_size, B_KV_SECTOR_NUM(pinstance));
-
+    /**
+     * 遍历区块，确定可写入的区块以及空区块的个数
+     * 弱区块未初始化，则进行擦除并写入区块头部信息
+     */
     for (i = 0; i < B_KV_SECTOR_NUM(pinstance); i++)
     {
         if (0 > _bKVReadSectorHead(pinstance, i, &sector_head))
@@ -691,6 +992,9 @@ int bKVInit(bKVInstance_t *pinstance)
         pinstance->empty_count += 1;
     }
 
+    // 最小擦除单元大于0字节时，必定会保留1个空区块用于数据整理
+    // 如果空区块数量为0，则进行异常处理
+
     if (pinstance->erase_size > 0)
     {
         if (pinstance->empty_count == 0 && pinstance->write_index != -1)
@@ -710,8 +1014,12 @@ int bKVInit(bKVInstance_t *pinstance)
     }
     pinstance->init_f = 1;
     b_log("b_kv:%d %d\r\n", pinstance->write_index, pinstance->empty_count);
+
+    // 确定当前可写入区块，空闲区域偏移量
     if (pinstance->write_index >= 0)
     {
+        _bKVFindWriteOffset(pinstance);
+        b_log(":::%d %d\r\n", pinstance->write_index, pinstance->write_offset);
         return 0;
     }
     return _bKVSectorDefrag(pinstance);
@@ -723,13 +1031,18 @@ int bKVGetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32
     int           retval  = -1;
     uint32_t      address = 0;
     bKVDataHead_t data_head;
-    if (key == NULL || pbuf == NULL || len == 0)
+    if (key == NULL || pbuf == NULL || len == 0 || pinstance == NULL)
     {
         return -1;
     }
+    if (pinstance->init_f != 0)
+    {
+        return -2;
+    }
+
     if (strlen(key) > 0xFF)
     {
-        return -1;
+        return -3;
     }
     retval = _bKVFindKey(pinstance, key, &address);
     if (retval < 0)
@@ -739,7 +1052,7 @@ int bKVGetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32
     _bKVReadDataHead(pinstance, address, &data_head);
     if (len < data_head.value_len)
     {
-        return -1;
+        return -4;
     }
     _bKVReadData(pinstance, address, data_head, pbuf);
     if (prlen != NULL)
@@ -748,9 +1061,23 @@ int bKVGetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32
     }
     if (head.crc != crc_calculate(ALGO_CRC32, pbuf, data_head.value_len))
     {
-        return -2;
+        return -5;
     }
     return 0;
+}
+
+int bKVSetValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf, uint32_t len)
+{
+    int retval = -1;
+    if (pinstance == NULL || key == NULL || pbuf == NULL || len == 0)
+    {
+        return -1;
+    }
+    if (pinstance->init_f != 1)
+    {
+        return -2;
+    }
+    return _bKVAddValue(pinstance, key, pbuf, len);
 }
 
 /**

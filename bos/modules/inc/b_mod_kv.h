@@ -71,6 +71,7 @@ typedef struct
     const uint32_t total_size;
     const uint32_t erase_size;
     int32_t        write_index;
+    uint32_t       write_offset;
     uint32_t       empty_count;
 } bKVStruct_t;
 
