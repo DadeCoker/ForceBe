@@ -210,7 +210,7 @@ BabyOS私有协议上位机Demo：
 
 BabyOS配置工具：
 
-[https://gitee.com/notrynohigh/bconfig-tool/releases/
+https://gitee.com/notrynohigh/bconfig-tool/releases/
 
 
 
