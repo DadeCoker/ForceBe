@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_stm32g0x0_spi.c
+ * \file        mcu_stm32f10x_spi.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -34,7 +34,7 @@
 #include "hal/inc/b_hal_spi.h"
 #include "utils/inc/b_util_spi.h"
 
-#if (_MCU_PLATFORM == 1101)
+#if (_MCU_PLATFORM == 7001)
 
 #ifndef NULL
 #define NULL ((void *)0)
@@ -48,15 +48,24 @@
 
 typedef struct
 {
-    volatile uint32_t CR1;
-    volatile uint32_t CR2;
-    volatile uint32_t SR;
-    volatile uint32_t DR;
-    volatile uint32_t CRCPR;
-    volatile uint32_t RXCRCR;
-    volatile uint32_t TXCRCR;
-    volatile uint32_t I2SCFGR;
-    volatile uint32_t I2SPR;
+    volatile uint16_t CR1;
+    uint16_t          RESERVED0;
+    volatile uint16_t CR2;
+    uint16_t          RESERVED1;
+    volatile uint16_t SR;
+    uint16_t          RESERVED2;
+    volatile uint16_t DR;
+    uint16_t          RESERVED3;
+    volatile uint16_t CRCPR;
+    uint16_t          RESERVED4;
+    volatile uint16_t RXCRCR;
+    uint16_t          RESERVED5;
+    volatile uint16_t TXCRCR;
+    uint16_t          RESERVED6;
+    volatile uint16_t I2SCFGR;
+    uint16_t          RESERVED7;
+    volatile uint16_t I2SPR;
+    uint16_t          RESERVED8;
 } McuSpiReg_t;
 
 #define MCU_SPI1 ((McuSpiReg_t *)SPI1_BASE_ADDR)
@@ -93,11 +102,10 @@ static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 
 static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    uint8_t      tmp = dat;
-    int          i   = 0;
+    int          i = 0;
+    uint8_t      tmp;
     bUtilSPI_t   simulating_spi;
     McuSpiReg_t *pSpi = NULL;
-
     if (IS_NULL(spi_if))
     {
         return 0;
@@ -118,26 +126,16 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
             return 0;
         }
         pSpi = SpiTable[spi_if->_if.spi];
-
-        B_SET_BIT(pSpi->CR2, (0x1 << 12));
-
-        /* Check if the SPI is already enabled */
-        if ((pSpi->CR1 & (0x1 << 6)) == 0)
-        {
-            /* Enable SPI peripheral */
-            B_SET_BIT(pSpi->CR1, 0x1 << 6);
-        }
-
-        while (B_READ_BIT(pSpi->SR, (0x1 << 1)) == 0)
+        while ((pSpi->SR & 0x02) == 0)
         {
             ;
         }
-        *(volatile uint8_t *)&pSpi->DR = dat;
-        while (B_READ_BIT(pSpi->SR, (0x1 << 0)) == 0)
+        pSpi->DR = dat;
+        while ((pSpi->SR & 0x01) == 0)
         {
             ;
         }
-        tmp = *(volatile uint8_t *)&pSpi->DR;
+        tmp = pSpi->DR;
         for (i = 0; i < 8; i++)
         {
             ;

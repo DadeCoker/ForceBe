@@ -127,6 +127,10 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
             return 0;
         }
         pSpi = SpiTable[spi_if->_if.spi];
+        if((pSpi->CR1 & (0x1 << 6)) == 0)
+        {
+            pSpi->CR1 |= (0x1 << 6);
+        }
         while ((pSpi->SR & 0x02) == 0)
         {
             ;
