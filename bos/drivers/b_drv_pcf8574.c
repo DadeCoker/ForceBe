@@ -149,6 +149,7 @@ int bPCF8574_Init()
     bPCF8574_Driver.ctl    = NULL;
     bPCF8574_Driver.open   = NULL;
     bPCF8574_Driver.write  = _bPCF8574Write;
+    bHalI2CDriver.pWriteByte(&bPCF8574_HalIf, 0);
     return 0;
 }
 
