@@ -737,11 +737,12 @@ static int _bKVFindWriteOffset(bKVInstance_t *pinstance)
     bKVDataHead_t head;
     uint32_t      raddr = 0, roffset = 0;
     uint32_t      range = 0;
-    roffset             = sizeof(bKVSectorHead_t);
-    raddr = pinstance->address + pinstance->write_index * pinstance->erase_size + roffset;
-    range = (pinstance->erase_size > 0) ? pinstance->erase_size : pinstance->total_size;
+
+    roffset = sizeof(bKVSectorHead_t);
+    range   = (pinstance->erase_size > 0) ? pinstance->erase_size : pinstance->total_size;
     while (roffset < range)
     {
+        raddr = pinstance->address + pinstance->write_index * pinstance->erase_size + roffset;
         if (0 == _bKVReadDataHead(pinstance, raddr, &head))
         {
             if (head.flag != B_KV_FLAG)
