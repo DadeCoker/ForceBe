@@ -103,7 +103,7 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
 {
     int           i     = 0;
     McuUartReg_t *pUart = NULL;
-    if (uart > B_HAL_UART_2 || pbuf == NULL)
+    if (uart > B_HAL_UART_3 || pbuf == NULL)
     {
         return -1;
     }
