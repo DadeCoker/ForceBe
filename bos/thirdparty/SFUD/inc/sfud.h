@@ -169,7 +169,7 @@ sfud_err sfud_read_status(const sfud_flash *flash, uint8_t *status);
  *
  * @return result
  */
-sfud_err sfud_write_status(const sfud_flash *flash, bool is_volatile, uint8_t status);
+sfud_err sfud_write_status(const sfud_flash *flash, SFUD_BOOL is_volatile, uint8_t status);
 
 #ifdef __cplusplus
 }

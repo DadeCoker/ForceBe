@@ -32,13 +32,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <sfud_cfg.h>
 #include "sfud_flash_def.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define SFUD_BOOL           uint8_t
+#define SFUD_TRUE           1
+#define SFUD_FALSE          0
 
 /* debug print function. Must be implement by user. */
 #ifdef SFUD_DEBUG_MODE
@@ -222,16 +225,16 @@ typedef sfud_err (*spi_write_read_func)(const uint8_t *write_buf, size_t write_s
  * the SFDP (Serial Flash Discoverable Parameters) parameter info which used on this library
  */
 typedef struct {
-    bool available;                              /**< available when read SFDP OK */
+    SFUD_BOOL available;                              /**< available when read SFDP OK */
     uint8_t major_rev;                           /**< SFDP Major Revision */
     uint8_t minor_rev;                           /**< SFDP Minor Revision */
     uint16_t write_gran;                         /**< write granularity (bytes) */
     uint8_t erase_4k;                            /**< 4 kilobyte erase is supported throughout the device */
     uint8_t erase_4k_cmd;                        /**< 4 Kilobyte erase command */
-    bool sr_is_non_vola;                         /**< status register is supports non-volatile */
+    SFUD_BOOL sr_is_non_vola;                         /**< status register is supports non-volatile */
     uint8_t vola_sr_we_cmd;                      /**< volatile status register write enable command */
-    bool addr_3_byte;                            /**< supports 3-Byte addressing */
-    bool addr_4_byte;                            /**< supports 4-Byte addressing */
+    SFUD_BOOL addr_3_byte;                            /**< supports 3-Byte addressing */
+    SFUD_BOOL addr_4_byte;                            /**< supports 4-Byte addressing */
     uint32_t capacity;                           /**< flash capacity (bytes) */
     struct {
         uint32_t size;                           /**< erase sector size (bytes). 0x00: not available */
@@ -273,8 +276,8 @@ typedef struct {
     size_t index;                                /**< index of flash device information table  @see flash_table */
     sfud_flash_chip chip;                        /**< flash chip information */
     sfud_spi spi;                                /**< SPI device */
-    bool init_ok;                                /**< initialize OK flag */
-    bool addr_in_4_byte;                         /**< flash is in 4-Byte addressing */
+    SFUD_BOOL init_ok;                                /**< initialize OK flag */
+    SFUD_BOOL addr_in_4_byte;                         /**< flash is in 4-Byte addressing */
     struct {
         void (*delay)(void);                     /**< every retry's delay */
         size_t times;                            /**< default times for error retry */

@@ -62,9 +62,9 @@ typedef struct {
 } sfdp_para_header;
 
 static sfud_err read_sfdp_data(const sfud_flash *flash, uint32_t addr, uint8_t *read_buf, size_t size);
-static bool read_sfdp_header(sfud_flash *flash);
-static bool read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_header);
-static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header);
+static SFUD_BOOL read_sfdp_header(sfud_flash *flash);
+static SFUD_BOOL read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_header);
+static SFUD_BOOL read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header);
 
 /* ../port/sfup_port.c */
 extern void sfud_log_debug(const char *file, const long line, const char *format, ...);
@@ -75,9 +75,9 @@ extern void sfud_log_info(const char *format, ...);
  *
  * @param flash flash device
  *
- * @return true: read OK
+ * @return SFUD_TRUE: read OK
  */
-bool sfud_read_sfdp(sfud_flash *flash) {
+SFUD_BOOL sfud_read_sfdp(sfud_flash *flash) {
     SFUD_ASSERT(flash);
 
     /* JEDEC basic flash parameter header */
@@ -86,7 +86,7 @@ bool sfud_read_sfdp(sfud_flash *flash) {
         return read_basic_table(flash, &basic_header);
     } else {
         SFUD_INFO("Warning: Read SFDP parameter header information failed. The %s is not support JEDEC SFDP.", flash->name);
-        return false;
+        return SFUD_FALSE;
     }
 }
 
@@ -95,9 +95,9 @@ bool sfud_read_sfdp(sfud_flash *flash) {
  *
  * @param flash flash device
  *
- * @return true: read OK
+ * @return SFUD_TRUE: read OK
  */
-static bool read_sfdp_header(sfud_flash *flash) {
+static SFUD_BOOL read_sfdp_header(sfud_flash *flash) {
     sfud_sfdp *sfdp = &flash->sfdp;
     /* The SFDP header is located at address 000000h of the SFDP data structure.
      * It identifies the SFDP Signature, the number of parameter headers, and the SFDP revision numbers. */
@@ -108,11 +108,11 @@ static bool read_sfdp_header(sfud_flash *flash) {
 
     SFUD_ASSERT(flash);
 
-    sfdp->available = false;
+    sfdp->available = SFUD_FALSE;
     /* read SFDP header */
     if (read_sfdp_data(flash, header_addr, header, sizeof(header)) != SFUD_SUCCESS) {
         SFUD_INFO("Error: Can't read SFDP header.");
-        return false;
+        return SFUD_FALSE;
     }
     /* check SFDP header */
     if (!(header[0] == 'S' &&
@@ -120,18 +120,18 @@ static bool read_sfdp_header(sfud_flash *flash) {
           header[2] == 'D' &&
           header[3] == 'P')) {
         SFUD_DEBUG("Error: Check SFDP signature error. It's must be 50444653h('S' 'F' 'D' 'P').");
-        return false;
+        return SFUD_FALSE;
     }
     sfdp->minor_rev = header[4];
     sfdp->major_rev = header[5];
     if (sfdp->major_rev > SUPPORT_MAX_SFDP_MAJOR_REV) {
         SFUD_INFO("Error: This reversion(V%d.%d) SFDP is not supported.", sfdp->major_rev, sfdp->minor_rev);
-        return false;
+        return SFUD_FALSE;
     }
     SFUD_DEBUG("Check SFDP header is OK. The reversion is V%d.%d, NPN is %d.", sfdp->major_rev, sfdp->minor_rev,
             header[6]);
 
-    return true;
+    return SFUD_TRUE;
 }
 
 /**
@@ -139,9 +139,9 @@ static bool read_sfdp_header(sfud_flash *flash) {
  *
  * @param flash flash device
  *
- * @return true: read OK
+ * @return SFUD_TRUE: read OK
  */
-static bool read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_header) {
+static SFUD_BOOL read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_header) {
     /* The basic parameter header is mandatory, is defined by this standard, and starts at byte offset 08h. */
     uint32_t header_addr = 8;
     /* each parameter header being 2 DWORDs (64-bit) */
@@ -153,7 +153,7 @@ static bool read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_h
     /* read JEDEC basic flash parameter header */
     if (read_sfdp_data(flash, header_addr, header, sizeof(header)) != SFUD_SUCCESS) {
         SFUD_INFO("Error: Can't read JEDEC basic flash parameter header.");
-        return false;
+        return SFUD_FALSE;
     }
     basic_header->id        = header[0];
     basic_header->minor_rev = header[1];
@@ -164,17 +164,17 @@ static bool read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_h
     if (basic_header->major_rev > SUPPORT_MAX_SFDP_MAJOR_REV) {
         SFUD_INFO("Error: This reversion(V%d.%d) JEDEC basic flash parameter header is not supported.",
                 basic_header->major_rev, basic_header->minor_rev);
-        return false;
+        return SFUD_FALSE;
     }
     if (basic_header->len < BASIC_TABLE_LEN) {
         SFUD_INFO("Error: The JEDEC basic flash parameter table length (now is %d) error.", basic_header->len);
-        return false;
+        return SFUD_FALSE;
     }
     SFUD_DEBUG("Check JEDEC basic flash parameter header is OK. The table id is %d, reversion is V%d.%d,"
             " length is %d, parameter table pointer is 0x%06lX.", basic_header->id, basic_header->major_rev,
             basic_header->minor_rev, basic_header->len, basic_header->ptp);
 
-    return true;
+    return SFUD_TRUE;
 }
 
 /**
@@ -182,9 +182,9 @@ static bool read_basic_header(const sfud_flash *flash, sfdp_para_header *basic_h
  *
  * @param flash flash device
  *
- * @return true: read OK
+ * @return SFUD_TRUE: read OK
  */
-static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) {
+static SFUD_BOOL read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) {
     sfud_sfdp *sfdp = &flash->sfdp;
     /* parameter table address */
     uint32_t table_addr = basic_header->ptp;
@@ -197,7 +197,7 @@ static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) 
     /* read JEDEC basic flash parameter table */
     if (read_sfdp_data(flash, table_addr, table, sizeof(table)) != SFUD_SUCCESS) {
         SFUD_INFO("Warning: Can't read JEDEC basic flash parameter table.");
-        return false;
+        return SFUD_FALSE;
     }
     /* print JEDEC basic flash parameter table info */
     SFUD_DEBUG("JEDEC basic flash parameter table info:");
@@ -211,16 +211,16 @@ static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) 
     sfdp->erase_4k_cmd = table[1];
     switch (table[0] & 0x03) {
     case 1:
-        sfdp->erase_4k = true;
+        sfdp->erase_4k = SFUD_TRUE;
         SFUD_DEBUG("4 KB Erase is supported throughout the device. Command is 0x%02X.", sfdp->erase_4k_cmd);
         break;
     case 3:
-        sfdp->erase_4k = false;
+        sfdp->erase_4k = SFUD_FALSE;
         SFUD_DEBUG("Uniform 4 KB erase is unavailable for this device.");
         break;
     default:
         SFUD_INFO("Error: Uniform 4 KB erase supported information error.");
-        return false;
+        return SFUD_FALSE;
     }
     /* get write granularity */
     //TODO 目前为 1.0 所提供的方式，后期支持 V1.5 及以上的方式读取 page size
@@ -241,12 +241,12 @@ static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) 
          * programmed either as volatile using the 50h instruction for write enable or non-volatile
          * using the 06h instruction for write enable.
          */
-        sfdp->sr_is_non_vola = true;
+        sfdp->sr_is_non_vola = SFUD_TRUE;
         SFUD_DEBUG("Target flash status register is non-volatile.");
         break;
     case 1:
         /* block protect bits in device's status register are solely volatile. */
-        sfdp->sr_is_non_vola = false;
+        sfdp->sr_is_non_vola = SFUD_FALSE;
         SFUD_DEBUG("Block Protect bits in device's status register are solely volatile.");
         /* write enable instruction select for writing to volatile status register */
         switch ((table[0] & (0x01 << 4)) >> 4) {
@@ -266,25 +266,25 @@ static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) 
     /* get address bytes, number of bytes used in addressing flash array read, write and erase. */
     switch ((table[2] & (0x03 << 1)) >> 1) {
     case 0:
-        sfdp->addr_3_byte = true;
-        sfdp->addr_4_byte = false;
+        sfdp->addr_3_byte = SFUD_TRUE;
+        sfdp->addr_4_byte = SFUD_FALSE;
         SFUD_DEBUG("3-Byte only addressing.");
         break;
     case 1:
-        sfdp->addr_3_byte = true;
-        sfdp->addr_4_byte = true;
+        sfdp->addr_3_byte = SFUD_TRUE;
+        sfdp->addr_4_byte = SFUD_TRUE;
         SFUD_DEBUG("3- or 4-Byte addressing.");
         break;
     case 2:
-        sfdp->addr_3_byte = false;
-        sfdp->addr_4_byte = true;
+        sfdp->addr_3_byte = SFUD_FALSE;
+        sfdp->addr_4_byte = SFUD_TRUE;
         SFUD_DEBUG("4-Byte only addressing.");
         break;
     default:
-        sfdp->addr_3_byte = false;
-        sfdp->addr_4_byte = false;
+        sfdp->addr_3_byte = SFUD_FALSE;
+        sfdp->addr_4_byte = SFUD_FALSE;
         SFUD_INFO("Error: Read address bytes error!");
-        return false;
+        return SFUD_FALSE;
     }
     /* get flash memory capacity */
     uint32_t table2_temp = ((long)table[7] << 24) | ((long)table[6] << 16) | ((long)table[5] << 8) | (long)table[4];
@@ -297,7 +297,7 @@ static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) 
         if (table2_temp > sizeof(sfdp->capacity) * 8 + 3) {
             sfdp->capacity = 0;
             SFUD_INFO("Error: The flash capacity is grater than 32 Gb/ 4 GB! Not Supported.");
-            return false;
+            return SFUD_FALSE;
         }
         sfdp->capacity = 1L << (table2_temp - 3);
         break;
@@ -330,8 +330,8 @@ static bool read_basic_table(sfud_flash *flash, sfdp_para_header *basic_header) 
         }
     }
 
-    sfdp->available = true;
-    return true;
+    sfdp->available = SFUD_TRUE;
+    return SFUD_TRUE;
 }
 
 static sfud_err read_sfdp_data(const sfud_flash *flash, uint32_t addr, uint8_t *read_buf, size_t size) {

@@ -115,6 +115,7 @@ bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
  */
 int bInit()
 {
+    bHalInit();
     b_log("______________________________________________\n\r");
     b_log("    ____                         __       __  \n\r");
     b_log("    /   )          /           /    )   /    \\\n\r");
@@ -126,7 +127,6 @@ int bInit()
     b_log("HW:%d.%d.%d FW:%d.%d.%d COMPILE:%s-%s\r\n", (HW_VERSION / 10000), (HW_VERSION % 10000) / 100,
             HW_VERSION % 100, (FW_VERSION / 10000), (FW_VERSION % 10000) / 100,
             FW_VERSION % 100,__DATE__, __TIME__);
-    bHalInit();
     b_log("device number:%d\r\n", bDEV_MAX_NUM);
     return bDeviceInit();
 }
