@@ -343,4 +343,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2020.08 | BabyOS_Hal仓库增加ST标准库，增加标准库例子。对代码中细节进行优化 |      |
 | 2021.01 | 去掉多余的文件，修改section部分的内容。                      |      |
 | 2021.02 | 增加vscode+arm-gcc+openocd 编译调试的例子。doc目录增加sections链接文件以及示例makefile等 |      |
+| 2021.05 | 支持编译器AC6                                                |      |
 
