@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v4.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v5.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -224,8 +224,8 @@ int main()
         b_log("bKV_Init ok...\r\n");
     }
     //存储键值对（可用于存储系统配置信息）
-    bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", 7);
-    bKV_Get((uint8_t *)"name", buf);
+    bKV_Set("name", (uint8_t *)"BabyOS", 7);
+    bKV_Get("name", buf);
     b_log("name:%s\r\n", buf); 
     //......
     while(1)
@@ -274,7 +274,9 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 <https://gitee.com/notrynohigh/BabyOS_HDSC>      【基于华大MCU HC32L136K8TA】
 
+<https://www.bilibili.com/video/BV1ap4y1S7o8/>      【视频教程，BabyOS介绍】
 
+https://www.bilibili.com/video/BV1pt4y1Q7vz/       【视频教程，移植BabyOS】
 
 # BabyOS私有协议上位机Demo
 
@@ -342,3 +344,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2020.05 | 优化代码结构，增加：b_mod_timer b_mod_qpn等 ,优化b_mod_xmodem等，增加算法base64 sha1 sort等 |      |
 | 2020.06 | 分解为3个仓库管理代码。增加SFUD作为SPIFLASH驱动，增加SD卡驱动，增加FatFS和LittleFS等 |      |
 
+<iframe src="//player.bilibili.com/player.html?aid=968819444&bvid=BV1ap4y1S7o8&cid=211689136&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe src="//player.bilibili.com/player.html?aid=626287625&bvid=BV1pt4y1Q7vz&cid=211719853&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
