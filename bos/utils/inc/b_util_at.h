@@ -83,7 +83,7 @@ typedef void (*bAtCallback_t)(uint8_t id, uint8_t result);
 int bAtGetStat(uint8_t id);
 int bAtRegistCallback(bAtCallback_t cb);
 int bAtFeedRespData(uint8_t *pbuf, uint16_t len);
-int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart,
+int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len, uint8_t uart,
                uint32_t timeout);
 /**
  * \}

@@ -1,0 +1,672 @@
+/**
+ *!
+ * \file        b_drv_esp12f.c
+ * \version     v0.0.1
+ * \date        2020/02/05
+ * \author      Bean(notrynohigh@outlook.com)
+ *******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2020 Bean
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *******************************************************************************
+ */
+
+/*Includes ----------------------------------------------*/
+#include "drivers/inc/b_drv_esp12f.h"
+
+#include <stdio.h>
+
+#include "utils/inc/b_utils.h"
+
+/**
+ * \addtogroup BABYOS
+ * \{
+ */
+
+/**
+ * \addtogroup B_DRIVER
+ * \{
+ */
+
+/**
+ * \addtogroup ESP12F
+ * \{
+ */
+
+/**
+ * \defgroup ESP12F_Private_TypesDefinitions
+ * \{
+ */
+typedef struct
+{
+    const uint8_t *plist;
+    uint8_t        index;
+    uint8_t        list_len;
+    uint8_t        at_id;
+    uint8_t        cmd;
+} bEspOptInfo_t;
+
+typedef uint8_t (*pOptFunc_t)(void *param);
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup ESP12F_Private_Defines
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup ESP12F_Private_Macros
+ * \{
+ */
+#define OPT_AT (0)
+#define OPT_ENTER_AT (1)
+#define OPT_RESET (2)
+#define OPT_SET_MUX (3)
+#define OPT_SET_AUTOCONN (4)
+#define OPT_STA_MODE (5)
+#define OPT_JOIN_AP (6)
+#define OPT_SET_AP (7)
+#define OPT_AP_MODE (8)
+#define OPT_STA_AP_MODE (9)
+#define OPT_TCP_SERVER (10)
+#define OPT_MQTT_CLOSE (11)
+#define OPT_CFG_MQTTUSER (12)
+#define OPT_MQTT_CONN (13)
+#define OPT_MQTT_CONN_CHECK (14)
+#define OPT_MQTT_SUB (15)
+#define OPT_MQTT_PUB (16)
+#define OPT_NUMBER (17)
+#define OPT_NULL (OPT_NUMBER + 1)
+#define IS_ESP_OPT(n)                                                                             \
+    ((n == OPT_AT) || (n == OPT_ENTER_AT) || (n == OPT_RESET) || (n == OPT_SET_MUX) ||            \
+     (n == OPT_SET_AUTOCONN) || (n == OPT_STA_MODE) || (n == OPT_JOIN_AP) || (n == OPT_SET_AP) || \
+     (n == OPT_AP_MODE) || (n == OPT_STA_AP_MODE) || (n == OPT_TCP_SERVER) ||                     \
+     (n == OPT_MQTT_CLOSE) || (n == OPT_CFG_MQTTUSER) || (n == OPT_MQTT_CONN) ||                  \
+     (n == OPT_MQTT_CONN_CHECK) || (n == OPT_MQTT_SUB) || (n == OPT_MQTT_PUB))
+/**
+ * \}
+ */
+
+/**
+ * \defgroup ESP12F_Private_FunctionPrototypes
+ * \{
+ */
+static void    _bEspUartIdleCb(uint8_t *pbuf, uint16_t len);
+static uint8_t _bEspEnterAt(void *param);
+static uint8_t _bEspAt(void *param);
+static uint8_t _bEspReset(void *param);
+static uint8_t _bEspSetMux(void *param);
+static uint8_t _bEspSetAutoConn(void *param);
+static uint8_t _bEspStaMode(void *param);
+static uint8_t _bEspJoinAp(void *param);
+static uint8_t _bEspSetAp(void *param);
+static uint8_t _bEspApMode(void *param);
+static uint8_t _bEspStaApMode(void *param);
+static uint8_t _bEspSetupTcpServer(void *param);
+static uint8_t _bEspMqttClose(void *param);
+static uint8_t _bEspCfgMqttUser(void *param);
+static uint8_t _bEspMqttConn(void *param);
+static uint8_t _bEspMqttConnCheck(void *param);
+static uint8_t _bEspMqttSub(void *param);
+static uint8_t _bEspMqttPub(void *param);
+/**
+ * \}
+ */
+
+/**
+ * \defgroup ESP12F_Private_Variables
+ * \{
+ */
+HALIF_KEYWORD bESP12F_HalIf_t bESP12F_HalIf = HAL_ESP12F_IF;
+bESP12F_Driver_t              bESP12F_Driver;
+
+bUTIL_UART_INSTANCE(bEspUart, 1024, 50, _bEspUartIdleCb);
+
+static bEspOptInfo_t bEspOptInfo;
+
+const static uint8_t bWifiStaOptList[]   = {OPT_ENTER_AT,     OPT_ENTER_AT, OPT_AT,  OPT_RESET,
+                                          OPT_ENTER_AT,     OPT_ENTER_AT, OPT_AT,  OPT_SET_MUX,
+                                          OPT_SET_AUTOCONN, OPT_STA_MODE, OPT_NULL};
+const static uint8_t bWifiApOptList[]    = {OPT_ENTER_AT,     OPT_ENTER_AT, OPT_AT,     OPT_RESET,
+                                         OPT_ENTER_AT,     OPT_ENTER_AT, OPT_AT,     OPT_SET_MUX,
+                                         OPT_SET_AUTOCONN, OPT_AP_MODE,  OPT_SET_AP, OPT_NULL};
+const static uint8_t bWifiStaApOptList[] = {
+    OPT_ENTER_AT, OPT_ENTER_AT, OPT_AT,           OPT_RESET,       OPT_ENTER_AT, OPT_ENTER_AT,
+    OPT_AT,       OPT_SET_MUX,  OPT_SET_AUTOCONN, OPT_STA_AP_MODE, OPT_SET_AP,   OPT_NULL};
+const static uint8_t bWifiJoinApOptList[]    = {OPT_JOIN_AP, OPT_NULL};
+const static uint8_t bWifiTcpServerOptList[] = {OPT_TCP_SERVER, OPT_NULL};
+const static uint8_t bWifiMqttConnOptList[]  = {
+    OPT_MQTT_CLOSE, OPT_MQTT_CLOSE, OPT_CFG_MQTTUSER, OPT_MQTT_CONN, OPT_MQTT_CONN_CHECK, OPT_NULL};
+const static uint8_t bWifiMqttSubOptList[] = {OPT_MQTT_SUB, OPT_NULL};
+const static uint8_t bWifiMqttPubOptList[] = {OPT_MQTT_PUB, OPT_NULL};
+
+const static pOptFunc_t bOptFuncTable[OPT_NUMBER] = {
+    _bEspAt,          _bEspEnterAt,   _bEspReset,          _bEspSetMux,
+    _bEspSetAutoConn, _bEspStaMode,   _bEspJoinAp,         _bEspSetAp,
+    _bEspApMode,      _bEspStaApMode, _bEspSetupTcpServer, _bEspMqttClose,
+    _bEspCfgMqttUser, _bEspMqttConn,  _bEspMqttConnCheck,  _bEspMqttSub,
+    _bEspMqttPub,
+};
+static void            *bParam       = NULL;
+static bMqttTopicData_t bMqttRecData = {
+    .pstr = NULL,
+};
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup ESP12F_Private_Functions
+ * \{
+ */
+
+static int _bEspMqttSubRecHandler(uint8_t *pbuf, uint16_t len)
+{
+    char *retp   = NULL;
+    char *p      = NULL;
+    int   retval = 0, id = 0, rlen = 0;
+    char  tmp[64];
+    retp = strstr((const char *)pbuf, "+MQTTSUBRECV");
+    if (retp == NULL || bMqttRecData.pstr != NULL)
+    {
+        return -1;
+    }
+    memset(tmp, 0, sizeof(tmp));
+    p = (char *)bMalloc(len);
+    if (p == NULL)
+    {
+        return -2;
+    }
+    retval = sscanf((const char *)retp, "+MQTTSUBRECV:%d,%[^,],%d,%s", &id, tmp, &rlen, p);
+    if (rlen <= 0 || rlen >= len || retval != 4)
+    {
+        bFree(p);
+        return -2;
+    }
+    bMqttRecData.pstr = p;
+    memset(bMqttRecData.topic.topic, 0, sizeof(bMqttRecData.topic.topic));
+    memcpy(bMqttRecData.topic.topic, tmp, strlen(tmp));
+    return 0;
+}
+
+static void _bEspUartIdleCb(uint8_t *pbuf, uint16_t len)
+{
+    bAtFeedRespData(pbuf, len);
+    _bEspMqttSubRecHandler(pbuf, len);
+}
+
+static void _bEspCmdFinished(uint8_t result)
+{
+    bESP12F_Driver._private.v = result;
+
+    if (bParam != NULL)
+    {
+        bFree(bParam);
+        bParam = NULL;
+    }
+
+    bEspOptInfo.index    = 0;
+    bEspOptInfo.list_len = 0;
+    bEspOptInfo.plist    = NULL;
+    bEspOptInfo.at_id    = AT_INVALID_ID;
+}
+
+static void _bEspAtCb(uint8_t id, uint8_t result)
+{
+    static uint8_t retry = 0;
+    if (bEspOptInfo.at_id == id && id != AT_INVALID_ID)
+    {
+        bEspOptInfo.at_id = AT_INVALID_ID;
+        if (result == AT_STA_OK)
+        {
+            bEspOptInfo.index += 1;
+            if (bEspOptInfo.index < bEspOptInfo.list_len)
+            {
+                if (bEspOptInfo.plist[bEspOptInfo.index] == OPT_NULL)
+                {
+                    _bEspCmdFinished(EPS_CMD_RESULT_OK);
+                }
+            }
+            retry = 0;
+        }
+        else
+        {
+            retry++;
+            if (retry > ESP_CMD_RETRY)
+            {
+                retry = 0;
+                _bEspCmdFinished(ESP_CMD_RESULT_ERR);
+            }
+        }
+    }
+}
+
+static void _bEspCmdStart(uint8_t cmd, const uint8_t *plist, uint8_t list_len, void *param,
+                          uint16_t param_len)
+{
+    if (plist == NULL || list_len == 0)
+    {
+        return;
+    }
+
+    if (bParam != NULL)
+    {
+        _bEspCmdFinished(ESP_CMD_RESULT_ERR);
+    }
+
+    if (param != NULL && param_len > 0)
+    {
+        bParam = bMalloc(param_len);
+        if (bParam == NULL)
+        {
+            _bEspCmdFinished(ESP_CMD_RESULT_ERR);
+            return;
+        }
+        memcpy(bParam, param, param_len);
+    }
+    bEspOptInfo.index    = 0;
+    bEspOptInfo.plist    = plist;
+    bEspOptInfo.list_len = list_len;
+    bEspOptInfo.at_id    = AT_INVALID_ID;
+    bEspOptInfo.cmd      = cmd;
+
+    bESP12F_Driver._private.v = ESP_CMD_RESULT_NULL;
+}
+
+static uint8_t _bEspStaMode(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval         = bAtCmdSend("AT+CWMODE=1\r\n", strlen("AT+CWMODE=1\r\n"), "OK", strlen("OK"),
+                                bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspApMode(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval         = bAtCmdSend("AT+CWMODE=2\r\n", strlen("AT+CWMODE=2\r\n"), "OK", strlen("OK"),
+                                bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspStaApMode(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval         = bAtCmdSend("AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"), "OK", strlen("OK"),
+                                bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspSetAp(void *param)
+{
+    uint8_t        retval = AT_INVALID_ID;
+    char           buf[200];
+    int            len;
+    bWifiApInfo_t *pinfo = (bWifiApInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    if (strlen(pinfo->passwd) == 0 || pinfo->encryption == 0)
+    {
+        len = snprintf(buf, 200, "AT+CWSAP=\"%s\",\"\",%d,%d\r\n", pinfo->ssid, 5, 0);
+    }
+    else
+    {
+        len = snprintf(buf, 200, "AT+CWSAP=\"%s\",\"%s\",%d,%d\r\n", pinfo->ssid, pinfo->passwd, 5,
+                       pinfo->encryption + 1);
+    }
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 500);
+    }
+    return retval;
+}
+
+static uint8_t _bEspJoinAp(void *param)
+{
+    uint8_t        retval = AT_INVALID_ID;
+    char           buf[200];
+    int            len;
+    bWifiApInfo_t *pinfo = (bWifiApInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    if (pinfo->encryption == 0 || strlen(pinfo->passwd) == 0)
+    {
+        len = snprintf(buf, 200, "AT+CWJAP=\"%s\",\"\"\r\n", pinfo->ssid);
+    }
+    else if (strlen(pinfo->passwd) > 0)
+    {
+        len = snprintf(buf, 200, "AT+CWJAP=\"%s\",\"%s\"\r\n", pinfo->ssid, pinfo->passwd);
+    }
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 8000);
+    }
+    return retval;
+}
+
+static uint8_t _bEspSetMux(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval         = bAtCmdSend("AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"), "OK", strlen("OK"),
+                                bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspSetAutoConn(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval = bAtCmdSend("AT+CWAUTOCONN=1\r\n", strlen("AT+CWAUTOCONN=1\r\n"), "OK", strlen("OK"),
+                        bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspEnterAt(void *param)
+{
+    return bAtCmdSend("+++", strlen("+++"), NULL, 0, bESP12F_HalIf, 500);
+}
+
+static uint8_t _bEspAt(void *param)
+{
+    return bAtCmdSend("AT\r\n", strlen("AT\r\n"), "OK\r\n", strlen("OK\r\n"), bESP12F_HalIf, 500);
+}
+
+static uint8_t _bEspReset(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval = bAtCmdSend("AT+RST\r\n", strlen("AT+RST\r\n"), "OK", strlen("OK"), bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspSetupTcpServer(void *param)
+{
+    uint8_t     retval = AT_INVALID_ID;
+    char        buf[32];
+    uint8_t     len;
+    bTcpInfo_t *pinfo = (bTcpInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    len = snprintf(buf, 200, "AT+CIPSERVER=%d,%d\r\n", 1, pinfo->port);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 500);
+    }
+    return retval;
+}
+
+static uint8_t _bEspMqttClose(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval =
+        bAtCmdSend("AT+MQTTCLEAN=0\r\n", strlen("AT+MQTTCLEAN=0\r\n"), NULL, 0, bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspCfgMqttUser(void *param)
+{
+    uint8_t          retval = AT_INVALID_ID;
+    char             buf[256];
+    int              len   = 0;
+    bMqttConnInfo_t *pinfo = (bMqttConnInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    len = snprintf(buf, 256, "AT+MQTTUSERCFG=0,1,\"%s\",\"%s\",\"%s\",0,0,\"\"\r\n",
+                   pinfo->device_id, pinfo->user, pinfo->passwd);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 1000);
+    }
+    return retval;
+}
+
+static uint8_t _bEspMqttConn(void *param)
+{
+    uint8_t          retval = AT_INVALID_ID;
+    char             buf[128];
+    int              len   = 0;
+    bMqttConnInfo_t *pinfo = (bMqttConnInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    len = snprintf(buf, 128, "AT+MQTTCONN=0,\"%s\",%d,1\r\n", pinfo->broker, pinfo->port);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "ERROR", strlen("ERROR"), bESP12F_HalIf, 5000);
+    }
+    return retval;
+}
+
+static uint8_t _bEspMqttConnCheck(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    retval         = bAtCmdSend("AT+MQTTCONN?\r\n", strlen("AT+MQTTCONN?\r\n"), "+MQTTCONN:0,4",
+                                strlen("+MQTTCONN:0,4"), bESP12F_HalIf, 500);
+    return retval;
+}
+
+static uint8_t _bEspMqttSub(void *param)
+{
+    uint8_t           retval = AT_INVALID_ID;
+    char              buf[128];
+    int               len   = 0;
+    bMqttTopicInfo_t *pinfo = (bMqttTopicInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    len = snprintf(buf, 128, "AT+MQTTSUB=0,\"%s\",%d\r\n", pinfo->topic, pinfo->qos);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 1000);
+    }
+    return retval;
+}
+
+static uint8_t _bEspMqttPub(void *param)
+{
+    uint8_t           retval = AT_INVALID_ID;
+    char             *pbuf   = NULL;
+    int               len    = 0;
+    bMqttTopicData_t *pinfo  = (bMqttTopicData_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    if (pinfo->pstr == NULL)
+    {
+        return retval;
+    }
+    pbuf = (char *)bMalloc(64 + strlen(pinfo->topic.topic) + strlen(pinfo->pstr));
+    if (pbuf == NULL)
+    {
+        return retval;
+    }
+    len = sprintf((char *)pbuf, "AT+MQTTPUB=0,\"%s\",\"%s\",%d,0\r\n", pinfo->topic.topic,
+                  pinfo->pstr, pinfo->topic.qos);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(pbuf, len, "OK", strlen("OK"), bESP12F_HalIf, 1000);
+    }
+    bFree(pbuf);
+    return retval;
+}
+
+static void _bEspPolling()
+{
+    if (bEspOptInfo.plist == NULL || bEspOptInfo.at_id != AT_INVALID_ID)
+    {
+        return;
+    }
+    if (!IS_ESP_OPT(bEspOptInfo.plist[bEspOptInfo.index]))
+    {
+        return;
+    }
+
+    bEspOptInfo.at_id = bOptFuncTable[(bEspOptInfo.plist[bEspOptInfo.index])](bParam);
+}
+
+BOS_REG_POLLING_FUNC(_bEspPolling);
+
+static int _bEspCtl(struct bDriverIf *pdrv, uint8_t cmd, void *param)
+{
+    int retval = -1;
+    switch (cmd)
+    {
+        case bCMD_WIFI_MODE_STA:
+            _bEspCmdStart(cmd, bWifiStaOptList, sizeof(bWifiStaOptList), NULL, 0);
+            break;
+        case bCMD_WIFI_MODE_AP:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiApOptList, sizeof(bWifiApOptList), param,
+                              sizeof(bWifiApInfo_t));
+            }
+            break;
+        case bCMD_WIFI_MODE_STA_AP:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiStaApOptList, sizeof(bWifiStaApOptList), param,
+                              sizeof(bWifiApInfo_t));
+            }
+            break;
+        case bCMD_WIFI_JOIN_AP:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiJoinApOptList, sizeof(bWifiJoinApOptList), param,
+                              sizeof(bWifiApInfo_t));
+            }
+            break;
+        case bCMD_WIFI_TCP_SERVER:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiTcpServerOptList, sizeof(bWifiTcpServerOptList), param,
+                              sizeof(bTcpInfo_t));
+            }
+            break;
+        case bCMD_WIFI_MQTT_CONN:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiMqttConnOptList, sizeof(bWifiMqttConnOptList), param,
+                              sizeof(bMqttConnInfo_t));
+            }
+            break;
+        case bCMD_WIFI_MQTT_SUB:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiMqttSubOptList, sizeof(bWifiMqttSubOptList), param,
+                              sizeof(bMqttTopicInfo_t));
+            }
+            break;
+        case bCMD_WIFI_MQTT_PUB:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiMqttPubOptList, sizeof(bWifiMqttPubOptList), param,
+                              sizeof(bMqttTopicData_t));
+            }
+            break;
+        default:
+            break;
+    }
+    return retval;
+}
+
+static int _bEspRead(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len)
+{
+    int retval = 0;
+    if (len < sizeof(bMqttTopicData_t) || pbuf == NULL)
+    {
+        return -1;
+    }
+    if (bMqttRecData.pstr == NULL)
+    {
+        return 0;
+    }
+    memcpy(pbuf, &bMqttRecData, sizeof(bMqttTopicData_t));
+    //读取并使用数据后，需要释放 bMqttRecData.pstr 指向的内存
+    retval            = strlen(bMqttRecData.pstr);
+    bMqttRecData.pstr = NULL;
+    return retval;
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \addtogroup ESP12F_Exported_Functions
+ * \{
+ */
+int bESP12F_Init()
+{
+    bEspOptInfo.plist    = NULL;
+    bEspOptInfo.index    = 0;
+    bEspOptInfo.list_len = 0;
+    bEspOptInfo.at_id    = AT_INVALID_ID;
+    bAtRegistCallback(_bEspAtCb);
+
+    bESP12F_Driver.status  = 0;
+    bESP12F_Driver.init    = bESP12F_Init;
+    bESP12F_Driver.close   = NULL;
+    bESP12F_Driver.read    = _bEspRead;
+    bESP12F_Driver.ctl     = _bEspCtl;
+    bESP12F_Driver.open    = NULL;
+    bESP12F_Driver.write   = NULL;
+    bESP12F_Driver._hal_if = (void *)&bESP12F_HalIf;
+
+    bUtilUartBind(bESP12F_HalIf, &bEspUart);
+    return 0;
+}
+
+bDRIVER_REG_INIT(bESP12F_Init);
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/

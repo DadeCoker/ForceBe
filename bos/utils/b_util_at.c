@@ -191,7 +191,7 @@ static void _bAtNextCommand(uint8_t id, uint8_t sta)
  * \{
  */
 
-int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart,
+int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len, uint8_t uart,
                uint32_t timeout)
 {
     int retval = -1;

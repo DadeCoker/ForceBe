@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_device.h
+ * \file        b_drv_esp12f.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/02/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,71 +28,52 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DEVICE_H__
-#define __B_DEVICE_H__
+#ifndef __B_DRV_ESP12F_H__
+#define __B_DRV_ESP12F_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include <stdint.h>
-#include <string.h>
+#include "drivers/inc/b_driver.h"
+
 /**
  * \addtogroup BABYOS
  * \{
  */
 
 /**
- * \addtogroup CORE
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /**
- * \addtogroup DEVICE
+ * \addtogroup ESP12F
  * \{
  */
 
 /**
- * \defgroup DEVICE_Exported_TypesDefinitions
+ * \defgroup ESP12F_Exported_TypesDefinitions
  * \{
  */
-#define B_DEVICE_REG(dev, driver, desc)
-#include "b_device_list.h"
+//<HALIF 1 UART
+typedef bHalUartNumber_t bESP12F_HalIf_t;
 
-typedef enum
-{
-#define B_DEVICE_REG(dev, driver, desc) dev,
-#include "b_device_list.h"
-    bDEV_NULL,
-    bDEV_MAX_NUM
-} bDeviceName_t;
-
-typedef union
-{
-    uint32_t v;
-    void    *_p;
-} bDeviceMsg_t;
-
+typedef bDriverInterface_t bESP12F_Driver_t;
 /**
  * \}
  */
 
 /**
- * \defgroup DEVICE_Exported_Functions
+ * \defgroup ESP12F_Exported_Definitions
  * \{
  */
-int bDeviceInit(void);
-int bDeviceReinit(uint8_t no);
-int bDeviceOpen(uint8_t no);
-int bDeviceClose(uint8_t no);
-int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len);
-int bDeviceWrite(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len);
-int bDeviceCtl(uint8_t no, uint8_t cmd, void *param);
-int bDeviceISNormal(uint8_t no);
-int bDeviceModifyHalIf(uint8_t no, uint32_t offset, const uint8_t *pVal, uint8_t size);
-int bDeviceReadMessage(uint8_t no, bDeviceMsg_t *pmsg);
-int bDeviceWriteMessage(uint8_t no, bDeviceMsg_t *pmsg);
+#define ESP_CMD_RETRY (2)
+
+#define ESP_CMD_RESULT_NULL (0)
+#define EPS_CMD_RESULT_OK (1)
+#define ESP_CMD_RESULT_ERR (2)
 /**
  * \}
  */

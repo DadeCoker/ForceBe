@@ -308,6 +308,38 @@ int bDeviceISNormal(uint8_t no)
 }
 
 /**
+ * \brief Read device private information
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bDeviceReadMessage(uint8_t no, bDeviceMsg_t *pmsg)
+{
+    if (pmsg == NULL || no >= bDEV_MAX_NUM)
+    {
+        return -1;
+    }
+    pmsg->v = bDriverTable[no]->_private.v;
+    return 0;
+}
+
+/**
+ * \brief Write device private information
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bDeviceWriteMessage(uint8_t no, bDeviceMsg_t *pmsg)
+{
+    if (pmsg == NULL || no >= bDEV_MAX_NUM)
+    {
+        return -1;
+    }
+    bDriverTable[no]->_private.v = pmsg->v;
+    return 0;
+}
+
+/**
  * \}
  */
 

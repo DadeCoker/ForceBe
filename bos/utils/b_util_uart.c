@@ -32,6 +32,8 @@
 /*Includes ----------------------------------------------*/
 #include "utils/inc/b_util_uart.h"
 
+#include <string.h>
+
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
 
@@ -77,7 +79,8 @@
  * \defgroup UART_Private_Variables
  * \{
  */
-static bUitlUartInstance_t bUitlUartHead = {.next = NULL, .prev = NULL};
+static bUitlUartInstance_t  bUitlUartHead = {.next = NULL, .prev = NULL};
+static bUitlUartInstance_t *pUtilUartBindTable[B_HAL_UART_NUMBER];
 /**
  * \}
  */
@@ -167,22 +170,56 @@ BOS_REG_POLLING_FUNC(_bUtilUartDetectIdle);
  * \{
  */
 
+void bUtilUartBind(uint8_t uart_no, bUitlUartInstance_t *pInstance)
+{
+    static uint8_t bind_init_f = 0;
+    if (bind_init_f == 0)
+    {
+        memset(pUtilUartBindTable, 0, sizeof(pUtilUartBindTable));
+        bind_init_f = 1;
+    }
+
+    if (uart_no < B_HAL_UART_NUMBER && pInstance != NULL)
+    {
+        pUtilUartBindTable[uart_no] = pInstance;
+        if (pInstance->prev == NULL)
+        {
+            _UtilUartListAdd(pInstance);
+        }
+    }
+}
+
 void bUtilUartRxHandler(bUitlUartInstance_t *pInstance, uint8_t dat)
 {
     if (pInstance == NULL)
     {
         return;
     }
-
     if (pInstance->prev == NULL)
     {
         _UtilUartListAdd(pInstance);
     }
-
     if (pInstance->index < pInstance->buf_size)
     {
         pInstance->pbuf[pInstance->index] = dat;
         pInstance->index += 1;
+    }
+}
+
+void bUtilUartRxHandler2(uint8_t uart_no, uint8_t dat)
+{
+    if (uart_no >= B_HAL_UART_NUMBER)
+    {
+        return;
+    }
+    if (pUtilUartBindTable[uart_no] == NULL)
+    {
+        return;
+    }
+    if (pUtilUartBindTable[uart_no]->index < pUtilUartBindTable[uart_no]->buf_size)
+    {
+        pUtilUartBindTable[uart_no]->pbuf[pUtilUartBindTable[uart_no]->index] = dat;
+        pUtilUartBindTable[uart_no]->index += 1;
     }
 }
 

@@ -57,15 +57,15 @@ typedef void (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len);
 
 typedef struct UtilUart
 {
-    uint8_t *            pbuf;
+    uint8_t             *pbuf;
     uint16_t             buf_size;
     volatile uint16_t    index;
     uint32_t             idle_thd_ms;
     pbUartIdleCallback_t callback;
     uint32_t             l_tick;
     uint32_t             l_index;
-    struct UtilUart *    next;
-    struct UtilUart *    prev;
+    struct UtilUart     *next;
+    struct UtilUart     *prev;
 } bUitlUart_t;
 
 typedef bUitlUart_t bUitlUartInstance_t;
@@ -100,7 +100,11 @@ typedef bUitlUart_t bUitlUartInstance_t;
  * \defgroup UART_Exported_Functions
  * \{
  */
+void bUtilUartBind(uint8_t uart_no, bUitlUartInstance_t *pInstance);
+//    bUtilUartRxHandler 和 bUtilUartRxHandler2 效果是一样
+//    但是，只有通过bUtilUartBind绑定串口号，才能调用bUtilUartRxHandler2
 void bUtilUartRxHandler(bUitlUartInstance_t *pInstance, uint8_t dat);
+void bUtilUartRxHandler2(uint8_t uart_no, uint8_t dat);
 /**
  * \}
  */
