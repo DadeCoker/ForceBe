@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_hal_spi.h
+ * \file        b_hal_qspi.h
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_SPI_H__
-#define __B_HAL_SPI_H__
+#ifndef __B_HAL_QSPI_H__
+#define __B_HAL_QSPI_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,76 +38,76 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
-#include "hal/inc/b_hal_gpio.h"
-
 /**
  * \addtogroup B_HAL
  * \{
  */
 
 /**
- * \addtogroup SPI
+ * \addtogroup QSPI
  * \{
  */
 
 /**
- * \defgroup SPI_Exported_TypesDefinitions
+ * \defgroup QSPI_Exported_TypesDefinitions
  * \{
  */
 typedef enum
 {
-    B_HAL_SPI_1,
-    B_HAL_SPI_2,
-    B_HAL_SPI_3,
-    B_HAL_SPI_4,
-    B_HAL_SPI_INVALID,
-} bHalSPINumber_t;
-
-typedef enum
-{
-    B_HAL_SPI_SLOW,
-    B_HAL_SPI_FAST,
-    B_HAL_SPI_SPEED_INVALID,
-} bHalSPISpeed_t;
+    B_HAL_QSPI_1,
+    B_HAL_QSPI_INVALID,
+} bHalQSPINumber_t;
 
 typedef struct
 {
-    uint8_t is_simulation;
-    union
-    {
-        bHalSPINumber_t spi;
-        struct
-        {
-            bHalGPIOInstance_t miso;
-            bHalGPIOInstance_t mosi;
-            bHalGPIOInstance_t clk;
-            uint8_t            CPOL;
-            uint8_t            CPHA;
-        } simulating_spi;
-    } _if;
-    bHalGPIOInstance_t cs;
-} bHalSPIIf_t;
+    uint32_t instruction;
+    uint32_t address;
+    uint32_t alternate;
+    uint32_t dummy;
+    uint32_t imode;
+    uint32_t admode;
+    uint32_t abmode;
+    uint32_t dmode;
+    uint32_t adsize;
+    uint32_t absize;
+    uint32_t dsize;
+} bHalQSPICmdInfo_t;
 
 /**
  * \}
  */
 
 /**
- * \defgroup SPI_Exported_Functions
+ * \defgroup QSPI_Exported_Definitions
  * \{
  */
 
-uint8_t bMcuSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat);
-int     bMcuSpiSend(const bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len);
-int     bMcuSpiReceive(const bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len);
-int     bMcuSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed);
-//---------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------
-uint8_t bHalSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat);
-int     bHalSpiSend(const bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len);
-int     bHalSpiReceive(const bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len);
-int     bHalSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed);
+#define B_HAL_QSPI_MODE_NONE (0)
+#define B_HAL_QSPI_MODE_1LINE (1)
+#define B_HAL_QSPI_MODE_2LINES (2)
+#define B_HAL_QSPI_MODE_4LINES (3)
 
+#define B_HAL_QSPI_SIZE_8BIT (0)
+#define B_HAL_QSPI_SIZE_16BIT (1)
+#define B_HAL_QSPI_SIZE_24BIT (2)
+#define B_HAL_QSPI_SIZE_32BIT (3)
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup QSPI_Exported_Functions
+ * \{
+ */
+int bMcuQSPISendCmd(const bHalQSPINumber_t qspi, const bHalQSPICmdInfo_t *pcmd);
+int bMcuQSPIReceiveData(const bHalQSPINumber_t qspi, uint8_t *pbuf);
+int bMcuQSPITransmitData(const bHalQSPINumber_t qspi, const uint8_t *pbuf);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+int bHalQSPISendCmd(const bHalQSPINumber_t qspi, const bHalQSPICmdInfo_t *pcmd);
+int bHalQSPIReceiveData(const bHalQSPINumber_t qspi, uint8_t *pbuf);
+int bHalQSPITransmitData(const bHalQSPINumber_t qspi, const uint8_t *pbuf);
 /**
  * \}
  */

@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_drv_spiflash.h
- * \version     v0.0.2
- * \date        2020/05/08
+ * \file        b_hal_qspi.c
+ * \version     v0.0.1
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,75 +21,85 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SUARTL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_SPIFLASH_H__
-#define __B_DRV_SPIFLASH_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*Includes ----------------------------------------------*/
-#include "drivers/inc/b_driver.h"
-
+#include "hal/inc/b_hal.h"
 /**
- * \addtogroup BABYOS
+ * \addtogroup B_HAL
  * \{
  */
 
 /**
- * \addtogroup B_DRIVER
+ * \addtogroup QSPI
  * \{
  */
 
 /**
- * \addtogroup SPIFLASH
+ * \addtogroup QSPI_Exported_Functions
  * \{
  */
 
-/**
- * \defgroup SPIFLASH_Exported_TypesDefinitions
- * \{
- */
-//<HALIF 2 SPI_QSPI
-typedef struct
+__WEAKDEF int bMcuQSPISendCmd(const bHalQSPINumber_t qspi, const bHalQSPICmdInfo_t *pcmd)
 {
-    union
-    {
-        bHalQSPINumber_t _qspi;
-        bHalSPIIf_t      _spi;
-    } _if;
-    uint8_t is_spi;
-} bSPIFLASH_HalIf_t;
-
-typedef bDriverInterface_t bSPIFLASH_Driver_t;
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#ifdef __cplusplus
+    return 0;
 }
-#endif
 
-#endif
+__WEAKDEF int bMcuQSPIReceiveData(const bHalQSPINumber_t qspi, uint8_t *pbuf)
+{
+    return 0;
+}
 
-/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+__WEAKDEF int bMcuQSPITransmitData(const bHalQSPINumber_t qspi, const uint8_t *pbuf)
+{
+    return 0;
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+
+int bHalQSPISendCmd(const bHalQSPINumber_t qspi, const bHalQSPICmdInfo_t *pcmd)
+{
+    if (qspi > B_HAL_QSPI_1 || IS_NULL(pcmd))
+    {
+        return -1;
+    }
+    return bMcuQSPISendCmd(qspi, pcmd);
+}
+
+int bHalQSPIReceiveData(const bHalQSPINumber_t qspi, uint8_t *pbuf)
+{
+    if (qspi > B_HAL_QSPI_1 || IS_NULL(pbuf))
+    {
+        return -1;
+    }
+    return bMcuQSPIReceiveData(qspi, pbuf);
+}
+
+int bHalQSPITransmitData(const bHalQSPINumber_t qspi, const uint8_t *pbuf)
+{
+    if (qspi > B_HAL_QSPI_1 || IS_NULL(pbuf))
+    {
+        return -1;
+    }
+    return bMcuQSPITransmitData(qspi, pbuf);
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/

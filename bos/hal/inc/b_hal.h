@@ -43,6 +43,7 @@ extern "C" {
 #include "b_hal_if.h"
 #include "b_hal_it.h"
 #include "b_hal_spi.h"
+#include "b_hal_qspi.h"
 #include "b_hal_uart.h"
 
 /**

@@ -58,6 +58,9 @@ extern "C" {
 #define B_CLEAR_BIT(REG, BIT) ((REG) &= ~(BIT))
 #define B_READ_BIT(REG, BIT) ((REG) & (BIT))
 #define B_READ_REG(REG) ((REG))
+#define B_WRITE_REG(REG, VAL) ((REG) = (VAL))
+#define B_MODIFY_REG(REG, CLEARMASK, SETMASK) \
+    B_WRITE_REG((REG), (((B_READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
 
 #if defined(__CC_ARM)
 #define __WEAKDEF __attribute__((weak))
