@@ -119,7 +119,8 @@ typedef struct
     uint32_t         backup_dev;
     bIapFwInfo_t     info;
     bIapBackupInof_t backup;
-    uint32_t         fcrc;
+    uint32_t         percentage;
+    uint32_t         fcrc;       //crc
 } bIapFlag_t;
 
 #pragma pack()
@@ -151,13 +152,12 @@ void bIapJump2App(void);
  * \param cache_dev_no   缓存固件的设备号，若不需要缓存则传入0
  * \param backup_dev_no  备份固件的设备号，若不需要备份固件则传入0
  * \param backup_time_s  运行多少s后备份固件，若不需要备份固件则忽略
- * \note boot程序中调用初始化函数无需指定固件备份的参数
  */
 int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time_s);
 
 /**
  * \brief 事件处理函数
- * \param event 、ref bIapEvent_t
+ * \param event \ref bIapEvent_t
  * \param arg
  */
 int bIapEventHandler(bIapEvent_t event, void *arg);
@@ -165,7 +165,6 @@ int bIapEventHandler(bIapEvent_t event, void *arg);
 /**
  * 查询当前IAP的状态
  * 应用程序，查询到是B_IAP_STA_READY状态，则跳转至启动程序
- * 启动程序，查询到是B_IAP_STA_NULL或者B_IAP_STA_FINISHED状态，则跳转至应用程序
  */
 uint8_t bIapGetStatus(void);
 
@@ -173,6 +172,11 @@ uint8_t bIapGetStatus(void);
  * 查询备份固件是否有效
  */
 uint8_t bIapBackupIsValid(void);
+
+/**
+ * 查询升级进度
+ */
+uint8_t bIapPercentage(void);
 
 /**
  * \}

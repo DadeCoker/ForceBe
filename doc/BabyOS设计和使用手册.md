@@ -12,9 +12,9 @@
 
 # BabyOS设计和使用手册
 
-*V0.3.0*
+*V0.3.1*
 
-***BabyOS V8.0.0***
+***BabyOS V8.1.6***
 
 
 
@@ -33,6 +33,7 @@
 | 2022.06.06 | 修改按键模块的描述，文档对应代码的版本号    | notrynohigh |
 | 2022.10.22 | 链接文件增加b_mod_state段<br>增加状态机介绍 | notrynohigh |
 | 2022.12.07 | 更新驱动部分描述以及部分功能模块接口描述    | notrynohigh |
+| 2023.01.16 | 更新算法模块描述和IAP接口描述               | notrynohigh |
 
 
 
@@ -172,7 +173,7 @@ NVIC_SetPriority(SysTick_IRQn, 0x0);
 
 | 路径           | 部分/全部    | 用于快速体验                                                 |
 | -------------- | ------------ | ------------------------------------------------------------ |
-| bos/algorithm  | 根据需要添加 | *暂时不添加其中文件*                                         |
+| bos/algorithm  | 全部添加     | *全部添加*                                                   |
 | bos/core       | 全部添加     | *全部添加*                                                   |
 | bos/drivers    | 根据需要添加 | *暂时不添加其中文件*                                         |
 | bos/hal        | 全部添加     | *全部添加*                                                   |
@@ -196,6 +197,7 @@ NVIC_SetPriority(SysTick_IRQn, 0x0);
 | Platform Configuration   | 平台配置项，指定心跳频率和MCU平台                | *MCU平台选择STM32F10X_CL*            |
 | Hal Configuration        | 硬件接口配置，可配置硬件接口参数是固定还是可变的 | *无改动*                             |
 | Utils Configuration      | 实用软件配置，部分软件代码的配置                 | *无改动*                             |
+| Algorithm Configuration  | 算法模块配置，各个算法模块配置                   | 无改动                               |
 | Modules Configuration    | 模块配置项，各个功能模块的配置                   | *无改动*                             |
 | Thirdparty Configuration | 第三方开源代码配置项                             | *勾选 NR Micro Shell Enable/Disable* |
 
@@ -281,9 +283,7 @@ BabyOS里面SPIFLASH的驱动是基于sfud代码编写。因此也要添加sfud�
 
 ![微信截图_20220319185642](https://images.gitee.com/uploads/images/2022/0319/235618_72df059e_1789704.png)
 
-由于sfud需要知道有多少个SPIFLASH，所以在`b_hal_if.h`里面增加一个宏：
 
-`#define HAL_SPIFLASH_TOTAL_NUMBER 1`
 
 ## 4.4 记录开机次数
 
@@ -826,12 +826,12 @@ SECTIONS
 
 功能组件包括: 功能模块、第三方开源代码，算法模块和工具模块。
 
-| 组件       | 描述                                   | 代码                                                         |
-| ---------- | -------------------------------------- | ------------------------------------------------------------ |
-| 功能模块   | 收集BabyOS开发者编写的通用软件模块     | b_mod_adchub<br>b_mod_button<br>b_mod_error<br>b_mod_fs<br>b_mod_gui<br>b_mod_kv<br>b_mod_menu<br>b_mod_modbus<br>b_mod_param<br>b_mod_protocol<br>b_mod_pwm<br>b_mod_shell<br>b_mod_timer<br>b_mod_trace<br>b_mod_xm128<br>b_mod_ymodem |
-| 第三方开源 | 收集第三方实用的开源代码               | cjson<br>cm_backtrace<br>fatfs<br>flexiblebutton<br>littlefs<br>nr_micro_shell<br>ugui<br>sfud |
-| 算法模块   | 收集常用的算法。目前这部分处于空白状态 |                                                              |
-| 工具模块   | 支持其他各模块的通用代码               | b_util_at<br>b_util_fifo<br>b_util_i2c<br>b_util_log<br>b_util_lunar<br>b_util_memp<br>b_util_spi<br>b_util_uart<br>b_util_utc |
+| 组件       | 描述                               | 代码                                                         |
+| ---------- | ---------------------------------- | ------------------------------------------------------------ |
+| 功能模块   | 收集BabyOS开发者编写的通用软件模块 | b_mod_adchub<br>b_mod_button<br>b_mod_error<br>b_mod_fs<br>b_mod_gui<br>b_mod_kv<br>b_mod_menu<br>b_mod_modbus<br>b_mod_param<br>b_mod_protocol<br>b_mod_pwm<br>b_mod_shell<br>b_mod_timer<br>b_mod_trace<br>b_mod_xm128<br>b_mod_ymodem |
+| 第三方开源 | 收集第三方实用的开源代码           | cjson<br>cm_backtrace<br>fatfs<br>flexiblebutton<br>littlefs<br>nr_micro_shell<br>ugui<br>sfud |
+| 算法模块   | 收集常用的算法。                   | algo_base64<br>algo_crc<br>algo_md5<br>algo_sort<br>algo_utf8_unicode<br>algo_hmac_sha1 |
+| 工具模块   | 支持其他各模块的通用代码           | b_util_at<br>b_util_fifo<br>b_util_i2c<br>b_util_log<br>b_util_lunar<br>b_util_memp<br>b_util_spi<br>b_util_uart<br>b_util_utc |
 
 组件的每个部分都可以通过全局配置文件使能以及配置参数。组件中的代码，操作MCU资源只能调用HAL层接口，操作设备只能基于设备号进行操作。
 
@@ -1958,27 +1958,30 @@ void USART1_IRQHandler()
 
 typedef struct
 {
-    uint8_t  dev_no;                    //暂存新固件的设备号，不需要暂存可以忽略
-    char     name[B_IAP_FILENAME_LEN];  //固件名，限制在64个字符
-    uint32_t len;                       //固件长度
-    uint32_t c_crc32;                   //固件数据CRC32校验值
+    char     name[B_IAP_FILENAME_LEN];  // 固件名，限制在64个字符
+    uint32_t version;                   // 固件版本号
+    uint32_t len;                       // 固件长度
+    uint32_t crc;                       // 固件数据的校验值
+    uint32_t crc_type;                  // CRC类型，参考algorithm/inc/algo_crc.h
 } bIapFwInfo_t;
 
 typedef struct
 {
-    uint8_t  dev_no;  //备份区额设备号
-    uint8_t  flag;    //备份标志，0xAA表示存在有效备份
-    uint32_t fcrc;    //备份区固件的crc32校验值
-    uint32_t second;  //运行多少秒后进行备份
+    uint8_t  flag;    // 备份标志，0xAA表示存在有效备份
+    uint32_t fcrc;    // 备份区固件的crc32校验值
+    uint32_t second;  // 运行多少秒后进行备份
 } bIapBackupInof_t;
 
 typedef struct
 {
     int              stat;
     int              fail_count;
+    uint32_t         cache_dev;
+    uint32_t         backup_dev;
     bIapFwInfo_t     info;
     bIapBackupInof_t backup;
-    uint32_t         fcrc;
+    uint32_t         percentage;
+    uint32_t         fcrc;       //crc
 } bIapFlag_t;
 ```
 
@@ -1992,47 +1995,23 @@ void bIapJump2Boot(void);
 void bIapJump2App(void);
 
 /**
- * boot和app都先调用bIapInit
- * 紧接着，按照不同的代码，调用bIapXXXCheckFlag()
- * XXX: Boot or App
- * 主要用于判断，进入启动程序和进入应用程序时，当前状态是否合法
+ * \brief 初始化函数
+ * \param cache_dev_no   缓存固件的设备号，若不需要缓存则传入0
+ * \param backup_dev_no  备份固件的设备号，若不需要备份固件则传入0
+ * \param backup_time_s  运行多少s后备份固件，若不需要备份固件则忽略
  */
-/**
- * \param dev_no：固件暂存区的设备号
- *        注：暂存于内部FLASH 或 没有暂存区，dev_no = 0
- */
-int bIapInit(uint8_t dev_no);
-/**
- * \return int 0：没有升级流程  1：升级流程正常运行中  -1：升级流程异常
- */
-int bIapAppCheckFlag(void);
-int bIapBootCheckFlag(void);
+int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time_s);
 
 /**
- * 应用程序调用，表示升级流程开始。传入新固件的信息。
+ * \brief 事件处理函数
+ * \param event \ref bIapEvent_t
+ * \param arg
  */
-int bIapStart(bIapFwInfo_t *pinfo);
-
-/**
- * 固件备份位置的设备号 dev_no
- * 注：备份到内部FLASH  则 dev_no = 0
- * 不需要固件备份，便不需要调用此函数。
- * s: 正常工作s秒后，进行固件备份
- */
-int bIapBackupFwInit(uint8_t dev_no, uint32_t s);
-
-
-/**
- * \brief 传入新固件的数据用于写入存储区域
- * \param index 新固件数据的索引，即相对文件起始的偏移
- * \return int 0：正常存储  -1：存储异常   -2：校验失败，重新接收
- */
-int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len);
+int bIapEventHandler(bIapEvent_t event, void *arg);
 
 /**
  * 查询当前IAP的状态
  * 应用程序，查询到是B_IAP_STA_READY状态，则跳转至启动程序
- * 启动程序，查询到是B_IAP_STA_NULL或者B_IAP_STA_FINISHED状态，则跳转至应用程序
  */
 uint8_t bIapGetStatus(void);
 
@@ -2040,6 +2019,11 @@ uint8_t bIapGetStatus(void);
  * 查询备份固件是否有效
  */
 uint8_t bIapBackupIsValid(void);
+
+/**
+ * 查询升级进度
+ */
+uint8_t bIapPercentage(void);
 ```
 
 ### 6.17.3 使用例子

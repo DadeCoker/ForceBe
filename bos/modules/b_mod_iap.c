@@ -411,7 +411,8 @@ static void _IapBackupFirmware()
                            (IAP_BACKUP_SIZE + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
             bHalFlashWrite(addr, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
             bHalFlashLock();
-            tmp_crc.crc = crc_calculate(IAP_CRC32_TYPE, (uint8_t *)(IAP_BACKUP_ADDR), IAP_BACKUP_SIZE);
+            tmp_crc.crc =
+                crc_calculate(IAP_CRC32_TYPE, (uint8_t *)(IAP_BACKUP_ADDR), IAP_BACKUP_SIZE);
 #elif (IAP_BACKUP_LOCATION == 1)
             fd = bOpen(bIapFlag.backup_dev, BCORE_FLAG_RW);
             if (fd == -1)
@@ -728,6 +729,10 @@ int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time
     else
     {
         retval = _bIapBootCheckFlag();
+        if (bIapFlag.stat == B_IAP_STA_NULL || bIapFlag.stat == B_IAP_STA_FINISHED)
+        {
+            bIapJump2App();
+        }
     }
     return retval;
 }
@@ -771,6 +776,7 @@ int bIapEventHandler(bIapEvent_t event, void *arg)
         default:
             break;
     }
+    bIapFlag.percentage = offset * 100 / bIapFlag.info.len;
     return retval;
 }
 
@@ -788,6 +794,11 @@ uint8_t bIapGetStatus()
 uint8_t bIapBackupIsValid()
 {
     return (bIapFlag.backup.flag == B_IAP_BACKUP_VALID);
+}
+
+uint8_t bIapPercentage()
+{
+    return bIapFlag.percentage;
 }
 
 /**
