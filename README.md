@@ -123,9 +123,9 @@ git clone https://gitee.com/notrynohigh/BabyOS_Hal.git		 //克隆后切换到对
 ## 2.增加系统定时器
 
 ```C
-例如使用滴答定时器，中断服务函数调用：void bHalIncSysTick(void);
+//例如使用滴答定时器，中断服务函数调用：void bHalIncSysTick(void);
 
-注：定时器的周期与b_config.h里_TICK_FRQ_HZ要匹配
+//注：定时器的周期与b_config.h里_TICK_FRQ_HZ要匹配
 ```
 
 
@@ -340,4 +340,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2020.03 | 功能模块：b_log, b_gui, b_menu, b_trace，b_heap 驱动：ssd1289 ili9341 |      |
 | 2020.04 | 增加基于华大MCU例子，增加驱动ili9320 oled12864，优化b_mod_kv等功能模块，增加algorithm目录 |      |
 | 2020.05 | 优化代码结构，增加：b_mod_timer b_mod_qpn等 ,优化b_mod_xmodem等，增加算法base64 sha1 sort等 |      |
+| 2020.06 | 分解为3个仓库管理代码。增加SFUD作为SPIFLASH驱动，增加SD卡驱动，增加FatFS和LittleFS等 |      |
 
