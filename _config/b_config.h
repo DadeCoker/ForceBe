@@ -176,6 +176,9 @@
 //<q> File Checksum Enable/Disable
 #define _IAP_CHECKSUM_ENABLE 1
 
+//<o> McuFlash Base Address
+#define MCUFLASH_BASE_ADDR 0x08000000
+
 //<o> Bootloader Start Address
 #define BOOT_START_ADDR 0x08000000
 
@@ -185,6 +188,11 @@
 //<o> App Start Address
 #define APP_START_ADDR 0x08014800
 
+//<o> Receive New Firmware
+//<0=> Bootloader
+//<1=> Application
+#define RECEIVE_FIRMWARE_MODE 1
+
 //<o> File Cache
 //<0=> NONE
 //<1=> On-Chip Flash
@@ -192,7 +200,7 @@
 #define IAP_FILE_CACHE 2
 
 //<o> Firmware Save Address
-#define IAP_FW_SAVE_ADDR 0x0802D800
+#define IAP_FW_SAVE_ADDR 0x00000000
 
 //</e>
 
