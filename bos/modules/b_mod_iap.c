@@ -213,13 +213,21 @@ int bIapBootCheckFlag()
 
 /**
  * \brief 反馈更新固件的结果
- * \param stat B_UPDATE_FW_TIMEOUT or B_UPDATE_FW_SUCCESS
+ * \param stat B_UPDATE_FW_ERR 、B_UPDATE_FW_OK
  * \return int B_BOOT_JUMP2APP：跳转应用程序  B_BOOT_WAIT_FW：等待接收新固件
  */
 int bIapUpdateFWResult(int result)
 {
     int retval = B_BOOT_JUMP2APP;
-    if (result == B_UPDATE_FW_TIMEOUT)
+
+    if (result == B_UPDATE_FW_OK)
+    {
+        bIapFlag.stat           = B_IAP_STA_READY;
+        bIapFlag.app_fail_count = 0;
+        bIapFlag.app_invalid    = 0;
+        retval                  = B_BOOT_JUMP2APP;
+    }
+    else
     {
         if (bIapFlag.app_invalid == 0)
         {
@@ -231,18 +239,6 @@ int bIapUpdateFWResult(int result)
             retval = B_BOOT_WAIT_FW;
         }
     }
-    else if (B_UPDATE_FW_SUCCESS)
-    {
-        bIapFlag.stat           = B_IAP_STA_READY;
-        bIapFlag.app_fail_count = 0;
-        bIapFlag.app_invalid    = 0;
-        retval                  = B_BOOT_JUMP2APP;
-    }
-    else
-    {
-        retval = B_BOOT_WAIT_FW;
-    }
-    
     if (retval == B_BOOT_JUMP2APP)
     {
         bHalFlashUnlock();

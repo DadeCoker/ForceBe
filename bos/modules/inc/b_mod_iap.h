@@ -72,8 +72,8 @@ extern "C" {
 #define B_BOOT_JUMP2APP (0)
 #define B_BOOT_WAIT_FW (1)
 
-#define B_UPDATE_FW_TIMEOUT (0)
-#define B_UPDATE_FW_SUCCESS (1)
+#define B_UPDATE_FW_ERR (0)
+#define B_UPDATE_FW_OK (1)
 
 /**
  * \}

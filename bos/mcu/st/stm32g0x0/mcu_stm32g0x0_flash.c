@@ -98,7 +98,10 @@ int bMcuFlashErase(uint32_t raddr, uint8_t pages)
     int      timeout = 0;
     uint8_t  i       = 0;
     uint32_t tmp;
-
+    if (sMcuFlashSize == 0)
+    {
+        bMcuFlashInit();
+    }
     raddr = raddr / FLASH_PAGE_SIZE * FLASH_PAGE_SIZE;
     if ((raddr + (pages * FLASH_PAGE_SIZE)) > (sMcuFlashSize) ||
         ((MCU_FLASH->SR) & (0x00001 << 16)) != 0)
@@ -136,6 +139,10 @@ int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     uint32_t wdata[2] = {0, 0};
     uint16_t wlen = (len + 7) / 8, i = 0;
     uint32_t tmp;
+    if (sMcuFlashSize == 0)
+    {
+        bMcuFlashInit();
+    }
     raddr = FLASH_BASE_ADDR + raddr;
     if (pbuf == NULL || (raddr & 0x7) || (raddr + len) > (sMcuFlashSize + FLASH_BASE_ADDR) ||
         ((MCU_FLASH->SR) & (0x00001 << 16)) != 0)
@@ -179,6 +186,10 @@ int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 
 int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
+    if (sMcuFlashSize == 0)
+    {
+        bMcuFlashInit();
+    }
     if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (sMcuFlashSize + FLASH_BASE_ADDR))
     {
         return -1;
