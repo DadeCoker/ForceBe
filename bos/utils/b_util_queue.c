@@ -78,7 +78,7 @@ int bQueuePush(bQueueInstance_t *pinstance, void *data)
     {
         return -2;
     }
-    memcpy(pinstance->pbuf[pinstance->w_index * pinstance->item_size], data, pinstance->item_size);
+    memcpy(&pinstance->pbuf[pinstance->w_index * pinstance->item_size], data, pinstance->item_size);
     pinstance->w_index = (pinstance->w_index + 1) % pinstance->item_num;
     pinstance->number += 1;
     return 0;
@@ -98,7 +98,7 @@ int bQueuePop(bQueueInstance_t *pinstance, void *data)
     {
         return -3;
     }
-    memcpy(data, pinstance->pbuf[pinstance->r_index * pinstance->item_size], pinstance->item_size);
+    memcpy(data, &pinstance->pbuf[pinstance->r_index * pinstance->item_size], pinstance->item_size);
     pinstance->r_index = (pinstance->r_index + 1) % pinstance->item_num;
     pinstance->number -= 1;
     return 0;
@@ -118,7 +118,7 @@ int bQueuePeek(bQueueInstance_t *pinstance, void *data)
     {
         return -3;
     }
-    memcpy(data, pinstance->pbuf[pinstance->r_index * pinstance->item_size], pinstance->item_size);
+    memcpy(data, &pinstance->pbuf[pinstance->r_index * pinstance->item_size], pinstance->item_size);
     return 0;
 }
 

@@ -33,13 +33,13 @@
 /*Includes ----------------------------------------------*/
 
 #include "b_util_fifo.h"
+#include "b_util_list.h"
 #include "b_util_log.h"
 #include "b_util_lunar.h"
 #include "b_util_memp.h"
 #include "b_util_queue.h"
 #include "b_util_uart.h"
 #include "b_util_utc.h"
-
 
 #endif
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

@@ -94,6 +94,18 @@ typedef bUitlUart_t bUitlUartInstance_t;
         .next        = NULL,                                 \
     }
 
+#define bUTIL_UART_INIT_INSTANCE(pinstance, buf_len, idle_ms, cb, arg) \
+    static uint8_t Buf##cb[buf_len];                                   \
+    do                                                                 \
+    {                                                                  \
+        memset((pinstance), 0, sizeof(bUitlUartInstance_t));           \
+        (pinstance)->pbuf        = Buf##cb;                            \
+        (pinstance)->buf_size    = buf_len;                            \
+        (pinstance)->idle_thd_ms = idle_ms;                            \
+        (pinstance)->callback    = cb;                                 \
+        (pinstance)->cb_arg      = arg;                                \
+    } while (0)
+
 /**
  * \}
  */

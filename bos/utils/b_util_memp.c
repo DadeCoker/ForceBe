@@ -53,9 +53,7 @@ typedef struct head
 {
     uint32_t     status : 8;
     uint32_t     size : 24;
-    uint32_t     address;
     struct head *next;
-    struct head *prev;
 } bMempUnitHead_t;
 #pragma pack()
 
@@ -117,8 +115,23 @@ static uint8_t bMempInitFlag = 0;
  * \{
  */
 
+static void _bMempInit()
+{
+    bMempUnitHead_t *phead = (bMempUnitHead_t *)bMempBuf;
+    if (bMempInitFlag == 0)
+    {
+        memset(bMempBuf, 0, sizeof(bMempBuf));
+        phead->status = MEMP_UNIT_FREE;
+        phead->size   = MEMP_SIZE - sizeof(bMempUnitHead_t);
+        phead->next   = NULL;
+        bMempInitFlag = 1;
+    }
+}
+
 static void *_bMempAlloc(uint32_t size)
 {
+    size = B_SIZE_ALIGNMENT(size, 4);
+
     bMempUnitHead_t *phead      = (bMempUnitHead_t *)bMempBuf;
     void            *pret       = NULL;
     uint32_t         real_size  = size + sizeof(bMempUnitHead_t);
@@ -134,7 +147,7 @@ static void *_bMempAlloc(uint32_t size)
             if (phead->size == size)
             {
                 phead->status = MEMP_UNIT_USED;
-                pret          = (void *)(phead->address);
+                pret          = (void *)(((char *)phead) + sizeof(bMempUnitHead_t));
             }
             else if (phead->size < real_size)
             {
@@ -143,21 +156,14 @@ static void *_bMempAlloc(uint32_t size)
             else
             {
                 phead->status = MEMP_UNIT_USED;
-                pret          = (void *)(phead->address);
-
+                pret          = (void *)(((char *)phead) + sizeof(bMempUnitHead_t));
                 // create a new unit
-                p_new_head          = (bMempUnitHead_t *)(phead->address + size);
-                p_new_head->status  = MEMP_UNIT_FREE;
-                p_new_head->size    = phead->size - size - sizeof(bMempUnitHead_t);
-                p_new_head->address = ((uint32_t)p_new_head) + sizeof(bMempUnitHead_t);
-                p_new_head->next    = phead->next;
-                p_new_head->prev    = phead;
-                if (phead->next != NULL)
-                {
-                    phead->next->prev = p_new_head;
-                }
-                phead->size = size;
-                phead->next = p_new_head;
+                p_new_head         = (bMempUnitHead_t *)(((char *)pret) + size);
+                p_new_head->status = MEMP_UNIT_FREE;
+                p_new_head->size   = phead->size - size - sizeof(bMempUnitHead_t);
+                p_new_head->next   = phead->next;
+                phead->size        = size;
+                phead->next        = p_new_head;
             }
         }
         if (pret != NULL)
@@ -171,23 +177,26 @@ static void *_bMempAlloc(uint32_t size)
 static void _bMempFree(uint32_t addr)
 {
     bMempUnitHead_t *phead = (bMempUnitHead_t *)(addr - sizeof(bMempUnitHead_t));
-    if (phead->status != MEMP_UNIT_USED || phead->address != addr)
+    if (phead->status != MEMP_UNIT_USED ||
+        addr < (((uint32_t)bMempBuf) + sizeof(bMempUnitHead_t)) ||
+        addr > (((uint32_t)bMempBuf) + MEMP_SIZE - sizeof(bMempUnitHead_t)))
     {
         return;
     }
     phead->status = MEMP_UNIT_FREE;
-    while (phead->prev != NULL && phead->prev->status == MEMP_UNIT_FREE)
+    phead         = (bMempUnitHead_t *)bMempBuf;
+
+    while (phead != NULL)
     {
-        phead = phead->prev;
-    }
-    while (phead->next != NULL && phead->next->status == MEMP_UNIT_FREE)
-    {
-        phead->size += phead->next->size + sizeof(bMempUnitHead_t);
-        phead->next = phead->next->next;
-        if (phead->next != NULL)
+        if (phead->status == MEMP_UNIT_FREE)
         {
-            phead->next->prev = phead;
+            while (phead->next != NULL && phead->next->status == MEMP_UNIT_FREE)
+            {
+                phead->size += phead->next->size + sizeof(bMempUnitHead_t);
+                phead->next = phead->next->next;
+            }
         }
+        phead = phead->next;
     }
 }
 
@@ -218,19 +227,10 @@ void *bMalloc(uint32_t size)
 {
     int              valid_index = -1;
     bMempUnitHead_t *phead       = (bMempUnitHead_t *)bMempBuf;
+    _bMempInit();
     if (size == 0)
     {
         return NULL;
-    }
-    if (bMempInitFlag == 0)
-    {
-        memset(bMempBuf, 0, sizeof(bMempBuf));
-        phead->status  = MEMP_UNIT_FREE;
-        phead->address = ((uint32_t)phead) + sizeof(bMempUnitHead_t);
-        phead->size    = MEMP_SIZE - sizeof(bMempUnitHead_t);
-        phead->next    = NULL;
-        phead->prev    = NULL;
-        bMempInitFlag  = 1;
     }
     return _bMempAlloc(size);
 }
@@ -246,6 +246,7 @@ void bFree(void *paddr)
 
 uint32_t bGetFreeSize()
 {
+    _bMempInit();
     return _bGetFreeSize();
 }
 

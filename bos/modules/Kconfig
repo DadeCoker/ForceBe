@@ -200,4 +200,24 @@ config _WIFI_ENABLE
     depends on _BOS_MODULES_ENABLE
     select _MEMP_ENABLE
 
+config WIFI_Q_LEN
+    int "WiFi Queue Length"
+    default 10
+    depends on _WIFI_ENABLE
+
+config WIFI_DEVICE_NUMBER
+    int "WiFi Device Number"
+    default 1
+    depends on _WIFI_ENABLE
+
+config WIFI_SEND_BUF_LEN
+    int "WiFi Send Buffer Length"
+    default 1024
+    depends on _WIFI_ENABLE
+
+config WIFI_RECV_BUF_LEN
+    int "WiFi Receive Buffer Length"
+    default 1024
+    depends on _WIFI_ENABLE    
+
 endmenu

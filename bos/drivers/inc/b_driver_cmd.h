@@ -123,31 +123,36 @@ typedef struct
 ///////////////////////////////////////////////////////////
 // Wifi Module Command & Data Structure
 ///////////////////////////////////////////////////////////
-#define bCMD_WIFI_MODE_STA 0          // none
-#define bCMD_WIFI_MODE_AP 1           // bWifiApInfo_t
-#define bCMD_WIFI_MODE_STA_AP 2       // bWifiApInfo_t
-#define bCMD_WIFI_JOIN_AP 3           // bWifiApInfo_t
-#define bCMD_WIFI_MQTT_CONN 4         // bMqttConnInfo_t
-#define bCMD_WIFI_MQTT_SUB 5          // bMqttTopicInfo_t
-#define bCMD_WIFI_LOCAL_TCP_SERVER 6  // bTcpUdpInfo_t
-#define bCMD_WIFI_REMOT_TCP_SERVER 7  // bTcpUdpInfo_t
-#define bCMD_WIFI_REMOT_UDP_SERVER 8  // bTcpUdpInfo_t
-#define bCMD_WIFI_PING 9              // char *ip
-#define bCMD_WIFI_GET_CONN_STATUS 10  // bWfifiConnStat_t
-#define bCMD_WIFI_REG_CALLBACK 11     // bWifiCallback_t
-
-typedef struct
-{
-    void (*cb)(uint8_t cmd, void *arg, void (*release)(void *), void *user_data);
-    void *user_data;
-} bWifiCallback_t;
+#define bCMD_WIFI_MODE_STA 0           // none
+#define bCMD_WIFI_MODE_AP 1            // bApInfo_t
+#define bCMD_WIFI_MODE_STA_AP 2        // bApInfo_t
+#define bCMD_WIFI_JOIN_AP 3            // bApInfo_t
+#define bCMD_WIFI_MQTT_CONN 4          // bMqttConnInfo_t
+#define bCMD_WIFI_MQTT_SUB 5           // bMqttTopic_t
+#define bCMD_WIFI_MQTT_PUB 6           // bMqttData_t
+#define bCMD_WIFI_LOCAL_TCP_SERVER 7   // bTcpUdpInfo_t
+#define bCMD_WIFI_LOCAL_UDP_SERVER 8   // bTcpUdpInfo_t
+#define bCMD_WIFI_REMOT_TCP_SERVER 9   // bTcpUdpInfo_t
+#define bCMD_WIFI_REMOT_UDP_SERVER 10  // bTcpUdpInfo_t
+#define bCMD_WIFI_PING 11              // default www.baidu.com
+#define bCMD_WIFI_GET_CONN_STATUS 12   // bWfifiConnStat_t
+#define bCMD_WIFI_REG_CALLBACK 13      // bWifiModuleCallback_t
+#define bCMD_WIFI_TCPUDP_CLOSE 14      // bTcpUdpInfo_t
+#define bCMD_WIFI_TCPUDP_SEND 15       // bTcpUdpData_t
 
 typedef enum
 {
-    WIFI_STA_CONNECTED,
-    WIFI_STA_DISCONNECTED,
-    WIFI_STA_INVALID
-} bWifiConnStat_t;
+    WIFI_DRV_EVT_CMD_OK,     // arg 为对应Wifi Module Command
+    WIFI_DRV_EVT_CMD_ERR,    // arg 为对应Wifi Module Command
+    WIFI_DRV_EVT_DATA,       // 提示收到数据 bTcpUdpData_t
+    WIFI_DRV_EVT_MQTT_DATA,  // 提示收到数据 bMqttData_t
+} bWifiModuleEvent_t;
+
+typedef struct
+{
+    void (*cb)(bWifiModuleEvent_t event, void *arg, void (*release)(void *), void *user_data);
+    void *user_data;
+} bWifiModuleCallback_t;
 
 typedef struct
 {
@@ -155,7 +160,7 @@ typedef struct
     char    passwd[64];
     uint8_t encryption;
     // 0(open) 1(WPA_PSK) 2(WPA2_PSK) 3(WPA_WPA2_PSK)
-} bWifiApInfo_t;
+} bApInfo_t;
 
 typedef struct
 {
@@ -165,8 +170,10 @@ typedef struct
 
 typedef struct
 {
-    uint16_t len;
-    char    *pstr;
+    bTcpUdpInfo_t conn;
+    uint8_t      *pbuf;
+    uint16_t      len;
+    void (*release)(void *);
 } bTcpUdpData_t;
 
 typedef struct
@@ -182,14 +189,15 @@ typedef struct
 {
     char    topic[64];
     uint8_t qos;
-} bMqttTopicInfo_t;
+} bMqttTopic_t;
 
 typedef struct
 {
-    bMqttTopicInfo_t topic;
-    char            *pstr;
-} bMqttTopicData_t;
-
+    bMqttTopic_t topic;
+    uint8_t     *pbuf;
+    uint16_t     len;
+    void (*release)(void *);
+} bMqttData_t;
 ///////////////////////////////////////////////////////////
 //
 ///////////////////////////////////////////////////////////
