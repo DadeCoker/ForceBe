@@ -34,7 +34,6 @@
 #include "hal/inc/b_hal_spi.h"
 #include "utils/inc/b_util_spi.h"
 #if (_MCU_PLATFORM == 2001)
-#include "n32l40x.h"
 
 #ifndef NULL
 #define NULL ((void *)0)

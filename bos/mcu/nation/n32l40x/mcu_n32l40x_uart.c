@@ -34,7 +34,6 @@
 #include "hal/inc/b_hal_uart.h"
 
 #if (_MCU_PLATFORM == 2001)
-#include "n32l40x.h"
 
 static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {

@@ -34,7 +34,6 @@
 #include "hal/inc/b_hal_it.h"
 
 #if (_MCU_PLATFORM == 2001)
-#include "n32l40x.h"
 
 static void _IntEnable()
 {
