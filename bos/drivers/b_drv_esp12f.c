@@ -33,6 +33,8 @@
 #include "drivers/inc/b_drv_esp12f.h"
 
 #include <stdio.h>
+
+#include "thirdparty/pt/pt.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -54,7 +56,16 @@
  */
 #define DRIVER_NAME ESP12F
 
-#define ESP_CMD_RETRY (2)
+#define AT_CMD_ACK_NULL (0)
+#define AT_CMD_ACK_WAIT (1)
+#define AT_CMD_ACK_DONE (2)
+
+#define AT_CMD_ACK_MS (1000)
+#define AT_CMD_ACK_MS_MAX (5000)
+
+#define AT_CMD_RESPON_LEN (64)
+
+#define AT_RETRY_MAX (3)
 
 /**
  * \}
@@ -65,7 +76,37 @@
  * \{
  */
 
-typedef uint8_t (*pOptFunc_t)(bDriverInterface_t *pdrv, void *param);
+typedef uint16_t (*bEsp12fAtCmd_t)(uint8_t index, void *param);
+
+typedef struct ConnectCtx
+{
+    uint8_t            conn_num;
+    uint8_t            conn_type;
+    bFIFO_Instance_t   send_fifo;
+    bFIFO_Instance_t   recv_fifo;
+    struct ConnectCtx *pnext;
+} bEsp12fConnectCtx_t;
+
+typedef struct
+{
+    char    resp[AT_CMD_RESPON_LEN + 1];
+    uint8_t ack;
+} bEsp12fAtCmdAck_t;
+
+typedef struct
+{
+    uint8_t              wifi_connect;
+    uint8_t              mux_enable;
+    uint8_t              retry;
+    uint8_t              result;
+    uint8_t              ctl_cmd;
+    bWifiCallback_t      cb;
+    bEsp12fConnectCtx_t *pconn;
+    bUitlUartInstance_t  uart;
+    bEsp12fAtCmdAck_t    at_ack;
+    bEsp12fAtCmd_t      *pcmd;
+    void                *param;
+} bEsp12fPrivate_t;
 
 /**
  * \}
@@ -75,42 +116,7 @@ typedef uint8_t (*pOptFunc_t)(bDriverInterface_t *pdrv, void *param);
  * \defgroup ESP12F_Private_Macros
  * \{
  */
-#define OPT_AT (0)
-#define OPT_ENTER_AT (1)
-#define OPT_RESET (2)
-#define OPT_SET_MUX (3)
-#define OPT_SET_AUTOCONN (4)
-#define OPT_STA_MODE (5)
-#define OPT_JOIN_AP (6)
-#define OPT_SET_AP (7)
-#define OPT_AP_MODE (8)
-#define OPT_STA_AP_MODE (9)
-#define OPT_SETUP_TCP_SERVER (10)
-#define OPT_MQTT_CLOSE (11)
-#define OPT_CFG_MQTTUSER (12)
-#define OPT_MQTT_CONN (13)
-#define OPT_MQTT_CONN_CHECK (14)
-#define OPT_MQTT_SUB (15)
-#define OPT_MQTT_PUB (16)
-#define OPT_CONN_TCP_SERVER (17)
-#define OPT_CONN_UDP_SERVER (18)
-#define OPT_TCP_UDP_SEND_1 (19)
-#define OPT_TCP_UDP_SEND_2 (20)
-#define OPT_TCP_UDP_CLOSE (21)
-#define OPT_DISABLE_MUX (22)
-#define OPT_PING (23)
-#define OPT_ECHO_OFF (24)
-#define OPT_NUMBER (25)
-#define OPT_NULL (OPT_NUMBER + 1)
-#define IS_ESP_OPT(n)                                                                             \
-    ((n == OPT_AT) || (n == OPT_ENTER_AT) || (n == OPT_RESET) || (n == OPT_SET_MUX) ||            \
-     (n == OPT_SET_AUTOCONN) || (n == OPT_STA_MODE) || (n == OPT_JOIN_AP) || (n == OPT_SET_AP) || \
-     (n == OPT_AP_MODE) || (n == OPT_STA_AP_MODE) || (n == OPT_SETUP_TCP_SERVER) ||               \
-     (n == OPT_MQTT_CLOSE) || (n == OPT_CFG_MQTTUSER) || (n == OPT_MQTT_CONN) ||                  \
-     (n == OPT_MQTT_CONN_CHECK) || (n == OPT_MQTT_SUB) || (n == OPT_MQTT_PUB) ||                  \
-     (n == OPT_CONN_TCP_SERVER) || (n == OPT_CONN_UDP_SERVER) || (n == OPT_TCP_UDP_SEND_1) ||     \
-     (n == OPT_TCP_UDP_SEND_2) || (n == OPT_TCP_UDP_CLOSE) || (n == OPT_DISABLE_MUX) ||           \
-     (n == OPT_PING) || (n == OPT_ECHO_OFF))
+
 /**
  * \}
  */
@@ -119,31 +125,31 @@ typedef uint8_t (*pOptFunc_t)(bDriverInterface_t *pdrv, void *param);
  * \defgroup ESP12F_Private_FunctionPrototypes
  * \{
  */
-static uint8_t _bEspEnterAt(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspAt(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspReset(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspSetMux(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspSetAutoConn(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspStaMode(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspJoinAp(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspSetAp(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspApMode(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspStaApMode(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspSetupTcpServer(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspMqttClose(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspCfgMqttUser(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspMqttConn(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspMqttConnCheck(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspMqttSub(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspMqttPub(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspConnTcpServer(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspConnUdpServer(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspTcpUdpSend1(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspTcpUdpSend2(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspTcpUdpClose(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspDisableMux(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspPing(bDriverInterface_t *pdrv, void *param);
-static uint8_t _bEspEchoOff(bDriverInterface_t *pdrv, void *param);
+static uint16_t _bEspEnterAt(uint8_t index, void *param);
+static uint16_t _bEspAt(uint8_t index, void *param);
+static uint16_t _bEspReset(uint8_t index, void *param);
+static uint16_t _bEspSetMux(uint8_t index, void *param);
+static uint16_t _bEspSetAutoConn(uint8_t index, void *param);
+static uint16_t _bEspStaMode(uint8_t index, void *param);
+static uint16_t _bEspJoinAp(uint8_t index, void *param);
+static uint16_t _bEspSetAp(uint8_t index, void *param);
+static uint16_t _bEspApMode(uint8_t index, void *param);
+static uint16_t _bEspStaApMode(uint8_t index, void *param);
+static uint16_t _bEspSetupTcpServer(uint8_t index, void *param);
+static uint16_t _bEspMqttClose(uint8_t index, void *param);
+static uint16_t _bEspCfgMqttUser(uint8_t index, void *param);
+static uint16_t _bEspMqttConn(uint8_t index, void *param);
+static uint16_t _bEspMqttConnCheck(uint8_t index, void *param);
+static uint16_t _bEspMqttSub(uint8_t index, void *param);
+static uint16_t _bEspMqttPub(uint8_t index, void *param);
+static uint16_t _bEspConnTcpServer(uint8_t index, void *param);
+static uint16_t _bEspConnUdpServer(uint8_t index, void *param);
+static uint16_t _bEspTcpUdpSend1(uint8_t index, void *param);
+static uint16_t _bEspTcpUdpSend2(uint8_t index, void *param);
+static uint16_t _bEspTcpUdpClose(uint8_t index, void *param);
+static uint16_t _bEspDisableMux(uint8_t index, void *param);
+static uint16_t _bEspPing(uint8_t index, void *param);
+static uint16_t _bEspEchoOff(uint8_t index, void *param);
 /**
  * \}
  */
@@ -155,40 +161,27 @@ static uint8_t _bEspEchoOff(bDriverInterface_t *pdrv, void *param);
 
 bDRIVER_HALIF_TABLE(bESP12F_HalIf_t, DRIVER_NAME);
 
-const static uint8_t bWifiStaOptList[] = {
-    OPT_ENTER_AT, OPT_ENTER_AT,    OPT_AT,           OPT_RESET,    OPT_ENTER_AT, OPT_ENTER_AT,
-    OPT_AT,       OPT_DISABLE_MUX, OPT_SET_AUTOCONN, OPT_STA_MODE, OPT_ECHO_OFF, OPT_NULL};
-const static uint8_t bWifiApOptList[] = {
-    OPT_ENTER_AT, OPT_ENTER_AT,     OPT_AT,      OPT_RESET,  OPT_ENTER_AT, OPT_ENTER_AT, OPT_AT,
-    OPT_SET_MUX,  OPT_SET_AUTOCONN, OPT_AP_MODE, OPT_SET_AP, OPT_ECHO_OFF, OPT_NULL};
-const static uint8_t bWifiStaApOptList[] = {
-    OPT_ENTER_AT, OPT_ENTER_AT,     OPT_AT,          OPT_RESET,  OPT_ENTER_AT, OPT_ENTER_AT, OPT_AT,
-    OPT_SET_MUX,  OPT_SET_AUTOCONN, OPT_STA_AP_MODE, OPT_SET_AP, OPT_ECHO_OFF, OPT_NULL};
-const static uint8_t bWifiJoinApOptList[]         = {OPT_JOIN_AP, OPT_NULL};
-const static uint8_t bWifiSetupTcpServerOptList[] = {OPT_SETUP_TCP_SERVER, OPT_NULL};
-const static uint8_t bWifiConnTcpServerOptList[]  = {OPT_TCP_UDP_CLOSE, OPT_CONN_TCP_SERVER,
-                                                     OPT_NULL};
-const static uint8_t bWifiConnUdpServerOptList[]  = {OPT_TCP_UDP_CLOSE, OPT_CONN_UDP_SERVER,
-                                                     OPT_NULL};
-const static uint8_t bWifiMqttConnOptList[]       = {
-          OPT_MQTT_CLOSE, OPT_MQTT_CLOSE, OPT_CFG_MQTTUSER, OPT_MQTT_CONN, OPT_MQTT_CONN_CHECK, OPT_NULL};
-const static uint8_t bWifiMqttSubOptList[] = {OPT_MQTT_SUB, OPT_NULL};
-const static uint8_t bWifiMqttPubOptList[] = {OPT_MQTT_PUB, OPT_NULL};
-const static uint8_t bWifiTcpSendOptList[] = {OPT_TCP_UDP_SEND_1, OPT_TCP_UDP_SEND_2, OPT_NULL};
-const static uint8_t bWifiPingOptList[]    = {OPT_PING, OPT_NULL};
+const static bEsp12fAtCmd_t bWifiStaOptList[] = {
+    _bEspEnterAt, _bEspEnterAt,    _bEspAt,          _bEspReset,   _bEspEnterAt, _bEspEnterAt,
+    _bEspAt,      _bEspDisableMux, _bEspSetAutoConn, _bEspStaMode, _bEspEchoOff, NULL};
+const static bEsp12fAtCmd_t bWifiApOptList[] = {
+    _bEspEnterAt, _bEspEnterAt,     _bEspAt,     _bEspReset, _bEspEnterAt, _bEspEnterAt, _bEspAt,
+    _bEspSetMux,  _bEspSetAutoConn, _bEspApMode, _bEspSetAp, _bEspEchoOff, NULL};
+const static bEsp12fAtCmd_t bWifiStaApOptList[] = {
+    _bEspEnterAt, _bEspEnterAt,     _bEspAt,        _bEspReset, _bEspEnterAt, _bEspEnterAt, _bEspAt,
+    _bEspSetMux,  _bEspSetAutoConn, _bEspStaApMode, _bEspSetAp, _bEspEchoOff, NULL};
+const static bEsp12fAtCmd_t bWifiJoinApOptList[]         = {_bEspJoinAp, NULL};
+const static bEsp12fAtCmd_t bWifiSetupTcpServerOptList[] = {_bEspSetupTcpServer, NULL};
+const static bEsp12fAtCmd_t bWifiConnTcpServerOptList[]  = {_bEspConnTcpServer, NULL};
+const static bEsp12fAtCmd_t bWifiConnUdpServerOptList[]  = {_bEspConnUdpServer, NULL};
+const static bEsp12fAtCmd_t bWifiMqttConnOptList[]       = {
+    _bEspMqttClose, _bEspMqttClose, _bEspCfgMqttUser, _bEspMqttConn, _bEspMqttConnCheck, NULL};
+const static bEsp12fAtCmd_t bWifiMqttSubOptList[] = {_bEspMqttSub, NULL};
+const static bEsp12fAtCmd_t bWifiPingOptList[]    = {_bEspPing, NULL};
 
-const static pOptFunc_t bOptFuncTable[OPT_NUMBER] = {
-    _bEspAt,          _bEspEnterAt,       _bEspReset,          _bEspSetMux,
-    _bEspSetAutoConn, _bEspStaMode,       _bEspJoinAp,         _bEspSetAp,
-    _bEspApMode,      _bEspStaApMode,     _bEspSetupTcpServer, _bEspMqttClose,
-    _bEspCfgMqttUser, _bEspMqttConn,      _bEspMqttConnCheck,  _bEspMqttSub,
-    _bEspMqttPub,     _bEspConnTcpServer, _bEspConnUdpServer,  _bEspTcpUdpSend1,
-    _bEspTcpUdpSend2, _bEspTcpUdpClose,   _bEspDisableMux,     _bEspPing,
-    _bEspEchoOff,
-};
+static bEsp12fPrivate_t bEspRunInfo[bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME)];
+static struct pt        bEsp12fPT;
 
-static bEsp12fPrivate_t    bEspRunInfo[bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME)];
-static bDriverInterface_t *bEspDrvTable[bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME)];
 /**
  * \}
  */
@@ -242,243 +235,180 @@ static char *_bEspStrStr(uint8_t *pbuf, uint16_t len, const char *str)
     return NULL;
 }
 
-static int _bEspRecHandler(bDriverInterface_t *pdrv, uint8_t *pbuf, uint16_t len)
+static int _bEspRecHandler(bEsp12fPrivate_t *pinfo, uint8_t *pbuf, uint16_t len)
 {
-    char             *retp   = NULL;
-    char             *p      = NULL;
-    int               retval = 0, id = 0, rlen = 0;
-    char              tmp[64];
-    char             *pcheckend = NULL;
-    bEsp12fPrivate_t *pinfo     = (bEsp12fPrivate_t *)pdrv->_private._p;
-    if (pinfo->lock)
+    char *retp   = NULL;
+    char *p      = NULL;
+    int   retval = 0, id = 0, rlen = 0;
+    char  tmp[64];
+    char *pcheckend = NULL;
+
+    if (strstr((char *)pbuf, "WIFI CONNECTED") != NULL)
     {
-        return -1;
+        pinfo->wifi_connect = 1;
     }
 
-    pinfo->lock = 1;
-    retp        = strstr((const char *)pbuf, "+MQTTSUBRECV");
-    if (retp != NULL && pinfo->wifi_rec_data.mqtt.pstr == NULL)
+    if (strstr((char *)pbuf, "WIFI	DISCONNECT") != NULL)
     {
-        memset(tmp, 0, sizeof(tmp));
-        p = (char *)bMalloc(len);
-        if (p == NULL)
-        {
-            pinfo->lock = 0;
-            return -2;
-        }
-        retval = sscanf((const char *)retp, "+MQTTSUBRECV:%d,%[^,],%d,%s", &id, tmp, &rlen, p);
-        if (rlen <= 0 || rlen >= len || retval != 4)
-        {
-            bFree(p);
-            pinfo->lock = 0;
-            return -2;
-        }
-        memcpy(p, retp + strlen("+MQTTSUBRECV:") + _bEspNumLen(id) + strlen(tmp) + _bEspNumLen(rlen) + 3, rlen);
-        pinfo->wifi_rec_data.mqtt.pstr = p;
-        memset(pinfo->wifi_rec_data.mqtt.topic.topic, 0,
-               sizeof(pinfo->wifi_rec_data.mqtt.topic.topic));
-        memcpy(pinfo->wifi_rec_data.mqtt.topic.topic, tmp, strlen(tmp));
-        pinfo->lock = 0;
-        return 0;
+        pinfo->wifi_connect = 0;
     }
-    retp = strstr((const char *)pbuf, "+IPD");
-    while (retp)
-    {
-        if (pinfo->cfg.mux_enable)
-        {
-            retval = sscanf((const char *)retp, "+IPD,%d,%d:%*s", &id, &rlen);
-            if (retval != 2)
-            {
-                retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
-                if (retval == 1)
-                {
-                    pinfo->cfg.mux_enable = 0;
-                }
-            }
-        }
 
-        if (pinfo->cfg.mux_enable == 0)
-        {
-            retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
-        }
+    // retp = strstr((const char *)pbuf, "+MQTTSUBRECV");
+    // if (retp != NULL && pinfo->wifi_rec_data.mqtt.pstr == NULL)
+    // {
+    //     memset(tmp, 0, sizeof(tmp));
+    //     p = (char *)bMalloc(len);
+    //     if (p == NULL)
+    //     {
+    //         pinfo->lock = 0;
+    //         return -2;
+    //     }
+    //     retval = sscanf((const char *)retp, "+MQTTSUBRECV:%d,%[^,],%d,%s", &id, tmp, &rlen, p);
+    //     if (rlen <= 0 || rlen >= len || retval != 4)
+    //     {
+    //         bFree(p);
+    //         pinfo->lock = 0;
+    //         return -2;
+    //     }
+    //     memcpy(
+    //         p,
+    //         retp + strlen("+MQTTSUBRECV:") + _bEspNumLen(id) + strlen(tmp) + _bEspNumLen(rlen) +
+    //         3, rlen);
+    //     pinfo->wifi_rec_data.mqtt.pstr = p;
+    //     memset(pinfo->wifi_rec_data.mqtt.topic.topic, 0,
+    //            sizeof(pinfo->wifi_rec_data.mqtt.topic.topic));
+    //     memcpy(pinfo->wifi_rec_data.mqtt.topic.topic, tmp, strlen(tmp));
+    //     pinfo->lock = 0;
+    //     return 0;
+    // }
+    // retp = strstr((const char *)pbuf, "+IPD");
+    // while (retp)
+    // {
+    //     if (pinfo->cfg.mux_enable)
+    //     {
+    //         retval = sscanf((const char *)retp, "+IPD,%d,%d:%*s", &id, &rlen);
+    //         if (retval != 2)
+    //         {
+    //             retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
+    //             if (retval == 1)
+    //             {
+    //                 pinfo->cfg.mux_enable = 0;
+    //             }
+    //         }
+    //     }
 
-        if (((retval == 1 && pinfo->cfg.mux_enable == 0) ||
-             (retval == 2 && pinfo->cfg.mux_enable == 1)) &&
-            rlen > 0 && rlen < len)
-        {
-            if (pinfo->cfg.mux_enable)
-            {
-                pinfo->cfg.conn_id = id;
-                retp               = retp + _bEspNumLen(id) + 1;
-            }
-            retp = retp + 5 + _bEspNumLen(rlen) + 1;
-            bMempListAdd(&pinfo->tcp_data_list, (uint8_t *)retp, rlen);
-            retp += rlen;
-        }
-        else
-        {
-            break;
-        }
-        retp = strstr((const char *)retp, "+IPD");
-    }
-    retp = _bEspStrStr(pbuf, len, "+HTTPCLIENT:");
-    while (retp)
-    {
-        pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nOK");
-        if (pcheckend == NULL)
-        {
-            pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nERR");
-            if (pcheckend == NULL)
-            {
-                pinfo->lock = 0;
-                return -3;  //没有接收完整，继续接收
-            }
-        }
-        retval = sscanf((const char *)retp, "+HTTPCLIENT:%d,%*s", &rlen);
-        if (retval == 1 && rlen > 0 && rlen < len)
-        {
-            retp = retp + strlen("+HTTPCLIENT:") + _bEspNumLen(rlen) + 1;
-            bMempListAdd(&pinfo->tcp_data_list, (uint8_t *)retp, rlen);
-            retp += rlen;
-        }
-        else
-        {
-            break;
-        }
-        retp = strstr((const char *)retp, "+HTTPCLIENT:");
-    }
-    pinfo->lock = 0;
+    //     if (pinfo->cfg.mux_enable == 0)
+    //     {
+    //         retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
+    //     }
+
+    //     if (((retval == 1 && pinfo->cfg.mux_enable == 0) ||
+    //          (retval == 2 && pinfo->cfg.mux_enable == 1)) &&
+    //         rlen > 0 && rlen < len)
+    //     {
+    //         if (pinfo->cfg.mux_enable)
+    //         {
+    //             pinfo->cfg.conn_id = id;
+    //             retp               = retp + _bEspNumLen(id) + 1;
+    //         }
+    //         retp = retp + 5 + _bEspNumLen(rlen) + 1;
+    //         bMempListAdd(&pinfo->tcp_data_list, (uint8_t *)retp, rlen);
+    //         retp += rlen;
+    //     }
+    //     else
+    //     {
+    //         break;
+    //     }
+    //     retp = strstr((const char *)retp, "+IPD");
+    // }
+    // retp = _bEspStrStr(pbuf, len, "+HTTPCLIENT:");
+    // while (retp)
+    // {
+    //     pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nOK");
+    //     if (pcheckend == NULL)
+    //     {
+    //         pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nERR");
+    //         if (pcheckend == NULL)
+    //         {
+    //             pinfo->lock = 0;
+    //             return -3;  // 没有接收完整，继续接收
+    //         }
+    //     }
+    //     retval = sscanf((const char *)retp, "+HTTPCLIENT:%d,%*s", &rlen);
+    //     if (retval == 1 && rlen > 0 && rlen < len)
+    //     {
+    //         retp = retp + strlen("+HTTPCLIENT:") + _bEspNumLen(rlen) + 1;
+    //         bMempListAdd(&pinfo->tcp_data_list, (uint8_t *)retp, rlen);
+    //         retp += rlen;
+    //     }
+    //     else
+    //     {
+    //         break;
+    //     }
+    //     retp = strstr((const char *)retp, "+HTTPCLIENT:");
+    // }
     return 0;
 }
 
 static int _bEspUartIdleCb(uint8_t *pbuf, uint16_t len, void *arg)
 {
     int retval = 0;
-    bAtFeedRespData(pbuf, len);
-    if (_bEspRecHandler(arg, pbuf, len) == -3)
+    b_log("%s\r\n", pbuf);
+    bEsp12fAtCmdAck_t *pack = &(((bEsp12fPrivate_t *)arg)->at_ack);
+    if (pack->ack == AT_CMD_ACK_WAIT)
     {
-        retval = -1;
-    }
-    return retval;
-}
-
-static void _bEspCmdFinished(bDriverInterface_t *pdrv, uint8_t result)
-{
-    bEsp12fPrivate_t *pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
-    pinfo->result           = result;
-
-    if (pinfo->opt_param != NULL)
-    {
-        bFree(pinfo->opt_param);
-        pinfo->opt_param = NULL;
-    }
-
-    pinfo->opt.index    = 0;
-    pinfo->opt.list_len = 0;
-    pinfo->opt.plist    = NULL;
-    pinfo->opt.at_id    = AT_INVALID_ID;
-}
-
-static void _bEspAtCb(uint8_t id, uint8_t result, void *arg)
-{
-    static uint8_t    retry = 0;
-    bEsp12fPrivate_t *pinfo = (bEsp12fPrivate_t *)(((bDriverInterface_t *)arg)->_private._p);
-    if (pinfo->opt.at_id == id && id != AT_INVALID_ID)
-    {
-        pinfo->opt.at_id = AT_INVALID_ID;
-        if (result == AT_STA_OK)
+        if (strstr((char *)pbuf, pack->resp) != NULL)
         {
-            pinfo->opt.index += 1;
-            if (pinfo->opt.index < pinfo->opt.list_len)
-            {
-                if (pinfo->opt.plist[pinfo->opt.index] == OPT_NULL)
-                {
-                    _bEspCmdFinished(arg, ESP12F_CMD_RESULT_OK);
-                }
-            }
-            retry = 0;
-        }
-        else
-        {
-            retry++;
-            if (retry > ESP_CMD_RETRY)
-            {
-                retry = 0;
-                _bEspCmdFinished(arg, ESP12F_CMD_RESULT_ERR);
-            }
+            pack->ack = AT_CMD_ACK_DONE;
         }
     }
+    return _bEspRecHandler(arg, pbuf, len);
 }
 
-static void _bEspCmdStart(bDriverInterface_t *pdrv, uint8_t cmd, const uint8_t *plist,
-                          uint8_t list_len, void *param, uint16_t param_len)
+static void _bAtCmdSetResp(uint8_t index, char *p)
 {
-    bEsp12fPrivate_t *pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
-    if (plist == NULL || list_len == 0)
-    {
-        return;
-    }
-
-    if (pinfo->opt_param != NULL)
-    {
-        _bEspCmdFinished(pdrv, ESP12F_CMD_RESULT_ERR);
-    }
-
-    if (param != NULL && param_len > 0)
-    {
-        pinfo->opt_param = bMalloc(param_len);
-        if (pinfo->opt_param == NULL)
-        {
-            _bEspCmdFinished(pdrv, ESP12F_CMD_RESULT_ERR);
-            return;
-        }
-        memcpy(pinfo->opt_param, param, param_len);
-    }
-    pinfo->opt.index    = 0;
-    pinfo->opt.plist    = plist;
-    pinfo->opt.list_len = list_len;
-    pinfo->opt.at_id    = AT_INVALID_ID;
-    pinfo->opt.cmd      = cmd;
-    pinfo->result       = ESP12F_CMD_RESULT_NULL;
+    memset(&bEspRunInfo[index].at_ack, 0, sizeof(bEsp12fAtCmdAck_t));
+    memcpy(bEspRunInfo[index].at_ack.resp, p,
+           (strlen(p) > AT_CMD_RESPON_LEN) ? AT_CMD_RESPON_LEN : strlen(p));
+    bEspRunInfo[index].at_ack.ack = AT_CMD_ACK_WAIT;
 }
 
-static uint8_t _bEspStaMode(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspStaMode(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval =
-        bAtCmdSend("AT+CWMODE=1\r\n", strlen("AT+CWMODE=1\r\n"), "OK", strlen("OK"), *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CWMODE=1\r\n", strlen("AT+CWMODE=1\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspApMode(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspApMode(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval =
-        bAtCmdSend("AT+CWMODE=2\r\n", strlen("AT+CWMODE=2\r\n"), "OK", strlen("OK"), *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CWMODE=2\r\n", strlen("AT+CWMODE=2\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspStaApMode(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspStaApMode(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval =
-        bAtCmdSend("AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"), "OK", strlen("OK"), *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspSetAp(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspSetAp(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t        retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char           buf[200];
     int            len;
     bWifiApInfo_t *pinfo = (bWifiApInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     if (strlen(pinfo->passwd) == 0 || pinfo->encryption == 0)
     {
@@ -489,23 +419,21 @@ static uint8_t _bEspSetAp(bDriverInterface_t *pdrv, void *param)
         len = snprintf(buf, 200, "AT+CWSAP=\"%s\",\"%s\",%d,%d\r\n", pinfo->ssid, pinfo->passwd, 5,
                        pinfo->encryption + 1);
     }
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 500);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspJoinAp(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspJoinAp(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t        retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char           buf[200];
     int            len   = 0;
     bWifiApInfo_t *pinfo = (bWifiApInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     if (pinfo->encryption == 0 || strlen(pinfo->passwd) == 0)
     {
@@ -515,413 +443,421 @@ static uint8_t _bEspJoinAp(bDriverInterface_t *pdrv, void *param)
     {
         len = snprintf(buf, 200, "AT+CWJAP=\"%s\",\"%s\"\r\n", pinfo->ssid, pinfo->passwd);
     }
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 8000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspSetMux(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspSetMux(uint8_t index, void *param)
 {
-    bEsp12fPrivate_t *pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval =
-        bAtCmdSend("AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"), "OK", strlen("OK"), *_if, 500);
-    pinfo->cfg.mux_enable = 1;
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"));
+    bEspRunInfo[index].mux_enable = 1;
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspDisableMux(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspDisableMux(uint8_t index, void *param)
 {
-    bEsp12fPrivate_t *pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval =
-        bAtCmdSend("AT+CIPMUX=0\r\n", strlen("AT+CIPMUX=0\r\n"), "OK", strlen("OK"), *_if, 500);
-    pinfo->cfg.mux_enable = 0;
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CIPMUX=0\r\n", strlen("AT+CIPMUX=0\r\n"));
+    bEspRunInfo[index].mux_enable = 0;
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspSetAutoConn(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspSetAutoConn(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval = bAtCmdSend("AT+CWAUTOCONN=1\r\n", strlen("AT+CWAUTOCONN=1\r\n"), "OK", strlen("OK"),
-                        *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CWAUTOCONN=1\r\n", strlen("AT+CWAUTOCONN=1\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspEnterAt(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspEnterAt(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    return bAtCmdSend("+++", strlen("+++"), NULL, 0, *_if, 500);
+    b_log("[%d]%s\r\n", index, __func__);
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"+++", strlen("+++"));
+    return 0;
 }
 
-static uint8_t _bEspAt(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspAt(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    return bAtCmdSend("AT\r\n", strlen("AT\r\n"), "OK\r\n", strlen("OK\r\n"), *_if, 500);
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT\r\n", strlen("AT\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspReset(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspReset(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval         = bAtCmdSend("AT+RST\r\n", strlen("AT+RST\r\n"), "OK", strlen("OK"), *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+RST\r\n", strlen("AT+RST\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspSetupTcpServer(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspSetupTcpServer(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t        retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char           buf[32];
     uint8_t        len;
     bTcpUdpInfo_t *pinfo = (bTcpUdpInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = snprintf(buf, 32, "AT+CIPSERVER=%d,%d\r\n", 1, pinfo->port);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 500);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspMqttClose(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspMqttClose(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval = bAtCmdSend("AT+MQTTCLEAN=0\r\n", strlen("AT+MQTTCLEAN=0\r\n"), NULL, 0, *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+MQTTCLEAN=0\r\n", strlen("AT+MQTTCLEAN=0\r\n"));
+    return 0;
 }
 
-static uint8_t _bEspCfgMqttUser(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspCfgMqttUser(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t          retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char             buf[256];
     int              len   = 0;
     bMqttConnInfo_t *pinfo = (bMqttConnInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = snprintf(buf, 256, "AT+MQTTUSERCFG=0,1,\"%s\",\"%s\",\"%s\",0,0,\"\"\r\n",
                    pinfo->device_id, pinfo->user, pinfo->passwd);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 1000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspMqttConn(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspMqttConn(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t          retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char             buf[128];
     int              len   = 0;
     bMqttConnInfo_t *pinfo = (bMqttConnInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = snprintf(buf, 128, "AT+MQTTCONN=0,\"%s\",%d,1\r\n", pinfo->broker, pinfo->port);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "ERROR", strlen("ERROR"), *_if, 5000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "ERROR");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS_MAX;
 }
 
-static uint8_t _bEspMqttConnCheck(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspMqttConnCheck(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval         = bAtCmdSend("AT+MQTTCONN?\r\n", strlen("AT+MQTTCONN?\r\n"), "+MQTTCONN:0,4",
-                                strlen("+MQTTCONN:0,4"), *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "+MQTTCONN:0,4");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+MQTTCONN?\r\n", strlen("AT+MQTTCONN?\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspMqttSub(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspMqttSub(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t           retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char              buf[128];
     int               len   = 0;
     bMqttTopicInfo_t *pinfo = (bMqttTopicInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = snprintf(buf, 128, "AT+MQTTSUB=0,\"%s\",%d\r\n", pinfo->topic, pinfo->qos);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 1000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspMqttPub(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspConnTcpServer(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t           retval = AT_INVALID_ID;
-    char             *pbuf   = NULL;
-    int               len    = 0;
-    bMqttTopicData_t *pinfo  = (bMqttTopicData_t *)param;
-    if (param == NULL)
-    {
-        return retval;
-    }
-    if (pinfo->pstr == NULL)
-    {
-        return retval;
-    }
-    pbuf = (char *)bMalloc(64 + strlen(pinfo->topic.topic) + strlen(pinfo->pstr));
-    if (pbuf == NULL)
-    {
-        return retval;
-    }
-    len = sprintf((char *)pbuf, "AT+MQTTPUB=0,\"%s\",\"%s\",%d,0\r\n", pinfo->topic.topic,
-                  pinfo->pstr, pinfo->topic.qos);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(pbuf, len, "OK", strlen("OK"), *_if, 1000);
-    }
-    bFree(pbuf);
-    return retval;
-}
-
-static uint8_t _bEspConnTcpServer(bDriverInterface_t *pdrv, void *param)
-{
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t        retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char           buf[100];
     uint8_t        len;
     bTcpUdpInfo_t *pinfo = (bTcpUdpInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = sprintf(buf, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", pinfo->ip, pinfo->port);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 1000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspConnUdpServer(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspConnUdpServer(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t        retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char           buf[100];
     uint8_t        len;
     bTcpUdpInfo_t *pinfo = (bTcpUdpInfo_t *)param;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = sprintf(buf, "AT+CIPSTART=\"UDP\",\"%s\",%d\r\n", pinfo->ip, pinfo->port);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 1000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspTcpUdpSend1(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspTcpUdpClose(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    bEsp12fPrivate_t *pinfo  = (bEsp12fPrivate_t *)pdrv->_private._p;
-    uint8_t           retval = AT_INVALID_ID;
-    bTcpUdpData_t    *pdata  = (bTcpUdpData_t *)param;
-    char              buf[32];
-    uint8_t           len;
-    if (param == NULL)
-    {
-        return retval;
-    }
-    if (pinfo->cfg.mux_enable)
-    {
-        len = sprintf(buf, "AT+CIPSEND=%d,%d\r\n", pinfo->cfg.conn_id, pdata->len);
-    }
-    else
-    {
-        len = sprintf(buf, "AT+CIPSEND=%d\r\n", pdata->len);
-    }
-
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, ">", strlen(">"), *_if, 500);
-    }
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "ERROR");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"AT+CIPCLOSE\r\n", strlen("AT+CIPCLOSE\r\n"));
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspTcpUdpSend2(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspPing(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t        retval = AT_INVALID_ID;
-    bTcpUdpData_t *pdata  = (bTcpUdpData_t *)param;
-    if (param == NULL)
-    {
-        return retval;
-    }
-    retval = bAtCmdSend(pdata->pstr, pdata->len, "OK", strlen("OK"), *_if, 1000);
-    return retval;
-}
-
-static uint8_t _bEspTcpUdpClose(bDriverInterface_t *pdrv, void *param)
-{
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval = bAtCmdSend("AT+CIPCLOSE\r\n", strlen("AT+CIPCLOSE\r\n"), "ERROR", strlen("ERROR"),
-                        *_if, 500);
-    return retval;
-}
-
-static uint8_t _bEspPing(bDriverInterface_t *pdrv, void *param)
-{
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
+    b_log("[%d]%s\r\n", index, __func__);
     char    buf[100];
     uint8_t len;
     if (param == NULL)
     {
-        return retval;
+        return 0;
     }
     len = sprintf(buf, "AT+PING=\"%s\"\r\n", (char *)param);
-    if (len > 0)
-    {
-        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), *_if, 2000);
-    }
-    return retval;
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))), (uint8_t *)buf,
+                 len);
+    return AT_CMD_ACK_MS;
 }
 
-static uint8_t _bEspEchoOff(bDriverInterface_t *pdrv, void *param)
+static uint16_t _bEspEchoOff(uint8_t index, void *param)
 {
-    bDRIVER_GET_HALIF(_if, bESP12F_HalIf_t, pdrv);
-    uint8_t retval = AT_INVALID_ID;
-    retval         = bAtCmdSend("ATE0\r\n", strlen("ATE0\r\n"), "OK", strlen("OK"), *_if, 500);
-    return retval;
+    b_log("[%d]%s\r\n", index, __func__);
+    _bAtCmdSetResp(index, "OK");
+    bHalUartSend(*((bESP12F_HalIf_t *)(bDRIVER_HALIF_INSTANCE(DRIVER_NAME, index))),
+                 (uint8_t *)"ATE0\r\n", strlen("ATE0\r\n"));
+    return AT_CMD_ACK_MS;
+}
+
+static void _bEspResult(uint8_t index, uint8_t result)
+{
+    bEspRunInfo[index].result = result;
+    bEspRunInfo[index].pcmd   = NULL;
+    bEspRunInfo[index].retry  = 0;
+    if (bEspRunInfo[index].cb)
+    {
+        bEspRunInfo[index].cb(bEspRunInfo[index].ctl_cmd, &bEspRunInfo[index].result, NULL);
+    }
+}
+
+static int _bEspMainTask(struct pt *pt)
+{
+    static uint8_t  index   = 0;
+    static uint32_t tick    = 0;
+    static uint16_t timeout = 0;
+    PT_BEGIN(pt);
+    while (1)
+    {
+        if (bEspRunInfo[index].pcmd == NULL)
+        {
+            break;
+        }
+
+        if (*(bEspRunInfo[index].pcmd) == NULL)
+        {
+            _bEspResult(index, 1);
+            index = (index + 1) % (bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME));
+            break;
+        }
+        tick    = bHalGetSysTick();
+        timeout = (*(bEspRunInfo[index].pcmd))(index, bEspRunInfo[index].param);
+        if (timeout > 0)
+        {
+            PT_WAIT_UNTIL(pt, bEspRunInfo[index].at_ack.ack == AT_CMD_ACK_DONE ||
+                                  (bHalGetSysTick() - tick) >= timeout);
+            if (bEspRunInfo[index].at_ack.ack == AT_CMD_ACK_DONE)
+            {
+                timeout = 0;
+            }
+        }
+        if (timeout == 0)
+        {
+            bEspRunInfo[index].retry = 0;
+            bEspRunInfo[index].pcmd += 1;
+        }
+        else
+        {
+            bEspRunInfo[index].retry += 1;
+            if (bEspRunInfo[index].retry >= AT_RETRY_MAX)
+            {
+                bEspRunInfo[index].retry = 0;
+                _bEspResult(index, 0);
+            }
+            index = (index + 1) % (bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME));
+        }
+        tick = bHalGetSysTick();
+        PT_WAIT_WHILE(pt, (bHalGetSysTick() - tick) < (500));
+    }
+    PT_END(pt);
 }
 
 static void _bEspPolling()
 {
-    int                 i     = 0;
-    bDriverInterface_t *pdrv  = NULL;
-    bEsp12fPrivate_t   *pinfo = NULL;
-    for (i = 0; i < bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME); i++)
-    {
-        pdrv  = bEspDrvTable[i];
-        pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
-        if (pdrv == NULL || pinfo == NULL)
-        {
-            continue;
-        }
-        if (pinfo->opt.plist == NULL || pinfo->opt.at_id != AT_INVALID_ID)
-        {
-            continue;
-        }
-        if (!IS_ESP_OPT(pinfo->opt.plist[pinfo->opt.index]))
-        {
-            continue;
-        }
-        pinfo->opt.at_id =
-            bOptFuncTable[pinfo->opt.plist[pinfo->opt.index]](pdrv, pinfo->opt_param);
-    }
+    _bEspMainTask(&bEsp12fPT);
 }
 
 BOS_REG_POLLING_FUNC(_bEspPolling);
 
+static int _bEspCtlStart(bEsp12fPrivate_t *pinfo, uint8_t cmd, bEsp12fAtCmd_t *pcmd, void *param)
+{
+    if (pinfo->pcmd != NULL)
+    {
+        return -2;
+    }
+    pinfo->retry   = 0;
+    pinfo->result  = 0;
+    pinfo->ctl_cmd = cmd;
+    pinfo->pcmd    = pcmd;
+    pinfo->param   = param;
+    return 0;
+}
+
 static int _bEspCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
 {
-    int retval = -1;
+    int               retval = 0;
+    bEsp12fPrivate_t *pinfo  = (bEsp12fPrivate_t *)pdrv->_private._p;
     switch (cmd)
     {
         case bCMD_WIFI_MODE_STA:
-            _bEspCmdStart(pdrv, cmd, bWifiStaOptList, sizeof(bWifiStaOptList), NULL, 0);
+            retval = _bEspCtlStart(pinfo, bCMD_WIFI_MODE_STA, (bEsp12fAtCmd_t *)&bWifiStaOptList[0],
+                                   param);
             break;
         case bCMD_WIFI_MODE_AP:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiApOptList, sizeof(bWifiApOptList), param,
-                              sizeof(bWifiApInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_MODE_AP,
+                                       (bEsp12fAtCmd_t *)&bWifiApOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         case bCMD_WIFI_MODE_STA_AP:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiStaApOptList, sizeof(bWifiStaApOptList), param,
-                              sizeof(bWifiApInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_MODE_STA_AP,
+                                       (bEsp12fAtCmd_t *)&bWifiStaApOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         case bCMD_WIFI_JOIN_AP:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiJoinApOptList, sizeof(bWifiJoinApOptList), param,
-                              sizeof(bWifiApInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_JOIN_AP,
+                                       (bEsp12fAtCmd_t *)&bWifiJoinApOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         case bCMD_WIFI_MQTT_CONN:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiMqttConnOptList, sizeof(bWifiMqttConnOptList), param,
-                              sizeof(bMqttConnInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_MQTT_CONN,
+                                       (bEsp12fAtCmd_t *)&bWifiMqttConnOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         case bCMD_WIFI_MQTT_SUB:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiMqttSubOptList, sizeof(bWifiMqttSubOptList), param,
-                              sizeof(bMqttTopicInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_MQTT_SUB,
+                                       (bEsp12fAtCmd_t *)&bWifiMqttSubOptList[0], param);
             }
-            break;
-        case bCMD_WIFI_MQTT_PUB:
-            if (param != NULL)
+            else
             {
-                _bEspCmdStart(pdrv, cmd, bWifiMqttPubOptList, sizeof(bWifiMqttPubOptList), param,
-                              sizeof(bMqttTopicData_t));
+                retval = -1;
             }
             break;
         case bCMD_WIFI_LOCAL_TCP_SERVER:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiSetupTcpServerOptList,
-                              sizeof(bWifiSetupTcpServerOptList), param, sizeof(bTcpUdpInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_LOCAL_TCP_SERVER,
+                                       (bEsp12fAtCmd_t *)&bWifiSetupTcpServerOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         case bCMD_WIFI_REMOT_TCP_SERVER:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiConnTcpServerOptList,
-                              sizeof(bWifiConnTcpServerOptList), param, sizeof(bTcpUdpInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_REMOT_TCP_SERVER,
+                                       (bEsp12fAtCmd_t *)&bWifiConnTcpServerOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         case bCMD_WIFI_REMOT_UDP_SERVER:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiConnUdpServerOptList,
-                              sizeof(bWifiConnUdpServerOptList), param, sizeof(bTcpUdpInfo_t));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_REMOT_UDP_SERVER,
+                                       (bEsp12fAtCmd_t *)&bWifiConnUdpServerOptList[0], param);
             }
-            break;
-        case bCMD_WIFI_TCP_UDP_SEND:
-            if (param != NULL)
+            else
             {
-                _bEspCmdStart(pdrv, cmd, bWifiTcpSendOptList, sizeof(bWifiTcpSendOptList), param,
-                              sizeof(bTcpUdpData_t));
+                retval = -1;
             }
             break;
         case bCMD_WIFI_PING:
             if (param != NULL)
             {
-                _bEspCmdStart(pdrv, cmd, bWifiPingOptList, sizeof(bWifiPingOptList), param,
-                              strlen(param));
+                retval = _bEspCtlStart(pinfo, bCMD_WIFI_PING,
+                                       (bEsp12fAtCmd_t *)&bWifiPingOptList[0], param);
+            }
+            else
+            {
+                retval = -1;
+            }
+            break;
+        case bCMD_WIFI_REG_CALLBACK:
+            if (param != NULL)
+            {
+                pinfo->cb = param;
+            }
+            else
+            {
+                retval = -1;
             }
             break;
         default:
@@ -932,37 +868,7 @@ static int _bEspCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
 
 static int _bEspRead(bDriverInterface_t *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len)
 {
-    int               retval = 0;
-    bEsp12fPrivate_t *pinfo  = (bEsp12fPrivate_t *)pdrv->_private._p;
-    if (len < sizeof(bWiFiData_t) || pbuf == NULL || pinfo->lock)
-    {
-        return -1;
-    }
-    if (pinfo->wifi_rec_data.mqtt.pstr == NULL && pinfo->tcp_data_list.total_size == 0)
-    {
-        return 0;
-    }
-    pinfo->lock = 1;
-    if (pinfo->tcp_data_list.total_size > 0)
-    {
-        pinfo->wifi_rec_data.tcp.pstr = (char *)bMempList2Array(&pinfo->tcp_data_list);
-        pinfo->wifi_rec_data.tcp.len  = pinfo->tcp_data_list.total_size;
-        bMempListFree(&pinfo->tcp_data_list);
-    }
-    memcpy(pbuf, &pinfo->wifi_rec_data, sizeof(bWiFiData_t));
-    //读取并使用数据后，需要释放 bWiFiRecData.mqtt.pstr 和 bWiFiRecData.tcp.pstr 指向的内存
-    if (pinfo->wifi_rec_data.mqtt.pstr != NULL)
-    {
-        retval += strlen(pinfo->wifi_rec_data.mqtt.pstr);
-        pinfo->wifi_rec_data.mqtt.pstr = NULL;
-    }
-    if (pinfo->wifi_rec_data.tcp.pstr != NULL)
-    {
-        retval += pinfo->wifi_rec_data.tcp.len;
-        pinfo->wifi_rec_data.tcp.pstr = NULL;
-    }
-    pinfo->lock = 0;
-    return retval;
+    return 0;
 }
 
 /**
@@ -977,22 +883,27 @@ int bESP12F_Init(bDriverInterface_t *pdrv)
 {
     bEsp12fPrivate_t *pinfo = NULL;
     uint8_t           index = pdrv->drv_no;
-
+    uint8_t          *p     = NULL;
     bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bESP12F_Init);
-    pdrv->read        = _bEspRead;
+    //    pdrv->read        = _bEspRead;
+    //    pdrv->write       = _bEspWrite;
     pdrv->ctl         = _bEspCtl;
     pdrv->_private._p = &bEspRunInfo[index];
 
-    pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
-    memset(pinfo, 0, sizeof(bEsp12fPrivate_t));
-    pinfo->opt.at_id    = AT_INVALID_ID;
-    bEspDrvTable[index] = pdrv;
-    bAtRegistCallback(_bEspAtCb, pdrv);
-    bMempListInit(&(pinfo->tcp_data_list));
-    bUtilUartInitStruct(&(pinfo->uart), pinfo->rec_buf, ESP12F_REC_BUF_LEN, 20, _bEspUartIdleCb,
-                        pdrv);
-    bUtilUartBind(*((bESP12F_HalIf_t *)pdrv->hal_if),
-                  &(((bEsp12fPrivate_t *)pdrv->_private._p)->uart));
+    // 初始化 runinfo
+    memset(&bEspRunInfo[index], 0, sizeof(bEsp12fPrivate_t));
+    bEspRunInfo[index].wifi_connect = WIFI_STA_INVALID;
+
+    p = (uint8_t *)bMalloc(ESP12F_UART_RX_BUF_LEN);
+    if (p == NULL)
+    {
+        return -1;
+    }
+    bUtilUartInitStruct(&(bEspRunInfo[index].uart), p, ESP12F_UART_RX_BUF_LEN, 200, _bEspUartIdleCb,
+                        &(bEspRunInfo[index]));
+    bUtilUartBind(*((bESP12F_HalIf_t *)pdrv->hal_if), &(bEspRunInfo[index].uart));
+
+    PT_INIT(&bEsp12fPT);
     return 0;
 }
 

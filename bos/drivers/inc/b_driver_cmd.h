@@ -129,12 +129,21 @@ typedef struct
 #define bCMD_WIFI_JOIN_AP 3           // bWifiApInfo_t
 #define bCMD_WIFI_MQTT_CONN 4         // bMqttConnInfo_t
 #define bCMD_WIFI_MQTT_SUB 5          // bMqttTopicInfo_t
-#define bCMD_WIFI_MQTT_PUB 6          // bMqttTopicData_t
-#define bCMD_WIFI_LOCAL_TCP_SERVER 7  // bTcpUdpInfo_t
-#define bCMD_WIFI_REMOT_TCP_SERVER 8  // bTcpUdpInfo_t
-#define bCMD_WIFI_REMOT_UDP_SERVER 9  // bTcpUdpInfo_t
-#define bCMD_WIFI_TCP_UDP_SEND 10     // bTcpUdpData_t
-#define bCMD_WIFI_PING 11             // char *ip
+#define bCMD_WIFI_LOCAL_TCP_SERVER 6  // bTcpUdpInfo_t
+#define bCMD_WIFI_REMOT_TCP_SERVER 7  // bTcpUdpInfo_t
+#define bCMD_WIFI_REMOT_UDP_SERVER 8  // bTcpUdpInfo_t
+#define bCMD_WIFI_PING 9              // char *ip
+#define bCMD_WIFI_GET_CONN_STATUS 10  // bWfifiConnStat_t
+#define bCMD_WIFI_REG_CALLBACK 11     // bWifiCallback_t
+
+typedef void (*bWifiCallback_t)(uint8_t cmd, void *arg, void (*release)(void *));
+
+typedef enum
+{
+    WIFI_STA_CONNECTED,
+    WIFI_STA_DISCONNECTED,
+    WIFI_STA_INVALID
+} bWifiConnStat_t;
 
 typedef struct
 {
@@ -176,27 +185,6 @@ typedef struct
     bMqttTopicInfo_t topic;
     char            *pstr;
 } bMqttTopicData_t;
-
-typedef struct
-{
-    bTcpUdpData_t    tcp;
-    bMqttTopicData_t mqtt;
-} bWiFiData_t;
-
-#define WIFI_DATA_USE_END(dat)     \
-    do                             \
-    {                              \
-        if (dat.mqtt.pstr != NULL) \
-        {                          \
-            bFree(dat.mqtt.pstr);  \
-            dat.mqtt.pstr = NULL;  \
-        }                          \
-        if (dat.tcp.pstr != NULL)  \
-        {                          \
-            bFree(dat.tcp.pstr);   \
-            dat.tcp.pstr = NULL;   \
-        }                          \
-    } while (0)
 
 ///////////////////////////////////////////////////////////
 //

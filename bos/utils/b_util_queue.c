@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_util_fifo.h
+ * \file        b_util_queue.c
  * \version     v0.0.1
  * \date        2019/12/23
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,77 +28,103 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTIL_FIFO_H__
-#define __B_UTIL_FIFO_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*Includes ----------------------------------------------*/
-#include "b_type.h"
+#include "utils/inc/b_util_queue.h"
+
 /**
  * \addtogroup B_UTILS
  * \{
  */
 
 /**
- * \addtogroup FIFO
+ * \addtogroup QUEUE
  * \{
  */
 
 /**
- * \defgroup FIFO_Exported_TypesDefinitions
+ * \defgroup QUEUE_Private_TypesDefinitions
  * \{
  */
-typedef struct
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup QUEUE_Private_Defines
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \addtogroup QUEUE_Exported_Functions
+ * \{
+ */
+int bQueuePush(bQueueInstance_t *pinstance, void *data)
 {
-    uint8_t          *pbuf;
-    uint16_t          size;
-    volatile uint16_t r_index;
-    volatile uint16_t w_index;
-} bFIFO_Info_t;
-
-typedef bFIFO_Info_t bFIFO_Instance_t;
-/**
- * \}
- */
-
-/**
- * \defgroup FIFO_Exported_Defines
- * \{
- */
-#define bFIFO_INSTANCE(name, _fifo_size)     \
-    static uint8_t   fifo##name[_fifo_size]; \
-    bFIFO_Instance_t name = {.pbuf = fifo##name, .size = _fifo_size, .r_index = 0, .w_index = 0};
-/**
- * \}
- */
-
-/**
- * \defgroup FIFO_Exported_Functions
- * \{
- */
-///< pFIFO_Instance \ref bFIFO_INSTANCE
-int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen);
-int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance);
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#ifdef __cplusplus
+    if (pinstance == NULL || data == NULL)
+    {
+        return -1;
+    }
+    if (pinstance->number == pinstance->item_size)
+    {
+        return -2;
+    }
+    memcpy(pinstance->pbuf[pinstance->w_index * pinstance->item_size], data, pinstance->item_size);
+    pinstance->w_index = (pinstance->w_index + 1) % pinstance->item_num;
+    pinstance->number += 1;
+    return 0;
 }
-#endif
 
-#endif
+int bQueuePop(bQueueInstance_t *pinstance, void *data)
+{
+    if (pinstance == NULL || data == NULL)
+    {
+        return -1;
+    }
+    if (pinstance->number == 0)
+    {
+        return -3;
+    }
+    memcpy(data, pinstance->pbuf[pinstance->r_index * pinstance->item_size], pinstance->item_size);
+    pinstance->r_index = (pinstance->r_index + 1) % pinstance->item_num;
+    pinstance->number -= 1;
+    return 0;
+}
+
+int bQueuePeek(bQueueInstance_t *pinstance, void *data)
+{
+    if (pinstance == NULL || data == NULL)
+    {
+        return -1;
+    }
+    if (pinstance->number == 0)
+    {
+        return -3;
+    }
+    memcpy(data, pinstance->pbuf[pinstance->r_index * pinstance->item_size], pinstance->item_size);
+    return 0;
+}
+
+uint8_t bQueueIsFull(bQueueInstance_t *pinstance)
+{
+    return (pinstance->number >= pinstance->item_size);
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

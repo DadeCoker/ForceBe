@@ -34,19 +34,4 @@ config MEMP_MAX_SIZE
     default 1024
     depends on _MEMP_ENABLE
 
-config _AT_ENABLE
-    bool "AT Enable/Disable"
-    default n
-    select _MEMP_ENABLE
-
-config AT_Q_LEN
-    int "AT Queue Length"
-    default 3
-    depends on _AT_ENABLE
-
-config AT_RETRY_COUNT
-    int "AT Command Retry Count"
-    default 2
-    depends on _AT_ENABLE
-
 endmenu

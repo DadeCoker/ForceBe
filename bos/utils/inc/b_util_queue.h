@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_util_at.h
+ * \file        b_util_queue.h
  * \version     v0.0.1
  * \date        2019/12/23
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,66 +28,74 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTIL_AT_H__
-#define __B_UTIL_AT_H__
+#ifndef __B_UTIL_QUEUE_H__
+#define __B_UTIL_QUEUE_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include <stdlib.h>
-#include <string.h>
-
-#include "b_config.h"
-
+#include "b_type.h"
 /**
  * \addtogroup B_UTILS
  * \{
  */
 
 /**
- * \addtogroup AT
+ * \addtogroup QUEUE
  * \{
  */
 
 /**
- * \defgroup AT_Exported_TypesDefinitions
+ * \defgroup QUEUE_Exported_TypesDefinitions
  * \{
  */
-typedef void (*bAtCallback_t)(uint8_t id, uint8_t result, void *arg);
+typedef struct
+{
+    uint8_t *pbuf;
+    uint16_t item_size;
+    uint16_t item_num;
+    uint16_t number;
+    uint16_t r_index;
+    uint16_t w_index;
+} bQueueInfo_t;
+
+typedef bQueueInfo_t bQueueInstance_t;
 /**
  * \}
  */
 
 /**
- * \defgroup AT_Exported_Defines
+ * \defgroup QUEUE_Exported_Defines
  * \{
  */
-#define AT_INVALID_ID (0XFF)
+#define bQUEUE_INSTANCE(name, _item_size, _item_num)      \
+    static uint8_t   queue##name[_item_size * _item_num]; \
+    bQueueInstance_t name = {.pbuf      = queue##name,    \
+                             .item_size = _item_size,     \
+                             .item_num  = _item_num,      \
+                             .r_index   = 0,              \
+                             .w_index   = 0,              \
+                             .number    = 0};
 
-#define AT_STA_NULL (0)
-#define AT_STA_OK (1)
-#define AT_STA_ERR (2)
-#define AT_STA_ID_INVALID (3)
-/**
- * \}
- */
-#if (defined(_AT_ENABLE) && (_AT_ENABLE == 1))
-/**
- * \defgroup AT_Exported_Functions
- * \{
- */
-int bAtGetStat(uint8_t id);
-int bAtRegistCallback(bAtCallback_t cb, void *arg);
-int bAtFeedRespData(uint8_t *pbuf, uint16_t len);
-int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t resp_len,
-               uint8_t uart, uint32_t timeout);
 /**
  * \}
  */
 
-#endif
+/**
+ * \defgroup QUEUE_Exported_Functions
+ * \{
+ */
+///< pinstance \ref bQUEUE_INSTANCE
+int bQueuePush(bQueueInstance_t *pinstance, void *data);
+int bQueuePop(bQueueInstance_t *pinstance, void *data);
+int bQueuePeek(bQueueInstance_t *pinstance, void *data);
+
+uint8_t bQueueIsFull(bQueueInstance_t *pinstance);
+/**
+ * \}
+ */
 
 /**
  * \}
