@@ -211,7 +211,7 @@ static void _bButtonCallback(void *p)
 
 int bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms)
 {
-    int i;
+    int i = 0;
 #if (FLEX_BTN_NUMBER > 0)     
     for (i = 0; i < FLEX_BTN_NUMBER; i++)
     {
