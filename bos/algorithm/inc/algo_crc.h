@@ -93,6 +93,12 @@ typedef struct
 
 #define CRC_REG_SBS_HANDLE(name, crc_type) algo_crc_sbs_t name = {.type = crc_type, .flag = 0}
 
+#define CRC_SBS_HANDLE_RESET(name, crc_type) \
+    do                                       \
+    {                                        \
+        name.flag = 0;                       \
+        name.type = crc_type;                \
+    } while (0)
 /**
  * \}
  */
