@@ -66,13 +66,12 @@ typedef struct
 #define MEMP_UNIT_NUM ((MEMP_SIZE) / (MEMP_BLOCK_SIZE))
 
 #if defined(__CC_ARM)
-__align(4) static uint8_t bMempBuf[MEMP_SIZE];
+__attribute__((aligned(4))) static uint8_t bMempBuf[MEMP_SIZE];
 #elif defined(__ICCARM__)
 #pragma data_alignment = 4
 static uint8_t bMempBuf[MEMP_SIZE];
 #elif defined(__GNUC__)
-static uint8_t bMempBuf[MEMP_SIZE];
-__attribute__((aligned(4)));
+__attribute__((aligned(4))) static uint8_t bMempBuf[MEMP_SIZE];
 #endif
 
 /**
