@@ -118,7 +118,9 @@ Include头文件 `b_os.h`
 
 ## 4.3 配置接口&注册设备
 
-可以由配置工具生成如下代码。配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1
+可以由配置工具生成如下代码。
+
+配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1
 
 ![](https://images.gitee.com/uploads/images/2021/1212/020923_ec27eb55_1789704.png)
 
@@ -209,7 +211,7 @@ r:4
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 【BabyOS私有协议上位机Demo】
 
-https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1【BabyOS配置工具】
+[https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1](https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1) 【BabyOS配置工具】
 
 
 
