@@ -167,6 +167,19 @@
 
 //<h> Third Party Configuration
 
+//<e> CmbackTrace Enable/Disable
+#define _CMBACKTRACE_ENABLE 0
+
+//<o> ARM Cortex M ?
+//<0=> ARM_CORTEX_M0
+//<1=> ARM_CORTEX_M3
+//<2=> ARM_CORTEX_M4
+//<3=> ARM_CORTEX_M7
+//<4=> ARM_CORTEX_M33
+#define CMB_CPU_PLATFORM_TYPE 1
+
+//</e>
+
 //<e> NR Micro Shell Enable/Disable
 #define _NR_MICRO_SHELL_ENABLE 0
 

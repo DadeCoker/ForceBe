@@ -231,6 +231,8 @@ Button 功能模块基于开源项目FlexibleButton，<https://github.com/murphy
 
 GUI功能模块基于开源项目uGUI, <https://github.com/achimdoebler/UGUI>, 感谢作者Achimdoebler
 
+Trace功能模块基于开源项目 CmBacktrace,https://gitee.com/Armink/CmBacktrace/tree/master 感谢作者Armink
+
 SPIFlash驱动基于开源项目SFUD,https://gitee.com/Armink/SFUD 感谢作者Armink
 
 FS功能模块是基于FatFS和LittleFS,方便用户使用:
