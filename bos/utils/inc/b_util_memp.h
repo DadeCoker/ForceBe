@@ -54,11 +54,26 @@ extern "C" {
  */
 
 /**
+ * \defgroup MEMP_Exported_TypesDefinitions
+ * \{
+ */
+typedef struct
+{
+    uint16_t unused_unit;
+} bMempMonitorInfo_t;
+/**
+ * \}
+ */
+
+/**
  * \defgroup MEMP_Exported_Functions
  * \{
  */
 void *bMalloc(uint32_t size);
 void  bFree(void *paddr);
+#if _MEMP_MONITOR_ENABLE
+void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo);
+#endif
 /**
  * \}
  */

@@ -76,6 +76,8 @@
 #define MEMP_BLOCK_SIZE 32
 //<o> MemoryPool Max Size (B)
 #define MEMP_MAX_SIZE 512
+//<q> MemoryPool Monitor Enable/Disable
+#define _MEMP_MONITOR_ENABLE 1
 //</e>
 
 //<e> AT Enable/Disable

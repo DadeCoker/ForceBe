@@ -53,6 +53,7 @@ typedef struct
     uint16_t index;
     uint16_t maxlen;
 } bMempUnitInfo_t;
+
 /**
  * \}
  */
@@ -91,9 +92,10 @@ __attribute__((aligned(4)));
  * \defgroup MEMP_Private_Variables
  * \{
  */
-static bMempUnitInfo_t bMempUnitInfo = {0, MEMP_UNIT_NUM};
-static uint16_t        bMempUnit[MEMP_UNIT_NUM];
-static uint8_t         bMempInitFlag = 0;
+static bMempUnitInfo_t    bMempUnitInfo = {0, MEMP_UNIT_NUM};
+static uint16_t           bMempUnit[MEMP_UNIT_NUM];
+static uint8_t            bMempInitFlag = 0;
+static bMempMonitorInfo_t bMempMonitorInfo;
 /**
  * \}
  */
@@ -111,6 +113,23 @@ static uint8_t         bMempInitFlag = 0;
  * \defgroup MEMP_Private_Functions
  * \{
  */
+
+static void _bMempMonitor()
+{
+    uint16_t num = 0, i = 0;
+    for (i = 0; i < MEMP_UNIT_NUM; i++)
+    {
+        if (bMempUnit[i] == 0)
+        {
+            num += 1;
+        }
+    }
+    if (num < bMempMonitorInfo.unused_unit)
+    {
+        bMempMonitorInfo.unused_unit = num;
+    }
+}
+
 static void _bMempUpdateInfo()
 {
     int      i         = 0;
@@ -207,15 +226,20 @@ void *bMalloc(uint32_t size)
     {
         memset(bMempBuf, 0, sizeof(bMempBuf));
         memset(bMempUnit, 0, sizeof(bMempUnit));
-        bMempUnitInfo.index  = 0;
-        bMempUnitInfo.maxlen = MEMP_UNIT_NUM;
-        bMempInitFlag        = 1;
+
+        bMempUnitInfo.index          = 0;
+        bMempUnitInfo.maxlen         = MEMP_UNIT_NUM;
+        bMempMonitorInfo.unused_unit = MEMP_UNIT_NUM;
+        bMempInitFlag                = 1;
     }
     valid_index = _bMempAlloc((size + MEMP_BLOCK_SIZE - 1) / (MEMP_BLOCK_SIZE));
     if (valid_index < 0)
     {
         return NULL;
     }
+#if _MEMP_MONITOR_ENABLE
+    _bMempMonitor();
+#endif
     return ((void *)(&bMempBuf[valid_index * MEMP_BLOCK_SIZE]));
 }
 
@@ -229,6 +253,17 @@ void bFree(void *paddr)
     index = ((uint32_t)paddr - (uint32_t)(&bMempBuf[0])) / MEMP_BLOCK_SIZE;
     _bMempFree(index);
 }
+
+#if _MEMP_MONITOR_ENABLE
+void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo)
+{
+    if (pinfo == NULL)
+    {
+        return;
+    }
+    pinfo->unused_unit = bMempMonitorInfo.unused_unit;
+}
+#endif
 
 /**
  * \}
