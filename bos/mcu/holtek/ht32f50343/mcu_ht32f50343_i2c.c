@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_stm32l4xx_i2c.c
+ * \file        mcu_ht32f50343_i2c.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)

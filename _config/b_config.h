@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70407
+#define FW_VERSION 70408
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -52,14 +52,15 @@
 //<1004=> STM32F10X_CL
 //<1101=> STM32G0X0
 //<1201=> STM32L41X~L46X
-//<2001=> NATION_F40X
+//<2001=> NATION_L40X
+//<2101=> NATION_G45X
 //<3001=> MM32SPIN2X
 //<3002=> MM32SPIN0X
 //<4001=> HC32L13X
 //<4002=> HC32L07X
 //<7001=> CH32F103
 //<8001=> TH32F50343
-#define MCU_PLATFORM 8001
+#define MCU_PLATFORM 2101
 //</h>
 
 //<h> Hal Configuration

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_ht32f50343_gpio.c
+ * \file        mcu_n32g45x_gpio.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,83 +33,76 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (MCU_PLATFORM == 8001)
+#if (MCU_PLATFORM == 2101)
 
 //         Register Address
 
-#define GPIO_REG_OFF (0x2000UL)
-#define GPIO_REG_BASE (0x400B0000UL)
+#define GPIO_REG_OFF (0x400UL)
+#define GPIO_REG_BASE (0x40010800UL)
 
 typedef struct
 {
-    volatile uint32_t DIRCR; /*!< 0x000         Data Direction Control Register */
-    volatile uint32_t INER;  /*!< 0x004         Input function enable register  */
-    volatile uint32_t PUR;   /*!< 0x008         Pull-Up Selection Register   */
-    volatile uint32_t PDR;   /*!< 0x00C         Pull-Down Selection Register   */
-    volatile uint32_t ODR;   /*!< 0x010         Open Drain Selection Register   */
-    volatile uint32_t DRVR;  /*!< 0x014         Drive Current Selection Register  */
-    volatile uint32_t LOCKR; /*!< 0x018         Lock Register */
-    volatile uint32_t DINR;  /*!< 0x01c         Data Input Register  */
-    volatile uint32_t DOUTR; /*!< 0x020         Data Output Register */
-    volatile uint32_t SRR;   /*!< 0x024         Output Set and Reset Control Register   */
-    volatile uint32_t RR;    /*!< 0x028         Output Reset Control Register    */
+    volatile uint32_t PL_CFG;
+    volatile uint32_t PH_CFG;
+    volatile uint32_t PID;
+    volatile uint32_t POD;
+    volatile uint32_t PBSC;
+    volatile uint32_t PBC;
+    volatile uint32_t PLOCK_CFG;
+    uint32_t          RESERVED0;
+    volatile uint32_t DS_CFG;
+    volatile uint32_t SR_CFG;
 } McuGpioReg_t;
 
 void bMcuGpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir, bHalGPIOPull_t pull)
 {
-    uint32_t      dircr_val = 0;
-    uint32_t      pur_val   = 0;
-    uint32_t      pdr_val   = 0;
-    uint32_t      iner_val  = 0;
-    McuGpioReg_t *pGpio     = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
-
-    if (!B_HAL_GPIO_ISVALID(port, pin))
+    uint32_t      dir_val  = 0;
+    McuGpioReg_t *pGpio    = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
+    if (!B_HAL_GPIO_ISVALID(port, pin) || (port > B_HAL_GPIOG))
     {
         return;
     }
-
     if (dir == B_HAL_GPIO_OUTPUT)
     {
-        dircr_val = (pin == B_HAL_PINAll) ? 0x0000FFFF : 1;
+        dir_val = (pin == B_HAL_PINAll) ? 0x33333333 : 3;
     }
     else
     {
-        iner_val = (pin == B_HAL_PINAll) ? 0x0000FFFF : 1;
-    }
-
-    if (pull != B_HAL_GPIO_NOPULL)
-    {
-        if (pull == B_HAL_GPIO_PULLUP)
+        if (pull == B_HAL_GPIO_NOPULL)
         {
-            pur_val = (pin == B_HAL_PINAll) ? 0x0000FFFF : 1;
+            dir_val = (pin == B_HAL_PINAll) ? 0x44444444 : 4;
         }
         else
         {
-            pdr_val = (pin == B_HAL_PINAll) ? 0x0000FFFF : 1;
+            dir_val = (pin == B_HAL_PINAll) ? 0x88888888 : 8;
         }
     }
 
     if (pin == B_HAL_PINAll)
     {
-        B_WRITE_REG(pGpio->DIRCR, dircr_val);
-        B_WRITE_REG(pGpio->INER, iner_val);
-        B_WRITE_REG(pGpio->PUR, pur_val);
-        B_WRITE_REG(pGpio->PDR, pdr_val);
+        pGpio->PL_CFG = dir_val;
+        pGpio->PH_CFG = dir_val;
     }
     else
     {
-        B_MODIFY_REG(pGpio->DIRCR, (0x00000001 << (pin)), (dircr_val << (pin)));
-        B_MODIFY_REG(pGpio->INER, (0x00000001 << (pin)), (iner_val << (pin)));
-        B_MODIFY_REG(pGpio->PUR, (0x00000001 << (pin)), (pur_val << (pin)));
-        B_MODIFY_REG(pGpio->PDR, (0x00000001 << (pin)), (pdr_val << (pin)));
+        if (pin <= B_HAL_PIN7)
+        {
+            pGpio->PL_CFG &= ~(0xF << (pin * 4));
+            pGpio->PL_CFG |= (dir_val << (pin * 4));
+        }
+        else
+        {
+            pGpio->PH_CFG &= ~(0xF << ((pin - B_HAL_PIN8) * 4));
+            pGpio->PH_CFG |= (dir_val << ((pin - B_HAL_PIN8) * 4));
+        }
     }
 }
 
 void bMcuGpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
 {
-    uint32_t      cs_val = 0x00000001 << pin;
+    uint32_t      cs_val = 0x1 << pin;
     McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
-    if (!B_HAL_GPIO_ISVALID(port, pin) || pin == B_HAL_PINAll)
+    if (!B_HAL_GPIO_ISVALID(port, pin) || (port > B_HAL_GPIOG))
     {
         return;
     }
@@ -117,40 +110,40 @@ void bMcuGpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
     {
         cs_val <<= 16;
     }
-    pGpio->SRR = cs_val;
+    pGpio->PBSC = cs_val;
 }
 
 uint8_t bMcuGpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 {
     uint32_t      id_val = 0;
     McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
-    if (!B_HAL_GPIO_ISVALID(port, pin) || pin == B_HAL_PINAll)
+    if (!B_HAL_GPIO_ISVALID(port, pin) || port > B_HAL_GPIOG || pin == B_HAL_PINAll)
     {
         return 0;
     }
-    id_val = pGpio->DINR;
+    id_val = pGpio->PID;
     return ((id_val & (0x0001 << pin)) != 0);
 }
 
 void bMcuGpioWritePort(bHalGPIOPort_t port, uint16_t dat)
 {
     McuGpioReg_t *pGpio = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
-    if (!B_HAL_GPIO_ISVALID(port, 0))
+    if (port > B_HAL_GPIOG)
     {
         return;
     }
-    pGpio->DOUTR = dat;
+    pGpio->POD = dat;
 }
 
 uint16_t bMcuGpioReadPort(bHalGPIOPort_t port)
 {
     uint32_t      id_val = 0;
     McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
-    if (!B_HAL_GPIO_ISVALID(port, 0))
+    if (port > B_HAL_GPIOG)
     {
         return 0;
     }
-    id_val = pGpio->DINR;
+    id_val = pGpio->PID;
     return (id_val & 0xffff);
 }
 

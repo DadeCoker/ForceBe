@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_ht32f50343_uart.c
+ * \file        mcu_n32g45x_uart.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,48 +33,61 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (MCU_PLATFORM == 8001)
+#if (MCU_PLATFORM == 2101)
 
 //      Register Address
-#define UART1_BASE_ADDR (0x40001000)
-#define UART2_BASE_ADDR (0x40041000)
+
+#define UART1_BASE_ADDR (0x40013800)
+#define UART2_BASE_ADDR (0x40004400)
+#define UART3_BASE_ADDR (0x40004800)
+#define UART4_BASE_ADDR (0x40004C00)
+#define UART5_BASE_ADDR (0x40005000)
+#define UART6_BASE_ADDR (0x40015000)
+#define UART7_BASE_ADDR (0x40015400)
 
 typedef struct
 {
-    volatile uint32_t DR;  /*!< 0x000         Data Register  */
-    volatile uint32_t CR;  /*!< 0x004         Control Register  */
-    volatile uint32_t FCR; /*!< 0x008         FIFO Control Register */
-    volatile uint32_t IER; /*!< 0x00C         Interrupt Enable Register */
-    volatile uint32_t SR;  /*!< 0x010         Status Register  */
-    volatile uint32_t TPR; /*!< 0x014         Timing Parameter Register */
-    volatile uint32_t ICR; /*!< 0x018         IrDA COntrol Register */
-    volatile uint32_t RCR; /*!< 0x01C         RS485 Control Register */
-    volatile uint32_t SCR; /*!< 0x020         Synchronous Control Register */
-    volatile uint32_t DLR; /*!< 0x024         Divisor Latch Register */
-    volatile uint32_t DTR; /*!< 0x028         Debug/Test Register */
+    volatile uint16_t STS;
+    uint16_t          RESERVED0;
+    volatile uint16_t DAT;
+    uint16_t          RESERVED1;
+    volatile uint16_t BRCF;
+    uint16_t          RESERVED2;
+    volatile uint16_t CTRL1;
+    uint16_t          RESERVED3;
+    volatile uint16_t CTRL2;
+    uint16_t          RESERVED4;
+    volatile uint16_t CTRL3;
+    uint16_t          RESERVED5;
+    volatile uint16_t GTP;
+    uint16_t          RESERVED6;
 } McuUartReg_t;
 
 #define MCU_UART1 ((McuUartReg_t *)UART1_BASE_ADDR)
 #define MCU_UART2 ((McuUartReg_t *)UART2_BASE_ADDR)
+#define MCU_UART3 ((McuUartReg_t *)UART3_BASE_ADDR)
+#define MCU_UART4 ((McuUartReg_t *)UART4_BASE_ADDR)
+#define MCU_UART5 ((McuUartReg_t *)UART5_BASE_ADDR)
+#define MCU_UART6 ((McuUartReg_t *)UART6_BASE_ADDR)
+#define MCU_UART7 ((McuUartReg_t *)UART7_BASE_ADDR)
 
-static McuUartReg_t *UartTable[2] = {MCU_UART1, MCU_UART2};
+static McuUartReg_t *UartTable[7] = {MCU_UART1, MCU_UART2, MCU_UART3, MCU_UART4,
+                                     MCU_UART5, MCU_UART6, MCU_UART7};
 
 int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
     int           i       = 0;
     int           timeout = 0x000B0000;
     McuUartReg_t *pUart   = NULL;
-    if ((uart > B_HAL_UART_2) || pbuf == NULL)
+    if (uart > B_HAL_UART_7 || pbuf == NULL)
     {
         return -1;
     }
-
     pUart = UartTable[uart];
-
     for (i = 0; i < len; i++)
     {
         timeout = 0x000B0000;
-        while (timeout > 0 && ((pUart->SR & (0x1 << 8)) == 0))
+        while (timeout > 0 && ((pUart->STS & (0x1 << 6)) == 0))
         {
             timeout--;
         }
@@ -82,7 +95,7 @@ int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
         {
             return -2;
         }
-        pUart->DR = pbuf[i];
+        pUart->DAT = pbuf[i];
     }
     return len;
 }
@@ -92,17 +105,15 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     int           i       = 0;
     int           timeout = 0x000B0000;
     McuUartReg_t *pUart   = NULL;
-    if ((uart > B_HAL_UART_2) || pbuf == NULL)
+    if (uart > B_HAL_UART_7 || pbuf == NULL)
     {
         return -1;
     }
-
     pUart = UartTable[uart];
-
     for (i = 0; i < len; i++)
     {
         timeout = 0x000B0000;
-        while (timeout > 0 && ((pUart->SR & (0x1 << 5)) == 0))
+        while (timeout > 0 && ((pUart->STS & (0x1 << 5)) == 0))
         {
             timeout--;
         }
@@ -110,7 +121,7 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
         {
             return -2;
         }
-        pbuf[i] = pUart->DR;
+        pbuf[i] = pUart->DAT;
     }
     return len;
 }

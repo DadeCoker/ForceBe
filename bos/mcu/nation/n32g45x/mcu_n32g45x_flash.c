@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_ht32f50343_flash.c
+ * \file        mcu_n32g45x_flash.c
  * \version     v0.0.1
  * \date        2021/06/13
  * \author      Bean(notrynohigh@outlook.com)
@@ -35,13 +35,13 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_flash.h"
 
-#if (MCU_PLATFORM == 8001)
+#if (MCU_PLATFORM == 2101)
 
-#define FLASH_BASE_ADDR (0x0000000UL)
+//       Flash Information
 
-#ifndef FLASH_PAGE_SIZE
-#define FLASH_PAGE_SIZE (1024)
-#endif
+#define FLASH_BASE_ADDR (0x8000000UL)
+#define FLASH_MAX_SIZE (512 * 1024)
+#define FLASH_PAGE_SIZE (2048)
 
 #define FLASH_KEY_1 (0x45670123UL)
 #define FLASH_KEY_2 (0xCDEF89ABUL)
@@ -50,32 +50,22 @@
 
 typedef struct
 {
-    volatile uint32_t TADR;
-    volatile uint32_t WRDR;
-    uint32_t          RESERVED0[1];
-    volatile uint32_t OCMR;
-    volatile uint32_t OPCR;
-    volatile uint32_t OIER;
-    volatile uint32_t OISR;
-    uint32_t          RESERVED1[1];
-    volatile uint32_t PPSR[4];
-    volatile uint32_t CPSR;
-    uint32_t          RESERVED2[51];
-    volatile uint32_t VMCR;
-    uint32_t          RESERVED3[31];
-    volatile uint32_t MDID;
-    volatile uint32_t PNSR;
-    volatile uint32_t PSSR;
-    volatile uint32_t DID;
-    uint32_t          RESERVED4[28];
-    volatile uint32_t CFCR;
-    uint32_t          RESERVED6[67];
-    volatile uint32_t CID[4];
+    volatile uint32_t ACR;
+    volatile uint32_t KEYR;
+    volatile uint32_t OPTKEYR;
+    volatile uint32_t STS;
+    volatile uint32_t CTRL;
+    volatile uint32_t AR;
+    volatile uint32_t RESERVED0;
+    volatile uint32_t OBR;
+    volatile uint32_t WRPR;
+    volatile uint32_t ECCR;
+    volatile uint32_t RESERVED1;
+    volatile uint32_t RDN;
+    volatile uint32_t CAHR;
 } McuFlashReg_t;
 
-#define MCU_FLASH ((McuFlashReg_t *)0x40080000)
-
-static uint32_t sMcuFlashSize = 0x10000;
+#define MCU_FLASH ((McuFlashReg_t *)0x40022000)
 
 int bMcuFlashInit()
 {
@@ -84,44 +74,45 @@ int bMcuFlashInit()
 
 int bMcuFlashUnlock()
 {
-    int retval = 0;
+    int retval      = 0;
+    MCU_FLASH->KEYR = FLASH_KEY_1;
+    MCU_FLASH->KEYR = FLASH_KEY_2;
     return retval;
 }
 
 int bMcuFlashLock()
 {
     int retval = 0;
+    MCU_FLASH->CTRL |= (0x00000001 << 7);
     return retval;
 }
 
 int bMcuFlashErase(uint32_t raddr, uint8_t pages)
 {
-    int      retval  = 0;
-    int      timeout = 0;
-    uint8_t  i       = 0;
-    uint32_t tmp;
+    int     retval  = 0;
+    int     timeout = 0;
+    uint8_t i       = 0;
 
-    if (sMcuFlashSize == 0)
-    {
-        bMcuFlashInit();
-    }
+    raddr = FLASH_BASE_ADDR + raddr;
     raddr = raddr / FLASH_PAGE_SIZE * FLASH_PAGE_SIZE;
-    if ((raddr + (pages * FLASH_PAGE_SIZE)) > (sMcuFlashSize))
+    if ((raddr + (pages * FLASH_PAGE_SIZE)) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR) ||
+        ((MCU_FLASH->STS) & 0x01) != 0)
     {
         return -1;
     }
 
     for (i = 0; i < pages; i++)
     {
-        B_WRITE_REG(MCU_FLASH->TADR, raddr + FLASH_BASE_ADDR);
-        B_WRITE_REG(MCU_FLASH->OCMR, 0x00000008);
-        B_WRITE_REG(MCU_FLASH->OPCR, 0x00000014);
-
+        MCU_FLASH->STS |= 0xFC;
+        MCU_FLASH->CTRL |= (0x00000001 << 1);
+        MCU_FLASH->AR = raddr;
+        MCU_FLASH->CTRL |= (0x00000001 << 6);
         timeout = FLASH_PER_TIMEOUT;
-        while (((MCU_FLASH->OPCR) & 0x0000000C) != 0x0000000C && timeout > 0)
+        while (((MCU_FLASH->STS) & 0x01) != 0 && timeout > 0)
         {
             timeout--;
         }
+        MCU_FLASH->CTRL &= ~(0x00000001 << 1);
         if (timeout <= 0)
         {
             retval = -2;
@@ -137,14 +128,9 @@ int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len)
     int      timeout = 0;
     uint32_t wdata   = 0;
     uint32_t wlen = (len + 3) / 4, i = 0;
-    uint32_t tmp;
-
-    if (sMcuFlashSize == 0)
-    {
-        bMcuFlashInit();
-    }
     raddr = FLASH_BASE_ADDR + raddr;
-    if (pbuf == NULL || (raddr & 0x3) || (raddr + len) > (sMcuFlashSize + FLASH_BASE_ADDR))
+    if (pbuf == NULL || (raddr & 0x3) || (raddr + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR) ||
+        ((MCU_FLASH->STS) & 0x01) != 0)
     {
         return -1;
     }
@@ -156,16 +142,16 @@ int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len)
         wdata = (wdata << 8) | pbuf[i * 4 + 1];
         wdata = (wdata << 8) | pbuf[i * 4 + 0];
 
-        B_WRITE_REG(MCU_FLASH->TADR, raddr);
-        B_WRITE_REG(MCU_FLASH->WRDR, wdata);
-        B_WRITE_REG(MCU_FLASH->OCMR, 0x00000004);
-        B_WRITE_REG(MCU_FLASH->OPCR, 0x00000014);
+        MCU_FLASH->STS |= 0xFC;
+        MCU_FLASH->CTRL |= (0x00000001 << 0);
+        *((volatile uint32_t *)raddr) = wdata;
 
         timeout = FLASH_PG_TIMEOUT;
-        while (((MCU_FLASH->OPCR) & 0x0000000C) != 0x0000000C && timeout > 0)
+        while (((MCU_FLASH->STS) & 0x01) != 0 && timeout > 0)
         {
             timeout--;
         }
+        MCU_FLASH->CTRL &= ~(0x00000001 << 0);
         if (timeout <= 0)
         {
             return -2;
@@ -177,11 +163,7 @@ int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint32_t len)
 
 int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint32_t len)
 {
-    if (sMcuFlashSize == 0)
-    {
-        bMcuFlashInit();
-    }
-    if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (sMcuFlashSize + FLASH_BASE_ADDR))
+    if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR))
     {
         return -1;
     }
@@ -197,7 +179,7 @@ uint32_t bMcuFlashSectorSize()
 
 uint32_t bMcuFlashChipSize()
 {
-    return sMcuFlashSize;
+    return FLASH_MAX_SIZE;
 }
 
 #endif

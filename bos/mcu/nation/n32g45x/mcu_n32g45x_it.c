@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_ht32f50343_it.c
+ * \file        mcu_n32g45x_it.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (MCU_PLATFORM == 8001)
+#if (MCU_PLATFORM == 2101)
 
 void bMcuIntEnable()
 {

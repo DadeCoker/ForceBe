@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_ht32f50343_spi.c
+ * \file        mcu_n32g45x_spi.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,30 +33,40 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
 
-#if (MCU_PLATFORM == 8001)
-
+#if (MCU_PLATFORM == 2101)
 //         Register Address
 
-#define SPI1_BASE_ADDR (0x40004000)
-#define SPI2_BASE_ADDR (0x40044000)
+#define SPI1_BASE_ADDR (0x40013000)
+#define SPI2_BASE_ADDR (0x40003800)
+#define SPI3_BASE_ADDR (0x40003C00)
 
 typedef struct
 {
-    volatile uint32_t CR0;
-    volatile uint32_t CR1;
-    volatile uint32_t IER;
-    volatile uint32_t CPR;
-    volatile uint32_t DR;
-    volatile uint32_t SR;
-    volatile uint32_t FCR;
-    volatile uint32_t FSR;
-    volatile uint32_t FTOCR;
+    volatile uint16_t CR1;
+    uint16_t          RESERVED0;
+    volatile uint16_t CR2;
+    uint16_t          RESERVED1;
+    volatile uint16_t SR;
+    uint16_t          RESERVED2;
+    volatile uint16_t DR;
+    uint16_t          RESERVED3;
+    volatile uint16_t CRCPR;
+    uint16_t          RESERVED4;
+    volatile uint16_t RXCRCR;
+    uint16_t          RESERVED5;
+    volatile uint16_t TXCRCR;
+    uint16_t          RESERVED6;
+    volatile uint16_t I2SCFGR;
+    uint16_t          RESERVED7;
+    volatile uint16_t I2SPR;
+    uint16_t          RESERVED8;
 } McuSpiReg_t;
 
 #define MCU_SPI1 ((McuSpiReg_t *)SPI1_BASE_ADDR)
 #define MCU_SPI2 ((McuSpiReg_t *)SPI2_BASE_ADDR)
+#define MCU_SPI3 ((McuSpiReg_t *)SPI3_BASE_ADDR)
 
-static McuSpiReg_t *SpiTable[2] = {MCU_SPI1, MCU_SPI2};
+static McuSpiReg_t *SpiTable[3] = {MCU_SPI1, MCU_SPI2, MCU_SPI3};
 
 int bMcuSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {
@@ -68,39 +78,46 @@ int bMcuSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
     }
     if (speed == B_HAL_SPI_SLOW)
     {
-        SpeedVal = 32;
+        SpeedVal = 6;
     }
-    if (spi_if->_if.spi > B_HAL_SPI_2)
+    if (spi_if->_if.spi > B_HAL_SPI_3)
     {
         return -1;
     }
     pSpi = SpiTable[spi_if->_if.spi];
-    B_WRITE_REG(pSpi->CPR, SpeedVal);
+    while (pSpi->SR & 0x80)
+    {
+        ;
+    }
+    pSpi->CR1 &= ~(0x7 << 3);
+    pSpi->CR1 |= (SpeedVal << 3);
     return 0;
 }
 
 uint8_t bMcuSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    uint8_t      tmp = dat, i = 0;
+    int          i = 0;
+    uint8_t      tmp;
     McuSpiReg_t *pSpi = NULL;
-
     if (IS_NULL(spi_if))
     {
         return 0;
     }
-
-    if (spi_if->_if.spi > B_HAL_SPI_2)
+    if (spi_if->_if.spi > B_HAL_SPI_3)
     {
         return 0;
     }
     pSpi = SpiTable[spi_if->_if.spi];
-
+    if ((pSpi->CR1 & (0x1 << 6)) == 0)
+    {
+        pSpi->CR1 |= (0x1 << 6);
+    }
     while ((pSpi->SR & 0x02) == 0)
     {
         ;
     }
     pSpi->DR = dat;
-    while ((pSpi->SR & 0x04) == 0)
+    while ((pSpi->SR & 0x01) == 0)
     {
         ;
     }
