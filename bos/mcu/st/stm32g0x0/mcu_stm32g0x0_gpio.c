@@ -38,24 +38,31 @@
 //         Register Address
 
 #define GPIO_REG_OFF (0x400UL)
-#define GPIO_REG_BASE (0x40010800UL)
+#define GPIO_REG_BASE (0x50000000UL)
 
 typedef struct
 {
-    volatile uint32_t CRL;
-    volatile uint32_t CRH;
+    volatile uint32_t MODE;
+    volatile uint32_t OTYPE;
+    volatile uint32_t OSPEED;
+	  volatile uint32_t PUPDR;
     volatile uint32_t IDR;
     volatile uint32_t ODR;
     volatile uint32_t BSRR;
-    volatile uint32_t BRR;
     volatile uint32_t LCKR;
+    volatile uint32_t AFRL;
+    volatile uint32_t AFRH;
+    volatile uint32_t BRR;
+
 } McuGpioReg_t;
 
 static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
                         bHalGPIOPull_t pull)
 {
-    uint32_t      dir_val  = 4;
-    uint32_t      pull_val = 0;
+		uint32_t			mode_val = 0;
+		uint32_t			otype_val = 0;
+		uint32_t			ospeed_val = 0;
+		uint32_t			pupd_val = 0;
     McuGpioReg_t *pGpio    = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
 
     if (!B_HAL_GPIO_ISVALID(port, pin))
@@ -65,40 +72,42 @@ static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t di
 
     if (dir == B_HAL_GPIO_OUTPUT)
     {
-        dir_val = (pin == B_HAL_PINAll) ? 0x33333333 : 3;
+				mode_val 		= (pin == B_HAL_PINAll) ? 0x55555555 : 5;
+				otype_val 	= (pin == B_HAL_PINAll) ? 0x00000000 : 0;
+				ospeed_val 	= (pin == B_HAL_PINAll) ? 0xffffffff : 3;
+				pupd_val 		= (pin == B_HAL_PINAll) ? 0x00000000 : 0;  
     }
     else if (pull != B_HAL_GPIO_NOPULL)
     {
-        dir_val  = (pin == B_HAL_PINAll) ? 0x88888888 : 8;
-        pull_val = (pin == B_HAL_PINAll) ? 0xFFFF : (0X0001 << pin);
-
+				mode_val 		= (pin == B_HAL_PINAll) ? 0x00000000 : 0;		
         if (pull == B_HAL_GPIO_PULLUP)
         {
-            pGpio->BSRR = pull_val;
+            pupd_val 		= (pin == B_HAL_PINAll) ? 0x55555555 : 1; 
         }
         else
         {
-            pGpio->BRR = pull_val;
+            pupd_val 		= (pin == B_HAL_PINAll) ? 0xAAAAAAAA : 2; 
         }
     }
 
     if (pin == B_HAL_PINAll)
     {
-        pGpio->CRL = dir_val;
-        pGpio->CRH = dir_val;
+        pGpio->MODE 	= mode_val;
+        pGpio->OTYPE  = otype_val;
+        pGpio->OSPEED = ospeed_val;
+				pGpio->PUPDR 	= pupd_val;
     }
     else
     {
-        if (pin < B_HAL_PIN8)
-        {
-            pGpio->CRL &= ~(0x0000000F << (pin * 4));
-            pGpio->CRL |= (dir_val << (pin * 4));
-        }
-        else
-        {
-            pGpio->CRH &= ~(0x0000000F << (pin * 4));
-            pGpio->CRH |= (dir_val << (pin * 4));
-        }
+        pGpio->MODE &= ~(0x00000003 << (pin * 2));	
+				pGpio->MODE |= (mode_val << (pin * 2));
+			  pGpio->OTYPE &= ~(0x00000001 << (pin * 1));	
+				pGpio->OTYPE |= (otype_val << (pin * 1));
+        pGpio->OSPEED &= ~(0x00000003 << (pin * 2));	
+				pGpio->OSPEED |= (ospeed_val << (pin * 2));
+        pGpio->PUPDR &= ~(0x00000003 << (pin * 2));	
+				pGpio->PUPDR |= (pupd_val << (pin * 2));
+			
     }
 }
 
