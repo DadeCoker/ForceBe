@@ -2,8 +2,6 @@
 
 # BabyOS
 
-<img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/2.png" alt="logo"  />
-
 BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
 
 对项目而言，缩短开发周期。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
@@ -14,13 +12,15 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 <img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/BabyOS.png" alt="BabyOS" style="zoom: 80%;" />
 
-# 2 适用项目
+# 2 使用要求
 
 MCU开发项目，编译器需要勾选C99
 
 Windows下需要安装python（2或3均可）用于配置代码
 
 Linux下需要安装python、python-pip以及make 用于配置和编译代码   
+
+![b_config](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/bconfig.png)
 
 # 3 前世今生
 
@@ -76,13 +76,9 @@ BabyOS私有协议上位机Demo：
 
 # 7 BabyOS配置
 
-BabyOS配置，需要确保安装了python环境！
+【详情可见  _config/README.md】
 
-Window下双击 _config/b_config.bat 启动配置。【详情可见  _config/README.md】
-
-linux环境下运行test目录的代码，进入对应的目录后执行 make menuconfig 启动配置
-
-![b_config](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/bconfig.png)
+![](https://foruda.gitee.com/images/1674378632892522802/c7c99b50_1789704.gif)
 
 # 8 Baby如何成长
 
