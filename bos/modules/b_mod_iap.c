@@ -1,7 +1,7 @@
 /**
  *!
  * \file        b_mod_iap.c
- * \version     v0.0.1
+ * \version     v0.0.2
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
@@ -129,9 +129,13 @@ static uint32_t _bIapCalCRC32(uint32_t init_crc, uint8_t *pbuf, uint32_t len)
 
 static int _bIapEraseSpace()
 {
+#if (IAP_FILE_CACHE == 0 || IAP_FILE_CACHE == 1)
+    uint32_t addr = 0;
+#elif (IAP_FILE_CACHE == 2)
     int           fd          = -1;
     uint32_t      sector_size = 0;
     bFlashErase_t param;
+#endif
 
 #if (IAP_FILE_CACHE == 0 || IAP_FILE_CACHE == 1)
     if (IAP_FILE_CACHE == 0)
@@ -184,6 +188,7 @@ static int _bIapSetStat(uint8_t s)
             {
                 _bIapEraseSpace();
             }
+            bIapFlag.fail_count = 0;
         }
         break;
         case B_IAP_STA_READY:
@@ -193,7 +198,7 @@ static int _bIapSetStat(uint8_t s)
         break;
         case B_IAP_STA_FINISHED:
         {
-            bIapFlag.fail_count = 0;
+            ;
         }
         break;
     }
@@ -209,9 +214,13 @@ static int _bIapSetStat(uint8_t s)
 
 static int _IapCheckFwData()
 {
+#if (IAP_FILE_CACHE == 0 || IAP_FILE_CACHE == 1)
+    uint32_t addr = 0;
+#elif (IAP_FILE_CACHE == 2)
     int      fd      = -1;
     uint32_t tmp_len = 0, r_len = 0;
     uint8_t  tmp[64];
+#endif
     uint32_t tmp_crc = 0;
 
 #if (IAP_FILE_CACHE == 2)
@@ -253,10 +262,12 @@ static int _IapCheckFwData()
 
 static int _IapCopyFwData()
 {
-    int      retval  = 0;
+    int retval = 0;
+#if (IAP_FILE_CACHE == 2)
     int      fd      = -1;
     uint32_t tmp_len = 0, r_len = 0;
     uint8_t  tmp[64];
+#endif
     uint32_t tmp_crc = 0;
     uint8_t  retry   = 0;
 
@@ -308,6 +319,160 @@ static int _IapCopyFwData()
     return retval;
 }
 
+static int _IapCopyBackupData()
+{
+    int retval = 0;
+#if (IAP_BACKUP_LOCATION == 1)
+    int      fd      = -1;
+    uint32_t tmp_len = 0, r_len = 0;
+    uint8_t  tmp[64];
+#endif
+    uint32_t tmp_crc = 0;
+    uint8_t  retry   = 0;
+
+#if (_BACKUP_ENABLE == 0)
+    return -1;
+#endif
+
+    if (bIapFlag.backup.flag != B_IAP_BACKUP_VALID)
+    {
+        return -1;
+    }
+
+    for (retry = 0; retry < B_IAP_FAIL_COUNT; retry++)
+    {
+        retval = 0;
+#if (IAP_BACKUP_LOCATION == 0)
+        bHalFlashUnlock();
+        bHalFlashErase((APP_START_ADDR - MCUFLASH_BASE_ADDR),
+                       (IAP_BACKUP_SIZE + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
+        bHalFlashWrite((APP_START_ADDR - MCUFLASH_BASE_ADDR), (uint8_t *)(IAP_BACKUP_ADDR),
+                       IAP_BACKUP_SIZE);
+        bHalFlashLock();
+#endif
+
+#if (IAP_FILE_CACHE == 2)
+        fd = bOpen(bIapFlag.backup.dev_no, BCORE_FLAG_RW);
+        if (fd == -1)
+        {
+            return -1;
+        }
+        bHalFlashUnlock();
+        bHalFlashErase((APP_START_ADDR - MCUFLASH_BASE_ADDR),
+                       (IAP_BACKUP_SIZE + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
+        bLseek(fd, IAP_BACKUP_ADDR);
+        while (tmp_len < IAP_BACKUP_SIZE)
+        {
+            r_len = ((IAP_BACKUP_SIZE - tmp_len) > 64) ? 64 : (IAP_BACKUP_SIZE - tmp_len);
+            bRead(fd, tmp, r_len);
+            bHalFlashWrite((APP_START_ADDR - MCUFLASH_BASE_ADDR + tmp_len), tmp, r_len);
+            tmp_len += r_len;
+        }
+        bClose(fd);
+        bHalFlashLock();
+#endif
+        tmp_crc = _bIapCalCRC32(0, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
+        if (tmp_crc != bIapFlag.backup.fcrc)
+        {
+            retval = -1;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return retval;
+}
+
+#if _BACKUP_ENABLE
+
+static void _IapBackupFirmware()
+{
+    static uint32_t stick = 0;
+    static uint32_t sec   = 0;
+#if (IAP_BACKUP_LOCATION == 0)
+    uint32_t addr = 0;
+#elif (IAP_BACKUP_LOCATION == 1)
+    uint32_t      sector_size = 0;
+    bFlashErase_t param;
+    int           fd = -1;
+    uint8_t       tmp[64];
+    uint32_t      rtmp = 0;
+    uint32_t      rlen = 0;
+#endif
+    uint32_t tmp_crc = 0;
+
+    if (((uint32_t)_bIapCalCRC32) < APP_START_ADDR)
+    {
+        return;
+    }
+
+    if (bHalGetSysTick() - stick > MS2TICKS(1000))
+    {
+        stick = bHalGetSysTick();
+        sec += 1;
+        if (sec < bIapFlag.backup.second)
+        {
+            return;
+        }
+        if (bIapFlag.backup.flag == B_IAP_BACKUP_EN)
+        {
+#if (IAP_BACKUP_LOCATION == 0)
+            addr = IAP_BACKUP_ADDR - MCUFLASH_BASE_ADDR;
+            bHalFlashUnlock();
+            bHalFlashErase(addr,
+                           (IAP_BACKUP_SIZE + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
+            bHalFlashWrite(addr, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
+            bHalFlashLock();
+            tmp_crc = _bIapCalCRC32(0, (uint8_t *)(IAP_BACKUP_ADDR), IAP_BACKUP_SIZE);
+#elif (IAP_BACKUP_LOCATION == 1)
+            fd = bOpen(bIapFlag.backup.dev_no, BCORE_FLAG_RW);
+            if (fd == -1)
+            {
+                     return;
+            }
+            bCtl(fd, bCMD_GET_SECTOR_SIZE, &sector_size);
+            param.addr = IAP_BACKUP_ADDR;
+            param.num  = (IAP_BACKUP_SIZE + sector_size - 1) / sector_size;
+            //根据固件的大小，擦除区域等待数据写入
+            bCtl(fd, bCMD_ERASE_SECTOR, &param);
+
+            bLseek(fd, IAP_BACKUP_ADDR);
+            bWrite(fd, (uint8_t *)APP_START_ADDR, IAP_BACKUP_SIZE);
+
+            bLseek(fd, IAP_BACKUP_ADDR);
+            while (rtmp < IAP_BACKUP_SIZE)
+            {
+                     rlen = (IAP_BACKUP_SIZE - rtmp > 64) ? 64 : (IAP_BACKUP_SIZE - rtmp);
+                     bRead(fd, tmp, rlen);
+                     tmp_crc = _bIapCalCRC32(tmp_crc, tmp, rlen);
+                     rtmp += rlen;
+            }
+            bClose(fd);
+#endif
+            if (tmp_crc == bIapFlag.backup.fcrc)
+            {
+                bIapFlag.backup.flag = B_IAP_BACKUP_VALID;
+                bHalFlashUnlock();
+                bHalFlashErase(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, 1);
+                bIapFlag.fcrc = _bIapCalCRC32(0, (uint8_t *)&bIapFlag,
+                                              sizeof(bIapFlag_t) - sizeof(bIapFlag.fcrc));
+                bHalFlashWrite(IAP_FLAG_ADDR - MCUFLASH_BASE_ADDR, (uint8_t *)&bIapFlag,
+                               sizeof(bIapFlag_t));
+                bHalFlashLock();
+            }
+            else
+            {
+                sec = 0;
+            }
+        }
+    }
+}
+
+BOS_REG_POLLING_FUNC(_IapBackupFirmware);
+
+#endif
+
 /**
  * \}
  */
@@ -349,6 +514,18 @@ int bIapInit(uint8_t dev_no)
     return 0;
 }
 
+int bIapBackupFwInit(uint8_t dev_no, uint32_t s)
+{
+    bIapFlag.backup.dev_no = dev_no;
+    bIapFlag.backup.second = s;
+    if (bIapFlag.backup.flag != B_IAP_BACKUP_VALID)
+    {
+        bIapFlag.backup.flag = B_IAP_BACKUP_EN;
+        bIapFlag.backup.fcrc = _bIapCalCRC32(0, (uint8_t *)(APP_START_ADDR), IAP_BACKUP_SIZE);
+    }
+    return 0;
+}
+
 int bIapStart(bIapFwInfo_t *pinfo)
 {
     char *ptmp = NULL;
@@ -362,7 +539,6 @@ int bIapStart(bIapFwInfo_t *pinfo)
     {
         return -2;
     }
-    memset(&bIapFlag, 0, sizeof(bIapFlag_t));
     //设置当前状态并复制固件信息
     bIapFlag.stat       = B_IAP_STA_START;
     bIapFlag.fail_count = 0;
@@ -387,8 +563,11 @@ int bIapStart(bIapFwInfo_t *pinfo)
  */
 int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len)
 {
-    int      retval = 0, fd = -1;
-    uint32_t addr = index;
+#if (IAP_FILE_CACHE == 2)
+    int fd = -1;
+#endif
+    int      retval = 0;
+    uint32_t addr   = index;
     if (pbuf == NULL || len == 0 || ((index) >= bIapFlag.info.len))
     {
         return -1;
@@ -530,7 +709,11 @@ int bIapBootCheckFlag()
         }
         else
         {
-            /////拷贝备份程序
+            retval = _IapCopyBackupData();
+            if (retval == 0)
+            {
+                _bIapSetStat(B_IAP_STA_FINISHED);
+            }
         }
     }
     else if (bIapFlag.stat == B_IAP_STA_FINISHED)
@@ -538,12 +721,13 @@ int bIapBootCheckFlag()
         if (bIapFlag.fail_count >= B_IAP_FAIL_COUNT)
         {
             bIapFlag.fail_count = 0;
-            /////拷贝备份程序
+            _IapCopyBackupData();
         }
         else
         {
             retval = -1;
             bIapFlag.fail_count += 1;
+            _bIapSetStat(B_IAP_STA_FINISHED);
         }
     }
     else
@@ -558,9 +742,17 @@ int bIapBootCheckFlag()
 /**
  * \brief 返回IAP当前状态
  */
-uint8_t bIapGetStatus(void)
+uint8_t bIapGetStatus()
 {
     return bIapFlag.stat;
+}
+
+/**
+ * \brief 返回备份固件的情况
+ */
+uint8_t bIapBackupIsValid()
+{
+    return (bIapFlag.backup.flag == B_IAP_BACKUP_VALID);
 }
 
 /**

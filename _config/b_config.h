@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70408
+#define FW_VERSION 70409
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -202,6 +202,21 @@
 //<o> Firmware Save Address
 #define IAP_FW_SAVE_ADDR 0x00000000
 
+//<e> Backup Enable/Disable
+#define _BACKUP_ENABLE 0
+
+//<o> Backup Location
+//<0=> On-Chip Flash
+//<1=> SPI FLASH
+#define IAP_BACKUP_LOCATION 1
+
+//<o> Backup Address
+#define IAP_BACKUP_ADDR 0x00032000
+
+//<o> Backup Area Size
+#define IAP_BACKUP_SIZE 0x14000
+
+//</e>
 //</e>
 
 //</h>

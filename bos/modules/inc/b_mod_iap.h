@@ -72,9 +72,10 @@ extern "C" {
     (((s) == B_IAP_STA_NULL) || ((s) == B_IAP_STA_START) || ((s) == B_IAP_STA_READY) || \
      ((s) == B_IAP_STA_FINISHED))
 
-#define B_IAP_FILENAME_LEN (64)  // 固件名的长度限制
-#define B_IAP_FAIL_COUNT (3)     // 固件失败的次数限制
-
+#define B_IAP_FILENAME_LEN (64)    // 固件名的长度限制
+#define B_IAP_FAIL_COUNT (3)       // 固件失败的次数限制
+#define B_IAP_BACKUP_EN (0x55)     // 备份固件功能启用的标志
+#define B_IAP_BACKUP_VALID (0xAA)  // 存在有效备份固件的标志
 /**
  * \}
  */
@@ -95,10 +96,19 @@ typedef struct
 
 typedef struct
 {
-    int          stat;
-    int          fail_count;
-    bIapFwInfo_t info;
-    uint32_t     fcrc;
+    uint8_t  dev_no;  //备份区额设备号
+    uint8_t  flag;    //备份标志，0xAA表示存在有效备份
+    uint32_t fcrc;    //备份区固件的crc32校验值
+    uint32_t second;  //运行多少秒后进行备份
+} bIapBackupInof_t;
+
+typedef struct
+{
+    int              stat;
+    int              fail_count;
+    bIapFwInfo_t     info;
+    bIapBackupInof_t backup;
+    uint32_t         fcrc;
 } bIapFlag_t;
 
 #pragma pack()
@@ -142,6 +152,15 @@ int bIapBootCheckFlag(void);
 int bIapStart(bIapFwInfo_t *pinfo);
 
 /**
+ * 固件备份位置的设备号 dev_no
+ * 注：备份到内部FLASH  则 dev_no = 0
+ * 不需要固件备份，便不需要调用此函数。
+ * s: 正常工作s秒后，进行固件备份
+ */
+int bIapBackupFwInit(uint8_t dev_no, uint32_t s);
+
+
+/**
  * \brief 传入新固件的数据用于写入存储区域
  * \param index 新固件数据的索引，即相对文件起始的偏移
  * \return int 0：正常存储  -1：存储异常   -2：校验失败，重新接收
@@ -154,6 +173,12 @@ int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len);
  * 启动程序，查询到是B_IAP_STA_NULL或者B_IAP_STA_FINISHED状态，则跳转至应用程序
  */
 uint8_t bIapGetStatus(void);
+
+/**
+ * 查询备份固件是否有效
+ */
+uint8_t bIapBackupIsValid(void);
+
 /**
  * \}
  */
