@@ -200,13 +200,17 @@ boot:1819043356
 
 # 5 BabyOS教程
 
-教程的代码仓库中不同分支对应着不同实验
+教程的代码仓库中不同分支对应着不同实验【基于STM32F107CV、小熊派STM32L431RC等】：
 
-<https://gitee.com/notrynohigh/BabyOS_Example>  【基于STM32F107CV、小熊派STM32L431RC等】
+<https://gitee.com/notrynohigh/BabyOS_Example>  
 
-<https://gitee.com/notrynohigh/BabyOS_Protocol> 【BabyOS私有协议上位机Demo】
+BabyOS私有协议上位机Demo：
 
-[https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2](https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2) 【BabyOS配置工具】
+<https://gitee.com/notrynohigh/BabyOS_Protocol> 
+
+BabyOS配置工具：
+
+[https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2](https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2) 
 
 
 
@@ -282,5 +286,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2022.01 | 增加bReinit和bModifyHalIf接口，并修复模拟I2C中BUG            |      |
 | 2022.02 | 调整结构，使得依赖关系更加合理。                             |      |
 | 2022.03 | 增加cjson第三方代码，并配上内存池。修改b_config.h中宏的命名以及文件夹、文件命名。 |      |
-| 2022.04 | 增加WIFI模块驱动，增加获取驱动私有信息的接口                 |      |
+| 2022.04 | 增加WIFI模块驱动，增加获取驱动私有信息的接口，增加QSPI       |      |
 
