@@ -111,6 +111,7 @@ static int _FlashErase(uint32_t raddr, uint8_t pages)
         {
             timeout--;
         }
+        MCU_FLASH->CTRL &= ~(0x00000001 << 1);
         if (timeout <= 0)
         {
             retval = -2;
@@ -149,6 +150,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
         {
             timeout--;
         }
+        MCU_FLASH->CTRL &= ~(0x00000001 << 0);
         if (timeout <= 0)
         {
             return -2;
