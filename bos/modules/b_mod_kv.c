@@ -285,35 +285,72 @@ static int _bKVCheckValue(bKVInstance_t *pinstance, uint32_t addr, bKVDataHead_t
 {
     int      fd = -1;
     uint8_t  tmp[32];
-    uint32_t crc  = 0;
-    uint32_t rlen = 0;
+    uint8_t  joint_f = 0;
+    uint32_t crc     = 0;
+    uint32_t rlen    = 0;
     CRC_REG_SBS_HANDLE(kv_crc, ALGO_CRC32);
     addr = addr + sizeof(bKVDataHead_t) + B_SIZE_ALIGNMENT(B_KV_KEY_LENGTH(head.len), 4);
-    fd   = bOpen(pinstance->dev, BCORE_FLAG_R);
+    if (B_SIZE_ALIGNMENT(B_KV_KEY_LENGTH(head.len) > pinstance->erase_size - sizeof(bKVSectorHead_t))
+    {
+        joint_f = 1;
+    }
+    fd = bOpen(pinstance->dev, BCORE_FLAG_R);
     if (fd < 0)
     {
         return -1;
     }
     bLseek(fd, addr);
-    while (rlen < B_KV_VALUE_LENGTH(head.len))
+    if (joint_f == 1)
     {
-        bRead(fd, tmp, sizeof(tmp));
-        crc_calculate_sbs(&kv_crc, tmp,
-                          ((B_KV_VALUE_LENGTH(head.len) - rlen) > sizeof(tmp))
-                              ? sizeof(tmp)
-                              : (B_KV_VALUE_LENGTH(head.len) - rlen));
-        rlen += sizeof(tmp);
+        bRead(fd, (uint8_t *)&crc, sizeof(crc));
+        while (rlen < ())  // 补充对联合体，所以信息的读取和CRC32校验
+    }
+    else
+    {
+        crc = head.crc;
+        while (rlen < B_KV_VALUE_LENGTH(head.len))
+        {
+            bRead(fd, tmp, sizeof(tmp));
+            crc_calculate_sbs(&kv_crc, tmp,
+                              ((B_KV_VALUE_LENGTH(head.len) - rlen) > sizeof(tmp))
+                                  ? sizeof(tmp)
+                                  : (B_KV_VALUE_LENGTH(head.len) - rlen));
+            rlen += sizeof(tmp);
+        }
     }
     bClose(fd);
-    if (kv_crc.crc != head.crc)
+    if (kv_crc.crc != crc)
     {
         return -1;
     }
     return 0;
 }
 
+static int _bKVCopyData(bKVInstance_t *pinstance, int src, int des, uint32_t len)
+{
+    int      fd = -1;
+    uint8_t  tmp[32];
+    uint32_t rlen = 0;
+    fd            = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    while (rlen < len)
+    {
+        bLseek(fd, src + rlen);
+        bRead(fd, tmp, sizeof(tmp));
+        bLseek(fd, des + rlen);
+        bWrite(fd, tmp, ((len - rlen) > sizeof(tmp)) ? sizeof(tmp) : (len - rlen));
+        rlen += sizeof(tmp);
+    }
+    bClose(fd);
+    return len;
+}
+
 static int _bKVMoveData(bKVInstance_t *pinstance, int src, int des)
 {
+    int           retval = 0;
     bKVDataHead_t head;
     uint32_t r_addr = pinstance->address + src * pinstance->erase_size + sizeof(bKVSectorHead_t);
     uint32_t w_addr = pinstance->address + des * pinstance->erase_size + sizeof(bKVSectorHead_t);
@@ -328,10 +365,21 @@ static int _bKVMoveData(bKVInstance_t *pinstance, int src, int des)
         }
         else if (head.state == 0xFFFFFFFF)
         {
+            // 校验正确才数据正确数据，才能拷贝，否则继续寻找有效数据
             if (0 == _bKVCheckValue(pinstance, r_addr, head))
             {
-                ;  // 待添加数据复制
+                retval = _bKVCopyData(pinstance, r_addr, w_addr,
+                                      B_KV_DATA_LENGTH(head.len) + sizeof(bKVDataHead_t));
+                if (retval >= 0)
+                {
+                    w_addr += retval;
+                }
+                r_addr += B_KV_DATA_LENGTH(head.len) + sizeof(bKVDataHead_t);
             }
+        }
+        else
+        {
+            ;
         }
     }
 }
