@@ -86,9 +86,15 @@ int fputc(int c, FILE *p)
 }
 #endif
 
+__WEAKDEF void bHalUserInit()
+{
+    ;
+}
+
 void bHalInit()
 {
     _bHalUpdateDelayParam();
+    bHalUserInit();
 }
 
 void bHalIncSysTick()

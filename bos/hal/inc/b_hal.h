@@ -42,10 +42,11 @@ extern "C" {
 #include "b_hal_i2c.h"
 #include "b_hal_if.h"
 #include "b_hal_it.h"
-#include "b_hal_spi.h"
 #include "b_hal_qspi.h"
-#include "b_hal_uart.h"
 #include "b_hal_sdio.h"
+#include "b_hal_spi.h"
+#include "b_hal_uart.h"
+
 /**
  * \addtogroup B_HAL
  * \{
@@ -111,7 +112,12 @@ typedef struct
  * \defgroup HAL_Exported_Functions
  * \{
  */
-void     bHalIncSysTick(void);
+
+//移植时调用，TICK中断服务函数调用bHalIncSysTick
+void bHalIncSysTick(void);
+//弱函数，用户可重新实现此函数。bInit->bHalInit->bHalUserInit
+void bHalUserInit(void);
+
 void     bHalInit(void);
 void     bHalDelayMs(uint16_t xms);
 void     bHalDelayUs(uint32_t xus);
