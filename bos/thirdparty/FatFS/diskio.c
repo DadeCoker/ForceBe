@@ -207,8 +207,9 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
     DRESULT res = RES_OK;
     switch (pdrv)
     {
+#if _SPIFLASH_ENABLE         
         case DEV_SPIFLASH:
-        {
+        {           
             int fd = -1;
             fd     = bOpen(SPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
@@ -240,7 +241,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
             // Process of the command for the RAM drive
             return res;
         }
-
+#endif
         case DEV_SDCARD:
             switch (cmd)
             {
