@@ -248,6 +248,7 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
         bWiFiRecData.mqtt.pstr = p;
         memset(bWiFiRecData.mqtt.topic.topic, 0, sizeof(bWiFiRecData.mqtt.topic.topic));
         memcpy(bWiFiRecData.mqtt.topic.topic, tmp, strlen(tmp));
+        bWiFiRecDataLock = 0;
         return 0;
     }
     retp = strstr((const char *)pbuf, "+IPD");
@@ -743,9 +744,12 @@ static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uin
         return 0;
     }
     bWiFiRecDataLock      = 1;
-    bWiFiRecData.tcp.pstr = (char *)bMempList2Array(&bTcpDataList);
-    bWiFiRecData.tcp.len  = bTcpDataList.total_size;
-    bMempListFree(&bTcpDataList);
+    if(bTcpDataList.total_size > 0)
+    {
+        bWiFiRecData.tcp.pstr = (char *)bMempList2Array(&bTcpDataList);
+        bWiFiRecData.tcp.len  = bTcpDataList.total_size;
+        bMempListFree(&bTcpDataList);
+    }
     memcpy(pbuf, &bWiFiRecData, sizeof(bWiFiData_t));
     //读取并使用数据后，需要释放 bWiFiRecData.mqtt.pstr 和 bWiFiRecData.tcp.pstr 指向的内存
     if (bWiFiRecData.mqtt.pstr != NULL)
@@ -755,7 +759,7 @@ static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uin
     }
     if (bWiFiRecData.tcp.pstr != NULL)
     {
-        retval += strlen(bWiFiRecData.tcp.pstr);
+        retval += bWiFiRecData.tcp.len;
         bWiFiRecData.tcp.pstr = NULL;
     }
     bWiFiRecDataLock = 0;
