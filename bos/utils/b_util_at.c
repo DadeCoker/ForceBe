@@ -287,7 +287,6 @@ int bAtFeedRespData(uint8_t *pbuf, uint16_t len)
 
 int bAtRegistCallback(bAtCallback_t cb, void *arg)
 {
-    int          i     = 0;
     bAtCbInfo_t *pinfo = NULL;
     if (cb == NULL)
     {

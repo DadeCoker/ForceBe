@@ -142,8 +142,8 @@ static void _bUtilUartDetectIdle()
                     {
                         if (phead->next->callback != NULL)
                         {
-                            if ((phead->next->callback(phead->next->pbuf, phead->next->index) >=
-                                 0) ||
+                            if ((phead->next->callback(phead->next->pbuf, phead->next->index,
+                                                       phead->next->cb_arg) >= 0) ||
                                 (phead->next->index == phead->next->buf_size))
                             {
                                 memset(phead->next->pbuf, 0, phead->next->buf_size);

@@ -353,7 +353,8 @@ int bExec()
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bModifyHalIf(uint8_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval, uint8_t len)
+int bModifyHalIf(uint32_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval,
+                 uint8_t len)
 {
     if ((off + len) > type_size || pval == NULL || len == 0 || type_size == 0)
     {

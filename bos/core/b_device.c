@@ -198,7 +198,7 @@ int bDeviceOpen(uint32_t dev_no)
     {
         if (bDriverInterfaceTable[dev_no].open != NULL)
         {
-            retval = bDriverInterfaceTable[dev_no].open(&bDriverInterfaceTable[no]);
+            retval = bDriverInterfaceTable[dev_no].open(&bDriverInterfaceTable[dev_no]);
         }
     }
     else

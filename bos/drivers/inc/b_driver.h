@@ -150,13 +150,13 @@ typedef struct
  * \defgroup DRIVER_Exported_Macros
  * \{
  */
-#define bDRIVER_REG_INIT_0(drv_num, init_f)                                                  \
-    bSECTION_ITEM_REGISTER_FLASH(driver_init_0, bDriverRegInit_t, CONCAT_2(init0, func)) = { \
+#define bDRIVER_REG_INIT_0(drv_num, init_f)                                                    \
+    bSECTION_ITEM_REGISTER_FLASH(driver_init_0, bDriverRegInit_t, CONCAT_2(init0, init_f)) = { \
         drv_num, init_f}
 
-#define bDRIVER_REG_INIT(drv_num, init_f)                                                         \
-    bSECTION_ITEM_REGISTER_FLASH(driver_init, bDriverRegInit_t, CONCAT_2(init, func)) = {drv_num, \
-                                                                                         init_f}
+#define bDRIVER_REG_INIT(drv_num, init_f)                                                   \
+    bSECTION_ITEM_REGISTER_FLASH(driver_init, bDriverRegInit_t, CONCAT_2(init, init_f)) = { \
+        drv_num, init_f}
 
 #define bDRIVER_REG_INIT_1 bDRIVER_REG_INIT
 /**
