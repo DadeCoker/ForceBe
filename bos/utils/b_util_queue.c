@@ -74,7 +74,7 @@ int bQueuePush(bQueueInstance_t *pinstance, void *data)
     {
         return -1;
     }
-    if (pinstance->number == pinstance->item_size)
+    if (pinstance->number == pinstance->item_num)
     {
         return -2;
     }
@@ -128,7 +128,7 @@ uint8_t bQueueIsFull(bQueueInstance_t *pinstance)
     {
         return 0;
     }
-    return (pinstance->number >= pinstance->item_size);
+    return (pinstance->number >= pinstance->item_num);
 }
 
 int bQueueDynCreate(bQueueInstance_t *pinstance, uint16_t item_size, uint16_t item_num)
