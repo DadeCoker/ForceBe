@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211031
 //<o> Firmware version
-#define FW_VERSION 70000
+#define FW_VERSION 70100
 //</h>
 
 //<h> Platform Configuration

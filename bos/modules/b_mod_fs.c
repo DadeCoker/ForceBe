@@ -163,9 +163,9 @@ int _bFS_DeviceWrite(const struct lfs_config *c, lfs_block_t block, lfs_off_t of
 
 int _bFS_DeviceErase(const struct lfs_config *c, lfs_block_t block)
 {
-    int          fd     = -1;
-    int          retval = LFS_ERR_OK;
-    uint32_t     e_size = 4096;
+    int           fd     = -1;
+    int           retval = LFS_ERR_OK;
+    uint32_t      e_size = 4096;
     bFlashErase_t cmd;
     fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
     if (fd >= 0)
@@ -251,7 +251,7 @@ int     bFS_Init()
     fre_sect = fre_clust * fs->csize;
 
     /* Print the free space (assuming 512 bytes/sector) */
-    b_log("%10lu KiB total drive space.\n%10lu KiB available.\r\n", tot_sect / 2, fre_sect / 2);
+    b_log("%10lu KiB total drive space.\r\n%10lu KiB available.\r\n", tot_sect / 2, fre_sect / 2);
 #endif
     return 0;
 }

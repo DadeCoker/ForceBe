@@ -126,6 +126,7 @@ static int _FlashErase(uint32_t raddr, uint8_t pages)
             retval = -2;
             break;
         }
+        MCU_FLASH->CR &= ~(0x00000001 << 1);
         raddr += FLASH_PAGE_SIZE;
     }
     return retval;
@@ -161,6 +162,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
         {
             return -2;
         }
+        MCU_FLASH->CR &= ~(0x00000001 << 0);
         raddr += 2;
     }
     return (wlen * 2);

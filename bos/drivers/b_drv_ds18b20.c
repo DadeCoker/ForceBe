@@ -77,7 +77,6 @@
  */
 const static bDS18B20_HalIf_t bDS18B20_HalIf = HAL_DS18B20_IF;
 bDS18B20_Driver_t             bDS18B20_Driver;
-static float                  bTempValue = 0.001;
 /**
  * \}
  */
@@ -164,61 +163,66 @@ static void _bSbusWriteByte(uint8_t dat)
     }
 }
 
-static void _bDS18B20ReadTemp()
+static int _bDS18B20Start()
 {
-    static volatile uint32_t temp_tick  = 0;
-    static uint8_t           rflag      = 0;
-    int16_t                  temp       = 0;
-    float                    temp_value = 0;
-    uint8_t                  tmh, tml;
+    int retval = -1;
+    if (_bSbusReady())
+    {
+        _bSbusWriteByte(0xCC);
+        _bSbusWriteByte(0x44);
+        retval = 0;
+    }
+    return retval;
+}
 
-    if (bHalGetSysTick() - temp_tick < MS2TICKS(500))
+static int _bDS18B20Ctl(struct bDriverIf *pdrv, uint8_t cmd, void *param)
+{
+    int retval = -1;
+    switch (cmd)
     {
-        return;
+        case bCMD_SENSOR_START:
+            retval = _bDS18B20Start();
+            break;
+        default:
+            break;
     }
-    temp_tick = bHalGetSysTick();
-    if (rflag == 0)
-    {
-        if (_bSbusReady())
-        {
-            _bSbusWriteByte(0xCC);
-            _bSbusWriteByte(0x44);
-            rflag = 1;
-        }
-    }
-    else
-    {
-        if (_bSbusReady())
-        {
-            _bSbusWriteByte(0xCC);
-            _bSbusWriteByte(0xBE);
-        }
-        tml  = _bSbusReadByte();
-        tmh  = _bSbusReadByte();
-        temp = ((int16_t)tmh) << 8;
-        temp |= tml;
-        if (temp < 0)
-        {
-            temp_value = (~temp + 1) * 0.0625;
-        }
-        else
-        {
-            temp_value = temp * 0.0625;
-        }
-        bTempValue = temp_value;
-        rflag      = 0;
-    }
+    return retval;
 }
 
 static int _bDS18B20Read(bDS18B20_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    bTempVal_t temp;
-    temp.tempx100 = (int16_t)(bTempValue * 100);
+    int16_t    temp_dig = 0;
+    float      temp     = 0;
+    uint8_t    tmh, tml;
+    bTempVal_t temp_val;
     if (len < sizeof(bTempVal_t))
     {
-        return 0;
+        return -1;
     }
-    memcpy(pbuf, &temp, sizeof(bTempVal_t));
+    if (_bSbusReady())
+    {
+        _bSbusWriteByte(0xCC);
+        _bSbusWriteByte(0xBE);
+    }
+    else
+    {
+        return -1;
+    }
+    tml      = _bSbusReadByte();
+    tmh      = _bSbusReadByte();
+    temp_dig = ((int16_t)tmh) << 8;
+    temp_dig |= tml;
+    if (temp_dig < 0)
+    {
+        temp = (~temp_dig + 1) * 0.0625;
+    }
+    else
+    {
+        temp = temp_dig * 0.0625;
+    }
+
+    temp_val.tempx100 = (int16_t)(temp * 100);
+    memcpy(pbuf, &temp_val, sizeof(bTempVal_t));
     return sizeof(bTempVal_t);
 }
 
@@ -237,12 +241,11 @@ int bDS18B20_Init()
     bDS18B20_Driver.write  = NULL;
     bDS18B20_Driver.open   = NULL;
     bDS18B20_Driver.close  = NULL;
-    bDS18B20_Driver.ctl    = NULL;
+    bDS18B20_Driver.ctl    = _bDS18B20Ctl;
     return 0;
 }
 
 bDRIVER_REG_INIT(bDS18B20_Init);
-BOS_REG_POLLING_FUNC(_bDS18B20ReadTemp);
 /**
  * \}
  */
