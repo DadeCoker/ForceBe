@@ -28,7 +28,7 @@
     - [更新记录](#更新记录)
 
 
-##  BabyOS是什么
+#  BabyOS是什么
 
 ```
 ______________________________________________
@@ -51,7 +51,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 ------
 
-## 适用项目
+# 适用项目
 
 使用裸机开发的项目推荐基于BabyOS进行。
 
@@ -59,7 +59,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 ​        
 
-## 前世今生
+# 前世今生
 
 说一说编写BabyOS原由
 
@@ -67,22 +67,28 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 使用MCU裸机开发的项目大多有两个要求：**产品功耗**和**开发周期**
 
-### 功耗的考量
+#### 功耗的考量
 
 出于功耗考虑，对外设的操作是：唤醒外设，操作，最后进入休眠。这样的操作形式和文件的操作很类似，文件的操作步骤是打开到编辑到关闭。因此将外设的操作看作是对文件的操作进行。驱动中打开和关闭对应着唤醒和睡眠。
 
-### 缩短开发周期
+#### 缩短开发周期
 
 项目中，有较多使用率高的功能模块，例如：UTC、错误管理、电池电量、存储数据、上位机通信、固件升级等等。同时也有很多常用的芯片、传感器等。BabyOS便是将这些使用率高的功能模块以及常用的芯片、传感器驱动进行收集并管理。新项目启动时，以搭积木的方式完成一部分工作以此来缩短开发时间。
 
  
 
-## 使用方法
+# 使用方法
 
-###   添加文件
+BabyOS代码分为3部分，**BabyOS仓库**：功能模块和驱动  **BabyOS_Config**：配置文件和注册设备的文件   **BabyOS_Hal**：硬件抽象层文件
+
+BabyOS仓库代码用户一般不需要改动，可以将此仓库作为子模块。
+
+BabyOS_Config和BabyOS_Hal这两个仓库的代码用户会修改，用户将这两个仓库代码克隆后放入工程
+
+##   1.添加文件
 
 ```C
-.
+BabyOS							//可作git子模块使用
 ├── bos
 │   ├── algorithm               //常用算法，选择需要的算法添加至工程
 │   ├── core					//核心文件，必须全部包含至工程
@@ -90,51 +96,60 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 │   ├── modules					//功能模块，可全部添加至工程，由配置文件b_config.h配置
 │   ├── thirdparty				//第三方代码，选择需要的代码添加
 │   └── utils					//实用代码，选择需要的添加至工程
-├── bos_config					//子模块，BabyOS配置文件及设备注册 https://gitee.com/notrynohigh/bos_config
-├── bos_hal						//子模块，BabyOS硬件抽象层 https://gitee.com/notrynohigh/bos_hal
-├── build						//cmake编译目录
+├── build						
 ├── CMakeLists.txt
 ├── doc							//相关文档
 ├── Examples					//使用例子
 │   └── qpn
 ├── LICENSE						//开源协议
-├── main.c						//测试main.c
 └── README.md
+BabyOS_Config					//https://gitee.com/notrynohigh/BabyOS_Config  克隆后放入工程
+BabyOS_Hal						//https://gitee.com/notrynohigh/BabyOS_Hal     克隆后放入工程
+```
+
+```C
+//进入用户工程目录执行
+git submodule add https://gitee.com/notrynohigh/BabyOS.git
+git clone https://gitee.com/notrynohigh/BabyOS_Config.git    //克隆后删除BabyOS_Config目录内的.git
+git clone https://gitee.com/notrynohigh/BabyOS_Hal.git		 //克隆后切换到对应平台的分支，如果没有则采用master分支作为模板。同时删除BabyOS_Hal目录的.git
 ```
 
 
 
-### 增加系统定时器
+## 2.增加系统定时器
 
+```C
 例如使用滴答定时器，中断服务函数调用：void bHalIncSysTick(void);
 
 注：定时器的周期与b_config.h里_TICK_FRQ_HZ要匹配
+```
 
-###   选择功能模块
+
+
+##   3.选择功能模块
 
 b_config.h进行配置，根据自己的需要选择功能模块。
 
 ![config](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/1.png)
 
-###   注册设备
-
-b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码： 
+##   4.注册设备
 
 ```c
+//b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码： 
 //           设备        驱动          描述
 B_DEVICE_REG(SPIFLASH, bSPIFLASH_Driver[0], "flash")
-//B_DEVICE_REG(SD, bSD_Driver, "sd card")
+
 //如果没有注册任何设备，取消B_DEVICE_REG(null, bNullDriver, "null")的注释    
 //B_DEVICE_REG(null, bNullDriver, "null")   
 ```
 
-###   使用范例  
+##   5.使用范例  
 
 以b_kv功能模块为例，先在b_config里面使能b_kv。
 
-#### 取消硬件接口的注释
+### 5.1修改硬件接口
 
-b_hal.h中取消如下部分的注释，并根据实际连接图修改GPIO和SPI号
+b_hal.h中根据实际连接图修改GPIO和SPI号
 
 ```C
 #define HAL_SPIFLASH_QSPI_EN            0
@@ -142,7 +157,9 @@ b_hal.h中取消如下部分的注释，并根据实际连接图修改GPIO和SPI
 #define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN12}},}    ////{{qspi, spi, {cs_port, cs_pin}},} 
 ```
 
-修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台，使用STM32 HAL库为例）
+### 5.2 修改硬件抽象层b_hal_spi.c内SPI的操作
+
+（依赖硬件平台，使用STM32 HAL库为例）
 
 ```C
 int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
@@ -180,7 +197,9 @@ int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 }
 ```
 
-修改硬件抽象层b_hal_gpio.c内IO的操作（依赖硬件平台，使用STM32 HAL库为例）
+### 5.3 修改硬件抽象层b_hal_gpio.c内IO的操作
+
+（依赖硬件平台，使用STM32 HAL库为例）
 
 ```C
 void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s)
@@ -190,18 +209,15 @@ void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s)
 }
 ```
 
-#### 基于SPIFLASH使用KV功能
+### 5.4 基于SPIFLASH使用KV功能
 
 ```c
 #include "b_os.h"    //头文件
 //b_config.h配置文件中使能KV存储
 int main()
 {
-    uint8_t buf[128];
-    //......     
+    uint8_t buf[128]; 
     bInit();    //初始化，外设的初始化会在此处调用
-    
-    //下面举例使用：SPIFLASH和KV存储功能模块,其中SPIFLASH已经添加到b_device_list.h
     if(0 == bKV_Init(SPIFLASH, 0xA000, 4096 * 4, 4096)) //初始化KV存储，指定存储设备SPIFLASH
     {
         b_log("bKV_Init ok...\r\n");
@@ -249,7 +265,7 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 
 
-## BabyOS教程
+# BabyOS教程
 
 教程的代码仓库中不同分支对应着不同实验
 
@@ -259,13 +275,13 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 
 
-## BabyOS私有协议上位机Demo
+# BabyOS私有协议上位机Demo
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol>
 
 
 
-## Baby如何成长
+# Baby如何成长
 
 之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
 
@@ -279,7 +295,7 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 
 
-## 友情项目
+# 友情项目
 
 BabyOS包含了第三方开源代码，这部分代码都是MCU项目中比较实用的。
 
