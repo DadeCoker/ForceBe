@@ -10,7 +10,7 @@
 #include "../port.h"
 #include "b_os.h"
 
-bKV_INSTANCE(gKVInstance, bTESTFLASH, 0, 10 * 4 * 1024, 4 * 1024);
+bKV_INSTANCE(gKVInstance, bTESTFLASH, 0, 4096 * 2, 4096);
 
 void check_name()
 {

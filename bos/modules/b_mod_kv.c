@@ -930,6 +930,7 @@ static int _bKVAddValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf
     uint32_t      w_addr    = 0;
     int32_t       old_addr  = -1;
     uint32_t      empty_num = 0;
+    uint32_t      tmp_zero  = 0;
     bKVDataHead_t head;
 
     // 寻找是否已存在，存在并且值相同，则直接返回
@@ -979,6 +980,7 @@ static int _bKVAddValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf
         {
             return -2;
         }
+        _bKVFindKey(pinstance, key, (uint32_t *)&old_addr);
     }
     // 如果用到联合区块，判断可用空块是否足够
     if (empty_num > 0)
@@ -1020,7 +1022,7 @@ static int _bKVAddValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf
             return retval;
         }
     }
-    b_log("write index:%d offset:%d\r\n", pinstance->write_index, pinstance->write_offset);
+    // b_log("write index:%d offset:%d\r\n", pinstance->write_index, pinstance->write_offset);
     // 写入数据
     w_addr = pinstance->address + pinstance->write_index * pinstance->erase_size +
              pinstance->write_offset;
@@ -1050,7 +1052,14 @@ static int _bKVAddValue(bKVInstance_t *pinstance, const char *key, uint8_t *pbuf
         }
         bLseek(fd, w_addr);
         bWrite(fd, (uint8_t *)&head, sizeof(head.flag));
-        bLseek(fd, w_addr + 8);
+        if (pinstance->erase_size == 0)
+        {
+            bWrite(fd, (uint8_t *)&tmp_zero, sizeof(tmp_zero));
+        }
+        else
+        {
+            bLseek(fd, w_addr + 8);
+        }
         bWrite(fd, ((uint8_t *)&head) + 8, sizeof(bKVDataHead_t) - 8);
         bWrite(fd, (uint8_t *)key, strlen(key));
         bLseek(fd, w_addr + sizeof(bKVDataHead_t) + B_KV_KEY_RLEN(head));

@@ -130,28 +130,28 @@ static int _bTESTFLASHWrite(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbu
         }
         if (_if->w_size == 1)
         {
-            if (((uint8_t *)_private->data)[off + i] == 0xff)
+            if (((uint8_t *)_private->data)[off + i] == 0xff || _if->e_size == 0)
             {
                 ((uint8_t *)_private->data)[off + i] = ((uint8_t *)pbuf)[i];
             }
         }
         if (_if->w_size == 2)
         {
-            if (((uint16_t *)_private->data)[off + i] == 0xffff)
+            if (((uint16_t *)_private->data)[off + i] == 0xffff || _if->e_size == 0)
             {
                 ((uint16_t *)_private->data)[off + i] = ((uint16_t *)pbuf)[i];
             }
         }
         if (_if->w_size == 4)
         {
-            if (((uint32_t *)_private->data)[off + i] == 0xffffffff)
+            if (((uint32_t *)_private->data)[off + i] == 0xffffffff || _if->e_size == 0)
             {
                 ((uint32_t *)_private->data)[off + i] = ((uint32_t *)pbuf)[i];
             }
         }
         if (_if->w_size == 8)
         {
-            if (((uint64_t *)_private->data)[off + i] == 0xffffffffffffffff)
+            if (((uint64_t *)_private->data)[off + i] == 0xffffffffffffffff || _if->e_size == 0)
             {
                 ((uint64_t *)_private->data)[off + i] = ((uint64_t *)pbuf)[i];
             }
@@ -182,7 +182,7 @@ static int _bTESTFLASHCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
     {
         case bCMD_ERASE_SECTOR:
         {
-            if (param)
+            if (param && (_if->e_size > 0))
             {
                 bFlashErase_t *perase_param = (bFlashErase_t *)param;
                 bHalFlashErase(perase_param->addr, perase_param->num);
@@ -216,8 +216,15 @@ static int _bTESTFLASHCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
         {
             if (param)
             {
-                ((uint32_t *)param)[0] = TEST_FLASH_SIZE / _if->e_size;
-                retval                 = 0;
+                if (_if->e_size == 0)
+                {
+                    ((uint32_t *)param)[0] = 1;
+                }
+                else
+                {
+                    ((uint32_t *)param)[0] = TEST_FLASH_SIZE / _if->e_size;
+                }
+                retval = 0;
             }
         }
         break;
