@@ -1,0 +1,9 @@
+from building import *
+
+cwd     = GetCurrentDir()
+src     = Glob('*.c') + Glob('*.cpp')
+CPPPATH = [cwd + '/../inc']
+
+group = DefineGroup('nr_micro_shell', src, depend = ['PKG_USING_NR_MICRO_SHELL'], CPPPATH = CPPPATH)
+
+Return('group')
