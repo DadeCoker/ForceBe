@@ -77,12 +77,10 @@ typedef enum
  */
 int bMcuSDIOReadBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
 int bMcuSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
-int bMcuSDIOErase(const bHalSDIONumber_t sd, uint32_t addr, uint32_t xblocks);
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 int bHalSDIOReadBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
 int bHalSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr, uint32_t xblocks);
-int bHalSDIOErase(const bHalSDIONumber_t sd, uint32_t addr, uint32_t xblocks);
 /**
  * \}
  */

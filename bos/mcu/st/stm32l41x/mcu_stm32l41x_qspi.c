@@ -35,163 +35,58 @@
 
 #if (MCU_PLATFORM == 1201)
 
-//         Register Address
+#include "stm32l4xx_hal.h"
 
-#define QSPI_BASE_ADDR (0xA0001000)
+#if defined(QUADSPI)
 
-typedef struct
-{
-    volatile uint32_t CR;
-    volatile uint32_t DCR;
-    volatile uint32_t SR;
-    volatile uint32_t FCR;
-    volatile uint32_t DLR;
-    volatile uint32_t CCR;
-    volatile uint32_t AR;
-    volatile uint32_t ABR;
-    volatile uint32_t DR;
-    volatile uint32_t PSMKR;
-    volatile uint32_t PSMAR;
-    volatile uint32_t PIR;
-    volatile uint32_t LPTR;
-} McuQSPIReg_t;
+extern QSPI_HandleTypeDef hqspi;
 
-#define MCU_QSPI ((McuQSPIReg_t *)QSPI_BASE_ADDR)
-
-#define QSPI_WAIT_TIMEOUT (0x00B00000)
 int bMcuQSPISendCmd(const bHalQSPINumber_t qspi, const bHalQSPICmdInfo_t *pcmd)
 {
-    McuQSPIReg_t *pQspi   = MCU_QSPI;
-    uint32_t      reg     = 0;
-    uint32_t      timeout = 0;
-    while (B_READ_BIT(pQspi->SR, (0x0001 << 5)) != 0)
+    QSPI_CommandTypeDef cmd;
+    cmd.Address = pcmd->address;
+    cmd.AddressMode = pcmd->admode << 10;
+    cmd.AddressSize = pcmd->adsize << 12;
+    cmd.AlternateByteMode = pcmd->abmode << 14;
+    cmd.AlternateBytes = pcmd->alternate;
+    cmd.AlternateBytesSize = pcmd->absize << 16;
+    cmd.DataMode = pcmd->dmode << 24;
+    cmd.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+    cmd.DdrMode = QSPI_DDR_MODE_DISABLE;
+    cmd.DummyCycles = pcmd->dummy;
+    cmd.Instruction = pcmd->instruction;
+    cmd.InstructionMode = pcmd->imode << 8;
+    cmd.NbData = pcmd->dsize;
+    cmd.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+    if(HAL_OK == HAL_QSPI_Command(&hqspi, &cmd, 0xFFFFFFFF))
     {
-        timeout++;
-        if (timeout >= QSPI_WAIT_TIMEOUT)
-        {
-            return -1;
-        }
+        return 0;
     }
-    reg = (pcmd->dmode << 24) | (pcmd->dummy << 18) | (pcmd->admode << 10) | (pcmd->imode << 8) |
-          (pcmd->abmode << 14);
-    if (pcmd->dmode != B_HAL_QSPI_MODE_NONE)
-    {
-        B_WRITE_REG(pQspi->DLR, pcmd->dsize - 1);
-    }
-    if (pcmd->imode != B_HAL_QSPI_MODE_NONE)
-    {
-        reg |= pcmd->instruction;
-    }
-    if (pcmd->abmode != B_HAL_QSPI_MODE_NONE)
-    {
-        reg |= (pcmd->absize << 16);
-        B_WRITE_REG(pQspi->ABR, pcmd->alternate);
-    }
-    if (pcmd->admode != B_HAL_QSPI_MODE_NONE)
-    {
-        reg |= (pcmd->adsize << 12);
-    }
-    B_WRITE_REG(pQspi->CCR, reg);
-    if (pcmd->admode != B_HAL_QSPI_MODE_NONE)
-    {
-        B_WRITE_REG(pQspi->AR, pcmd->address);
-    }
-    if (pcmd->dmode == B_HAL_QSPI_MODE_NONE)
-    {
-        B_WRITE_REG(pQspi->FCR, (0x00000002));
-    }
-    for (timeout = 0; timeout < 0xff; timeout++)
-    {
-        ;
-    }    
-    return 0;
+    return -1;
 }
 
 int bMcuQSPIReceiveData(const bHalQSPINumber_t qspi, uint8_t *pbuf)
 {
-    McuQSPIReg_t *pQspi   = MCU_QSPI;
-    uint32_t      timeout = 0;
-    uint32_t      count = 0, size = 0;
-
-    uint32_t           addr_reg = B_READ_REG(pQspi->AR);
-    volatile uint32_t *data_reg = &pQspi->DR;
-
-    size = B_READ_REG(pQspi->DLR) + 1U;
-
-    B_MODIFY_REG(pQspi->CCR, 0x0C000000, 0x04000000);
-    B_WRITE_REG(pQspi->AR, addr_reg);
-
-    while (count < size)
+    if(HAL_OK == HAL_QSPI_Receive(&hqspi, pbuf, 0xFFFFFFFF))
     {
-        timeout = 0;
-        while (B_READ_BIT(pQspi->SR, (0x00000006)) == 0)
-        {
-            timeout++;
-            if (timeout >= QSPI_WAIT_TIMEOUT)
-            {
-                return -1;
-            }
-        }
-        pbuf[count] = *((volatile uint8_t *)data_reg);
-        count++;
+        return 0;
     }
-    timeout = 0;
-    while (B_READ_BIT(pQspi->SR, (0x00000002)) == 0)
-    {
-        timeout++;
-        if (timeout >= QSPI_WAIT_TIMEOUT)
-        {
-            break;
-        }
-    }
-    B_WRITE_REG(pQspi->FCR, 0x00000002);
-    for (timeout = 0; timeout < 0xff; timeout++)
-    {
-        ;
-    }
-    return size;
+    return -1;
 }
 
 int bMcuQSPITransmitData(const bHalQSPINumber_t qspi, const uint8_t *pbuf)
 {
-    McuQSPIReg_t *pQspi   = MCU_QSPI;
-    uint32_t      timeout = 0;
-    uint32_t      count = 0, size = 0;
-
-    volatile uint32_t *data_reg = &pQspi->DR;
-    size                        = B_READ_REG(pQspi->DLR) + 1U;
-
-    B_MODIFY_REG(pQspi->CCR, 0x0C000000, 0x00000000);
-    while (count < size)
+    if(HAL_OK == HAL_QSPI_Transmit(&hqspi, (uint8_t *)pbuf, 0xFFFFFFFF))
     {
-        timeout = 0;
-        while (B_READ_BIT(pQspi->SR, (0x00000004)) == 0)
-        {
-            timeout++;
-            if (timeout >= QSPI_WAIT_TIMEOUT)
-            {
-                return -1;
-            }
-        }
-        *((volatile uint8_t *)data_reg) = pbuf[count];
-        count++;
+        return 0;
     }
-    timeout = 0;
-    while (B_READ_BIT(pQspi->SR, (0x00000002)) == 0)
-    {
-        timeout++;
-        if (timeout >= QSPI_WAIT_TIMEOUT)
-        {
-            break;
-        }
-    }
-    B_WRITE_REG(pQspi->FCR, (0x00000002));
-    for (timeout = 0; timeout < 0xff; timeout++)
-    {
-        ;
-    }
-    return size;
+    return -1;
 }
+
+
+
+
+#endif
 
 #endif
 

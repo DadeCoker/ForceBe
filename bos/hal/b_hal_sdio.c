@@ -57,11 +57,6 @@ __WEAKDEF int bMcuSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uin
     return 0;
 }
 
-__WEAKDEF int bMcuSDIOErase(const bHalSDIONumber_t sd, uint32_t addr, uint32_t xblocks)
-{
-    return 0;
-}
-
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
@@ -81,15 +76,6 @@ int bHalSDIOWriteBlocks(const bHalSDIONumber_t sd, uint8_t *pdata, uint32_t addr
         return -1;
     }
     return bMcuSDIOWriteBlocks(sd, pdata, addr, xblocks);
-}
-
-int bHalSDIOErase(const bHalSDIONumber_t sd, uint32_t addr, uint32_t xblocks)
-{
-    if (sd > B_HAL_SDIO_1 || xblocks == 0)
-    {
-        return -1;
-    }
-    return bMcuSDIOErase(sd, addr, xblocks);
 }
 
 /**

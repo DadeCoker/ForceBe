@@ -55,6 +55,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
 #if _FS_ENABLE && (FS_SELECT == 0)
     DRESULT res = RES_OK;
     int     fd  = -1;
+    int     len = 0;
     switch (pdrv)
     {
 #if _SPIFLASH_ENABLE
@@ -96,8 +97,12 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
             if (fd >= 0)
             {
                 bLseek(fd, sector);
-                bRead(fd, buff, count);
+                len = bRead(fd, buff, count);
                 bClose(fd);
+                if(len < 0)
+                {
+                    res = RES_ERROR;
+                }
             }
             else
             {
@@ -129,6 +134,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
 #if _FS_ENABLE && (FS_SELECT == 0)
     DRESULT res = RES_OK;
     int     fd  = -1;
+    int     len = 0;
     switch (pdrv)
     {
 #if _SPIFLASH_ENABLE
@@ -174,8 +180,12 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
             if (fd >= 0)
             {
                 bLseek(fd, sector);
-                bWrite(fd, (uint8_t *)buff, count);
+                len = bWrite(fd, (uint8_t *)buff, count);
                 bClose(fd);
+                if(len < 0)
+                {
+                    res = RES_ERROR;
+                }
             }
             else
             {

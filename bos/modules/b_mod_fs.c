@@ -304,7 +304,11 @@ int bFS_Test()
         f_close(&fil);
         return -1;
     }
-    f_close(&fil);
+    fr = f_close(&fil);
+    if(fr)
+    {
+        b_log_e("close %d\r\n", fr);
+    }
     return 0;
 }
 #else
