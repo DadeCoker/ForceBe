@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 #include "core/inc/b_section.h"
 
 /**

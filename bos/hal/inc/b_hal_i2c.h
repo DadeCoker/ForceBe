@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SI2CL THE
@@ -32,24 +32,23 @@
 #define __B_HAL_I2C_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
+#include <stdint.h>
 
-
-/** 
+/**
  * \addtogroup B_HAL
  * \{
  */
 
-/** 
+/**
  * \addtogroup I2C
  * \{
  */
 
-/** 
+/**
  * \defgroup I2C_Exported_TypesDefinitions
  * \{
  */
@@ -60,50 +59,28 @@ typedef enum
     B_HAL_I2C_3,
     B_HAL_I2C_4,
     B_HAL_I2C_INVALID
-}bHalI2CNumber_t; 
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Exported_Defines
- * \{
- */
+} bHalI2CNumber_t;
 
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Exported_Macros
- * \{
- */
-
+typedef struct
+{
+    void (*pWriteByte)(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat);
+    uint8_t (*pReadByte)(bHalI2CNumber_t i2c, uint8_t dev_addr);
+    int (*pMemWrite)(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, const uint8_t *pbuf,
+                     uint16_t len);
+    int (*pMemRead)(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf,
+                    uint16_t len);
+} const bHalI2CDriver_t;
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup I2C_Exported_Variables
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Exported_Functions
- * \{
- */
 
-void bHalI2C_SendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat);
-uint8_t bHalI2C_ReceiveByte(bHalI2CNumber_t i2c, uint8_t dev_addr);
-
-int bHalI2C_MemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
-int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
+extern bHalI2CDriver_t bHalI2CDriver;
 
 /**
  * \}
@@ -118,12 +95,9 @@ int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, ui
  */
 
 #ifdef __cplusplus
-	}
-#endif
- 
+}
 #endif
 
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-
-

@@ -36,17 +36,9 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#include "b_hal_flash.h"
-#include "b_hal_gpio.h"
-#include "b_hal_i2c.h"
-#include "b_hal_if.h"
-#include "b_hal_qspi.h"
-#include "b_hal_sccb.h"
-#include "b_hal_spi.h"
-#include "b_hal_uart.h"
-#include "stm32f1xx_hal.h"  //add the platform h file
+#include <stdint.h>
 
+#include "b_config.h"
 
 /**
  * \addtogroup B_HAL
@@ -56,48 +48,6 @@ extern "C" {
 /**
  * \addtogroup HAL
  * \{
- */
-
-/**
- * \defgroup HAL_Exported_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup HAL_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup HAL_Exported_Macros
- * \{
- */
-
-#define bUtilDelayMS bHalDelayMs
-#define bUtilDelayUS bHalDelayUs
-#define bUtilGetTick bHalGetSysTick
-/**
- * \}
- */
-
-/**
- * \defgroup HAL_Exported_Variables
- * \{
- */
-extern SPI_HandleTypeDef  hspi1;
-extern SPI_HandleTypeDef  hspi3;
-extern I2C_HandleTypeDef  hi2c1;
-extern UART_HandleTypeDef huart1;
-/**
- * \}
  */
 
 /**

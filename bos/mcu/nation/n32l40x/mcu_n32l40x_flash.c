@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_hal_flash.c
+ * \file        mcu_n32l40x_flash.c
  * \version     v0.0.1
  * \date        2021/06/13
  * \author      Bean(notrynohigh@outlook.com)
@@ -32,141 +32,75 @@
 /*Includes ----------------------------------------------*/
 #include <string.h>
 
-#include "b_hal.h"
+//#include "hal/inc/b_hal_gpio.h"
+#include "n32l40x.h"
 
-/**
- * \addtogroup B_HAL
- * \{
- */
+#define _FLASH_BASE_ADDR (0x8000000UL)
+#define _FLASH_PAGE_SIZE (2048)
 
-/**
- * \addtogroup FLASH
- * \{
- */
-
-/**
- * \defgroup FLASH_Private_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup FLASH_Private_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup FLASH_Private_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup FLASH_Private_Variables
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup FLASH_Private_FunctionPrototypes
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup FLASH_Private_Functions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \addtogroup FLASH_Exported_Functions
- * \{
- */
-
-int bHalFlashInit()
+static int _FlashInit()
 {
     return 0;
 }
 
-int bHalFlashUnlock()
+static int _FlashUnlock()
 {
-    int retval = -1;
-    if (HAL_FLASH_Unlock() == HAL_OK)
+    int retval = 0;
+    FLASH_Unlock();
+    return retval;
+}
+
+static int _FlashLock()
+{
+    int retval = 0;
+    FLASH_Lock();
+    return retval;
+}
+
+static int _FlashErase(uint32_t page_addr, uint8_t pages)
+{
+    int     retval = 0;
+    uint8_t i      = 0;
+    page_addr      = page_addr / _FLASH_PAGE_SIZE * _FLASH_PAGE_SIZE;
+    for (i = 0; i < pages; i++)
     {
-        retval = 0;
+        if (FLASH_COMPL == FLASH_EraseOnePage(page_addr))
+        {
+            page_addr += _FLASH_PAGE_SIZE;
+        }
+        else
+        {
+            retval = -1;
+            break;
+        }
     }
     return retval;
 }
 
-int bHalFlashLock()
-{
-    int retval = -1;
-    if (HAL_FLASH_Lock() == HAL_OK)
-    {
-        retval = 0;
-    }
-    return retval;
-}
-
-int bHalFlashErase(uint32_t page_addr, uint8_t pages)
-{
-    int                    retval = -1;
-    FLASH_EraseInitTypeDef EraseInit;
-    uint32_t               PageError;
-
-    EraseInit.NbPages     = pages;
-    EraseInit.PageAddress = page_addr;
-    EraseInit.TypeErase   = FLASH_TYPEERASE_PAGES;
-
-    if (HAL_FLASHEx_Erase(&EraseInit, &PageError) == HAL_OK)
-    {
-        retval = 0;
-    }
-    return retval;
-}
-
-int bHalFlashWrite(uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _FlashWrite(uint32_t addr, const uint8_t *pbuf, uint16_t len)
 {
     int      retval = -1;
-    uint64_t wdata  = 0;
-    uint16_t wlen = (len + 1) / 2, i = 0;
+    uint32_t wdata  = 0;
+    uint16_t wlen = (len + 3) / 4, i = 0;
 
-    if (pbuf == NULL || (addr & 0x1))
+    if (pbuf == NULL || (addr & 0x3))
     {
         return -1;
     }
 
     for (i = 0; i < wlen; i++)
     {
-        wdata = pbuf[i * 2 + 1];
-        wdata = (wdata << 8) | pbuf[i * 2];
-        HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr, wdata);
-        addr += 2;
+        wdata = (wdata << 8) | pbuf[i * 4 + 3];
+        wdata = (wdata << 8) | pbuf[i * 4 + 2];
+        wdata = (wdata << 8) | pbuf[i * 4 + 1];
+        wdata = (wdata << 8) | pbuf[i * 4 + 0];
+        FLASH_ProgramWord(addr, wdata);
+        addr += 4;
     }
-    return (wlen * 2);
+    return (wlen * 4);
 }
 
-int bHalFlashRead(uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _FlashRead(uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
     if (pbuf == NULL)
     {
@@ -176,16 +110,8 @@ int bHalFlashRead(uint32_t addr, uint8_t *pbuf, uint16_t len)
     return len;
 }
 
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
+bHalFlashDriver_t bHalFlashDriver = {
+    _FlashInit, _FlashUnlock, _FlashLock, _FlashErase, _FlashWrite, _FlashRead,
+};
 
 /************************ Copyright (c) 2021 Bean *****END OF FILE****/

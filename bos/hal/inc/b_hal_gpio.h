@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
+#include <stdint.h>
 
 /**
  * \addtogroup B_HAL
@@ -86,34 +86,36 @@ typedef enum
     B_HAL_PIN_INVALID,
 } bHalGPIOPin_t;
 
+typedef enum
+{
+    B_HAL_GPIO_INPUT,
+    B_HAL_GPIO_OUTPUT,
+    B_HAL_GPIO_DIR_INVALID,
+} bHalGPIODir_t;
+
+typedef enum
+{
+    B_HAL_GPIO_NOPULL,
+    B_HAL_GPIO_PULLUP,
+    B_HAL_GPIO_PULLDOWN,
+    B_HAL_GPIO_PULL_INVALID,
+} bHalGPIOPull_t;
+
 typedef struct
 {
     bHalGPIOPort_t port;
     bHalGPIOPin_t  pin;
 } bHalGPIOInstance_t;
 
-typedef void (*pbExtiHandler_t)(void);
-
-typedef struct bHalGPIO_EXTI_Struct
+typedef struct
 {
-    bHalGPIOPin_t   pin;
-    pbExtiHandler_t handler;
-} bHalGPIO_EXTI_t;
-
-/**
- * \}
- */
-
-/**
- * \defgroup GPIO_Exported_Defines
- * \{
- */
-#define B_HAL_GPIO_INPUT 0
-#define B_HAL_GPIO_OUTPUT 1
-
-#define B_HAL_GPIO_NOPULL 0
-#define B_HAL_GPIO_PULLUP 1
-#define B_HAL_GPIO_PULLDOWN 2
+    void (*pGpioConfig)(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
+                        bHalGPIOPull_t pull);
+    void (*pGpioWritePin)(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
+    void (*pGpioWritePort)(bHalGPIOPort_t port, uint16_t dat);
+    uint8_t (*pGpioReadPin)(bHalGPIOPort_t port, bHalGPIOPin_t pin);
+    uint16_t (*pGpioReadPort)(bHalGPIOPort_t port);
+} const bHalGPIODriver_t;
 
 /**
  * \}
@@ -126,25 +128,16 @@ typedef struct bHalGPIO_EXTI_Struct
 
 #define B_HAL_GPIO_ISVALID(port, pin) (port != B_HAL_GPIO_INVALID && pin != B_HAL_PIN_INVALID)
 
-#define bHAL_REG_GPIO_EXTI(_pin, _handler)                                              \
-    bSECTION_ITEM_REGISTER_FLASH(b_hal_gpio, bHalGPIO_EXTI_t, CONCAT_2(exti, _pin)) = { \
-        .pin = _pin, .handler = _handler}
 /**
  * \}
  */
 
 /**
- * \defgroup GPIO_Exported_Functions
+ * \defgroup GPIO_Exported_Variables
  * \{
  */
 
-void     bHalGPIO_Config(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t mode, uint8_t pull);
-void     bHalGPIO_WritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
-uint8_t  bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin);
-void     bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat);
-uint16_t bHalGPIO_Read(bHalGPIOPort_t port);
-
-void bHalGPIO_EXTI_IRQHandler(bHalGPIOPin_t pin);
+extern bHalGPIODriver_t bHalGPIODriver;
 
 /**
  * \}

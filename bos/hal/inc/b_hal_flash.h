@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
+#include <stdint.h>
 
 /**
  * \addtogroup B_HAL
@@ -49,24 +49,31 @@ extern "C" {
  */
 
 /**
- * \defgroup FLASH_Exported_Defines
+ * \defgroup FLASH_Exported_TypesDefinitions
  * \{
  */
-#define bHALFLASH_BASE_ADDR (0x08000000U)
+
+typedef struct
+{
+    int (*pFlashInit)(void);
+    int (*pFlashUnlock)(void);
+    int (*pFlashLock)(void);
+    int (*pFlashErase)(uint32_t page_addr, uint8_t pages);
+    int (*pFlashWrite)(uint32_t addr, uint8_t *pbuf, uint16_t len);
+    int (*pFlashRead)(uint32_t addr, uint8_t *pbuf, uint16_t len);
+} const bHalFlashDriver_t;
+
 /**
  * \}
  */
 
 /**
- * \defgroup FLASH_Exported_Functions
+ * \defgroup FLASH_Exported_Variables
  * \{
  */
-int bHalFlashInit(void);
-int bHalFlashUnlock(void);
-int bHalFlashLock(void);
-int bHalFlashErase(uint32_t page_addr, uint8_t pages);
-int bHalFlashWrite(uint32_t addr, uint8_t *pbuf, uint16_t len);
-int bHalFlashRead(uint32_t addr, uint8_t *pbuf, uint16_t len);
+
+extern bHalFlashDriver_t bHalFlashDriver;
+
 /**
  * \}
  */

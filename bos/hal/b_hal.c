@@ -104,35 +104,22 @@ volatile uint32_t bSysTick = 0;
  * \{
  */
 #if _DEBUG_ENABLE
-
 int fputc(int c, FILE *p)
 {
     uint8_t ch = c & 0xff;
     bHalUartSend(B_HAL_UART_1, &ch, 1);
     return c;
 }
-
 #endif
-
-void bHalEnterCritical()
-{
-}
-
-void bHalExitCritical()
-{
-}
-
-/**
- * \brief Call this function _TICK_FRQ_HZ times per second \ref _TICK_FRQ_HZ
- */
-void bHalIncSysTick()
-{
-    bSysTick += 1;
-}
 
 void bHalInit()
 {
-    // Add code ...gpio init or some other functions
+    // Add code ...
+}
+
+void bHalIncSysTick()
+{
+    bSysTick += 1;
 }
 
 uint32_t bHalGetSysTick()
@@ -153,10 +140,20 @@ void bHalDelayMs(uint16_t xms)
 
 void bHalDelayUs(uint32_t xus)
 {
-  volatile uint32_t delay = xus * 8;
-  while (delay --);
+    volatile uint32_t delay = xus * 8;
+    while (delay--)
+        ;
 }
 
+void bHalEnterCritical()
+{
+    ;
+}
+
+void bHalExitCritical()
+{
+    ;
+}
 
 /**
  * \}

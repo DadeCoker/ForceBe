@@ -31,30 +31,25 @@
 #ifndef __B_CONFIG_H__
 #define __B_CONFIG_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/*Includes ----------------------------------------------*/
-#include <stdint.h>
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
 //<<< Use Configuration Wizard in Context Menu >>>
 
 //<h> Compile Configuration
 
 //<o> Hardware version
-#define HW_VERSION 200310
+#define HW_VERSION 211026
 
 //<o> Firmware version
-#define FW_VERSION 60000
+#define FW_VERSION 60100
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ 1000
 #define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
+
+//<o> MCU Platform
+//<0=> STM32 STD
+//<1=> STM32 HAL
+//<2=> NATION_F40X
+#define _MCU_PLATFORM 2
 
 //<q> Algorithm Enable/Disable
 #define _BOS_ALGO_ENABLE 1
@@ -311,10 +306,6 @@ extern "C" {
 #define b_log_w(...)
 #define b_log_e(...)
 #define b_log(...)
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif

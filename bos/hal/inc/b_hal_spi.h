@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SSPIL THE
@@ -32,24 +32,23 @@
 #define __B_HAL_SPI_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
+#include <stdint.h>
 
-
-/** 
+/**
  * \addtogroup B_HAL
  * \{
  */
 
-/** 
+/**
  * \addtogroup SPI
  * \{
  */
 
-/** 
+/**
  * \defgroup SPI_Exported_TypesDefinitions
  * \{
  */
@@ -60,48 +59,34 @@ typedef enum
     B_HAL_SPI_3,
     B_HAL_SPI_4,
     B_HAL_SPI_INVALID,
-}bHalSPINumber_t; 
-/**
- * \}
- */
-   
-/** 
- * \defgroup SPI_Exported_Defines
- * \{
- */
+} bHalSPINumber_t;
 
+typedef enum
+{
+    B_HAL_SPI_SLOW,
+    B_HAL_SPI_FAST,
+    B_HAL_SPI_SPEED_INVALID,
+} bHalSPISpeed_t;
 
-/**
- * \}
- */
-   
-/** 
- * \defgroup SPI_Exported_Macros
- * \{
- */
-
+typedef struct
+{
+    int (*pSetSpeed)(bHalSPINumber_t spi, bHalSPISpeed_t speed);
+    int (*pSend)(bHalSPINumber_t spi, const uint8_t *pbuf, uint16_t len);
+    int (*pReceive)(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len);
+    uint8_t (*pTransfer)(bHalSPINumber_t spi, uint8_t dat);
+} const bHalSPIDriver_t;
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup SPI_Exported_Variables
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup SPI_Exported_Functions
- * \{
- */
-int bHalSPI_SetSpeed(bHalSPINumber_t spi, uint32_t clk_hz);
-int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len);
-int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len);
-uint8_t bHalSPI_SendReceiveByte(bHalSPINumber_t spi, uint8_t dat);
+
+extern bHalSPIDriver_t bHalSPIDriver;
+
 /**
  * \}
  */
@@ -115,12 +100,9 @@ uint8_t bHalSPI_SendReceiveByte(bHalSPINumber_t spi, uint8_t dat);
  */
 
 #ifdef __cplusplus
-	}
-#endif
- 
+}
 #endif
 
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-
-
