@@ -97,8 +97,10 @@ static uint8_t _bUTC_CalendarMonthDays(uint8_t lpyr, uint8_t month)
 /**
  * \brief UTC to date struct \ref bUTC_DateTime_t
  */
-void bUTC2Struct(bUTC_DateTime_t *tm, bUTC_t utc)
+void bUTC2Struct(bUTC_DateTime_t *tm, bUTC_t utc, int32_t zone)
 {
+    utc = utc + zone * 60 * 60;
+
     uint32_t sec_in_day = utc % DAY;
     tm->second          = sec_in_day % 60;
     tm->minute          = (sec_in_day % 3600) / 60;
@@ -106,7 +108,7 @@ void bUTC2Struct(bUTC_DateTime_t *tm, bUTC_t utc)
 
     uint32_t days = utc / DAY;
 
-    tm->week = (((days % 7) + 5) % 7) + 1;
+    tm->week = (((days % 7) + 3) % 7) + 1;
 
     tm->year = BEGYEAR;
     while (days >= YEAR_DAYS(tm->year))
@@ -126,16 +128,16 @@ void bUTC2Struct(bUTC_DateTime_t *tm, bUTC_t utc)
 /**
  * \brief Calculate UTC
  */
-bUTC_t bStruct2UTC(bUTC_DateTime_t tm)
+bUTC_t bStruct2UTC(bUTC_DateTime_t tm, int32_t zone)
 {
-    uint32_t seconds;
+    bUTC_t seconds;
     if (!IS_TIME_VALID(tm))
     {
         return 0;
     }
     seconds = (((tm.hour * 60) + tm.minute) * 60) + tm.second;
 
-    uint32_t days  = tm.day - 1;
+    bUTC_t days  = tm.day - 1;
     int8_t   month = tm.month;
     month--;
     while (month > 0)
@@ -144,7 +146,7 @@ bUTC_t bStruct2UTC(bUTC_DateTime_t tm)
         month--;
     }
 
-    uint32_t year = (tm.year > 0) ? (tm.year - 1) : 0;
+    bUTC_t year = (tm.year > 0) ? (tm.year - 1) : 0;
     while (year >= BEGYEAR)
     {
         days += YEAR_DAYS(year);
@@ -152,6 +154,7 @@ bUTC_t bStruct2UTC(bUTC_DateTime_t tm)
     }
 
     seconds += (days * DAY);
+    seconds -= zone * 60 * 60;
 
     return seconds;
 }

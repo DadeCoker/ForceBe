@@ -66,7 +66,6 @@ _BOS_MODULES_ENABLE=y
 # _FS_ENABLE is not set
 # _CJSON_ENABLE is not set
 # _COREMARK_ENABLE is not set
-_UNITY_ENABLE=y
 # end of Thirdparty Configuration
 
 #
@@ -78,7 +77,6 @@ LOG_LEVEL_INFO=y
 # LOG_LEVEL_WARNING is not set
 # LOG_LEVEL_ERROR is not set
 LOG_BUF_SIZE=256
-_MEMP_ENABLE=y
-MEMP_MAX_SIZE=10240
+# _MEMP_ENABLE is not set
 # _AT_ENABLE is not set
 # end of Utils Configuration

@@ -20,13 +20,7 @@ VENDOR_UBUNTU=y
 #
 # Algorithm Configuration
 #
-_BOS_ALGO_ENABLE=y
-# _ALGO_BASE64_ENABLE is not set
-# _ALGO_SHA1_ENABLE is not set
-# _ALGO_SORT_ENABLE is not set
-# _ALGO_UNICODE_ENABLE is not set
-_ALGO_MD5_ENABLE=y
-_ALGO_CRC_ENABLE=y
+# _BOS_ALGO_ENABLE is not set
 # end of Algorithm Configuration
 
 #
@@ -35,6 +29,7 @@ _ALGO_CRC_ENABLE=y
 PCF8574_DEFAULT_OUTPUT=0
 MATRIX_KEYS_ROWS=4
 MATRIX_KEYS_COLUMNS=4
+ESP12F_UART_RX_BUF_LEN=1024
 # end of Drivers Configuration
 
 #
@@ -54,6 +49,7 @@ _BOS_MODULES_ENABLE=y
 # _PARAM_ENABLE is not set
 # _STATE_ENABLE is not set
 # _IAP_ENABLE is not set
+# _WIFI_ENABLE is not set
 # end of Modules Configuration
 
 #
@@ -66,7 +62,7 @@ _BOS_MODULES_ENABLE=y
 # _FS_ENABLE is not set
 # _CJSON_ENABLE is not set
 # _COREMARK_ENABLE is not set
-_UNITY_ENABLE=y
+# _UNITY_ENABLE is not set
 # end of Thirdparty Configuration
 
 #
@@ -78,7 +74,5 @@ LOG_LEVEL_INFO=y
 # LOG_LEVEL_WARNING is not set
 # LOG_LEVEL_ERROR is not set
 LOG_BUF_SIZE=256
-_MEMP_ENABLE=y
-MEMP_MAX_SIZE=10240
-# _AT_ENABLE is not set
+# _MEMP_ENABLE is not set
 # end of Utils Configuration
