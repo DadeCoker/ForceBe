@@ -142,13 +142,14 @@ static int _bMCUFLASHCtl(bMCUFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
  */
 int bMCUFLASH_Init()
 {
-    int retval              = 0;
-    bMCUFLASH_Driver.status = 0;
-    bMCUFLASH_Driver.close  = _bMCUFLASHClose;
-    bMCUFLASH_Driver.read   = _bMCUFLASHRead;
-    bMCUFLASH_Driver.ctl    = _bMCUFLASHCtl;
-    bMCUFLASH_Driver.open   = _bMCUFLASHOpen;
-    bMCUFLASH_Driver.write  = _bMCUFLASHWrite;
+    int retval               = 0;
+    bMCUFLASH_Driver.status  = 0;
+    bMCUFLASH_Driver.close   = _bMCUFLASHClose;
+    bMCUFLASH_Driver.read    = _bMCUFLASHRead;
+    bMCUFLASH_Driver.ctl     = _bMCUFLASHCtl;
+    bMCUFLASH_Driver.open    = _bMCUFLASHOpen;
+    bMCUFLASH_Driver.write   = _bMCUFLASHWrite;
+    bMCUFLASH_Driver._hal_if = NULL;
 
     if (bHalFlashDriver.pFlashInit() < 0)
     {

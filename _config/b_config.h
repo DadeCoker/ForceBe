@@ -54,6 +54,10 @@
 //<4001=> HC32L13X
 //<7001=> CH32F103
 #define _MCU_PLATFORM 1004
+
+//<h> Hal Configuration
+//<q> Hardware Interface Variable Enable/Disable
+#define _HALIF_VARIABLE_ENABLE 0
 //</h>
 
 //<h> Modules Configuration

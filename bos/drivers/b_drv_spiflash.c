@@ -82,12 +82,12 @@
  * \defgroup SPIFLASH_Private_Variables
  * \{
  */
-static char                    bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][4];
-static const bSPIFLASH_HalIf_t bSPIFLASH_HalIfTable[HAL_SPIFLASH_TOTAL_NUMBER] = HAL_SPIFLASH_IF;
-bSPIFLASH_Driver_t             bSPIFLASH_Driver[HAL_SPIFLASH_TOTAL_NUMBER];
 
-// sfud
-extern sfud_flash flash_table[];
+HALIF_KEYWORD bSPIFLASH_HalIf_t bSPIFLASH_HalIfTable[HAL_SPIFLASH_TOTAL_NUMBER] = HAL_SPIFLASH_IF;
+bSPIFLASH_Driver_t              bSPIFLASH_Driver[HAL_SPIFLASH_TOTAL_NUMBER];
+
+static char       bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][4];
+extern sfud_flash flash_table[];  // sfud
 
 /**
  * \}

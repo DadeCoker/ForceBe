@@ -78,8 +78,8 @@
  * \defgroup FM25CL_Private_Variables
  * \{
  */
-static const bFM25CL_HalIf_t bFM25CL_HalIfTable[] = HAL_FM25CL_IF;
-bFM25CL_Driver_t             bFM25CL_Driver[sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t)];
+HALIF_KEYWORD bFM25CL_HalIf_t bFM25CL_HalIfTable[] = HAL_FM25CL_IF;
+bFM25CL_Driver_t              bFM25CL_Driver[sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t)];
 /**
  * \}
  */

@@ -99,6 +99,13 @@ typedef struct
 #define B_CLEAR_BIT(REG, BIT)   ((REG) &= ~(BIT))
 #define B_READ_BIT(REG, BIT)    ((REG) & (BIT))
 #define B_READ_REG(REG)         ((REG))
+
+#if _HALIF_VARIABLE_ENABLE
+#define HALIF_KEYWORD static
+#else
+#define HALIF_KEYWORD const static
+#endif
+
 /**
  * \}
  */

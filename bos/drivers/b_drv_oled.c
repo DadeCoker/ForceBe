@@ -86,10 +86,10 @@
  * \defgroup OLED_Private_Variables
  * \{
  */
+HALIF_KEYWORD bOLED_HalIf_t bOLED_HalIf = HAL_OLED_IF;
+bOLED_Driver_t              bOLED_Driver;
 
-static uint8_t             bOLED_Buff[_LCD_X_SIZE * _LCD_Y_SIZE / 8];
-const static bOLED_HalIf_t bOLED_HalIf = HAL_OLED_IF;
-bOLED_Driver_t             bOLED_Driver;
+static uint8_t bOLED_Buff[_LCD_X_SIZE * _LCD_Y_SIZE / 8];
 /**
  * \}
  */
@@ -243,13 +243,16 @@ int bOLED_Init()
     _bOLED_WriteCmd(0x8d);  ///--set DC-DC enable
     _bOLED_WriteCmd(0x14);  ///
     _bOLED_WriteCmd(0xaf);  ///--turn on oled panel
+
     memset(bOLED_Buff, 0, sizeof(bOLED_Buff));
-    bOLED_Driver.close  = NULL;
-    bOLED_Driver.read   = NULL;
-    bOLED_Driver.ctl    = NULL;
-    bOLED_Driver.open   = NULL;
-    bOLED_Driver.write  = _bOLEDWrite;
-    bOLED_Driver.status = 0;
+
+    bOLED_Driver.close   = NULL;
+    bOLED_Driver.read    = NULL;
+    bOLED_Driver.ctl     = NULL;
+    bOLED_Driver.open    = NULL;
+    bOLED_Driver.write   = _bOLEDWrite;
+    bOLED_Driver.status  = 0;
+    bOLED_Driver._hal_if = (void *)&bOLED_HalIf;
     _bOLED_Fill(0);
     return 0;
 }

@@ -75,8 +75,8 @@
  * \defgroup LIS3DH_Private_Variables
  * \{
  */
-const static bLIS3DH_HalIf_t bLIS3DH_HalIf = HAL_LIS3DH_IF;
-bLIS3DH_Driver_t             bLIS3DH_Driver;
+HALIF_KEYWORD bLIS3DH_HalIf_t bLIS3DH_HalIf = HAL_LIS3DH_IF;
+bLIS3DH_Driver_t              bLIS3DH_Driver;
 
 static bLis3dhConfig_t bLis3dhConfig       = LIS3DH_DEFAULT_CONFIG;
 static const int       Digit2mgTable[4][3] = {{1, 4, 16}, {2, 8, 32}, {4, 16, 64}, {12, 48, 192}};
@@ -359,16 +359,18 @@ int bLIS3DH_Init()
 {
     uint8_t id = 0;
 
-    bLIS3DH_Driver.status = 0;
-    bLIS3DH_Driver.read   = _bLis3dhRead;
-    bLIS3DH_Driver.write  = NULL;
-    bLIS3DH_Driver.open   = NULL;
-    bLIS3DH_Driver.close  = NULL;
-    bLIS3DH_Driver.ctl    = _bLis3dhCtl;
+    bLIS3DH_Driver.status  = 0;
+    bLIS3DH_Driver.read    = _bLis3dhRead;
+    bLIS3DH_Driver.write   = NULL;
+    bLIS3DH_Driver.open    = NULL;
+    bLIS3DH_Driver.close   = NULL;
+    bLIS3DH_Driver.ctl     = _bLis3dhCtl;
+    bLIS3DH_Driver._hal_if = (void *)&bLIS3DH_HalIf;
 
     if ((id = _bLis3dhGetID()) != LIS3DH_ID)
     {
         b_log_e("id:%x\r\n", id);
+        id = id;
         bLIS3DH_Driver.status = -1;
         return -1;
     }

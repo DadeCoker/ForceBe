@@ -84,8 +84,8 @@
  * \defgroup ILI9320_Private_Variables
  * \{
  */
-const static bILI9320_HalIf_t bILI9320_HalIf = HAL_ILI9320_IF;
-bILI9320_Driver_t             bILI9320_Driver;
+HALIF_KEYWORD bILI9320_HalIf_t bILI9320_HalIf = HAL_ILI9320_IF;
+bILI9320_Driver_t              bILI9320_Driver;
 /**
  * \}
  */
@@ -112,13 +112,19 @@ static void _bLcdWriteData(uint16_t dat)
     }
     else
     {
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+                                     0);
         bHalGPIODriver.pGpioWritePort(bILI9320_HalIf._if._io.data.port, dat);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+                                     1);
     }
 }
 
@@ -131,13 +137,19 @@ static void _bLcdWriteCmd(uint16_t cmd)
     }
     else
     {
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+                                     0);
         bHalGPIODriver.pGpioWritePort(bILI9320_HalIf._if._io.data.port, cmd);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.wr.port, bILI9320_HalIf._if._io.wr.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+                                     1);
     }
 }
 
@@ -151,16 +163,23 @@ static uint16_t _bLcdReadData()
     }
     else
     {
-        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
+        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port,
+                                   bILI9320_HalIf._if._io.data.pin, B_HAL_GPIO_INPUT,
+                                   B_HAL_GPIO_NOPULL);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin,
+                                     1);
         dat = bHalGPIODriver.pGpioReadPort(bILI9320_HalIf._if._io.data.port);
-        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin, 1);
-        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+        bHalGPIODriver.pGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
+                                     1);
+        bHalGPIODriver.pGpioConfig(bILI9320_HalIf._if._io.data.port,
+                                   bILI9320_HalIf._if._io.data.pin, B_HAL_GPIO_OUTPUT,
+                                   B_HAL_GPIO_NOPULL);
     }
     return dat;
 }
@@ -284,12 +303,14 @@ int bILI9320_Init()
     _bILI9320WriteReg(0x97, (0 << 8));              //
     _bILI9320WriteReg(0x98, 0x0000);                // Frame Cycle Contral.
     _bILI9320WriteReg(0x07, 0x0173);                //(0x0173)
-    bILI9320_Driver.status = 0;
-    bILI9320_Driver.close  = NULL;
-    bILI9320_Driver.read   = NULL;
-    bILI9320_Driver.ctl    = NULL;
-    bILI9320_Driver.open   = NULL;
-    bILI9320_Driver.write  = _bILI9320Write;
+
+    bILI9320_Driver.status  = 0;
+    bILI9320_Driver.close   = NULL;
+    bILI9320_Driver.read    = NULL;
+    bILI9320_Driver.ctl     = NULL;
+    bILI9320_Driver.open    = NULL;
+    bILI9320_Driver.write   = _bILI9320Write;
+    bILI9320_Driver._hal_if = (void *)&bILI9320_HalIf;
     return 0;
 }
 

@@ -76,8 +76,8 @@
  * \{
  */
 
-const static b24CXX_HalIf_t b24CXX_HalIfTable[] = HAL_24CXX_IF;
-b24CXX_Driver_t             b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t)];
+HALIF_KEYWORD b24CXX_HalIf_t b24CXX_HalIfTable[] = HAL_24CXX_IF;
+b24CXX_Driver_t              b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t)];
 /**
  * \}
  */

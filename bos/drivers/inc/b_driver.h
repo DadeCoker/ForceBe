@@ -166,7 +166,7 @@ typedef struct
 
 #define bDRIVER_REG_INIT_1 bDRIVER_REG_INIT
 
-#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)(pdrv->_hal_if)
+#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)((pdrv)->_hal_if)
 /**
  * \}
  */

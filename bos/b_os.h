@@ -79,6 +79,20 @@ extern "C" {
 #include "modules/inc/b_modules.h"
 #endif
 
+#include "drivers/inc/b_drv_24cxx.h"
+#include "drivers/inc/b_drv_ds18b20.h"
+#include "drivers/inc/b_drv_fm25cl.h"
+#include "drivers/inc/b_drv_ili9320.h"
+#include "drivers/inc/b_drv_ili9341.h"
+#include "drivers/inc/b_drv_lis3dh.h"
+#include "drivers/inc/b_drv_mcuflash.h"
+#include "drivers/inc/b_drv_oled.h"
+#include "drivers/inc/b_drv_pcf8574.h"
+#include "drivers/inc/b_drv_sd.h"
+#include "drivers/inc/b_drv_spiflash.h"
+#include "drivers/inc/b_drv_ssd1289.h"
+#include "drivers/inc/b_drv_xpt2046.h"
+
 /**
  * \}
  */

@@ -75,8 +75,8 @@
  * \defgroup DS18B20_Private_Variables
  * \{
  */
-const static bDS18B20_HalIf_t bDS18B20_HalIf = HAL_DS18B20_IF;
-bDS18B20_Driver_t             bDS18B20_Driver;
+HALIF_KEYWORD bDS18B20_HalIf_t bDS18B20_HalIf = HAL_DS18B20_IF;
+bDS18B20_Driver_t              bDS18B20_Driver;
 /**
  * \}
  */
@@ -235,12 +235,13 @@ static int _bDS18B20Read(bDS18B20_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
  */
 int bDS18B20_Init()
 {
-    bDS18B20_Driver.status = 0;
-    bDS18B20_Driver.read   = _bDS18B20Read;
-    bDS18B20_Driver.write  = NULL;
-    bDS18B20_Driver.open   = NULL;
-    bDS18B20_Driver.close  = NULL;
-    bDS18B20_Driver.ctl    = _bDS18B20Ctl;
+    bDS18B20_Driver.status  = 0;
+    bDS18B20_Driver.read    = _bDS18B20Read;
+    bDS18B20_Driver.write   = NULL;
+    bDS18B20_Driver.open    = NULL;
+    bDS18B20_Driver.close   = NULL;
+    bDS18B20_Driver.ctl     = _bDS18B20Ctl;
+    bDS18B20_Driver._hal_if = (void *)&bDS18B20_HalIf;
     return 0;
 }
 

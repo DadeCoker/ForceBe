@@ -86,7 +86,7 @@ typedef struct
         } simulating_spi;
     } _if;
     bHalGPIOInstance_t cs;
-} const bHalSPIIf_t;
+} bHalSPIIf_t;
 
 typedef struct
 {
