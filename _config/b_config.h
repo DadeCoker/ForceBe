@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 80103
+#define FW_VERSION 80104
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -78,7 +78,7 @@
 #define _DEBUG_ENABLE 1
 
 //<e> MemoryPool Enable/Disable
-#define _MEMP_ENABLE 1
+#define _MEMP_ENABLE 0
 //<o> MemoryPool Block Size (B)
 #define MEMP_BLOCK_SIZE 32
 //<o> MemoryPool Max Size (B)
@@ -88,7 +88,7 @@
 //</e>
 
 //<e> AT Enable/Disable
-#define _AT_ENABLE 1
+#define _AT_ENABLE 0
 //<o> AT Queue Length
 #define AT_Q_LEN 3
 //<o> AT Command Retry Count

@@ -273,6 +273,7 @@ static int _bEspRecHandler(bDriverInterface_t *pdrv, uint8_t *pbuf, uint16_t len
             pinfo->lock = 0;
             return -2;
         }
+        memcpy(p, retp + strlen("+MQTTSUBRECV:") + _bEspNumLen(id) + strlen(tmp) + _bEspNumLen(rlen) + 3, rlen);
         pinfo->wifi_rec_data.mqtt.pstr = p;
         memset(pinfo->wifi_rec_data.mqtt.topic.topic, 0,
                sizeof(pinfo->wifi_rec_data.mqtt.topic.topic));
