@@ -46,46 +46,11 @@
  */
 
 /**
- * \defgroup HAL_Private_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup HAL_Private_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup HAL_Private_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup HAL_Private_Variables
  * \{
  */
-volatile uint32_t bSysTick = 0;
-/**
- * \}
- */
-
-/**
- * \defgroup HAL_Private_FunctionPrototypes
- * \{
- */
-
+static volatile uint32_t bSysTick      = 0;
+static uint32_t          bUsDelayParam = 10;
 /**
  * \}
  */
@@ -94,7 +59,16 @@ volatile uint32_t bSysTick = 0;
  * \defgroup HAL_Private_Functions
  * \{
  */
-
+static void _bHalUpdateDelayParam()
+{
+    volatile uint32_t delay  = 100000 * bUsDelayParam;
+    volatile uint32_t tick_s = 0, tick_e = 0;
+    tick_s = bSysTick;
+    while (delay--)
+        ;
+    tick_e        = bSysTick;
+    bUsDelayParam = (uint32_t)((100.0 / (tick_e - tick_s)) * bUsDelayParam);
+}
 /**
  * \}
  */
@@ -107,14 +81,14 @@ volatile uint32_t bSysTick = 0;
 int fputc(int c, FILE *p)
 {
     uint8_t ch = c & 0xff;
-    bHalUartSend(B_HAL_UART_1, &ch, 1);
+    bHalUartSend(HAL_LOG_UART, &ch, 1);
     return c;
 }
 #endif
 
 void bHalInit()
 {
-    // Add code ...
+    _bHalUpdateDelayParam();
 }
 
 void bHalIncSysTick()
@@ -131,7 +105,6 @@ void bHalDelayMs(uint16_t xms)
 {
     uint32_t tickstart = bSysTick;
     uint32_t wait      = MS2TICKS(xms);
-
     while ((bSysTick - tickstart) < wait)
     {
         ;
@@ -140,21 +113,10 @@ void bHalDelayMs(uint16_t xms)
 
 void bHalDelayUs(uint32_t xus)
 {
-    volatile uint32_t delay = xus * 8;
+    volatile uint32_t delay = xus * bUsDelayParam;
     while (delay--)
         ;
 }
-
-void bHalEnterCritical()
-{
-    ;
-}
-
-void bHalExitCritical()
-{
-    ;
-}
-
 /**
  * \}
  */

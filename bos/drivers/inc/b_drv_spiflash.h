@@ -61,8 +61,7 @@ typedef struct
 {
     union
     {
-        bHalQSPINumber_t qspi;
-        bHalSPINumber_t  spi;
+        bHalSPINumber_t spi;
     } _if;
     bHalGPIOInstance_t cs;
     uint8_t            is_spi;

@@ -39,6 +39,12 @@ extern "C" {
 #include <stdint.h>
 
 #include "b_config.h"
+#include "b_hal_flash.h"
+#include "b_hal_gpio.h"
+#include "b_hal_i2c.h"
+#include "b_hal_spi.h"
+#include "b_hal_uart.h"
+#include "b_hal_it.h"
 
 /**
  * \addtogroup B_HAL
@@ -54,15 +60,11 @@ extern "C" {
  * \defgroup HAL_Exported_Functions
  * \{
  */
+void     bHalIncSysTick(void);
 void     bHalInit(void);
-void     bHalEnterCritical(void);
-void     bHalExitCritical(void);
 void     bHalDelayMs(uint16_t xms);
+void     bHalDelayUs(uint32_t xus);
 uint32_t bHalGetSysTick(void);
-
-///< Depend on the platform
-void bHalIncSysTick(void);
-void bHalDelayUs(uint32_t xus);
 
 /**
  * \}

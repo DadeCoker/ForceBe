@@ -19,7 +19,6 @@
     }
 
 // spiflash
-#define HAL_SPIFLASH_QSPI_EN 0
 #define HAL_SPIFLASH_TOTAL_NUMBER 1
 #define HAL_SPIFLASH_IF                                         \
     {                                                           \

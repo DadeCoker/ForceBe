@@ -46,10 +46,10 @@
 #define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
 
 //<o> MCU Platform
-//<0=> STM32 STD
-//<1=> STM32 HAL
-//<2=> NATION_F40X
-#define _MCU_PLATFORM 2
+//<1001=> STM32 STD
+//<1002=> STM32 HAL
+//<2001=> NATION_F40X
+#define _MCU_PLATFORM 2001
 
 //<q> Algorithm Enable/Disable
 #define _BOS_ALGO_ENABLE 1

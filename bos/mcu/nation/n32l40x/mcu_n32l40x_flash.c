@@ -32,7 +32,10 @@
 /*Includes ----------------------------------------------*/
 #include <string.h>
 
-//#include "hal/inc/b_hal_gpio.h"
+#include "b_config.h"
+#include "hal/inc/b_hal_flash.h"
+
+#if (_MCU_PLATFORM == 2001)
 #include "n32l40x.h"
 
 #define _FLASH_BASE_ADDR (0x8000000UL)
@@ -111,7 +114,14 @@ static int _FlashRead(uint32_t addr, uint8_t *pbuf, uint16_t len)
 }
 
 bHalFlashDriver_t bHalFlashDriver = {
-    _FlashInit, _FlashUnlock, _FlashLock, _FlashErase, _FlashWrite, _FlashRead,
+    .pFlashInit   = _FlashInit,
+    .pFlashUnlock = _FlashUnlock,
+    .pFlashLock   = _FlashLock,
+    .pFlashErase  = _FlashErase,
+    .pFlashWrite  = _FlashWrite,
+    .pFlashRead   = _FlashRead,
 };
+
+#endif
 
 /************************ Copyright (c) 2021 Bean *****END OF FILE****/

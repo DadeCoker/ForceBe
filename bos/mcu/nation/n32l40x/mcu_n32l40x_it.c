@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_n32l40x_uart.c
+ * \file        mcu_n32l40x_it.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -31,46 +31,24 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
-#include "hal/inc/b_hal_uart.h"
+#include "hal/inc/b_hal_it.h"
 
 #if (_MCU_PLATFORM == 2001)
 #include "n32l40x.h"
 
-static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
+static void _IntEnable()
 {
-    switch (uart)
-    {
-        case B_HAL_UART_1:
-
-            break;
-        case B_HAL_UART_2:
-
-            break;
-        default:
-            break;
-    }
-    return 0;
+    ;
 }
 
-static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
+static void _IntDisable()
 {
-    switch (uart)
-    {
-        case B_HAL_UART_1:
-
-            break;
-        case B_HAL_UART_2:
-
-            break;
-        default:
-            break;
-    }
-    return 0;
+    ;
 }
 
-bHalUartDriver_t bHalUartDriver = {
-    .pSend    = _UartSend,
-    .pReceive = _UartReceive,
+bHalITDriver_t bHalITDriver = {
+    .pIntEnable  = _IntEnable,
+    .pIntDisable = _IntDisable,
 };
 
 #endif

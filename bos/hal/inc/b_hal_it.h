@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_n32l40x_uart.c
+ * \file        b_hal_it.h
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,50 +28,61 @@
  * SOFTWARE.
  *******************************************************************************
  */
+#ifndef __B_HAL_IT_H__
+#define __B_HAL_IT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#include "hal/inc/b_hal_uart.h"
+#include <stdint.h>
 
-#if (_MCU_PLATFORM == 2001)
-#include "n32l40x.h"
+/**
+ * \addtogroup B_HAL
+ * \{
+ */
 
-static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
+/**
+ * \addtogroup IT
+ * \{
+ */
+
+/**
+ * \defgroup IT_Exported_TypesDefinitions
+ * \{
+ */
+
+typedef struct
 {
-    switch (uart)
-    {
-        case B_HAL_UART_1:
+    void (*pIntEnable)(void);
+    void (*pIntDisable)(void);
+} const bHalITDriver_t;
 
-            break;
-        case B_HAL_UART_2:
+/**
+ * \}
+ */
 
-            break;
-        default:
-            break;
-    }
-    return 0;
+/**
+ * \defgroup IT_Exported_Variables
+ * \{
+ */
+extern bHalITDriver_t bHalITDriver;
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+#ifdef __cplusplus
 }
-
-static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
-{
-    switch (uart)
-    {
-        case B_HAL_UART_1:
-
-            break;
-        case B_HAL_UART_2:
-
-            break;
-        default:
-            break;
-    }
-    return 0;
-}
-
-bHalUartDriver_t bHalUartDriver = {
-    .pSend    = _UartSend,
-    .pReceive = _UartReceive,
-};
+#endif
 
 #endif
 

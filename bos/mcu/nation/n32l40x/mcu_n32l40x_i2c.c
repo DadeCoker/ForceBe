@@ -1,24 +1,24 @@
 /**
  *!
- * \file        b_hal_i2c.c
+ * \file        mcu_n32l40x_i2c.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SI2CL THE
@@ -28,86 +28,21 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
-#include "b_hal.h" 
-/** 
- * \addtogroup B_HAL
- * \{
- */
+#include "b_config.h"
+#include "hal/inc/b_hal_i2c.h"
 
-/** 
- * \addtogroup I2C
- * \{
- */
+#if (_MCU_PLATFORM == 2001)
+#include "n32l40x.h"
 
-/** 
- * \defgroup I2C_Private_TypesDefinitions
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Private_Defines
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Private_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Private_Variables
- * \{
- */
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Private_FunctionPrototypes
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Private_Functions
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \addtogroup I2C_Exported_Functions
- * \{
- */
-
-void bHalI2C_SendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat)
+static void _I2CSendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat)
 {
-    switch(i2c)
+    switch (i2c)
     {
         case B_HAL_I2C_1:
-            
-            break;        
+
+            break;
         case B_HAL_I2C_2:
 
             break;
@@ -117,14 +52,14 @@ void bHalI2C_SendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat)
     }
 }
 
-uint8_t bHalI2C_ReceiveByte(bHalI2CNumber_t i2c, uint8_t dev_addr)
+static uint8_t _I2CReadByte(bHalI2CNumber_t i2c, uint8_t dev_addr)
 {
     uint8_t tmp;
-    switch(i2c)
+    switch (i2c)
     {
         case B_HAL_I2C_1:
-            
-            break;        
+
+            break;
         case B_HAL_I2C_2:
 
             break;
@@ -134,61 +69,55 @@ uint8_t bHalI2C_ReceiveByte(bHalI2CNumber_t i2c, uint8_t dev_addr)
     return tmp;
 }
 
-
-int bHalI2C_MemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+static int _I2CMemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr,
+                        const uint8_t *pbuf, uint16_t len)
 {
     int retval = 0;
-    switch(i2c)
+    switch (i2c)
     {
         case B_HAL_I2C_1:
-            HAL_I2C_Mem_Write(&hi2c1, dev_addr, mem_addr, I2C_MEMADD_SIZE_8BIT, pbuf, len, 0xfffffff); 
-            break;        
+
+            break;
         case B_HAL_I2C_2:
 
             break;
         case B_HAL_I2C_3:
 
-            break;        
+            break;
         default:
             break;
     }
     return retval;
 }
 
-
-int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+static int _I2CMemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf,
+                       uint16_t len)
 {
     int retval = 0;
-    switch(i2c)
+    switch (i2c)
     {
         case B_HAL_I2C_1:
-            HAL_I2C_Mem_Read(&hi2c1, dev_addr, mem_addr, I2C_MEMADD_SIZE_8BIT, pbuf, len, 0xfffffff); 
-            break;        
+
+            break;
         case B_HAL_I2C_2:
 
             break;
         case B_HAL_I2C_3:
 
-            break;        
+            break;
         default:
             break;
     }
     return retval;
 }
 
-/**
- * \}
- */
+bHalI2CDriver_t bHalI2CDriver = {
+    .pWriteByte = _I2CSendByte,
+    .pReadByte  = _I2CReadByte,
+    .pMemWrite  = _I2CMemWrite,
+    .pMemRead   = _I2CMemRead,
+};
 
-/**
- * \}
- */
-
-
-/**
- * \}
- */
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-
-
