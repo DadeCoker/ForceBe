@@ -152,55 +152,48 @@ B_DEVICE_REG(b24CXX, b24CXX_Driver[0], "24cxx")
 编写测试代码：
 
 ```C
-static void _24C02Test()
+int main()
 {
-    int fd = -1;
-    static uint8_t WValue = 0;
-    static uint8_t RFlag = 0;
-    uint8_t tmp = 0;
-    fd = bOpen(_24C02, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        return;
-    }
-    if(RFlag)
-    {
-        bLseek(fd, 0);
-        bRead(fd, &tmp, 1);
-        b_log("r:%d\n", tmp);
-        RFlag = 0;
-        WValue++;
-    }
-    else
-    {
-        bLseek(fd, 0);
-        bWrite(fd, &WValue, 1);
-        RFlag = 1;
-    }
+    int      fd         = -1;
+    uint32_t boot_count = 0;
+    BoardInit();
+
+    SysTick_Config(SystemCoreClock / _TICK_FRQ_HZ);
+    NVIC_SetPriority(SysTick_IRQn, 0x0);
+
+    bInit();
+
+    fd = bOpen(b24CXX, BCORE_FLAG_RW);
+    bLseek(fd, 0);
+    bRead(fd, (uint8_t *)&boot_count, sizeof(boot_count));
+
+    b_log("boot:%d\r\n", boot_count);
+    boot_count += 1;
+
+    bLseek(fd, 0);
+    bWrite(fd, (uint8_t *)&boot_count, sizeof(boot_count));
     bClose(fd);
+
+    while (1)
+    {
+        bExec();
+    }
 }
 ```
 
-打开2402然后写入1个字节，然后再读出来并打印：
+记录启动次数，然后再读出来并打印：
 
 ```C
-_____________________________________________
-    ____                         __       __  
-    /   )          /           /    )   /    \
----/__ /-----__---/__---------/----/----\-----
-  /    )   /   ) /   ) /   / /    /      \    
-_/____/___(___(_(___/_(___/_(____/___(____/___
-                         /                    
-                     (_ /                     
-HW:21.10.26 FW:6.1.0 COMPILE:Oct 30 2021-23:38:31
-device number:1
-r:0
-r:1
-r:2
-r:3
-r:4
-
-
+    ____                         __       __                                    
+    /   )          /           /    )   /    \                                  
+---/__ /-----__---/__---------/----/----\-----                                  
+  /    )   /   ) /   ) /   / /    /      \                                      
+_/____/___(___(_(___/_(___/_(____/___(____/___                                  
+                         /                                                      
+                     (_ /                                                       
+HW:21.12.12 FW:7.3.0 COMPILE:Dec 12 2021-21:17:51                               
+device number:2                                                                 
+boot:1819043356  
 ```
 
 # 5 BabyOS教程

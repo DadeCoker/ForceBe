@@ -62,7 +62,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
         {
             // translate the arguments here
             uint32_t e_size = 0;
-            fd              = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            fd              = bOpen(bSPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
@@ -137,7 +137,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
             // translate the arguments here
             bFlashErase_t cmd_erase;
             uint32_t     e_size = 0;
-            fd                  = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            fd                  = bOpen(bSPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
@@ -211,7 +211,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
         case DEV_SPIFLASH:
         {           
             int fd = -1;
-            fd     = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            fd     = bOpen(bSPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 switch (cmd)
