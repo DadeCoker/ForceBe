@@ -2,11 +2,11 @@
 
 # BabyOS
 
-![logo](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/2.png)
+<img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/2.png" alt="logo" style="zoom:33%;" />
 
 
 
-```
+```shell
 ______________________________________________
     ____                         __       __  
     /   )          /           /    )   /    )
@@ -25,7 +25,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 # 1 代码结构
 
-![BabyOS](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/BabyOS.png)
+<img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/BabyOS.png" alt="BabyOS" style="zoom: 80%;" />
 
 # 2 适用项目
 
