@@ -49,7 +49,8 @@
 //<1003=> STM32F10X_HD
 //<1004=> STM32F10X_CL
 //<2001=> NATION_F40X
-#define _MCU_PLATFORM 1004
+//<3001=> MM32SPIN2X
+#define _MCU_PLATFORM 3001
 //</h>
 
 //<h> Modules Configuration
