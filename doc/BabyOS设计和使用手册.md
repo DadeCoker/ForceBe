@@ -63,7 +63,40 @@ BabyOS是想搭建一个货架，那么货架上是怎么存放东西的呢？�
 
 # 3. 快速体验
 
-以STM32F107进行说明。相关的例子在 https://gitee.com/notrynohigh/BabyOS_Example
+*如果有ubuntu系统，在没有板子的情况下也可以快速体验BabyOS:*
+
+```shell
+virtual-machine:~$ git clone https://gitee.com/notrynohigh/BabyOS.git
+正克隆到 'BabyOS'...
+remote: Enumerating objects: 9990, done.
+remote: Counting objects: 100% (1607/1607), done.
+remote: Compressing objects: 100% (1544/1544), done.
+remote: Total 9990 (delta 1192), reused 71 (delta 44), pack-reused 8383
+接收对象中: 100% (9990/9990), 53.85 MiB | 2.40 MiB/s, 完成.
+处理 delta 中: 100% (7687/7687), 完成.
+正在检出文件: 100% (312/312), 完成.
+virtual-machine:~$ cd BabyOS/test/kv/
+virtual-machine:~/BabyOS/test/kv$ make
+....
+i_port.o build/nr_micro_shell.o build/ansi.o build/sfud.o build/sfud_sfdp.o build/ugui.o build/b_drv_testflash.o build/port.o build/kv_main.o  -T../../test/babyos.ld -lpthread -o build/BabyOS
+size build/BabyOS
+   text	   data	    bss	    dec	    hex	filename
+ 187756	   1776	4196456	4385988	 42ecc4	build/BabyOS
+virtual-machine:~/BabyOS/test/kv$ ./build/BabyOS 
+______________________________________________
+    ____                         __       __  
+    /   )          /           /    )   /    \
+---/__ /-----__---/__---------/----/----\-----
+  /    )   /   ) /   ) /   / /    /      \    
+_/____/___(___(_(___/_(___/_(____/___(____/___
+                         /                    
+                     (_ /                     
+
+```
+
+
+
+再以STM32F107进行说明。相关的例子在 https://gitee.com/notrynohigh/BabyOS_Example
 
 ## 3.1 准备基础工程
 
