@@ -70,9 +70,9 @@ typedef struct bDriverIf
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
     int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
     int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
-    void    *hal_if;
-    char    *pdes;
-    uint32_t drv_no;
+    void       *hal_if;
+    const char *pdes;
+    uint32_t    drv_no;
     union
     {
         uint32_t v;
