@@ -196,8 +196,6 @@
 //<o> ANSI command line buffer size
 #define NR_ANSI_LINE_SIZE 100
 
-#define NR_SHELL_CMD_LINE_MAX_LENGTH NR_ANSI_LINE_SIZE
-
 //<o> Maximum username length
 #define NR_SHELL_USER_NAME_MAX_LENGTH 30
 
@@ -223,9 +221,6 @@
 //<q> Echo enable/disable
 #define NR_SHELL_ECHO_ENABLE 1
 
-#if _DEBUG_ENABLE
-#define shell_printf(fmt, args...) b_log(fmt, ##args);
-#endif
 //</e>
 
 //<e> FlexibleButton Enable/Disable
