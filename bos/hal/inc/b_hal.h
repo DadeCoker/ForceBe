@@ -96,11 +96,6 @@ typedef struct
  */
 #define MS2TICKS(m) (m / (1000 / TICK_FRQ_HZ))
 
-#define B_SET_BIT(REG, BIT) ((REG) |= (BIT))
-#define B_CLEAR_BIT(REG, BIT) ((REG) &= ~(BIT))
-#define B_READ_BIT(REG, BIT) ((REG) & (BIT))
-#define B_READ_REG(REG) ((REG))
-
 #if _HALIF_VARIABLE_ENABLE
 #define HALIF_KEYWORD static
 #else

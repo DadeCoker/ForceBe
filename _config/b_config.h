@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70303
+#define FW_VERSION 70305
 //</h>
 
 //<h> Platform Configuration
@@ -49,6 +49,7 @@
 //<1003=> STM32F10X_HD
 //<1004=> STM32F10X_CL
 //<1101=> STM32G0X0
+//<1201=> STM32L41X~L46X
 //<2001=> NATION_F40X
 //<3001=> MM32SPIN2X
 //<3002=> MM32SPIN0X

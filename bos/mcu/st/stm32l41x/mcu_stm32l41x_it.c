@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_type.h
+ * \file        mcu_stm32l4xx_it.c
  * \version     v0.0.1
- * \date        2020/05/30
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,71 +21,29 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SUARTL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_TYPE_H__
-#define __B_TYPE_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*Includes ----------------------------------------------*/
-#include <stdint.h>
+#include "b_config.h"
+#include "hal/inc/b_hal_it.h"
 
-/**
- * \addtogroup BABYOS
- * \{
- */
+#if (MCU_PLATFORM == 1201)
 
-/**
- * \addtogroup TYPE
- * \{
- */
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
-#define IS_NULL(p) ((p) == NULL)
-
-#define B_SET_BIT(REG, BIT) ((REG) |= (BIT))
-#define B_CLEAR_BIT(REG, BIT) ((REG) &= ~(BIT))
-#define B_READ_BIT(REG, BIT) ((REG) & (BIT))
-#define B_READ_REG(REG) ((REG))
-
-#if defined(__CC_ARM)
-#define __WEAKDEF __attribute__((weak))
-#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
-#define __WEAKDEF __attribute__((weak))
-#elif defined(__GNUC__)
-#define __WEAKDEF __attribute__((weak))
-#elif defined(__ICCARM__)
-#if __ICCARM_V8
-#define __WEAKDEF __attribute__((weak))
-#else
-#define __WEAKDEF _Pragma("__weak")
-#endif
-#else
-#define __WEAKDEF __attribute__((weak))
-#endif
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-#ifdef __cplusplus
+void bMcuIntEnable()
+{
+    ;
 }
-#endif
+
+void bMcuIntDisable()
+{
+    ;
+}
 
 #endif
 
