@@ -38,7 +38,8 @@ $(SOURCE_ROOT)/bos/thirdparty/nr_micro_shell/src/*.c \
 $(SOURCE_ROOT)/bos/drivers/sfud/*.c \
 $(SOURCE_ROOT)/bos/thirdparty/ugui/*.c \
 $(SOURCE_ROOT)/bos/thirdparty/coremark/*.c \
-$(SOURCE_ROOT)/bos/thirdparty/cjson/*.c  
+$(SOURCE_ROOT)/bos/thirdparty/cjson/*.c  \
+$(SOURCE_ROOT)/bos/thirdparty/unity/*.c  
 
 BOS_DRV_SOURCE_DIR = \
 $(SOURCE_ROOT)/bos/drivers/b_drv_testflash.c

@@ -8,7 +8,10 @@
  * Copyright (c) 2020 by notrynohigh. All Rights Reserved.
  */
 #include "../port.h"
+#include "b_config.h"
 #include "b_os.h"
+
+#if !(defined(_UNITY_ENABLE) && (_UNITY_ENABLE == 1))
 
 bKV_INSTANCE(gKVInstance, bTESTFLASH, 0, 4096 * 2, 4096);
 
@@ -38,3 +41,5 @@ int main()
     }
     return 0;
 }
+
+#endif

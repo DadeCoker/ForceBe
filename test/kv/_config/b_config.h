@@ -15,6 +15,7 @@
 #define MATRIX_KEYS_COLUMNS 4
 #define _BOS_MODULES_ENABLE 1
 #define _KV_ENABLE 1
+#define _UNITY_ENABLE 1
 #define _DEBUG_ENABLE 1
 #define LOG_UART 0
 #define LOG_LEVEL_INFO 1

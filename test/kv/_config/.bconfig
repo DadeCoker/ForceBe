@@ -66,6 +66,7 @@ _KV_ENABLE=y
 # _FS_ENABLE is not set
 # _CJSON_ENABLE is not set
 # _COREMARK_ENABLE is not set
+_UNITY_ENABLE=y
 # end of Thirdparty Configuration
 
 #
