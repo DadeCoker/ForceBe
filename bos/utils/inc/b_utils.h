@@ -41,7 +41,6 @@
 #include "b_util_spi.h"
 #include "b_util_uart.h"
 #include "b_util_utc.h"
-#include "b_util_stat.h"
 
 #endif
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

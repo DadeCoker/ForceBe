@@ -106,7 +106,7 @@ UG_FONT bGUI_XBF_Font;
  * \{
  */
 
-static bGUIInstance_t *_GUIId2Instace(uint8_t id)
+static bGUIInstance_t *_GUIId2Instance(uint8_t id)
 {
     bGUIInstance_t *p = pGUIHead;
     while (p != NULL)
@@ -338,7 +338,7 @@ __WEAKDEF int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
 
 int bGUISelect(uint8_t id)
 {
-    bGUIInstance_t *p = _GUIId2Instace(id);
+    bGUIInstance_t *p = _GUIId2Instance(id);
     if (p == NULL)
     {
         return -1;
@@ -352,7 +352,7 @@ int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_
                    uint16_t y_ad_max)
 {
 
-    bGUIInstance_t *p = _GUIId2Instace(id);
+    bGUIInstance_t *p = _GUIId2Instance(id);
     if (p == NULL)
     {
         return -1;
@@ -373,7 +373,7 @@ int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_
 
 int bGUIDispDir(uint8_t id, uint8_t dir)
 {
-    bGUIInstance_t *p = _GUIId2Instace(id);
+    bGUIInstance_t *p = _GUIId2Instance(id);
     if (p == NULL || (dir != LCD_DISP_H && dir != LCD_DISP_V))
     {
         return -1;

@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70409
+#define FW_VERSION 70410
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -170,8 +170,11 @@
 //<q> Tuning Parameters Enable/Disable
 #define _PARAM_ENABLE 0
 
+//<q> State Machine Enable/Disable
+#define _STATE_ENABLE 1
+
 //<e> IAP Enable/Disable
-#define _IAP_ENABLE 1
+#define _IAP_ENABLE 0
 
 //<q> File Checksum Enable/Disable
 #define _IAP_CHECKSUM_ENABLE 1
