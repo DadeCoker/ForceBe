@@ -29,7 +29,11 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 # 2 适用项目
 
-MCU开发项目。编译器勾选C99   
+MCU开发项目，编译器需要勾选C99
+
+Windows下需要安装python（2或3均可）用于配置代码
+
+Linux下需要安装python、python-pip以及make 用于配置和编译代码   
 
 # 3 前世今生
 
@@ -73,6 +77,8 @@ MCU开发项目。编译器勾选C99
 
 # 5 BabyOS教程
 
+由于代码在不断更新，所以无法避免视频内容与最新代码匹配，如有疑问，请在issues描述问题！
+
 [第一讲介绍BabyOS](https://www.bilibili.com/video/BV1Ff4y1o7bZ?share_source=copy_web)
 
 [第二讲BabyOS的快速体验和进阶体验](https://www.bilibili.com/video/BV1Lg411f7cH?share_source=copy_web)
@@ -91,13 +97,15 @@ BabyOS私有协议上位机Demo：
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 
 
-# 7 BabyOS配置工具
+# 7 BabyOS配置
 
-https://gitee.com/notrynohigh/bconfig-tool/releases/
+BabyOS配置，需要确保安装了python环境！
 
-![](https://gitee.com/notrynohigh/bconfig-tool/raw/master/doc/1.png)
+Window下双击 _config/b_config.bat 启动配置。【详情可见  _config/README.md】
 
+linux环境下运行test目录的代码，进入对应的目录后执行 make menuconfig 启动配置
 
+![b_config](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/bconfig.png)
 
 # 8 Baby如何成长
 
@@ -179,5 +187,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2022.10 | 增加b_mod_state功能模块，<br>增加内存中模拟4M SPIFLASH驱动（仅用于调试软件逻辑）<br>增加在linux环境下运行babyos的必要代码，用于脱离硬件调试纯软件逻辑功能 |      |
 | 2022.11 | 优化驱动框架                                                 |      |
 | 2022.12 | 修复V8.0.0的bug ， 将例程更新匹配V8版本                      |      |
-| 2023.01 | 将算法模块使用起来，将常用计算类代码放入其中                 |      |
+| 2023.01 | 将算法模块使用起来，将常用计算类代码放入其中<br>改变BabyOS的配置方式，使用Kconfig |      |
 

@@ -30,7 +30,6 @@
  */
 /*Includes ----------------------------------------------*/
 #include "hal/inc/b_hal.h"
-#include "utils/inc/b_util_spi.h"
 /**
  * \addtogroup B_HAL
  * \{
@@ -39,6 +38,65 @@
 /**
  * \addtogroup SPI
  * \{
+ */
+
+/**
+ * \defgroup SPI_Private_TypesDefinitions
+ */
+typedef struct
+{
+    bHalGPIOInstance_t miso;
+    bHalGPIOInstance_t mosi;
+    bHalGPIOInstance_t clk;
+    uint8_t            CPOL;
+    uint8_t            CPHA;
+} bHalSPIIO_t;
+
+/**
+ * \}
+ */
+
+/**
+ * \addtogroup SPI_Private_Functions
+ * \{
+ */
+
+static uint8_t _bHalSPIIOWriteRead(bHalSPIIO_t spi, uint8_t dat)
+{
+    uint8_t polarity = (spi.CPOL == 0) ? 0 : 1;
+    uint8_t init_p   = polarity;
+    uint8_t i        = 0;
+    bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+    if (spi.CPHA)
+    {
+        polarity = polarity ^ 0x01;
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+    }
+    for (i = 0; i < 8; i++)
+    {
+        bHalGpioWritePin(spi.mosi.port, spi.mosi.pin, dat & 0x80);
+        dat <<= 1;
+        polarity = polarity ^ 0x01;
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+
+        if (bHalGpioReadPin(spi.miso.port, spi.miso.pin))
+        {
+            dat++;
+        }
+
+        polarity = polarity ^ 0x01;
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+    }
+    if (init_p != polarity)
+    {
+        polarity = polarity ^ 0x01;
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+    }
+    return dat;
+}
+
+/**
+ * \}
  */
 
 /**
@@ -76,8 +134,8 @@ int bHalSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 
 uint8_t bHalSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    uint8_t    tmp;
-    bUtilSPI_t simulating_spi;
+    uint8_t     tmp;
+    bHalSPIIO_t simulating_spi;
     if (IS_NULL(spi_if))
     {
         return 0;
@@ -90,7 +148,7 @@ uint8_t bHalSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat)
         simulating_spi.CPHA = spi_if->_if.simulating_spi.CPHA;
         simulating_spi.CPOL = spi_if->_if.simulating_spi.CPOL;
 
-        tmp = bUtilSPI_WriteRead(simulating_spi, dat);
+        tmp = _bHalSPIIOWriteRead(simulating_spi, dat);
     }
     else
     {
