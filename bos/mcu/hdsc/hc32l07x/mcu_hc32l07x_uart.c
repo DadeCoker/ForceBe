@@ -36,8 +36,8 @@
 #if (MCU_PLATFORM == 4002)
 
 //      Register Address
-
-#define UART0_BASE_ADDR (0x40000000)
+//第一个串口UART0; 对应 B_HAL_UART_1
+#define UART0_BASE_ADDR (0x40000000)  
 #define UART1_BASE_ADDR (0x40000100)
 #define UART2_BASE_ADDR (0x40006000)
 #define UART3_BASE_ADDR (0x40006400)

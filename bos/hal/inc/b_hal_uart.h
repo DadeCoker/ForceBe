@@ -55,7 +55,6 @@ extern "C" {
 
 typedef enum
 {
-	  B_HAL_UART_0,
     B_HAL_UART_1,
     B_HAL_UART_2,
     B_HAL_UART_3,
