@@ -50,8 +50,6 @@ shell_st nr_shell = {
     .user_name = NR_SHELL_USER_NAME,
 };
 
-bSECTION_DEF_FLASH(b_mod_shell, static_cmd_st);
-
 static char *nr_shell_strtok(char *string_org, const char *demial)
 {
     static unsigned char *last;

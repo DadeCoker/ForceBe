@@ -154,7 +154,7 @@ int bButtonInit()
 __WEAKDEF void bButtonCallback(void *p)
 {
     flex_button_t *btn = (flex_button_t *)p;
-    b_log("id: [%d]  event: [%d]  repeat: %d\n", btn->id, btn->event, btn->click_cnt);
+    b_log("id: [%d]  event: [%d]  repeat: %d\r\n", btn->id, btn->event, btn->click_cnt);
 }
 
 /**

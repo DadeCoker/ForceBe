@@ -58,7 +58,7 @@ extern "C" {
  * \defgroup SHELL_Exported_TypesDefinitions
  * \{
  */
-
+typedef void (*pCmdHandler)(char argc, char *argv);
 /**
  * \}
  */

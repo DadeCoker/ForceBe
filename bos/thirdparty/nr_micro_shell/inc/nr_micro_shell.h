@@ -90,8 +90,7 @@ unsigned short int shell_his_queue_search_cmd(shell_his_queue_st *queue, char *s
 void shell_his_copy_queue_item(shell_his_queue_st *queue, unsigned short i, char *str_buf);
 
 extern shell_st            nr_shell;
-extern const static_cmd_st bSECTION_START(b_mod_shell);
-extern const static_cmd_st bSECTION_END(b_mod_shell);
+bSECTION_DEF_FLASH(b_mod_shell, static_cmd_st);
 
 #define shell_init()            \
     {                           \

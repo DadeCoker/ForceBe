@@ -235,7 +235,7 @@ int     bFS_Init()
     fre_sect = fre_clust * fs->csize;
 
     /* Print the free space (assuming 512 bytes/sector) */
-    b_log("%10lu KiB total drive space.\n%10lu KiB available.\n", tot_sect * 4, fre_sect * 4);
+    b_log("%10lu KiB total drive space.\n%10lu KiB available.\r\n", tot_sect * 4, fre_sect * 4);
 
 #endif
 
@@ -252,7 +252,7 @@ int     bFS_Init()
     fre_sect = fre_clust * fs->csize;
 
     /* Print the free space (assuming 512 bytes/sector) */
-    b_log("%10lu KiB total drive space.\n%10lu KiB available.\n", tot_sect / 2, fre_sect / 2);
+    b_log("%10lu KiB total drive space.\n%10lu KiB available.\r\n", tot_sect / 2, fre_sect / 2);
 #endif
     return 0;
 }
@@ -265,7 +265,11 @@ int bFS_Test()
     uint32_t boot_count = 0;
     UINT     brw        = 0;
     FRESULT  fr; /* FatFs return code */
+#if _SD_ENABLE    
+    fr = f_open(&fil, "1:test.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+#else
     fr = f_open(&fil, "0:test.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+#endif    
     if (fr)
     {
         b_log_e("open %d\r\n", fr);

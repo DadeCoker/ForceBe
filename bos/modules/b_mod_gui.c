@@ -167,7 +167,6 @@ static void _bGUI_TouchExec()
         bTouchAD_ReadStruct.y_ad = _LCD_X_SIZE - 1 - tmp;
 #endif
         UG_TouchUpdate(bTouchAD_ReadStruct.x_ad, bTouchAD_ReadStruct.y_ad, TOUCH_STATE_PRESSED);
-        b_log("::%d %d\r\n", bTouchAD_ReadStruct.x_ad, bTouchAD_ReadStruct.y_ad);
     }
 }
 
