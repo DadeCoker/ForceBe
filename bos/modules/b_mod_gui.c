@@ -143,10 +143,10 @@ static void _LCD_FillRect(UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c
     {
         return;
     }
-    info.x1    = x1;
-    info.x2    = x2;
-    info.y1    = y1;
-    info.y2    = y2;
+    info.x1    = (x1 > x2) ? x2 : x1;
+    info.x2    = (x1 > x2) ? x1 : x2;
+    info.y1    = (y1 > y2) ? y2 : y1;
+    info.y2    = (y1 > y2) ? y1 : y2;
     info.color = c;
     retval     = bCtl(fd, bCMD_FILL_RECT, &info);
     bClose(fd);
@@ -154,11 +154,11 @@ static void _LCD_FillRect(UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c
     {
         return;
     }
-    for (; x1 <= x2; x1++)
+    for (; info.x1 <= info.x2; info.x1++)
     {
-        for (; y1 <= y2; y1++)
+        for (; info.y1 <= info.y2; info.y1++)
         {
-            _LCD_SetColorPixel(x1, y1, c);
+            _LCD_SetColorPixel(info.x1, info.y1, c);
         }
     }
 }

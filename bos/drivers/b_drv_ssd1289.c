@@ -158,6 +158,56 @@ static void _bSSD1289SetWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
 
 /***********************************************************************driver interface*******/
 
+static int _bSSD1289FillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+{
+    int      i   = 0;
+    uint16_t tmp = 0;
+    if (x1 > x2)
+    {
+        tmp = x1;
+        x1  = x2;
+        x2  = tmp;
+    }
+    if (y1 > y2)
+    {
+        tmp = y1;
+        y1  = y2;
+        y2  = tmp;
+    }
+
+    if (x2 >= LCD_X_SIZE || y2 >= LCD_Y_SIZE)
+    {
+        return -1;
+    }
+
+    _bSSD1289SetWindow(x1, y1, x2, y2);
+
+    for (i = 0; i < ((x2 - x1 + 1) * (y2 - y1 + 1)); i++)
+    {
+        _bLcdWriteData(color);
+    }
+    return 0;
+}
+
+static int _bSSD1289Ctl(bSSD1289_Driver_t *pdrv, uint8_t cmd, void *param)
+{
+    int             retval = -1;
+    bLcdRectInfo_t *pinfo  = (bLcdRectInfo_t *)param;
+    switch (cmd)
+    {
+        case bCMD_FILL_RECT:
+            if (param == NULL)
+            {
+                return -1;
+            }
+            retval = _bSSD1289FillRect(pinfo->x1, pinfo->y1, pinfo->x2, pinfo->y2, pinfo->color);
+            break;
+        default:
+            break;
+    }
+    return retval;
+}
+
 static int _bSSD1289Write(bSSD1289_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
     uint16_t     x      = addr % LCD_X_SIZE;
@@ -195,7 +245,7 @@ int bSSD1289_Init()
     bSSD1289_Driver.init    = bSSD1289_Init;
     bSSD1289_Driver.close   = NULL;
     bSSD1289_Driver.read    = NULL;
-    bSSD1289_Driver.ctl     = NULL;
+    bSSD1289_Driver.ctl     = _bSSD1289Ctl;
     bSSD1289_Driver.open    = NULL;
     bSSD1289_Driver.write   = _bSSD1289Write;
     bSSD1289_Driver._hal_if = (void *)&bSSD1289_HalIf;
