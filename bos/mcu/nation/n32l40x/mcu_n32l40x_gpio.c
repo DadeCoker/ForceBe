@@ -35,76 +35,69 @@
 
 #if (_MCU_PLATFORM == 2001)
 
-//                 Register Address
+//         Register Address
 
 #define GPIO_REG_OFF (0x400)
 #define GPIO_REG_BASE (0x40010800UL)
-#define GPIO_REG_MODE (GPIO_REG_BASE + 0x00)
-#define GPIO_REG_OTYPE (GPIO_REG_BASE + 0x04)
-#define GPIO_REG_UPD (GPIO_REG_BASE + 0x0C)
-#define GPIO_REG_ID (GPIO_REG_BASE + 0x10)
-#define GPIO_REG_OD (GPIO_REG_BASE + 0x14)
-#define GPIO_REG_BSC (GPIO_REG_BASE + 0x18)
+
+typedef struct
+{
+    volatile uint32_t PMODE;  /*offset 0x00*/
+    volatile uint32_t POTYPE; /*offset 0x04*/
+    volatile uint32_t SR;     /*offset 0x08*/
+    volatile uint32_t PUPD;   /*offset 0x0C*/
+    volatile uint32_t PID;    /*offset 0x10*/
+    volatile uint32_t POD;    /*offset 0x14*/
+    volatile uint32_t PBSC;   /*offset 0x18*/
+    volatile uint32_t PLOCK;  /*offset 0x1C*/
+    volatile uint32_t AFL;    /*offset 0x20*/
+    volatile uint32_t AFH;    /*offset 0x24*/
+    volatile uint32_t PBC;    /*offset 0x28*/
+    volatile uint32_t DS;     /*offset 0x2C*/
+} McuGpioReg_t;
 
 static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
                         bHalGPIOPull_t pull)
 {
-    uint32_t dir_val  = 0;
-    uint32_t pull_val = 0;
+    uint32_t      dir_val  = 0;
+    uint32_t      pull_val = 0;
+    McuGpioReg_t *pGpio    = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (port > B_HAL_GPIOD)
     {
         return;
     }
     if (dir == B_HAL_GPIO_OUTPUT)
     {
-        dir_val = 1;
+        dir_val = (pin == B_HAL_PINAll) ? 0x55555555 : 1;
     }
     if (pull == B_HAL_GPIO_PULLUP)
     {
-        pull_val = 1;
+        pull_val = (pin == B_HAL_PINAll) ? 0x55555555 : 1;
     }
     else if (pull == B_HAL_GPIO_PULLDOWN)
     {
-        pull_val = 2;
+        pull_val = (pin == B_HAL_PINAll) ? 0xAAAAAAAA : 2;
     }
 
     if (pin == B_HAL_PINAll)
     {
-        if (dir == B_HAL_GPIO_OUTPUT)
-        {
-            *((volatile uint32_t *)(GPIO_REG_MODE + port * GPIO_REG_OFF)) = 0x55555555;
-        }
-        else
-        {
-            *((volatile uint32_t *)(GPIO_REG_MODE + port * GPIO_REG_OFF)) = 0;
-        }
-
-        if (pull == B_HAL_GPIO_PULLUP)
-        {
-            *((volatile uint32_t *)(GPIO_REG_UPD + port * GPIO_REG_OFF)) = 0x55555555;
-        }
-        else if (pull == B_HAL_GPIO_PULLDOWN)
-        {
-            *((volatile uint32_t *)(GPIO_REG_UPD + port * GPIO_REG_OFF)) = 0xAAAAAAAA;
-        }
-        else
-        {
-            *((volatile uint32_t *)(GPIO_REG_UPD + port * GPIO_REG_OFF)) = 0;
-        }
+        pGpio->PMODE = dir_val;
+        pGpio->PUPD  = pull_val;
     }
     else
     {
-        *((volatile uint32_t *)(GPIO_REG_MODE + port * GPIO_REG_OFF)) &= ~(0x11 << pin);
-        *((volatile uint32_t *)(GPIO_REG_MODE + port * GPIO_REG_OFF)) |= (dir_val << pin);
+        pGpio->PMODE &= ~(0x11 << pin);
+        pGpio->PMODE |= (dir_val << pin);
 
-        *((volatile uint32_t *)(GPIO_REG_UPD + port * GPIO_REG_OFF)) &= ~(0x11 << pin);
-        *((volatile uint32_t *)(GPIO_REG_UPD + port * GPIO_REG_OFF)) |= (pull_val << pin);
+        pGpio->PUPD &= ~(0x11 << pin);
+        pGpio->PUPD |= (pull_val << pin);
     }
 }
 
 static void _GpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
 {
-    uint32_t cs_val = 0x1 << pin;
+    uint32_t      cs_val = 0x1 << pin;
+    McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (port > B_HAL_GPIOD)
     {
         return;
@@ -113,37 +106,40 @@ static void _GpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
     {
         cs_val <<= 16;
     }
-    *((volatile uint32_t *)(GPIO_REG_BSC + port * GPIO_REG_OFF)) = cs_val;
+    pGpio->PBSC = cs_val;
 }
 
 static uint8_t _GpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 {
-    uint32_t id_val = 0;
+    uint32_t      id_val = 0;
+    McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (port > B_HAL_GPIOD || pin == B_HAL_PINAll)
     {
         return 0;
     }
-    id_val = *((volatile uint32_t *)(GPIO_REG_ID + port * GPIO_REG_OFF));
+    id_val = pGpio->PID;
     return ((id_val & (0x0001 << pin)) != 0);
 }
 
 static void _GpioWrite(bHalGPIOPort_t port, uint16_t dat)
 {
+    McuGpioReg_t *pGpio = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (port > B_HAL_GPIOD)
     {
         return;
     }
-    *((volatile uint32_t *)(GPIO_REG_OD + port * GPIO_REG_OFF)) = dat;
+    pGpio->POD = dat;
 }
 
 static uint16_t _GpioRead(bHalGPIOPort_t port)
 {
-    uint32_t id_val = 0;
+    uint32_t      id_val = 0;
+    McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (port > B_HAL_GPIOD)
     {
         return 0;
     }
-    id_val = *((volatile uint32_t *)(GPIO_REG_ID + port * GPIO_REG_OFF));
+    id_val = pGpio->PID;
     return (id_val & 0xffff);
 }
 
