@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_drv_lis3dh.h
+ * \file        b_hal_interrupt.h
  * \version     v0.0.1
- * \date        2020/06/08
+ * \date        2021/06/13
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2020 Bean
+ * Copyright (c) 2021 Bean
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,47 +21,39 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SGPIOL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_LIS3DH_H__
-#define __B_DRV_LIS3DH_H__
+#ifndef __B_HAL_INTERRUPT_H__
+#define __B_HAL_INTERRUPT_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "drivers/inc/b_driver.h"
+#include <stdint.h>
 
+#include "b_hal_uart.h"
 /**
- * \addtogroup B_DRIVER
+ * \addtogroup B_HAL
  * \{
  */
 
 /**
- * \addtogroup LIS3DH
+ * \addtogroup INTERRUPT
  * \{
  */
 
 /**
- * \defgroup LIS3DH_Exported_TypesDefinitions
+ * \defgroup INTERRUPT_Exported_Functions
  * \{
  */
-//<HALIF 2 SPI_I2C
-typedef struct
-{
-    union
-    {
-        bHalI2CIf_t _i2c;
-        bHalSPIIf_t _spi;
-    } _if;
-    uint8_t is_spi;
-} bLIS3DH_HalIf_t;
+void bHalInterruptUartRx(bHalUartNumber_t uart, uint8_t *pdata, uint16_t len);
 /**
  * \}
  */
@@ -80,4 +72,4 @@ typedef struct
 
 #endif
 
-/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+/************************ Copyright (c) 2021 Bean *****END OF FILE****/

@@ -55,7 +55,7 @@
  * \defgroup MCUFLASH_Private_Defines
  * \{
  */
-
+#define DRIVER_NAME MCUFLASH
 /**
  * \}
  */
@@ -73,8 +73,7 @@
  * \defgroup MCUFLASH_Private_Variables
  * \{
  */
-
-bMCUFLASH_Driver_t bMCUFLASH_Driver;
+bDRIVER_HALIF_TABLE(bMCUFLASH_HalIf_t, DRIVER_NAME);
 /**
  * \}
  */
@@ -93,27 +92,27 @@ bMCUFLASH_Driver_t bMCUFLASH_Driver;
  * \{
  */
 
-static int _bMCUFLASHOpen(bMCUFLASH_Driver_t *pdrv)
+static int _bMCUFLASHOpen(bDriverInterface_t *pdrv)
 {
     return bHalFlashUnlock();
 }
 
-static int _bMCUFLASHClose(bMCUFLASH_Driver_t *pdrv)
+static int _bMCUFLASHClose(bDriverInterface_t *pdrv)
 {
     return bHalFlashLock();
 }
 
-static int _bMCUFLASHWrite(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+static int _bMCUFLASHWrite(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     return bHalFlashWrite(off, pbuf, len);
 }
 
-static int _bMCUFLASHRead(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
+static int _bMCUFLASHRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     return bHalFlashRead(off, pbuf, len);
 }
 
-static int _bMCUFLASHCtl(bMCUFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
+static int _bMCUFLASHCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
 {
     int retval = -1;
     switch (cmd)
@@ -158,27 +157,23 @@ static int _bMCUFLASHCtl(bMCUFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
  * \addtogroup MCUFLASH_Exported_Functions
  * \{
  */
-int bMCUFLASH_Init()
+int bMCUFLASH_Init(bDriverInterface_t *pdrv)
 {
-    int retval               = 0;
-    bMCUFLASH_Driver.status  = 0;
-    bMCUFLASH_Driver.init    = bMCUFLASH_Init;
-    bMCUFLASH_Driver.close   = _bMCUFLASHClose;
-    bMCUFLASH_Driver.read    = _bMCUFLASHRead;
-    bMCUFLASH_Driver.ctl     = _bMCUFLASHCtl;
-    bMCUFLASH_Driver.open    = _bMCUFLASHOpen;
-    bMCUFLASH_Driver.write   = _bMCUFLASHWrite;
-    bMCUFLASH_Driver._hal_if = NULL;
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bMCUFLASH_Init);
+    pdrv->close = _bMCUFLASHClose;
+    pdrv->read  = _bMCUFLASHRead;
+    pdrv->ctl   = _bMCUFLASHCtl;
+    pdrv->open  = _bMCUFLASHOpen;
+    pdrv->write = _bMCUFLASHWrite;
 
     if (bHalFlashInit() < 0)
     {
-        bMCUFLASH_Driver.status = -1;
-        retval                  = -1;
+        return -1;
     }
-    return retval;
+    return 0;
 }
 
-bDRIVER_REG_INIT(bMCUFLASH_Init);
+bDRIVER_REG_INIT(B_DRIVER_MCUFLASH, bMCUFLASH_Init);
 
 /**
  * \}

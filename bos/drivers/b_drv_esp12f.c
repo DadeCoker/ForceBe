@@ -395,7 +395,7 @@ static void _bEspAtCb(uint8_t id, uint8_t result, void *arg)
             {
                 if (pinfo->opt.plist[pinfo->opt.index] == OPT_NULL)
                 {
-                    _bEspCmdFinished(arg, ESP_CMD_RESULT_OK);
+                    _bEspCmdFinished(arg, ESP12F_CMD_RESULT_OK);
                 }
             }
             retry = 0;
@@ -406,7 +406,7 @@ static void _bEspAtCb(uint8_t id, uint8_t result, void *arg)
             if (retry > ESP_CMD_RETRY)
             {
                 retry = 0;
-                _bEspCmdFinished(arg, ESP_CMD_RESULT_ERR);
+                _bEspCmdFinished(arg, ESP12F_CMD_RESULT_ERR);
             }
         }
     }
@@ -423,7 +423,7 @@ static void _bEspCmdStart(bDriverInterface_t *pdrv, uint8_t cmd, const uint8_t *
 
     if (pinfo->opt_param != NULL)
     {
-        _bEspCmdFinished(pdrv, ESP_CMD_RESULT_ERR);
+        _bEspCmdFinished(pdrv, ESP12F_CMD_RESULT_ERR);
     }
 
     if (param != NULL && param_len > 0)
@@ -431,7 +431,7 @@ static void _bEspCmdStart(bDriverInterface_t *pdrv, uint8_t cmd, const uint8_t *
         pinfo->opt_param = bMalloc(param_len);
         if (pinfo->opt_param == NULL)
         {
-            _bEspCmdFinished(pdrv, ESP_CMD_RESULT_ERR);
+            _bEspCmdFinished(pdrv, ESP12F_CMD_RESULT_ERR);
             return;
         }
         memcpy(pinfo->opt_param, param, param_len);
@@ -441,7 +441,7 @@ static void _bEspCmdStart(bDriverInterface_t *pdrv, uint8_t cmd, const uint8_t *
     pinfo->opt.list_len = list_len;
     pinfo->opt.at_id    = AT_INVALID_ID;
     pinfo->opt.cmd      = cmd;
-    pinfo->result       = ESP_CMD_RESULT_NULL;
+    pinfo->result       = ESP12F_CMD_RESULT_NULL;
 }
 
 static uint8_t _bEspStaMode(bDriverInterface_t *pdrv, void *param)
@@ -980,19 +980,22 @@ int bESP12F_Init(bDriverInterface_t *pdrv)
 {
     bEsp12fPrivate_t *pinfo = NULL;
     uint8_t           index = pdrv->drv_no;
-    pdrv->_private._p       = &bEspRunInfo[index];
+
+    bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bESP12F_Init);
+    pdrv->read        = _bEspRead;
+    pdrv->ctl         = _bEspCtl;
+    pdrv->_private._p = &bEspRunInfo[index];
 
     pinfo = (bEsp12fPrivate_t *)pdrv->_private._p;
     memset(pinfo, 0, sizeof(bEsp12fPrivate_t));
-    pinfo->opt.at_id = AT_INVALID_ID;
+    pinfo->opt.at_id    = AT_INVALID_ID;
+    bEspDrvTable[index] = pdrv;
     bAtRegistCallback(_bEspAtCb, pdrv);
     bMempListInit(&(pinfo->tcp_data_list));
-
     bUtilUartInitStruct(&(pinfo->uart), pinfo->rec_buf, ESP12F_REC_BUF_LEN, 20, _bEspUartIdleCb,
                         pdrv);
     bUtilUartBind(*((bESP12F_HalIf_t *)pdrv->hal_if),
                   &(((bEsp12fPrivate_t *)pdrv->_private._p)->uart));
-    bEspDrvTable[index] = pdrv;
     return 0;
 }
 

@@ -52,18 +52,12 @@
  */
 
 /**
- * \defgroup OLED_Private_TypesDefinitions
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup OLED_Private_Defines
  * \{
  */
+
+#define DRIVER_NAME OLED
+
 #ifndef LCD_X_SIZE
 #define LCD_X_SIZE 128
 #endif
@@ -71,6 +65,18 @@
 #ifndef LCD_Y_SIZE
 #define LCD_Y_SIZE 64
 #endif
+/**
+ * \}
+ */
+
+/**
+ * \defgroup OLED_Private_TypesDefinitions
+ * \{
+ */
+typedef struct
+{
+
+}
 /**
  * \}
  */
@@ -88,8 +94,7 @@
  * \defgroup OLED_Private_Variables
  * \{
  */
-HALIF_KEYWORD bOLED_HalIf_t bOLED_HalIf = HAL_OLED_IF;
-bOLED_Driver_t              bOLED_Driver;
+bDRIVER_HALIF_TABLE(bOLED_HalIf_t, DRIVER_NAME);
 
 static uint8_t bOLED_Buff[LCD_X_SIZE * LCD_Y_SIZE / 8];
 /**

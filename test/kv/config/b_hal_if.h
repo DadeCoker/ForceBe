@@ -36,6 +36,11 @@
         B_HAL_UART_2  \
     }
 
+#define HAL_FM25CL_IF                                                                \
+    {                                                                                \
+        .is_simulation = 0, .cs = {B_HAL_GPIOB, B_HAL_PIN1}, ._if.spi = B_HAL_SPI_1, \
+    }
+
 #define HAL_TESTFLASH_IF            \
     {                               \
         .e_size = 4096, .w_size = 1 \
