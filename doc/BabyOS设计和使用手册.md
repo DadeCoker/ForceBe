@@ -12,9 +12,9 @@
 
 # BabyOS设计和使用手册
 
-**V0.2.4**
+*V0.3.0*
 
-***BabyOS V7.4.10***
+***BabyOS V8.0.0***
 
 
 
@@ -32,6 +32,7 @@
 | 2022.06.05 | 增加功能模块详细介绍                        | notrynohigh |
 | 2022.06.06 | 修改按键模块的描述，文档对应代码的版本号    | notrynohigh |
 | 2022.10.22 | 链接文件增加b_mod_state段<br>增加状态机介绍 | notrynohigh |
+| 2022.12.07 | 更新驱动部分描述以及部分功能模块接口描述    | notrynohigh |
 
 
 
@@ -63,7 +64,9 @@ BabyOS是想搭建一个货架，那么货架上是怎么存放东西的呢？�
 
 # 3. 快速体验
 
-*如果有ubuntu系统，在没有板子的情况下也可以快速体验BabyOS:*
+## 3.1 虚拟机中体验BabyOS
+
+虚拟机中装有ubuntu系统，没有板子也可以快速体验BabyOS
 
 ```shell
 virtual-machine:~$ git clone https://gitee.com/notrynohigh/BabyOS.git
@@ -96,9 +99,11 @@ _/____/___(___(_(___/_(___/_(____/___(____/___
 
 
 
+## 3.2 基于STM32体验BabyOS
+
 再以STM32F107进行说明。相关的例子在 https://gitee.com/notrynohigh/BabyOS_Example
 
-## 3.1 准备基础工程
+### 3.2.1 准备基础工程
 
 基础功能需要做到以下几点：
 
@@ -163,7 +168,7 @@ SysTick_Config(SystemCoreClock / TICK_FRQ_HZ);
 NVIC_SetPriority(SysTick_IRQn, 0x0);
 ```
 
-## 3.2 添加BabyOS代码
+### 3.2.2 添加BabyOS代码
 
 | 路径           | 部分/全部    | 用于快速体验                                                 |
 | -------------- | ------------ | ------------------------------------------------------------ |
@@ -183,7 +188,7 @@ NVIC_SetPriority(SysTick_IRQn, 0x0);
 
  `_config/`   如果配置文件拷贝到其他路径了，则添加相应路径即可。
 
-## 3.3 修改配置
+### 3.2.3 修改配置
 
 | 配置项                   | 说明                                             | 用于快速体验                         |
 | ------------------------ | ------------------------------------------------ | ------------------------------------ |
@@ -205,7 +210,7 @@ NVIC_SetPriority(SysTick_IRQn, 0x0);
 #endif
 ```
 
-## 3.4 调用必要的函数
+### 3.2.4 调用必要的函数
 
 包含头文件 `b_os.h`
 
@@ -238,7 +243,7 @@ int main()
 
 ③由于勾选了shell功能模块，所以需要在串口接收中断服务函数里调用`bShellParse`，将数据喂给模块。
 
-## 3.5 快速体验结果
+### 3.2.5 快速体验结果
 
 BabyOS的shell模块默认支持查询版本的指令，输入 `bos -v` 便可以查询到版本。
 
@@ -448,25 +453,37 @@ typedef struct
 
 ## 5.3 驱动层介绍
 
-BabyOS操作设备的方式是，打开、读/写/控制，关闭。这么设计的想法是，打开（唤醒设备）然后对设备进行操作（读/写/配置），最后关闭（休眠设备）。
+BabyOS里面有几个重要的概念：设备、驱动和硬件接口。
 
-`bos/driver/inc/b_driver.h`里有一个数据结构：
+设备：是一个实体，与MCU通过硬件接口相连接。
+
+驱动，是针对设备的一份软件逻辑代码
+
+硬件接口：是设备与MCU相连的数字接口
+
+操作硬件接口，使用HAL层的接口，操作设备，使用bOpen bClose等接口
+
+*例如：SPIFLASH是一个设备，b_drv_spiflash是驱动，SPI是硬件接口*
+
+`bos/driver/inc/b_driver.h`里定义了驱动的统一接口：
 
 ```C
 typedef struct bDriverIf
 {
     int status;
-    int (*init)(void);
+    int (*init)(struct bDriverIf *pdrv);
     int (*open)(struct bDriverIf *pdrv);
     int (*close)(struct bDriverIf *pdrv);
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
     int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
     int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint32_t len);
-    void *_hal_if;
+    void       *hal_if;
+    const char *pdes;
+    uint32_t    drv_no;
     union
     {
         uint32_t v;
-        void *   _p;
+        void    *_p;
     } _private;
 } bDriverInterface_t;
 ```
@@ -489,95 +506,160 @@ typedef struct bDriverIf
 
 **_hal_if** 指向当前驱动对应的硬件接口。
 
+**pdes** 指向设备的描述信息
+
+**drv_no** 指同类设备中的序号，例如有3个SPIFLASH，那么它们的编号0，1，2便是存在drv_no。
+
 **private** 当驱动需要携带私有参数时，则利用这个字段。例如 flash 的 id，可以放在 _private.v。如果需要存放更多的信息，那么就利用_private.p 指向一片数据区域。
 
 ### 5.3.1 硬件接口
 
-每个驱动的硬件接口通过`HAL_XXXX_IF`指定，在驱动文件代码中会有如下一行代码：
+硬件接口通过`HAL_XXXX_IF`指定，具体可查看b_hal_if.h文件：
 
 ```C
-HALIF_KEYWORD bXXXX_HalIf_t bXXXX_HalIfTable[] = HAL_XXXX_IF;
-//或
-HALIF_KEYWORD bXXXX_HalIf_t bXXXX_HalIf = HAL_XXXX_IF;
+//----------------------------------------------------------------
+//     驱动文件的命名规则 b_drv_<驱动名小写>.c .h
+//     每个驱动文件里有宏定义  #define DRIVER_NAME 驱动名大写
+//     例如： spiflash驱动
+//           驱动文件为 b_drv_spiflash.c .h
+//           c文件里面定义宏 #define DRIVER_NAME SPIFLASH
+//     驱动需要在此文件（b_hal_if.h）定义HAL层接口
+//     #define HAL_<DRIVER_NAME>_IF
+//     例如spiflash #define HAL_SPIFLASH_IF {具体的数据接口查看h文件}
+//--------------------------------------------------------------------
+//     如果有多个spiflash：
+//     #define HAL_SPIFLASH_IF {第一个SPIFLASH},{第二个SPIFLASH}
+//--------------------------------------------------------------------
 ```
-
-这两种分别对应哪种情况呢，通过下图可以看出。
 
 ![图片](https://images.gitee.com/uploads/images/2022/0319/235838_9b6edf22_1789704.png)
 
-硬件接口的两种情况： 
-
-1）存在有相同设备的情况，例如接入 MCU 的有两个 Flash 芯片 
-
-2）当前驱动对应的设备不会存在多个，例如屏，一般只会接 1 块屏
-
-第一种情况时，可通过如下宏获取当前的硬件接口：
+*例如2个SPIFLASH,1个24C02*
 
 ```C
-#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)((pdrv)->_hal_if)
-//例如：bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
-//_if便是指向硬件接口的指针
+//b_hal_if.h
+#define HAL_24CXX_IF                                                                    
+    {                                                        \                      
+        .dev_addr = 0xa0,                                    \
+        .is_simulation = 1,                                  \
+        ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN6}, \
+        ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7}, \                   
+    }  
+
+#define HAL_SPIFLASH_IF                                 \
+    {                                                   \
+        .is_spi   = 1,                                  \
+        ._if._spi = {                                   \
+            .is_simulation = 0,                         \
+            .cs            = {B_HAL_GPIOB, B_HAL_PIN9}, \
+            ._if.spi       = B_HAL_SPI_1,               \
+        },                                              \
+    },                                                  \
+    {                                                   \
+        .is_spi   = 1,                                  \
+        ._if._spi = {                                   \
+            .is_simulation = 0,                         \
+            .cs            = {B_HAL_GPIOB, B_HAL_PIN8}, \
+            ._if.spi       = B_HAL_SPI_1,               \
+        },                                              \
+    }
 ```
 
 ### 5.3.2 注册设备
 
-操作设备是通过设备号进行，那么注册设备便是将设备号与驱动实例进行绑定。`bos/driver/inc/b_driver.h`列出了已有的驱动实例。
+注册设备，便是设备与驱动建立联系的过程：
 
 `b_device_list.h`中通过宏进行注册：
 
 ```C
-B_DEVICE_REG(bSPIFLASH, bSPIFLASH_Driver[0], "spiflash")
-B_DEVICE_REG(bILI9341, bILI9341_Driver, "ili9341")
+/**
+typedef enum
+{
+    B_DRIVER_NULL = 0,
+    B_DRIVER_24CXX,
+    B_DRIVER_DS18B20,
+    B_DRIVER_ESP12F,
+    B_DRIVER_FM25CL,
+    B_DRIVER_ILI9320,
+    B_DRIVER_ILI9341,
+    B_DRIVER_KEY,
+    B_DRIVER_LIS3DH,
+    B_DRIVER_MATRIXKEYS,
+    B_DRIVER_MCUFLASH,
+    B_DRIVER_OLED,
+    B_DRIVER_PCF8574,
+    B_DRIVER_SD,
+    B_DRIVER_SPIFLASH,
+    B_DRIVER_SSD1289,
+    B_DRIVER_ST7789,
+    B_DRIVER_TESTFLASH,
+    B_DRIVER_XPT2046,
+    B_DRIVER_NUMBER
+} bDriverNumber_t;
+*/
+/**
+    B_DEVICE_REG(dev_1, bDriverNumber_t, "description")
+    .....
+    B_DEVICE_REG(dev_n, bDriverNumber_t, "description")
+ */
+
+B_DEVICE_REG(bTESTFLASH, B_DRIVER_TESTFLASH, "testflash")
 ```
 
-设备管理涉及到以下几个数据结构：
+设备注册后，便会自动生成如下数据结构以及定义的数组：
 
 ```C
-#define B_DEVICE_REG(dev, driver, desc)
-#include "b_device_list.h"
-
+//b_device.h
+//生成设备号
 typedef enum
 {
 #define B_DEVICE_REG(dev, driver, desc) dev,
 #include "b_device_list.h"
-    bDEV_NULL,
-    bDEV_MAX_NUM
+    B_REG_DRV_NULL,
+    B_REG_DRV_NUMBER
 } bDeviceName_t;
-
-static bDriverInterface_t bNullDriver;
-static bDriverInterface_t *bDriverTable[bDEV_MAX_NUM] = {
-#define B_DEVICE_REG(dev, driver, desc) &driver,
+//b_device.c
+//驱动号数组
+static bDriverNumber_t bDriverNumberTable[B_REG_DRV_NUMBER] = {
+#define B_DEVICE_REG(dev, driver, desc) driver,
 #include "b_device_list.h"
-    &bNullDriver,
+    B_DRIVER_NULL,
 };
-
-static const char *bDeviceDescTable[bDEV_MAX_NUM] = {
+//设备描述信息数组
+static const char *bDeviceDescTable[B_REG_DRV_NUMBER] = {
 #define B_DEVICE_REG(dev, driver, desc) desc,
 #include "b_device_list.h"
     "null",
 };
-
+//驱动实例数组
+static bDriverInterface_t bDriverInterfaceTable[B_REG_DRV_NUMBER];
 ```
 
-设备注册便是填充了`bDeviceName_t` `bDriverTable` `bDeviceDescTable` ，以设备号为索引，可以从`bDriverTable`找到对应的驱动实例，从`bDeviceDescTable`中找到设备的描述。
+根据注册的设备，定义相应数量的驱动实例。以宏的形式来实现，避免对动态内存的依赖。
+
+BabyOS的代码中，在尽可能避免使用动态内存。
 
 ### 5.3.3 操作设备
 
 ```C
-int bReinit(uint8_t dev_no);
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
+int bOpen(uint32_t dev_no, uint8_t flag);
+int bRead(int fd, uint8_t *pdata, uint32_t len);
+int bWrite(int fd, uint8_t *pdata, uint32_t len);
 int bCtl(int fd, uint8_t cmd, void *param);
 int bLseek(int fd, uint32_t off);
 int bClose(int fd);
-int bModifyHalIf(uint8_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval,
+
+int bInit(void);
+int bExec(void);
+int bReinit(uint32_t dev_no);
+
+int bModifyHalIf(uint32_t dev_no, uint32_t type_size, uint32_t off, const uint8_t *pval,
                  uint8_t len);
 ```
 
 **dev_no** 注册设备时指定的设备号
 
-**fd** 打开设备后返回的句柄，最多同时打开10（`BCORE_FD_MAX`）个设备。
+**fd** 打开设备后返回的句柄。
 
 配置项`_HALIF_VARIABLE_ENABLE`用于配置是否允许硬件接口可以改动。
 
@@ -616,35 +698,56 @@ bModifyHalIf(OLED, sizeof(bOLED_HalIf_t),(uint8_t)(&(((bOLED_HalIf_t *)0)->_if._
 bSECTION_DEF_FLASH(bos_polling, pbPoling_t);          
 #define BOS_REG_POLLING_FUNC(func) //将func放入bos_polling段
 
-bSECTION_DEF_FLASH(driver_init_0, pbDriverInit_t); 
-bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);   
-#define bDRIVER_REG_INIT_0(func)  //将func放入driver_init_0段
-#define bDRIVER_REG_INIT(func)    //将func放入driver_init段
+#define bDRIVER_REG_INIT_0(drv_num, init_f)  //将init_f放入driver_init_0段
+#define bDRIVER_REG_INIT(drv_num, init_f)    //将init_f放入driver_init段
 
 bSECTION_DEF_FLASH(b_mod_shell, static_cmd_st);
 #define bSHELL_REG_INSTANCE(cmd_name, cmd_handler)  //将cmd信息放入b_mod_shell段
 
 bSECTION_DEF_FLASH(b_mod_param, bParamInstance_t);
 #define bPARAM_REG_INSTANCE(param, param_size)   //将参数信息放入b_mod_param段
+
+bSECTION_DEF_FLASH(b_mod_state, bStateInfo_t *);
+#define bSTATE_REG_INSTANCE(state_info)         //将状态信息放入b_mod_state段  
 ```
 
-驱动文件最后会有一行这样的代码：`bDRIVER_REG_INIT(bXXXX_Init);`将初始化函数放入`driver_init`段。
+驱动文件最后会有一行这样的代码：`bDRIVER_REG_INIT(B_DRIVER_XXX, bXXX_Init);`将初始化函数放入`driver_init`段。
 
 ```C
 //设备初始化时，将遍历driver_init_0和driver_init内的函数，并执行。
 int bDeviceInit()
 {
-    memset(&bNullDriver, 0, sizeof(bNullDriver));
-    bSECTION_FOR_EACH(driver_init_0, pbDriverInit_t, pdriver_init_0)
+    uint32_t i = 0, j = 0;
+    memset(bDriverInterfaceTable, 0, sizeof(bDriverInterfaceTable));
+    bSECTION_FOR_EACH(driver_init_0, bDriverRegInit_t, pdriver_init_0)
     {
-        (*pdriver_init_0)();
+        j = 0;
+        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        {
+            if (bDriverNumberTable[i] == pdriver_init_0->drv_number)
+            {
+                bDriverInterfaceTable[i].drv_no = j++;
+                bDriverInterfaceTable[i].pdes   = bDeviceDescTable[i];
+                bDriverInterfaceTable[i].status = pdriver_init_0->init(&bDriverInterfaceTable[i]);
+            }
+        }
     }
-    bSECTION_FOR_EACH(driver_init, pbDriverInit_t, pdriver_init)
+    bSECTION_FOR_EACH(driver_init, bDriverRegInit_t, pdriver_init)
     {
-        (*pdriver_init)();
+        j = 0;
+        for (i = 0; i < B_REG_DRV_NUMBER; i++)
+        {
+            if (bDriverNumberTable[i] == pdriver_init->drv_number)
+            {
+                bDriverInterfaceTable[i].drv_no = j++;
+                bDriverInterfaceTable[i].pdes   = bDeviceDescTable[i];
+                bDriverInterfaceTable[i].status = pdriver_init->init(&bDriverInterfaceTable[i]);
+            }
+        }
     }
     return 0;
 }
+
 ```
 
 ```C
@@ -830,8 +933,15 @@ void ADC1_2_IRQHandler()
 ### 6.2.1 数据结构
 
 ```C
-//按键事件回调的数据类型
-typedef void (*pBtnEventHandler_t)(uint16_t event, uint8_t param);
+typedef void (*pBtnEventHandler_t)(uint32_t dev_no, uint8_t sub_id, uint16_t event, uint8_t param);
+
+typedef struct bButtonInstance
+{
+    uint32_t                dev_no;
+    uint16_t                event;
+    pBtnEventHandler_t      handler;
+    struct bButtonInstance *next;
+} bButtonInstance_t;
 
 //按键事件，1个按键可以同时注册多个事件
 #define BTN_EVENT_DOWN (0x001)
@@ -849,77 +959,35 @@ typedef void (*pBtnEventHandler_t)(uint16_t event, uint8_t param);
 ### 6.2.2 接口介绍
 
 ```C
-//初始化，指定short long longlong的时长，单位ms
-int  bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms);
-//注册事件，id:按键的id event:事件 handler:处理事件的回调函数
-void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler);
+#define bBUTTON_ADD_KEY(dev, e, e_handler)           
+#define bBUTTON_ADD_MATRIXKEYS(dev, e, e_handler)     
+// 请不要直接调用下面这两个函数。使用bBUTTON_ADD_KEY和bBUTTON_ADD_MATRIXKEYS代替
+int bButtonAddKey(bButtonInstance_t *pbutton, flex_button_t *pflex);
+int bButtonAddMatrixKeys(bButtonInstance_t *pbutton, flex_button_t *pflex);
 ```
 
 ### 6.2.3 使用例子
 
-b_config.h **配置独立按键的数量**，**配置矩阵按键的行和列**
-
-b_hal_if定义按键的硬件接口，**顺序决定了按键的ID**。
+b_hal_if定义按键的硬件接口，b_dev_list.h注册按键设备。
 
 ```C
-// Button
-//独立按键：{PORT, PIN, 按键按下时IO电平}
-#define HAL_B_BUTTON_GPIO                                                \
-    {                                                                    \
-        {B_HAL_GPIOC, B_HAL_PIN4, 0}, {B_HAL_GPIOB, B_HAL_PIN10, 0},     \
-            {B_HAL_GPIOC, B_HAL_PIN13, 0}, {B_HAL_GPIOA, B_HAL_PIN0, 0}, \
-    }
-//矩阵按键，{{行对应的GPIO}，{列对应的GPIO}}
-#define HAL_B_MATRIXKEY_GPIO {{{B_HAL_GPIOE, B_HAL_PIN8}, {B_HAL_GPIOE, B_HAL_PIN9}}, {{B_HAL_GPIOE, B_HAL_PIN10}, {B_HAL_GPIOE, B_HAL_PIN11}}}
+#define HAL_KEY_IF                                                                       
+#define HAL_MATRIXKEYS_IF    
 
-void BtnEventHandler(uint16_t event, uint8_t param)
+void BtnEventHandler(uint32_t dev_no, uint8_t sub_id, uint16_t event, uint8_t param)
 {
-    if (event == BTN_EVENT_CLICK)
-    {
-        b_log("BTN_EVENT_CLICK\r\n");
-    }
-    if (event == BTN_EVENT_DOUBLE_CLICK)
-    {
-        b_log("BTN_EVENT_DOUBLE_CLICK\r\n");
-    }
-    if (event == BTN_EVENT_SHORT)
-    {
-        b_log("BTN_EVENT_SHORT\r\n");
-    }
-    if (event == BTN_EVENT_LONG)
-    {
-        b_log("BTN_EVENT_LONG\r\n");
-    }
-    if (event == BTN_EVENT_LONGLONG)
-    {
-        b_log("BTN_EVENT_LONGLONG\r\n");
-    }
+    b_log("dev:%d id:%d event:%x param:%d\n", dev_no, sub_id, event, param);
 }
 
 int main()
 {
     ...
     bInit();
-    bButtonInit(3000, 5000, 8000);
-    //ID 0 对应PC4口接的按键 
-    bButtonRegEvent(0, BTN_EVENT_CLICK | BTN_EVENT_DOUBLE_CLICK, BtnEventHandler);
-    //ID 1 对应PB10口接的按键 
-    bButtonRegEvent(1, BTN_EVENT_SHORT, BtnEventHandler);
-    //ID 2 对应PC13口接的按键 
-    bButtonRegEvent(2, BTN_EVENT_LONG, BtnEventHandler);
-    //ID 3 对应PA0口接的按键 
-    bButtonRegEvent(3, BTN_EVENT_LONGLONG, BtnEventHandler);
-    //矩阵按键的ID在独立按键之后。矩阵按键的ID
-    /*  --------------->行
-        key(4)   key(5)
-        key(6)   key(7)
-    */
-#if _MATRIXKEY_ENABLE 
-    bButtonRegEvent(4, BTN_EVENT_CLICK | BTN_EVENT_DOUBLE_CLICK, BtnEventHandler);
-    bButtonRegEvent(5, BTN_EVENT_SHORT, BtnEventHandler);
-    bButtonRegEvent(6, BTN_EVENT_LONG, BtnEventHandler);
-    bButtonRegEvent(7, BTN_EVENT_LONGLONG, BtnEventHandler);    
-#endif      
+    bBUTTON_ADD_KEY(bKEY1, BTN_EVENT_CLICK | BTN_EVENT_LONG, BtnEventHandler);
+    bBUTTON_ADD_KEY(bKEY2, BTN_EVENT_CLICK | BTN_EVENT_LONG, BtnEventHandler);
+    bBUTTON_ADD_KEY(bKEY3, BTN_EVENT_CLICK | BTN_EVENT_LONG, BtnEventHandler);
+    bBUTTON_ADD_KEY(bKEY4, BTN_EVENT_CLICK | BTN_EVENT_LONG, BtnEventHandler);
+    bBUTTON_ADD_MATRIXKEYS(bMATRIXKEYS, BTN_EVENT_CLICK | BTN_EVENT_LONG,       BtnEventHandler);    
     ...
 }
 ```
@@ -1030,20 +1098,38 @@ int main()
 ### 6.5.1数据结构
 
 ```C
+typedef struct bGUIStruct
+{
+    const uint32_t     lcd_dev_no;
+    const uint32_t     touch_dev_no;
+    const int          touch_type;
+    const uint16_t     lcd_x_size;
+    const uint16_t     lcd_y_size;
+    uint8_t            lcd_disp_dir;
+    uint16_t           touch_ad_x[2];
+    uint16_t           touch_ad_y[2];
+    UG_GUI             gui_handle;
+    struct bGUIStruct *pnext;
+} bGUIStruct_t;
+
+typedef bGUIStruct_t bGUIInstance_t;
+
 #define TOUCH_TYPE_RES (0)
 #define TOUCH_TYPE_CAP (1)
 
 #define LCD_DISP_H (0)
 #define LCD_DISP_V (1)
-//创建实例，实例名、LCD设备号、触摸设备号、物理尺寸、触摸类型
-#define bGUI_INSTANCE(name, _lcd, _touch, _x_size, _y_size, _touch_type) \
-    bGUIInstance_t name = {                                              \
-        .lcd_dev_no   = _lcd,                                            \
-        .touch_dev_no = _touch,                                          \
-        .touch_type   = _touch_type,                                     \
-        .lcd_x_size   = _x_size,                                         \
-        .lcd_y_size   = _y_size,                                         \
-    };
+
+#define bGUI_ADD_DEVICE(_lcd_dev_no, _touch_dev_no, _x_size, _y_size, _touch_type) \
+    static bGUIInstance_t gui_##_lcd_dev_no = {                                    \
+        .lcd_dev_no   = _lcd_dev_no,                                               \
+        .touch_dev_no = _touch_dev_no,                                             \
+        .touch_type   = _touch_type,                                               \
+        .lcd_x_size   = _x_size,                                                   \
+        .lcd_y_size   = _y_size,                                                   \
+        .pnext        = NULL,                                                      \
+    };                                                                             \
+    bGUIRegist(&gui_##_lcd_dev_no);
 ```
 
 
@@ -1053,30 +1139,39 @@ int main()
 此模块支持多个屏使用uGUI。UI设计使用ugui.h文件提供的接口。
 
 ```C
-// 注册GUI实例，返回GUI ID
+// 建议不要直接调用此接口，使用 bGUI_ADD_DEVICE 代替
 int bGUIRegist(bGUIInstance_t *pInstance);
-// 选择当前操作的目标，传入GUI ID
-int bGUISelect(uint8_t id);
-// 设置电阻屏触摸的AD值范围
-int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
-                   uint16_t y_ad_max);
-// 设置屏幕显示方向，默认是LCD_DISP_V
-int bGUIDispDir(uint8_t id, uint8_t dir);
 
+// 通过屏的dev_no获取GUI句柄
+int bGUIGetHandle(uint32_t lcd_dev_no, UG_GUI **p_gui_handle);
+
+// 选择当前操作的目标
+int bGUISelect(uint32_t lcd_dev_no);
+
+// 设置电阻屏触摸的AD值范围
+int bGUITouchRange(uint32_t lcd_dev_no, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
+                   uint16_t y_ad_max);
+
+// 设置屏幕显示方向，默认是LCD_DISP_V
+int bGUIDispDir(uint32_t lcd_dev_no, uint8_t dir);
+
+// 如果将汉字字库存放在FLASH，通过此接口传入dev_no
+int bGUISetFontDevice(uint32_t dev_no);
 ```
 
 ### 6.5.3 使用例子
 
 ```C
-//定义两个实例，tft屏和oled屏
-bGUI_INSTANCE(tft, bSSD1289, bXPT2046, 240, 320, TOUCH_TYPE_RES);
-bGUI_INSTANCE(oled, bOLED, NULL, 128, 64, TOUCH_TYPE_RES);
-
 void TouchTest()
 {
-    if(tft.gui_handle.touch.state == TOUCH_STATE_PRESSED)
+    UG_GUI *p_gui = NULL;
+    bGUIGetHandle(bTFT, &p_gui);
+    if (p_gui)
     {
-        b_log("x:%d y:%d \r\n", tft.gui_handle.touch.xp, tft.gui_handle.touch.yp);
+        if (p_gui->touch.state == TOUCH_STATE_PRESSED)
+        {
+            b_log("x:%d y:%d \r\n", p_gui->touch.xp, p_gui->touch.yp);
+        }
     }
 }
 
@@ -1084,23 +1179,21 @@ int main()
 {
     ......
     bInit();
-    bGUIRegist(&tft);
-    bGUIRegist(&oled);
-    //设定电阻屏触摸的AD值范围
-    bGUITouchRange(0, 476, 3952, 338, 3592);
-    //选择ID 0的屏 即tft屏
-    bGUISelect(0);
+    bGUI_ADD_DEVICE(bTFT, bTOUCH, 240, 320, TOUCH_TYPE_RES);
+    bGUI_ADD_DEVICE(bOLED, NULL, 128, 64, 0);
+
+    bGUITouchRange(bTFT, 476, 3952, 338, 3592);
+
+    bGUISelect(bTFT);
     UG_FillScreen(C_BLACK);
     UG_PutString(0, 0, "hello world");
     UG_PutString(0, 100, "babyos ssd1289");
-    //选择ID 1的屏 即oled屏
-    bGUISelect(1);
+    bGUISelect(bOLED);
     UG_FillScreen(0);
     UG_PutString(0, 0, "hello world");
     UG_PutString(0, 20, "babyos oled");
-    //再选择tft屏，并设置为横屏
-    bGUISelect(0);
-    bGUIDispDir(0, LCD_DISP_H);
+    bGUISelect(bTFT);
+    bGUIDispDir(bTFT, LCD_DISP_H);
     UG_PutString(0, 20, "babyos oled tft");
     while (1)
     {
@@ -2223,17 +2316,18 @@ uint8_t * bMempList2Array(const bMempList_t *phead);
 
 ```C
 //串口接收空闲的回调
-typedef int (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len);
+typedef int (*pbUartIdleCallback_t)(uint8_t *pbuf, uint16_t len, void *arg);
 
 typedef struct UtilUart
 {
-    uint8_t             *pbuf;     //用于接收数据的存储区
-    uint16_t             buf_size; //存储区的大小
-    volatile uint16_t    index;    //存储数据的索引
-    uint32_t             idle_thd_ms; //idle_thd_ms无新数据则判断空闲
-    pbUartIdleCallback_t callback; //空闲回调
-    uint32_t             l_tick;   //接收最后一个数据时的tick值
-    uint32_t             l_index;  //接收最后一个数据时的索引
+    uint8_t             *pbuf;
+    uint16_t             buf_size;
+    volatile uint16_t    index;
+    uint32_t             idle_thd_ms;
+    pbUartIdleCallback_t callback;
+    void                *cb_arg;
+    uint32_t             l_tick;
+    uint32_t             l_index;
     struct UtilUart     *next;
     struct UtilUart     *prev;
 } bUitlUart_t;
@@ -2241,30 +2335,37 @@ typedef struct UtilUart
 typedef bUitlUart_t bUitlUartInstance_t;
 
 //用于创建串口接收实例
-#define bUTIL_UART_INSTANCE(name, buf_len, idle_ms, cb) \
-    static uint8_t      Buf##name[buf_len];             \
-    bUitlUartInstance_t name = {                        \
-        .pbuf        = Buf##name,                       \
-        .buf_size    = buf_len,                         \
-        .idle_thd_ms = idle_ms,                         \
-        .callback    = cb,                              \
-        .index       = 0,                               \
-        .l_tick      = 0,                               \
-        .l_index     = 0,                               \
-        .prev        = NULL,                            \
-        .next        = NULL,                            \
+#define bUTIL_UART_INSTANCE(name, buf_len, idle_ms, cb, arg) \
+    static uint8_t      Buf##name[buf_len];                  \
+    bUitlUartInstance_t name = {                             \
+        .pbuf        = Buf##name,                            \
+        .buf_size    = buf_len,                              \
+        .idle_thd_ms = idle_ms,                              \
+        .callback    = cb,                                   \
+        .cb_arg      = arg,                                  \
+        .index       = 0,                                    \
+        .l_tick      = 0,                                    \
+        .l_index     = 0,                                    \
+        .prev        = NULL,                                 \
+        .next        = NULL,                                 \
     }
 ```
 
 ### 7.8.2 接口介绍
 
 ```C
-//将实例与串口号绑定
+//    初始化用户定义的bUitlUartInstance_t（没有使用bUTIL_UART_INSTANCE去定义实例的情况）
+void bUtilUartInitStruct(bUitlUartInstance_t *pinstance, uint8_t *pbuf, uint16_t size,
+                         uint32_t idle_ms, pbUartIdleCallback_t cb, void *arg);
+
+//    将串口号绑定到已有实例，绑定后可以用 bUtilUartRxHandler2和bUtilUartReceivedSize2
 void bUtilUartBind(uint8_t uart_no, bUitlUartInstance_t *pinstance);
+
 //    bUtilUartRxHandler 和 bUtilUartRxHandler2 效果是一样
 //    但是，只有通过bUtilUartBind绑定串口号，才能调用bUtilUartRxHandler2
 void bUtilUartRxHandler(bUitlUartInstance_t *pinstance, uint8_t dat);
 void bUtilUartRxHandler2(uint8_t uart_no, uint8_t dat);
+
 //    获取当前BUF中已经收到的数据长度
 uint16_t bUtilUartReceivedSize(bUitlUartInstance_t *pinstance);
 uint16_t bUtilUartReceivedSize2(uint8_t uart_no);

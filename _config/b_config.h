@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70412
+#define FW_VERSION 80000
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
