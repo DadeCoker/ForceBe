@@ -482,7 +482,7 @@ static uint8_t _bEspJoinAp(void *param)
 {
     uint8_t        retval = AT_INVALID_ID;
     char           buf[200];
-    int            len;
+    int            len   = 0;
     bWifiApInfo_t *pinfo = (bWifiApInfo_t *)param;
     if (param == NULL)
     {
@@ -554,7 +554,7 @@ static uint8_t _bEspSetupTcpServer(void *param)
     {
         return retval;
     }
-    len = snprintf(buf, 200, "AT+CIPSERVER=%d,%d\r\n", 1, pinfo->port);
+    len = snprintf(buf, 32, "AT+CIPSERVER=%d,%d\r\n", 1, pinfo->port);
     if (len > 0)
     {
         retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 500);

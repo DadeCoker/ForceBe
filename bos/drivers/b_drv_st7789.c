@@ -178,7 +178,7 @@ static void _bLcdWriteCmd(uint16_t cmd)
 
 static uint16_t _bLcdReadData()
 {
-    uint16_t dat;
+    uint16_t dat = 0;
 
     if (bST7789_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
