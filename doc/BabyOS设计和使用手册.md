@@ -2141,10 +2141,10 @@ typedef bFIFO_Info_t bFIFO_Instance_t;
 
 ```C
 //FIFO的常用操作
-int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen);
-int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance);
-int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
+int bFIFO_Length(bFIFO_Instance_t *pinstance, uint16_t *plen);
+int bFIFO_Flush(bFIFO_Instance_t *pinstance);
+int bFIFO_Write(bFIFO_Instance_t *pinstance, uint8_t *pbuf, uint16_t size);
+int bFIFO_Read(bFIFO_Instance_t *pinstance, uint8_t *pbuf, uint16_t size);
 ```
 
 

@@ -35,6 +35,7 @@
 #include <stdio.h>
 
 #include "thirdparty/pt/pt.h"
+#include "utils/inc/b_util_list.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -67,6 +68,10 @@
 
 #define AT_RETRY_MAX (3)
 
+#define ESP_CONN_TYPE_TCP (0)
+#define ESP_CONN_TYPE_UDP (1)
+#define ESP_CONN_TYPE_CLIENT (2)
+
 /**
  * \}
  */
@@ -84,7 +89,8 @@ typedef struct ConnectCtx
     uint8_t            conn_type;
     bFIFO_Instance_t   send_fifo;
     bFIFO_Instance_t   recv_fifo;
-    struct ConnectCtx *pnext;
+    struct ConnectCtx *next;
+    struct ConnectCtx *prev;
 } bEsp12fConnectCtx_t;
 
 typedef struct
@@ -180,7 +186,8 @@ const static bEsp12fAtCmd_t bWifiMqttSubOptList[] = {_bEspMqttSub, NULL};
 const static bEsp12fAtCmd_t bWifiPingOptList[]    = {_bEspPing, NULL};
 
 static bEsp12fPrivate_t bEspRunInfo[bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME)];
-static struct pt        bEsp12fPT;
+
+PT_INSTANCE(bEsp12fPT);
 
 /**
  * \}
@@ -235,13 +242,59 @@ static char *_bEspStrStr(uint8_t *pbuf, uint16_t len, const char *str)
     return NULL;
 }
 
+static int _bEspCreateConn(bEsp12fPrivate_t *pinfo, uint8_t type, uint8_t num)
+{
+    bEsp12fConnectCtx_t *pconn = NULL;
+    pconn                      = (bEsp12fConnectCtx_t *)bMalloc(sizeof(bEsp12fConnectCtx_t));
+    if (pconn == NULL)
+    {
+        return -1;
+    }
+    if (0 > bFIFO_DynCreate(&pconn->send_fifo))
+    {
+        bFree(pconn);
+        return -1;
+    }
+    if (0 > bFIFO_DynCreate(&pconn->recv_fifo))
+    {
+        bFIFO_DynDelete(&pconn->send_fifo);
+        bFree(pconn);
+        return -1;
+    }
+    pconn->conn_type = type;
+    pconn->conn_num  = num;
+    if (pinfo->pconn == NULL)
+    {
+        pinfo->pconn = pconn;
+        pconn->next  = NULL;
+        pconn->prev  = NULL;
+    }
+    else
+    {
+        pconn->next = pinfo->pconn->next if (pinfo->pconn->next != NULL)
+        {
+        }
+        pconn->next  = pinfo->pconn->next;
+        pinfo->pconn = pconn;
+    }
+    return 0;
+}
+
+static int _bEspCloseConn(bEsp12fPrivate_t *pinfo, uint8_t type, uint8_t num)
+{
+    bEsp12fConnectCtx_t *pconn = pinfo->pconn;
+    while (pconn != NULL)
+    {
+        if (pconn->conn_type == type && pconn->conn_num == num)
+        {
+        }
+    }
+}
+
 static int _bEspRecHandler(bEsp12fPrivate_t *pinfo, uint8_t *pbuf, uint16_t len)
 {
-    char *retp   = NULL;
-    char *p      = NULL;
-    int   retval = 0, id = 0, rlen = 0;
-    char  tmp[64];
-    char *pcheckend = NULL;
+    int retval  = -1;
+    int conn_id = 0;
 
     if (strstr((char *)pbuf, "WIFI CONNECTED") != NULL)
     {
@@ -253,6 +306,17 @@ static int _bEspRecHandler(bEsp12fPrivate_t *pinfo, uint8_t *pbuf, uint16_t len)
         pinfo->wifi_connect = 0;
     }
 
+    retval = sscanf((const char *)pbuf, "%d,CONNECT", &conn_id);
+    if (retval == 1)
+    {
+        _bEspCreateConn(pinfo, ESP_CONN_TYPE_CLIENT, conn_id);
+    }
+
+    retval = sscanf((const char *)pbuf, "%d,CLOSED", &conn_id);
+    if (retval == 1)
+    {
+        _bEspCloseConn(pinfo, ESP_CONN_TYPE_CLIENT, conn_id);
+    }
     // retp = strstr((const char *)pbuf, "+MQTTSUBRECV");
     // if (retp != NULL && pinfo->wifi_rec_data.mqtt.pstr == NULL)
     // {
@@ -263,8 +327,8 @@ static int _bEspRecHandler(bEsp12fPrivate_t *pinfo, uint8_t *pbuf, uint16_t len)
     //         pinfo->lock = 0;
     //         return -2;
     //     }
-    //     retval = sscanf((const char *)retp, "+MQTTSUBRECV:%d,%[^,],%d,%s", &id, tmp, &rlen, p);
-    //     if (rlen <= 0 || rlen >= len || retval != 4)
+    //     retval = sscanf((const char *)retp, "+MQTTSUBRECV:%d,%[^,],%d,%s", &id, tmp, &rlen,
+    //     p); if (rlen <= 0 || rlen >= len || retval != 4)
     //     {
     //         bFree(p);
     //         pinfo->lock = 0;
@@ -272,8 +336,8 @@ static int _bEspRecHandler(bEsp12fPrivate_t *pinfo, uint8_t *pbuf, uint16_t len)
     //     }
     //     memcpy(
     //         p,
-    //         retp + strlen("+MQTTSUBRECV:") + _bEspNumLen(id) + strlen(tmp) + _bEspNumLen(rlen) +
-    //         3, rlen);
+    //         retp + strlen("+MQTTSUBRECV:") + _bEspNumLen(id) + strlen(tmp) +
+    //         _bEspNumLen(rlen) + 3, rlen);
     //     pinfo->wifi_rec_data.mqtt.pstr = p;
     //     memset(pinfo->wifi_rec_data.mqtt.topic.topic, 0,
     //            sizeof(pinfo->wifi_rec_data.mqtt.topic.topic));
@@ -663,17 +727,17 @@ static void _bEspResult(uint8_t index, uint8_t result)
     bEspRunInfo[index].result = result;
     bEspRunInfo[index].pcmd   = NULL;
     bEspRunInfo[index].retry  = 0;
-    if (bEspRunInfo[index].cb)
+    if (bEspRunInfo[index].cb.cb)
     {
-        bEspRunInfo[index].cb(bEspRunInfo[index].ctl_cmd, &bEspRunInfo[index].result, NULL);
+        bEspRunInfo[index].cb.cb(bEspRunInfo[index].ctl_cmd, &bEspRunInfo[index].result, NULL,
+                                 bEspRunInfo[index].cb.user_data);
     }
 }
 
 static int _bEspMainTask(struct pt *pt)
 {
-    static uint8_t  index   = 0;
-    static uint32_t tick    = 0;
-    static uint16_t timeout = 0;
+    static uint8_t index  = 0;
+    uint16_t       retval = 0;
     PT_BEGIN(pt);
     while (1)
     {
@@ -688,18 +752,20 @@ static int _bEspMainTask(struct pt *pt)
             index = (index + 1) % (bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME));
             break;
         }
-        tick    = bHalGetSysTick();
-        timeout = (*(bEspRunInfo[index].pcmd))(index, bEspRunInfo[index].param);
-        if (timeout > 0)
+        retval = (*(bEspRunInfo[index].pcmd))(index, bEspRunInfo[index].param);
+        if (retval > 0)
         {
-            PT_WAIT_UNTIL(pt, bEspRunInfo[index].at_ack.ack == AT_CMD_ACK_DONE ||
-                                  (bHalGetSysTick() - tick) >= timeout);
+            PT_WAIT_UNTIL(pt, bEspRunInfo[index].at_ack.ack == AT_CMD_ACK_DONE, retval);
             if (bEspRunInfo[index].at_ack.ack == AT_CMD_ACK_DONE)
             {
-                timeout = 0;
+                retval = 0;
+            }
+            else
+            {
+                retval = 1;
             }
         }
-        if (timeout == 0)
+        if (retval == 0)
         {
             bEspRunInfo[index].retry = 0;
             bEspRunInfo[index].pcmd += 1;
@@ -714,8 +780,7 @@ static int _bEspMainTask(struct pt *pt)
             }
             index = (index + 1) % (bDRIVER_HALIF_NUM(bESP12F_HalIf_t, DRIVER_NAME));
         }
-        tick = bHalGetSysTick();
-        PT_WAIT_WHILE(pt, (bHalGetSysTick() - tick) < (500));
+        PT_DELAY_MS(pt, 500);
     }
     PT_END(pt);
 }
@@ -853,7 +918,7 @@ static int _bEspCtl(bDriverInterface_t *pdrv, uint8_t cmd, void *param)
         case bCMD_WIFI_REG_CALLBACK:
             if (param != NULL)
             {
-                pinfo->cb = param;
+                memcpy(&pinfo->cb, param, sizeof(pinfo->cb));
             }
             else
             {

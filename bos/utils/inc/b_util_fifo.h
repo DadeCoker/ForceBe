@@ -79,11 +79,13 @@ typedef bFIFO_Info_t bFIFO_Instance_t;
  * \defgroup FIFO_Exported_Functions
  * \{
  */
-///< pFIFO_Instance \ref bFIFO_INSTANCE
-int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
-int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen);
-int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance);
+///< pinstance \ref bFIFO_INSTANCE
+int bFIFO_Write(bFIFO_Instance_t *pinstance, uint8_t *pbuf, uint16_t size);
+int bFIFO_Read(bFIFO_Instance_t *pinstance, uint8_t *pbuf, uint16_t size);
+int bFIFO_Length(bFIFO_Instance_t *pinstance, uint16_t *plen);
+int bFIFO_Flush(bFIFO_Instance_t *pinstance);
+int bFIFO_DynCreate(bFIFO_Instance_t *pinstance, uint16_t size);
+int bFIFO_DynDelete(bFIFO_Instance_t *pinstance);
 /**
  * \}
  */

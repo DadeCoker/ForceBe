@@ -31,7 +31,7 @@ config _MEMP_ENABLE
 
 config MEMP_MAX_SIZE
     int "Memory Max Size (B)"
-    default 1024
+    default 10240
     depends on _MEMP_ENABLE
 
 endmenu

@@ -32,6 +32,10 @@
 /*Includes ----------------------------------------------*/
 #include "utils/inc/b_util_fifo.h"
 
+#include "b_config.h"
+#if defined(_MEMP_ENABLE) && _MEMP_ENABLE == 1
+#include "utils/inc/b_util_memp.h"
+#endif
 /**
  * \addtogroup B_UTILS
  * \{
@@ -66,63 +70,110 @@
  * \{
  */
 
-int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen)
+int bFIFO_Length(bFIFO_Instance_t *pinstance, uint16_t *plen)
 {
-    if (pFIFO_Instance == NULL || plen == NULL)
+    if (pinstance == NULL || plen == NULL)
     {
         return -1;
     }
-    *plen = FIFO_LEN(pFIFO_Instance->w_index, pFIFO_Instance->r_index, pFIFO_Instance->size);
+    *plen = FIFO_LEN(pinstance->w_index, pinstance->r_index, pinstance->size);
     return 0;
 }
 
-int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance)
+int bFIFO_Flush(bFIFO_Instance_t *pinstance)
 {
-    if (pFIFO_Instance == NULL)
+    if (pinstance == NULL)
     {
         return -1;
     }
-    pFIFO_Instance->r_index = pFIFO_Instance->w_index = 0;
+    pinstance->r_index = pinstance->w_index = 0;
     return 0;
 }
 
-int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size)
+int bFIFO_Write(bFIFO_Instance_t *pinstance, uint8_t *pbuf, uint16_t size)
 {
     uint16_t fifo_len, valid_len, index;
-    if (pFIFO_Instance == NULL || pbuf == NULL)
+    if (pinstance == NULL || pbuf == NULL)
     {
         return -1;
     }
-    fifo_len  = FIFO_LEN(pFIFO_Instance->w_index, pFIFO_Instance->r_index, pFIFO_Instance->size);
-    valid_len = pFIFO_Instance->size - fifo_len;
+    if (pinstance->pbuf == NULL)
+    {
+        return -1;
+    }
+    fifo_len  = FIFO_LEN(pinstance->w_index, pinstance->r_index, pinstance->size);
+    valid_len = pinstance->size - fifo_len;
     size      = (size <= valid_len) ? size : valid_len;
     index     = 0;
     while (index < size)
     {
-        pFIFO_Instance->pbuf[pFIFO_Instance->w_index] = pbuf[index];
-        pFIFO_Instance->w_index = (pFIFO_Instance->w_index + 1) % pFIFO_Instance->size;
+        pinstance->pbuf[pinstance->w_index] = pbuf[index];
+        pinstance->w_index                  = (pinstance->w_index + 1) % pinstance->size;
         index += 1;
     }
     return size;
 }
 
-int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size)
+int bFIFO_Read(bFIFO_Instance_t *pinstance, uint8_t *pbuf, uint16_t size)
 {
     uint16_t fifo_len, index;
-    if (pFIFO_Instance == NULL || pbuf == NULL)
+    if (pinstance == NULL || pbuf == NULL)
     {
         return -1;
     }
-    fifo_len = FIFO_LEN(pFIFO_Instance->w_index, pFIFO_Instance->r_index, pFIFO_Instance->size);
+    if (pinstance->pbuf == NULL)
+    {
+        return -1;
+    }
+    fifo_len = FIFO_LEN(pinstance->w_index, pinstance->r_index, pinstance->size);
     size     = (size <= fifo_len) ? size : fifo_len;
     index    = 0;
     while (index < size)
     {
-        pbuf[index]             = pFIFO_Instance->pbuf[pFIFO_Instance->r_index];
-        pFIFO_Instance->r_index = (pFIFO_Instance->r_index + 1) % pFIFO_Instance->size;
+        pbuf[index]        = pinstance->pbuf[pinstance->r_index];
+        pinstance->r_index = (pinstance->r_index + 1) % pinstance->size;
         index += 1;
     }
     return size;
+}
+
+int bFIFO_DynCreate(bFIFO_Instance_t *pinstance, uint16_t size)
+{
+#if defined(_MEMP_ENABLE) && _MEMP_ENABLE == 1
+    if (pinstance == NULL)
+    {
+        return -1;
+    }
+    pinstance->pbuf = (uint8_t *)bMalloc(size);
+    if (pinstance->pbuf == NULL)
+    {
+        return -1;
+    }
+    pinstance->size    = size;
+    pinstance->w_index = 0;
+    pinstance->r_index = 0;
+    return 0;
+#else
+    return -1;
+#endif
+}
+
+int bFIFO_DynDelete(bFIFO_Instance_t *pinstance)
+{
+#if defined(_MEMP_ENABLE) && _MEMP_ENABLE == 1
+    if (pinstance == NULL)
+    {
+        return -1;
+    }
+    if (pinstance->pbuf)
+    {
+        bFree(pinstance->pbuf);
+        pinstance->pbuf = NULL;
+    }
+    return 0;
+#else
+    return -1;
+#endif
 }
 
 /**

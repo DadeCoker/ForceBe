@@ -194,4 +194,10 @@ config IAP_BACKUP_SIZE
     default 0x14000
     depends on _BACKUP_ENABLE  
 
+config _WIFI_ENABLE
+    bool "WiFi Enable/Disable"
+    default n
+    depends on _BOS_MODULES_ENABLE
+    select _MEMP_ENABLE
+
 endmenu

@@ -136,7 +136,11 @@ typedef struct
 #define bCMD_WIFI_GET_CONN_STATUS 10  // bWfifiConnStat_t
 #define bCMD_WIFI_REG_CALLBACK 11     // bWifiCallback_t
 
-typedef void (*bWifiCallback_t)(uint8_t cmd, void *arg, void (*release)(void *));
+typedef struct
+{
+    void (*cb)(uint8_t cmd, void *arg, void (*release)(void *), void *user_data);
+    void *user_data;
+} bWifiCallback_t;
 
 typedef enum
 {

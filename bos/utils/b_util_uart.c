@@ -199,6 +199,10 @@ void bUtilUartRxHandler(bUitlUartInstance_t *pinstance, uint8_t dat)
     {
         return;
     }
+    if (pinstance->pbuf == NULL)
+    {
+        return;
+    }
     if (pinstance->prev == NULL)
     {
         _UtilUartListAdd(pinstance);
@@ -217,6 +221,10 @@ void bUtilUartRxHandler2(uint8_t uart_no, uint8_t dat)
         return;
     }
     if (pUtilUartBindTable[uart_no] == NULL)
+    {
+        return;
+    }
+    if (pUtilUartBindTable[uart_no]->pbuf == NULL)
     {
         return;
     }

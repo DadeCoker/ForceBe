@@ -70,6 +70,10 @@ int bQueuePush(bQueueInstance_t *pinstance, void *data)
     {
         return -1;
     }
+    if (pinstance->pbuf == NULL)
+    {
+        return -1;
+    }
     if (pinstance->number == pinstance->item_size)
     {
         return -2;
@@ -83,6 +87,10 @@ int bQueuePush(bQueueInstance_t *pinstance, void *data)
 int bQueuePop(bQueueInstance_t *pinstance, void *data)
 {
     if (pinstance == NULL || data == NULL)
+    {
+        return -1;
+    }
+    if (pinstance->pbuf == NULL)
     {
         return -1;
     }
@@ -102,6 +110,10 @@ int bQueuePeek(bQueueInstance_t *pinstance, void *data)
     {
         return -1;
     }
+    if (pinstance->pbuf == NULL)
+    {
+        return -1;
+    }
     if (pinstance->number == 0)
     {
         return -3;
@@ -112,7 +124,51 @@ int bQueuePeek(bQueueInstance_t *pinstance, void *data)
 
 uint8_t bQueueIsFull(bQueueInstance_t *pinstance)
 {
+    if (pinstance == NULL)
+    {
+        return 0;
+    }
     return (pinstance->number >= pinstance->item_size);
+}
+
+int bQueueDynCreate(bQueueInstance_t *pinstance, uint16_t item_size, uint16_t item_num)
+{
+#if defined(_MEMP_ENABLE) && _MEMP_ENABLE == 1
+    if (pinstance == NULL || item_size == 0 || item_num == 0)
+    {
+        return -1;
+    }
+    memset(pinstance, 0, sizeof(bQueueInstance_t));
+    pinstance->pbuf = bMalloc(item_size * item_num);
+    if (pinstance->pbuf == NULL)
+    {
+        return -1;
+    }
+    pinstance->item_size = item_size;
+    pinstance->item_num  = item_num;
+    return 0;
+#else
+    return -1;
+#endif
+}
+
+int bQueueDynDelete(bQueueInstance_t *pinstance)
+{
+#if defined(_MEMP_ENABLE) && _MEMP_ENABLE == 1
+    if (pinstance == NULL || item_size == 0 || item_num == 0)
+    {
+        return -1;
+    }
+    if (pinstance->pbuf)
+    {
+        bFree(pinstance->pbuf);
+        pinstance->pbuf = NULL;
+    }
+    memset(pinstance, 0, sizeof(bQueueInstance_t));
+    return 0;
+#else
+    return -1;
+#endif
 }
 
 /**
