@@ -34,9 +34,6 @@
 
 #include <string.h>
 
-#include "utils/inc/b_util_sBus.h"
-
-
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -78,10 +75,8 @@
  * \defgroup DS18B20_Private_Variables
  * \{
  */
-
-bDS18B20_Driver_t           bDS18B20_Driver;
-static bUtilSbus_t          SBUS_IO            = HAL_DS18B20_IF;
-static bDS18B20ReadStruct_t bDS18B20ReadStruct = {0};
+const static bDS18B20_HalIf_t bDS18B20_HalIf = HAL_DS18B20_IF;
+bDS18B20_Driver_t             bDS18B20_Driver;
 /**
  * \}
  */
@@ -99,97 +94,130 @@ static bDS18B20ReadStruct_t bDS18B20ReadStruct = {0};
  * \defgroup DS18B20_Private_Functions
  * \{
  */
-static uint16_t _bDS18B20ReadTemp()
+static uint8_t _bSbusReady()
 {
-    uint16_t temp      = 0;
-    uint32_t tempvalue = 0;
-    uint8_t  tmh, tml;
-    uint16_t cp   = 0;
-    uint16_t wait = 2000;
-    if (bUtilSbus_Ready(SBUS_IO))
+    uint16_t cp     = 0;
+    uint8_t  retval = 1;
+    bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 0);
+    bHalDelayUs(600);  // 480~960us
+    bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 1);
+
+    bHalGPIO_Config(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, B_HAL_GPIO_INPUT,
+                    B_HAL_GPIO_NOPULL);
+    cp = 0;
+    while (((bHalGPIO_ReadPin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin)) == 1) &&
+           (cp++ < 100))
     {
-        SbusWriteByte(SBUS_IO, 0xcc);
-        //跳过ROM操作命令,只有当总线上只存在一个 DS18B20 的时候才可以使用此指令
-        SbusWriteByte(SBUS_IO, 0x44);  //温度转换命令
+        bHalDelayUs(1);
+    }
+    if (cp >= 100)
+    {
+        retval = 0;
+    }
+    bHalDelayUs(250);  // 60~240us
+    bHalGPIO_Config(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, B_HAL_GPIO_OUTPUT,
+                    B_HAL_GPIO_NOPULL);
+    bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 1);
+    return retval;
+}
+
+static uint8_t _bSbusReadByte()
+{
+    uint8_t byte = 0;
+    uint8_t bit  = 0;
+    uint8_t i;
+    for (i = 0; i < 8; i++)
+    {
+        bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 0);
+        bHalDelayUs(2);
+        bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 1);
+
+        bHalGPIO_Config(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, B_HAL_GPIO_INPUT,
+                        B_HAL_GPIO_NOPULL);
+        bHalDelayUs(2);  // < 15us
+        bit  = bHalGPIO_ReadPin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin);
+        byte = (byte >> 1) | (bit << 7);
+        bHalDelayUs(100);  // > 60us
+
+        bHalGPIO_Config(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, B_HAL_GPIO_OUTPUT,
+                        B_HAL_GPIO_NOPULL);
+        bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 1);
+    }
+    return byte;
+}
+
+static void _bSbusWriteByte(uint8_t dat)
+{
+    uint8_t j, wbit = 0;
+    for (j = 0; j < 8; j++)
+    {
+        wbit = dat & 0x1;
+        dat >>= 1;
+        bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 0);
+        bHalDelayUs(2);
+        bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, wbit);
+        bHalDelayUs(100);  // 60~120us
+        bHalGPIO_WritePin(bDS18B20_HalIf.sBusIo.port, bDS18B20_HalIf.sBusIo.pin, 1);
+        bHalDelayUs(2);
+    }
+}
+
+static float _bDS18B20ReadTemp()
+{
+    int16_t temp       = 0;
+    float   temp_value = 0;
+    uint8_t tmh, tml;
+
+    if (_bSbusReady())
+    {
+        _bSbusWriteByte(0xCC);
+        _bSbusWriteByte(0x44);
     }
     else
     {
         return 0;
     }
 
-    bHalGPIO_Config(SBUS_IO.sBusIo.port, SBUS_IO.sBusIo.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-    while (((bHalGPIO_ReadPin(SBUS_IO.sBusIo.port, SBUS_IO.sBusIo.pin)) == 0) && cp++ < wait)
-        ;  //等待转换成功
-    if (cp >= wait)
-    {
-        return 0;
-    }
+    bHalDelayMs(500);
 
-    if (bUtilSbus_Ready(SBUS_IO))
+    if (_bSbusReady())
     {
-        SbusWriteByte(SBUS_IO, 0xcc);  //跳过ROM操作命令
-        SbusWriteByte(SBUS_IO, 0xbe);  //发送读取温度命令
+        _bSbusWriteByte(0xCC);
+        _bSbusWriteByte(0xBE);
     }
     else
     {
         return 0;
     }
 
-    tml  = SbusReadByte(SBUS_IO);  //读取温度值共16位，先读低字节
-    tmh  = SbusReadByte(SBUS_IO);  //再读高字节
-    temp = tmh;
-    temp <<= 8;
+    tml  = _bSbusReadByte();
+    tmh  = _bSbusReadByte();
+    temp = ((int16_t)tmh) << 8;
     temp |= tml;
-    tempvalue = temp * 625;
-    if (tempvalue > 1000000)
+
+    if (temp < 0)
     {
-        tempvalue = 1000000;
+        temp_value = (~temp + 1) * 0.0625;
     }
-    temp = (uint16_t)(tempvalue / 1000);
-    return temp;
+    else
+    {
+        temp_value = temp * 0.0625;
+    }
+    return temp_value;
 }
 
 static int _bDS18B20Read(bDS18B20_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    if (len < sizeof(bDS18B20ReadStruct_t))
+    bTempVal_t temp;
+    temp.tempx100 = (int16_t)(_bDS18B20ReadTemp() * 100);
+    if (len < sizeof(bTempVal_t))
     {
         return 0;
     }
-    memcpy(pbuf, &bDS18B20ReadStruct.TempX10, sizeof(bDS18B20ReadStruct.TempX10));
+    memcpy(pbuf, &temp, sizeof(bTempVal_t));
+    return sizeof(bTempVal_t);
 }
 
-static void _bDS18B20Polling()
-{
-    static uint8_t  flag     = 0;
-    static uint16_t data[10] = {0};
-    uint8_t         i        = 0;
-    uint16_t        temp     = 0;
-    uint16_t        temp_sum = 0;
-    temp                     = _bDS18B20ReadTemp();
-    if (temp == 0)
-        return;
-    if (flag)
-    {
-        for (i = 0; i < 9; i++)
-        {
-            data[i] = data[i + 1];
-        }
-        data[9] = temp;
-    }
-    else
-    {
-        flag = 1;
-        for (i = 0; i < 10; i++)
-        {
-            data[i] = temp;
-        }
-    }
-    for (i = 0; i < 10; i++)
-    {
-        temp_sum += data[i];
-    }
-    bDS18B20ReadStruct.TempX10 = temp_sum / 10;
-}
 /**
  * \}
  */
@@ -200,12 +228,6 @@ static void _bDS18B20Polling()
  */
 int bDS18B20_Init()
 {
-    if (!bUtilSbus_Ready(SBUS_IO))
-    {
-        b_log_e("18b20 init error\n");
-        bDS18B20_Driver.status = -1;
-        return -1;
-    }
     bDS18B20_Driver.status = 0;
     bDS18B20_Driver.read   = _bDS18B20Read;
     bDS18B20_Driver.write  = NULL;
@@ -215,7 +237,6 @@ int bDS18B20_Init()
     return 0;
 }
 
-BOS_REG_POLLING_FUNC(_bDS18B20Polling);
 bDRIVER_REG_INIT(bDS18B20_Init);
 
 /**

@@ -59,11 +59,6 @@ typedef struct
 
 typedef bDriverInterface_t bDS18B20_Driver_t;
 
-typedef struct
-{
-    uint16_t TempX10;
-} bDS18B20ReadStruct_t;
-
 /**
  * \}
  */

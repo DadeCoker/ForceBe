@@ -133,6 +133,12 @@ typedef struct
     uint16_t y_ad;
 } bTouchAdVal_t;
 
+// Temperature
+typedef struct
+{
+    int16_t tempx100;
+} bTempVal_t;
+
 /**
  * \}
  */
