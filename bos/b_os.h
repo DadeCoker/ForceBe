@@ -93,9 +93,9 @@ extern "C" {
 #include "drivers/inc/b_drv_sd.h"
 #include "drivers/inc/b_drv_spiflash.h"
 #include "drivers/inc/b_drv_ssd1289.h"
+#include "drivers/inc/b_drv_st7789.h"
 #include "drivers/inc/b_drv_xpt2046.h"
 #include "thirdparty/cjson/cjson.h"
-
 
 /**
  * \}

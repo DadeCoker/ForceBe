@@ -199,6 +199,8 @@ int bGUI_Init(int lcd, int touch)
     }
     GUI_Info.lcd_id   = lcd;
     GUI_Info.touch_id = touch;
+    bGUI_Handle.char_h_space = 0;
+    bGUI_Handle.char_v_space = 0;
 #if (LCD_DISP_MODE == 0)
     UG_Init(&bGUI_Handle, _LCD_SetColorPixel, LCD_Y_SIZE, LCD_X_SIZE);
 #else

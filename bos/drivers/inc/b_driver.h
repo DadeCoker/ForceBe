@@ -123,6 +123,7 @@ extern bDriverInterface_t bMCUFLASH_Driver;
 extern bDriverInterface_t bSSD1289_Driver;
 extern bDriverInterface_t bILI9341_Driver;
 extern bDriverInterface_t bILI9320_Driver;
+extern bDriverInterface_t bST7789_Driver;
 extern bDriverInterface_t bOLED_Driver;
 
 extern bDriverInterface_t bXPT2046_Driver;

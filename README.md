@@ -202,7 +202,7 @@ boot:1819043356
 
 教程的代码仓库中不同分支对应着不同实验
 
-<https://gitee.com/notrynohigh/BabyOS_Example>  【基于STM32F107CV】
+<https://gitee.com/notrynohigh/BabyOS_Example>  【基于STM32F107CV、小熊派STM32L431RC等】
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 【BabyOS私有协议上位机Demo】
 

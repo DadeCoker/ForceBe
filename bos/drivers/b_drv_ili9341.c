@@ -60,12 +60,12 @@
  * \defgroup ILI9341_Private_Defines
  * \{
  */
-#ifndef _LCD_X_SIZE
-#define _LCD_X_SIZE 240
+#ifndef LCD_X_SIZE
+#define LCD_X_SIZE 240
 #endif
 
-#ifndef _LCD_Y_SIZE
-#define _LCD_Y_SIZE 320
+#ifndef LCD_Y_SIZE
+#define LCD_Y_SIZE 320
 #endif
 /**
  * \}
@@ -231,10 +231,10 @@ static void _bILI9341SetCursor(uint16_t Xpos, uint16_t Ypos)
 
 static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t     x      = addr % _LCD_X_SIZE;
-    uint16_t     y      = addr / _LCD_X_SIZE;
+    uint16_t     x      = addr % LCD_X_SIZE;
+    uint16_t     y      = addr / LCD_X_SIZE;
     bLcdWrite_t *pcolor = (bLcdWrite_t *)pbuf;
-    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
+    if (y >= LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
     }

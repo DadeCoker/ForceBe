@@ -36,7 +36,6 @@
 
 #include "utils/inc/b_util_log.h"
 
-
 /**
  * \addtogroup BABYOS
  * \{
@@ -65,12 +64,12 @@
  * \defgroup OLED_Private_Defines
  * \{
  */
-#ifndef _LCD_X_SIZE
-#define _LCD_X_SIZE 128
+#ifndef LCD_X_SIZE
+#define LCD_X_SIZE 128
 #endif
 
-#ifndef _LCD_Y_SIZE
-#define _LCD_Y_SIZE 64
+#ifndef LCD_Y_SIZE
+#define LCD_Y_SIZE 64
 #endif
 /**
  * \}
@@ -92,7 +91,7 @@
 HALIF_KEYWORD bOLED_HalIf_t bOLED_HalIf = HAL_OLED_IF;
 bOLED_Driver_t              bOLED_Driver;
 
-static uint8_t bOLED_Buff[_LCD_X_SIZE * _LCD_Y_SIZE / 8];
+static uint8_t bOLED_Buff[LCD_X_SIZE * LCD_Y_SIZE / 8];
 /**
  * \}
  */
@@ -162,7 +161,7 @@ static void _bOLEDDrawPixel(uint8_t x, uint8_t y, uint8_t t)
     uint16_t index;
     uint8_t  tmp = 0, off;
 
-    index = (y / 8) * _LCD_X_SIZE + x;
+    index = (y / 8) * LCD_X_SIZE + x;
     tmp   = bOLED_Buff[index];
     off   = y % 8;
     if (t)
@@ -196,10 +195,10 @@ static void _bOLED_Fill(uint8_t fill_data)
 
 static int _bOLEDWrite(bOLED_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t     x      = addr % _LCD_X_SIZE;
-    uint16_t     y      = addr / _LCD_X_SIZE;
+    uint16_t     x      = addr % LCD_X_SIZE;
+    uint16_t     y      = addr / LCD_X_SIZE;
     bLcdWrite_t *pcolor = (bLcdWrite_t *)pbuf;
-    if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
+    if (y >= LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
     }
