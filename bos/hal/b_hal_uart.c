@@ -56,6 +56,24 @@ __WEAKDEF int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     return -1;
 }
 
+__WEAKDEF int bMcuUartEnableRXIrq(bHalUartNumber_t uart)
+{
+    return -1;
+}
+__WEAKDEF int bMcuUartDisableRXIrq(bHalUartNumber_t uart)
+{
+    return -1;
+}
+__WEAKDEF int bMcuUartEnableTXEIrq(bHalUartNumber_t uart)
+{
+    return -1;
+}
+__WEAKDEF int bMcuUartDisableTXEIrq(bHalUartNumber_t uart)
+{
+    return -1;
+}
+
+
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
@@ -70,6 +88,26 @@ int bHalReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     return bMcuReceive(uart, pbuf, len);
 }
 
+
+int bHalUartEnableRXIrq(bHalUartNumber_t uart)
+{
+	return 0;
+}
+
+int bHalUartDisableRXIrq(bHalUartNumber_t uart)
+{
+	return 0;
+}
+
+int bHalUartEnableTXEIrq(bHalUartNumber_t uart)
+{
+	return 0;
+}
+
+int bHalUartDisableTXEIrq(bHalUartNumber_t uart)
+{
+	return 0;
+}
 
 
 

@@ -53,6 +53,14 @@ typedef struct
     volatile uint32_t SCNT;
 } McuUartReg_t;
 
+typedef enum McuUartIrqSel
+{
+    MCU_UartRxIrq  = 0u,    	///<接收中断使能
+    MCU_UartTxIrq  = 1u,      ///<发送中断使能     
+    MCU_UartTxEIrq = 8u,   		///<TX空中断使能   
+}McuUartIrqSel_t;
+
+
 #define MCU_UART0 ((McuUartReg_t *)UART0_BASE_ADDR)
 #define MCU_UART1 ((McuUartReg_t *)UART1_BASE_ADDR)
 #define MCU_UART2 ((McuUartReg_t *)UART2_BASE_ADDR)
@@ -114,6 +122,57 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     }
     return len;
 }
+
+int bMcuUartEnableRXIrq(bHalUartNumber_t uart)
+{
+    McuUartReg_t *pUart = NULL;
+	  if (uart > B_HAL_UART_3 )
+    {
+        return -1;
+    }
+		pUart = UartTable[uart];
+		pUart->SCON |= ((1UL)<<(MCU_UartRxIrq));
+		return 0;
+}
+
+int bMcuUartDisableRXIrq(bHalUartNumber_t uart)
+{
+    McuUartReg_t *pUart = NULL;
+		if (uart > B_HAL_UART_3 )
+    {
+        return -1;
+    }
+		pUart = UartTable[uart];
+		pUart->SCON &= (~(1UL<<(MCU_UartRxIrq)));
+		return 0;
+}
+
+
+
+int bMcuUartEnableTXEIrq(bHalUartNumber_t uart)
+{
+    McuUartReg_t *pUart = NULL;
+	  if (uart > B_HAL_UART_3 )
+    {
+        return -1;
+    }
+		pUart = UartTable[uart];
+		pUart->SCON |= ((1UL)<<(MCU_UartTxEIrq));
+		return 0;
+}
+
+int bMcuUartDisableTXEIrq(bHalUartNumber_t uart)
+{
+    McuUartReg_t *pUart = NULL;
+		if (uart > B_HAL_UART_3 )
+    {
+        return -1;
+    }
+		pUart = UartTable[uart];
+		pUart->SCON &= (~(1UL<<(MCU_UartTxEIrq)));
+		return 0;
+}
+
 
 #endif
 

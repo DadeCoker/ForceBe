@@ -55,6 +55,7 @@ extern "C" {
 
 typedef enum
 {
+	  B_HAL_UART_0,
     B_HAL_UART_1,
     B_HAL_UART_2,
     B_HAL_UART_3,
@@ -82,6 +83,7 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
 //---------------------------------------------------------------------------------------
 int bHalUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len);
 int bHalReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
+
 /**
  * \}
  */
