@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70402
+#define FW_VERSION 70403
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -143,16 +143,7 @@
 //</e>
 //</e>
 
-//<e> Save Data Enable/Disable
-#define _SAVE_DATA_ENABLE 0
 
-//<q> Save Data ClassA
-#define _SAVE_DATA_A_ENABLE 0
-
-//<q> Save Data ClassB
-#define _SAVE_DATA_B_ENABLE 1
-
-//</e>
 
 //<q> KV Enable/Disable
 #define _KV_ENABLE 0
