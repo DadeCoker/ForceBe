@@ -133,6 +133,36 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     bClose(fd);
 }
 
+static void _LCD_FillRect(UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c)
+{
+    int            fd     = -1;
+    int            retval = 0;
+    bLcdRectInfo_t info;
+    fd = bOpen(GUI_Info.lcd_id, BCORE_FLAG_W);
+    if (fd < 0)
+    {
+        return;
+    }
+    info.x1    = x1;
+    info.x2    = x2;
+    info.y1    = y1;
+    info.y2    = y2;
+    info.color = c;
+    retval     = bCtl(fd, bCMD_FILL_RECT, &info);
+    bClose(fd);
+    if (retval >= 0)
+    {
+        return;
+    }
+    for (; x1 <= x2; x1++)
+    {
+        for (; y1 <= y2; y1++)
+        {
+            _LCD_SetColorPixel(x1, y1, c);
+        }
+    }
+}
+
 static void _bGUI_TouchExec()
 {
     int           fd = -1;
@@ -197,8 +227,8 @@ int bGUI_Init(int lcd, int touch)
     {
         return -1;
     }
-    GUI_Info.lcd_id   = lcd;
-    GUI_Info.touch_id = touch;
+    GUI_Info.lcd_id          = lcd;
+    GUI_Info.touch_id        = touch;
     bGUI_Handle.char_h_space = 0;
     bGUI_Handle.char_v_space = 0;
 #if (LCD_DISP_MODE == 0)
@@ -209,6 +239,7 @@ int bGUI_Init(int lcd, int touch)
     UG_SelectGUI(&bGUI_Handle);
     UG_SetForecolor(C_WHITE);
     UG_SetBackcolor(C_BLACK);
+    UG_DriverRegister(DRIVER_FILL_FRAME, _LCD_FillRect);
 #if GUI_FONT == 0
     UG_FontSelect(&FONT_6X8);
 #elif GUI_FONT == 1

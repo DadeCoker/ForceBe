@@ -187,7 +187,8 @@ static int _bCoreDeleteFd(int fd)
  */
 int bOpen(uint8_t dev_no, uint8_t flag)
 {
-    int fd = -1;
+    int fd     = -1;
+    int retval = 0;
     if (!IS_VALID_FLAG(flag))
     {
         return -1;
@@ -197,7 +198,8 @@ int bOpen(uint8_t dev_no, uint8_t flag)
     {
         return -1;
     }
-    if (bDeviceOpen(dev_no) >= 0)
+    retval = bDeviceOpen(dev_no);
+    if (retval >= 0 || retval == B_DEVICE_FUNC_NULL)
     {
         return fd;
     }

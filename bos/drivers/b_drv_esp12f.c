@@ -541,7 +541,7 @@ static void _bEspPolling()
 
 BOS_REG_POLLING_FUNC(_bEspPolling);
 
-static int _bEspCtl(struct bDriverIf *pdrv, uint8_t cmd, void *param)
+static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
 {
     int retval = -1;
     switch (cmd)
@@ -604,7 +604,7 @@ static int _bEspCtl(struct bDriverIf *pdrv, uint8_t cmd, void *param)
     return retval;
 }
 
-static int _bEspRead(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len)
+static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len)
 {
     int retval = 0;
     if (len < sizeof(bMqttTopicData_t) || pbuf == NULL)

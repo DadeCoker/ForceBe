@@ -76,6 +76,17 @@ typedef struct
 ///////////////////////////////////////////////////////////
 // LCD  Command & Data Structure
 ///////////////////////////////////////////////////////////
+#define bCMD_FILL_RECT 0  // bLcdRectInfo_t
+
+typedef struct
+{
+    uint16_t x1;
+    uint16_t y1;
+    uint16_t x2;
+    uint16_t y2;
+    uint16_t color;
+} bLcdRectInfo_t;
+
 typedef struct
 {
     uint16_t color;
@@ -153,7 +164,7 @@ typedef struct
 typedef struct
 {
     bMqttTopicInfo_t topic;
-    char *pstr;
+    char            *pstr;
 } bMqttTopicData_t;
 ///////////////////////////////////////////////////////////
 //

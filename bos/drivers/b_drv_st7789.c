@@ -217,6 +217,66 @@ static void _bST7789SetCursor(uint16_t Xpos, uint16_t Ypos)
     _bLcdWriteCmd(0X2C);
 }
 
+static int _bST7789FillRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+{
+    int      i   = 0;
+    uint16_t tmp = 0;
+    if (x1 > x2)
+    {
+        tmp = x1;
+        x1  = x2;
+        x2  = tmp;
+    }
+    if (y1 > y2)
+    {
+        tmp = y1;
+        y1  = y2;
+        y2  = tmp;
+    }
+
+    if (x2 >= LCD_X_SIZE || y2 >= LCD_Y_SIZE)
+    {
+        return -1;
+    }
+
+    _bLcdWriteCmd(0x2a);
+    _bLcdWriteData(x1 >> 8);
+    _bLcdWriteData(x1);
+    _bLcdWriteData(x2 >> 8);
+    _bLcdWriteData(x2);
+    _bLcdWriteCmd(0x2b);
+    _bLcdWriteData(y1 >> 8);
+    _bLcdWriteData(y1);
+    _bLcdWriteData(y2 >> 8);
+    _bLcdWriteData(y2);
+    _bLcdWriteCmd(0x2C);
+
+    for (i = 0; i < ((x2 - x1 + 1) * (y2 - y1 + 1)); i++)
+    {
+        _bLcdWriteGRam(color);
+    }
+    return 0;
+}
+
+static int _bST7789Ctl(bST7789_Driver_t *pdrv, uint8_t cmd, void *param)
+{
+    int             retval = -1;
+    bLcdRectInfo_t *pinfo  = (bLcdRectInfo_t *)param;
+    switch (cmd)
+    {
+        case bCMD_FILL_RECT:
+            if (param == NULL)
+            {
+                return -1;
+            }
+            retval = _bST7789FillRect(pinfo->x1, pinfo->y1, pinfo->x2, pinfo->y2, pinfo->color);
+            break;
+        default:
+            break;
+    }
+    return retval;
+}
+
 static int _bST7789Write(bST7789_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
     uint16_t     x      = addr % LCD_X_SIZE;
@@ -344,7 +404,7 @@ int bST7789_Init()
     bST7789_Driver.init    = bST7789_Init;
     bST7789_Driver.close   = NULL;
     bST7789_Driver.read    = NULL;
-    bST7789_Driver.ctl     = NULL;
+    bST7789_Driver.ctl     = _bST7789Ctl;
     bST7789_Driver.open    = NULL;
     bST7789_Driver.write   = _bST7789Write;
     bST7789_Driver._hal_if = (void *)&bST7789_HalIf;

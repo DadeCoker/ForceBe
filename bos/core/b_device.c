@@ -161,14 +161,14 @@ int bDeviceReinit(uint8_t no)
     }
     if (bDriverTable[no]->init == NULL)
     {
-        return -2;
+        return B_DEVICE_FUNC_NULL;
     }
     return bDriverTable[no]->init();
 }
 
 int bDeviceOpen(uint8_t no)
 {
-    int retval = 0;
+    int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM)
     {
         return -1;
@@ -183,14 +183,14 @@ int bDeviceOpen(uint8_t no)
     else
     {
         b_log_e("%s err\r\n", bDeviceDescTable[no]);
-        retval = -255;
+        retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
 int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len)
 {
-    int retval = 0;
+    int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM || pdata == NULL)
     {
         return -1;
@@ -205,14 +205,14 @@ int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len)
     else
     {
         b_log_e("%s err\r\n", bDeviceDescTable[no]);
-        retval = -255;
+        retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
 int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint16_t len)
 {
-    int retval = 0;
+    int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM || pdata == NULL)
     {
         return -1;
@@ -227,14 +227,14 @@ int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint16_t len)
     else
     {
         b_log_e("%s err\r\n", bDeviceDescTable[no]);
-        retval = -255;
+        retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
 int bDeviceClose(uint8_t no)
 {
-    int retval = 0;
+    int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM)
     {
         return -1;
@@ -249,14 +249,14 @@ int bDeviceClose(uint8_t no)
     else
     {
         b_log_e("%s err\r\n", bDeviceDescTable[no]);
-        retval = -255;
+        retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }
 
 int bDeviceCtl(uint8_t no, uint8_t cmd, void *param)
 {
-    int retval = 0;
+    int retval = B_DEVICE_FUNC_NULL;
     if (no >= bDEV_MAX_NUM)
     {
         return -1;
@@ -271,7 +271,7 @@ int bDeviceCtl(uint8_t no, uint8_t cmd, void *param)
     else
     {
         b_log_e("%s err\r\n", bDeviceDescTable[no]);
-        retval = -255;
+        retval = B_DEVICE_STAT_ERR;
     }
     return retval;
 }

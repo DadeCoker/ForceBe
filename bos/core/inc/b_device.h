@@ -79,6 +79,18 @@ typedef union
  */
 
 /**
+ * \defgroup DEVICE_Exported_Definitions
+ * \{
+ */
+
+#define B_DEVICE_FUNC_NULL (-254)
+#define B_DEVICE_STAT_ERR (-255)
+
+/**
+ * \}
+ */
+
+/**
  * \defgroup DEVICE_Exported_Functions
  * \{
  */

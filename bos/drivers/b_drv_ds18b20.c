@@ -171,7 +171,7 @@ static int _bDS18B20Start()
     return retval;
 }
 
-static int _bDS18B20Ctl(struct bDriverIf *pdrv, uint8_t cmd, void *param)
+static int _bDS18B20Ctl(bDS18B20_Driver_t *pdrv, uint8_t cmd, void *param)
 {
     int retval = -1;
     switch (cmd)
