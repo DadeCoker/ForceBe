@@ -11,10 +11,10 @@ SET(LIBDRIVER_SRC camera/b_drv_ov5640.c
 		touch/b_drv_xpt2046.c)
 
 INCLUDE_DIRECTORIES(inc 
-			../../bos_config/ 
+			../../Examples/Test/bos_config/ 
 			../modules/inc/ 
 			../core/inc/ 
-			../../bos_hal/inc/ 
+			../../Examples/Test/bos_hal/inc/ 
 			../utils/inc/ 
 			../algorithm/inc/
 			../thirdparty/SFUD/inc/)

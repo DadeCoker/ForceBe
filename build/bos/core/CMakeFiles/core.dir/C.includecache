@@ -6,61 +6,61 @@
 
 #IncludeRegexTransform: 
 
-../bos/core/../../bos_config/b_config.h
+../bos/core/../../Examples/Test/bos_config/b_config.h
 stdint.h
 -
 b_mod_log.h
-../bos/core/../../bos_config/b_mod_log.h
+../bos/core/../../Examples/Test/bos_config/b_mod_log.h
 b_common.h
-../bos/core/../../bos_config/b_common.h
+../bos/core/../../Examples/Test/bos_config/b_common.h
 
-../bos/core/../../bos_config/b_device_list.h
+../bos/core/../../Examples/Test/bos_config/b_device_list.h
 
-../bos/core/../../bos_hal/inc/b_hal.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 b_hal_uart.h
-../bos/core/../../bos_hal/inc/b_hal_uart.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_uart.h
 b_hal_lcd.h
-../bos/core/../../bos_hal/inc/b_hal_lcd.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_lcd.h
 b_hal_gpio.h
-../bos/core/../../bos_hal/inc/b_hal_gpio.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_gpio.h
 b_hal_spi.h
-../bos/core/../../bos_hal/inc/b_hal_spi.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_spi.h
 b_hal_i2c.h
-../bos/core/../../bos_hal/inc/b_hal_i2c.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_i2c.h
 b_hal_sccb.h
-../bos/core/../../bos_hal/inc/b_hal_sccb.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_sccb.h
 b_hal_qspi.h
-../bos/core/../../bos_hal/inc/b_hal_qspi.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_qspi.h
 
-../bos/core/../../bos_hal/inc/b_hal_gpio.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_gpio.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
-../bos/core/../../bos_hal/inc/b_hal_i2c.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_i2c.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
-../bos/core/../../bos_hal/inc/b_hal_lcd.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_lcd.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
-../bos/core/../../bos_hal/inc/b_hal_qspi.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_qspi.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
-../bos/core/../../bos_hal/inc/b_hal_sccb.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_sccb.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
-../bos/core/../../bos_hal/inc/b_hal_spi.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_spi.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
-../bos/core/../../bos_hal/inc/b_hal_uart.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_hal_uart.h
 b_config.h
-../bos/core/../../bos_hal/inc/b_config.h
+../bos/core/../../Examples/Test/bos_hal/inc/b_config.h
 
 ../bos/core/../algorithm/inc/algo_base64.h
 b_config.h

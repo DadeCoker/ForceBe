@@ -111,19 +111,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named babyos
-
-# Build rule for target.
-babyos: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 babyos
-.PHONY : babyos
-
-# fast build rule for target.
-babyos/fast:
-	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/build
-.PHONY : babyos/fast
-
-#=============================================================================
 # Target rules for targets named algorithm
 
 # Build rule for target.
@@ -211,23 +198,21 @@ hal: cmake_check_build_system
 
 # fast build rule for target.
 hal/fast:
-	$(MAKE) -f bos_hal/CMakeFiles/hal.dir/build.make bos_hal/CMakeFiles/hal.dir/build
+	$(MAKE) -f Examples/Test/bos_hal/CMakeFiles/hal.dir/build.make Examples/Test/bos_hal/CMakeFiles/hal.dir/build
 .PHONY : hal/fast
 
-# target to build an object file
-main.o:
-	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/main.o
-.PHONY : main.o
+#=============================================================================
+# Target rules for targets named babyos
 
-# target to preprocess a source file
-main.i:
-	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/main.i
-.PHONY : main.i
+# Build rule for target.
+babyos: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 babyos
+.PHONY : babyos
 
-# target to generate assembly for a file
-main.s:
-	$(MAKE) -f CMakeFiles/babyos.dir/build.make CMakeFiles/babyos.dir/main.s
-.PHONY : main.s
+# fast build rule for target.
+babyos/fast:
+	$(MAKE) -f Examples/Test/CMakeFiles/babyos.dir/build.make Examples/Test/CMakeFiles/babyos.dir/build
+.PHONY : babyos/fast
 
 # Help Target
 help:
@@ -237,7 +222,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... babyos"
 	@echo "... algorithm"
 	@echo "... core"
 	@echo "... utils"
@@ -245,9 +229,7 @@ help:
 	@echo "... module"
 	@echo "... thirdparty"
 	@echo "... hal"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... babyos"
 .PHONY : help
 
 

@@ -23,9 +23,9 @@ SET(LIBMODULES_SRC b_mod_battery.c
 		b_mod_xm128.c
 		b_mod_ymodem.c)
 
-INCLUDE_DIRECTORIES(inc ../../bos_config/ 
+INCLUDE_DIRECTORIES(inc ../../Examples/Test/bos_config/ 
 			../core/inc/ 
-			../../bos_hal/inc/ 
+			../../Examples/Test/bos_hal/inc/ 
 			../utils/inc/ 
 			../algorithm/inc/
 			../thirdparty/SFUD/inc/

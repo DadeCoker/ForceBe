@@ -8,13 +8,14 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
   "../CMakeLists.txt"
+  "../Examples/Test/CMakeLists.txt"
+  "../Examples/Test/bos_hal/CMakeLists.txt"
   "../bos/algorithm/CMakeLists.txt"
   "../bos/core/CMakeLists.txt"
   "../bos/drivers/CMakeLists.txt"
   "../bos/modules/CMakeLists.txt"
   "../bos/thirdparty/CMakeLists.txt"
   "../bos/utils/CMakeLists.txt"
-  "../bos_hal/CMakeLists.txt"
   "CMakeFiles/3.5.1/CMakeCCompiler.cmake"
   "CMakeFiles/3.5.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.5.1/CMakeSystem.cmake"
@@ -50,17 +51,18 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "bos/drivers/CMakeFiles/CMakeDirectoryInformation.cmake"
   "bos/modules/CMakeFiles/CMakeDirectoryInformation.cmake"
   "bos/thirdparty/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "bos_hal/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "Examples/Test/bos_hal/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "Examples/Test/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/babyos.dir/DependInfo.cmake"
   "bos/algorithm/CMakeFiles/algorithm.dir/DependInfo.cmake"
   "bos/core/CMakeFiles/core.dir/DependInfo.cmake"
   "bos/utils/CMakeFiles/utils.dir/DependInfo.cmake"
   "bos/drivers/CMakeFiles/driver.dir/DependInfo.cmake"
   "bos/modules/CMakeFiles/module.dir/DependInfo.cmake"
   "bos/thirdparty/CMakeFiles/thirdparty.dir/DependInfo.cmake"
-  "bos_hal/CMakeFiles/hal.dir/DependInfo.cmake"
+  "Examples/Test/bos_hal/CMakeFiles/hal.dir/DependInfo.cmake"
+  "Examples/Test/CMakeFiles/babyos.dir/DependInfo.cmake"
   )

@@ -40,7 +40,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/r/Desktop/BabyOS/build/bos/drivers/cmake_install.cmake")
   include("/home/r/Desktop/BabyOS/build/bos/modules/cmake_install.cmake")
   include("/home/r/Desktop/BabyOS/build/bos/thirdparty/cmake_install.cmake")
-  include("/home/r/Desktop/BabyOS/build/bos_hal/cmake_install.cmake")
+  include("/home/r/Desktop/BabyOS/build/Examples/Test/bos_hal/cmake_install.cmake")
+  include("/home/r/Desktop/BabyOS/build/Examples/Test/cmake_install.cmake")
 
 endif()
 

@@ -8,8 +8,8 @@ SET(LIBHAL_SRC  b_hal.c
 		b_hal_uart.c)
 
 INCLUDE_DIRECTORIES(inc ../bos_config/ 
-			../bos/modules/inc
-			../bos/core/inc
-			../bos/utils/inc)
+			../../../bos/modules/inc
+			../../../bos/core/inc
+			../../../bos/utils/inc)
 
 ADD_LIBRARY(hal SHARED ${LIBHAL_SRC})

@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-../bos/algorithm/../../bos_config/b_config.h
+../bos/algorithm/../../Examples/Test/bos_config/b_config.h
 stdint.h
 -
 b_mod_log.h
-../bos/algorithm/../../bos_config/b_mod_log.h
+../bos/algorithm/../../Examples/Test/bos_config/b_mod_log.h
 b_common.h
-../bos/algorithm/../../bos_config/b_common.h
+../bos/algorithm/../../Examples/Test/bos_config/b_common.h
 
 ../bos/algorithm/../core/inc/b_common.h
 stdint.h

@@ -13,11 +13,11 @@ set(CMAKE_C_COMPILER_ID "GNU")
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
   "../bos/core/inc"
-  "../bos/core/../../bos_config"
+  "../bos/core/../../Examples/Test/bos_config"
   "../bos/core/../modules/inc"
   "../bos/core/../core/inc"
   "../bos/core/../drivers/inc"
-  "../bos/core/../../bos_hal/inc"
+  "../bos/core/../../Examples/Test/bos_hal/inc"
   "../bos/core/../utils/inc"
   "../bos/core/../algorithm/inc"
   )

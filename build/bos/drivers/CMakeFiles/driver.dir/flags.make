@@ -6,5 +6,5 @@ C_FLAGS = -fPIC
 
 C_DEFINES = -Ddriver_EXPORTS
 
-C_INCLUDES = -I/home/r/Desktop/BabyOS/bos/drivers/inc -I/home/r/Desktop/BabyOS/bos/drivers/../../bos_config -I/home/r/Desktop/BabyOS/bos/drivers/../modules/inc -I/home/r/Desktop/BabyOS/bos/drivers/../core/inc -I/home/r/Desktop/BabyOS/bos/drivers/../../bos_hal/inc -I/home/r/Desktop/BabyOS/bos/drivers/../utils/inc -I/home/r/Desktop/BabyOS/bos/drivers/../algorithm/inc -I/home/r/Desktop/BabyOS/bos/drivers/../thirdparty/SFUD/inc 
+C_INCLUDES = -I/home/r/Desktop/BabyOS/bos/drivers/inc -I/home/r/Desktop/BabyOS/bos/drivers/../../Examples/Test/bos_config -I/home/r/Desktop/BabyOS/bos/drivers/../modules/inc -I/home/r/Desktop/BabyOS/bos/drivers/../core/inc -I/home/r/Desktop/BabyOS/bos/drivers/../../Examples/Test/bos_hal/inc -I/home/r/Desktop/BabyOS/bos/drivers/../utils/inc -I/home/r/Desktop/BabyOS/bos/drivers/../algorithm/inc -I/home/r/Desktop/BabyOS/bos/drivers/../thirdparty/SFUD/inc 
 

@@ -6,5 +6,5 @@ C_FLAGS = -fPIC
 
 C_DEFINES = -Dutils_EXPORTS
 
-C_INCLUDES = -I/home/r/Desktop/BabyOS/bos/utils/inc -I/home/r/Desktop/BabyOS/bos/utils/../../bos_config -I/home/r/Desktop/BabyOS/bos/utils/../../bos_hal/inc -I/home/r/Desktop/BabyOS/bos/utils/../modules/inc -I/home/r/Desktop/BabyOS/bos/utils/../core/inc 
+C_INCLUDES = -I/home/r/Desktop/BabyOS/bos/utils/inc -I/home/r/Desktop/BabyOS/bos/utils/../../Examples/Test/bos_config -I/home/r/Desktop/BabyOS/bos/utils/../../Examples/Test/bos_hal/inc -I/home/r/Desktop/BabyOS/bos/utils/../modules/inc -I/home/r/Desktop/BabyOS/bos/utils/../core/inc 
 

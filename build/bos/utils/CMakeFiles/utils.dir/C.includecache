@@ -6,17 +6,17 @@
 
 #IncludeRegexTransform: 
 
-../bos/utils/../../bos_config/b_config.h
+../bos/utils/../../Examples/Test/bos_config/b_config.h
 stdint.h
 -
 b_mod_log.h
-../bos/utils/../../bos_config/b_mod_log.h
+../bos/utils/../../Examples/Test/bos_config/b_mod_log.h
 b_common.h
-../bos/utils/../../bos_config/b_common.h
+../bos/utils/../../Examples/Test/bos_config/b_common.h
 
-../bos/utils/../../bos_hal/inc/b_hal_gpio.h
+../bos/utils/../../Examples/Test/bos_hal/inc/b_hal_gpio.h
 b_config.h
-../bos/utils/../../bos_hal/inc/b_config.h
+../bos/utils/../../Examples/Test/bos_hal/inc/b_config.h
 
 ../bos/utils/../core/inc/b_common.h
 stdint.h
