@@ -65,6 +65,7 @@ extern "C" {
  */
 typedef struct
 {
+    uint8_t        init_f;
     const uint32_t dev;
     const uint32_t address;
     const uint32_t total_size;
@@ -88,7 +89,8 @@ typedef bKVStruct_t bKVInstance_t;
  * \brief 定义实例，如果存储器不需要擦除，则e_size为0
  */
 #define bKV_INSTANCE(name, dev_no, addr, size, e_size) \
-    bKVInstance_t name = {.dev = dev_no, .address = addr, .total_size = size, erase_size = e_size};
+    bKVInstance_t name = {                             \
+        .init_f = 0, .dev = dev_no, .address = addr, .total_size = size, erase_size = e_size};
 
 /**
  * \}
