@@ -82,7 +82,7 @@
 //<o> MemoryPool Block Size (B)
 #define MEMP_BLOCK_SIZE 32
 //<o> MemoryPool Max Size (B)
-#define MEMP_MAX_SIZE 512
+#define MEMP_MAX_SIZE 1024
 //<q> MemoryPool Monitor Enable/Disable
 #define _MEMP_MONITOR_ENABLE 1
 //</e>
@@ -328,13 +328,13 @@
 //<1=> LittleFS
 #define FS_SELECT 0
 
-//<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
+//<e> SPIFLASH Enable/Disable (Device No: bSPIFLASH)
 #define _SPIFLASH_ENABLE 1
 //<o> SPI Flash x(MB)
 #define SPIFLASH_SIZE 8
 //</e>
 
-//<e> SD Card Enable/Disable (Device No:SD)
+//<e> SD Card Enable/Disable (Device No: bSD)
 #define _SD_ENABLE 0
 //<o> SD Card x(G)
 #define SD_SIZE_XG 1

@@ -225,7 +225,7 @@ static void _bGUI_TouchExec()
             {
                 tmp         = ad_val.x_ad;
                 ad_val.x_ad = ad_val.y_ad;
-                ad_val.y_ad = ad_val.x_ad - 1 - tmp;
+                ad_val.y_ad = pGUICurrent->lcd_x_size - 1 - tmp;
             }
             UG_TouchUpdate(ad_val.x_ad, ad_val.y_ad, TOUCH_STATE_PRESSED);
         }
@@ -381,6 +381,17 @@ int bGUISetFontDevice(uint32_t dev_no)
 #else
     (void)dev_no;
 #endif
+    return 0;
+}
+
+int bGUIGetHandle(uint32_t lcd_dev_no, UG_GUI **p_gui_handle)
+{
+    bGUIInstance_t *p = _GUIId2Instance(lcd_dev_no);
+    if (p == NULL || p_gui_handle == NULL)
+    {
+        return -1;
+    }
+    *p_gui_handle = &p->gui_handle;
     return 0;
 }
 

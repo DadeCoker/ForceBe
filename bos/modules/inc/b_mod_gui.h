@@ -114,6 +114,9 @@ typedef bGUIStruct_t bGUIInstance_t;
 // 建议不要直接调用此接口，使用 bGUI_ADD_DEVICE 代替
 int bGUIRegist(bGUIInstance_t *pInstance);
 
+// 通过屏的dev_no获取GUI句柄
+int bGUIGetHandle(uint32_t lcd_dev_no, UG_GUI **p_gui_handle);
+
 // 选择当前操作的目标
 int bGUISelect(uint32_t lcd_dev_no);
 

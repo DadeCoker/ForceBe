@@ -31,8 +31,11 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_shell.h"
-#include "utils/inc/b_util_log.h"
+
 #include <string.h>
+
+#include "utils/inc/b_util_log.h"
+
 #if _NR_MICRO_SHELL_ENABLE
 /**
  * \addtogroup BABYOS
@@ -104,7 +107,8 @@ static void _CmdBosHandler(char argc, char *argv)
     {
         if (!strcmp("-v", &argv[argv[1]]))
         {
-            b_log("Version:%d.%d.%d\r\n", FW_VERSION / 10000, (FW_VERSION % 10000) / 100, FW_VERSION % 100);
+            b_log("Version:%d.%d.%d\r\n", FW_VERSION / 10000, (FW_VERSION % 10000) / 100,
+                  FW_VERSION % 100);
         }
     }
 }

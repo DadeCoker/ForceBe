@@ -34,6 +34,7 @@
 
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
+#include "utils/inc/b_util_log.h"
 #include "utils/inc/b_util_memp.h"
 
 #if _AT_ENABLE
@@ -225,6 +226,7 @@ int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t r
     {
         bFree(bAtQueue[bAtInfo.head_index].pcmd);
         bFree(bAtQueue[bAtInfo.head_index].presp);
+        b_log_e("malloc err... \n");
         return -3;
     }
 

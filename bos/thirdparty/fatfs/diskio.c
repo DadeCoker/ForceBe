@@ -62,6 +62,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
         case DEV_SPIFLASH:
         {
             // translate the arguments here
+            (void)len;
             uint32_t e_size = 0;
             fd              = bOpen(bSPIFLASH, BCORE_FLAG_RW);
             if (fd >= 0)
@@ -141,6 +142,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
         case DEV_SPIFLASH:
         {
             // translate the arguments here
+            (void)len;
             bFlashErase_t cmd_erase;
             uint32_t      e_size = 0;
             fd                   = bOpen(bSPIFLASH, BCORE_FLAG_RW);
