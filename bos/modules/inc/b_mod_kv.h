@@ -1,8 +1,8 @@
 /**
  *!
  * \file        b_mod_kv.h
- * \version     v0.0.2
- * \date        2020/04/09
+ * \version     v0.0.3
+ * \date        2022/11/13
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -61,19 +61,6 @@ extern "C" {
  * \defgroup KV_Exported_Defines
  * \{
  */
-#define bKV_IDLE 0
-#define bKV_BUSY 1
-#define bKV_ERROR 2
-
-#define bKV_SECTOR_T1 0X01
-#define bKV_SECTOR_T2 0X02
-#define bKV_SECTOR_D1 0X04
-#define bKV_SECTOR_D2 0X08
-#define bKV_SECTOR_ALL 0X0F
-
-#define bKV_HEAD_STR "B_KV"
-
-#define bKV_ALIGN_4BYTES(n) (((n) + 3) / 4 * 4)
 
 /**
  * \}
@@ -83,11 +70,6 @@ extern "C" {
  * \defgroup KV_Exported_Functions
  * \{
  */
-
-int bKV_Init(uint32_t dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
-int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len);
-int bKV_Get(const char *key, uint8_t *pvalue);
-int bKV_Delete(const char *key);
 
 /**
  * \}
