@@ -119,6 +119,8 @@ typedef struct
 #define B_KV_KEY_LENGTH(len) ((uint8_t)(((len) >> 24) & 0xff))
 #define B_KV_VALUE_LENGTH(len) ((len)&0x00ffffff)
 
+#define B_KV_SECTOR_NUM(i) (i->total_size / i->erase_size)
+
 /**
  * \}
  */
@@ -145,6 +147,92 @@ typedef struct
  * \defgroup KV_Private_Functions
  * \{
  */
+static int _bKVReadSectorHead(bKVInstance_t *pinstance, uint32_t sector_index,
+                              bKVSectorHead_t *phead)
+{
+    int fd = -1;
+    fd     = bOpen(pinstance->dev, BCORE_FLAG_R);
+    if (fd < 0 || sector_index >= (B_KV_SECTOR_NUM(pinstance)))
+    {
+        return -1;
+    }
+    bLseek(fd, pinstance->address + sector_index * pinstance->erase_size);
+    bRead(fd, (uint8_t *)phead, sizeof(bKVSectorHead_t));
+    bClose(fd);
+    return 0;
+}
+
+static int _bKVEraseSector(bKVInstance_t *pinstance, uint32_t sector_index)
+{
+    int           fd = -1;
+    bFlashErase_t param;
+    fd = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0 || sector_index >= (B_KV_SECTOR_NUM(pinstance)))
+    {
+        return -1;
+    }
+    param.addr = pinstance->address + sector_index * pinstance->erase_size;
+    param.num  = 1;
+    bCtl(fd, bCMD_ERASE_SECTOR, &param);
+    bClose(fd);
+    return 0;
+}
+
+static int _bKVSetSectorFlag(bKVInstance_t *pinstance, uint32_t sector_index)
+{
+    int             fd = -1;
+    bKVSectorHead_t head;
+    fd = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0 || sector_index >= (B_KV_SECTOR_NUM(pinstance)))
+    {
+        return -1;
+    }
+    head.flag = B_KV_FLAG;
+    bLseek(fd, pinstance->address + sector_index * pinstance->erase_size);
+    bWrite(fd, (uint8_t *)&head.flag, sizeof(head.flag));
+    bClose(fd);
+    return 0;
+}
+
+static int _bKVSetSectorState(bKVInstance_t *pinstance, uint32_t sector_index, bKVSectorStat_t sta,
+                              uint8_t messy, uint8_t joint)
+{
+    int             fd = -1;
+    bKVSectorHead_t head;
+    fd = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0 || sector_index >= (B_KV_SECTOR_NUM(pinstance)) || sta >= KV_SECTOR_STA_NUM)
+    {
+        return -1;
+    }
+    if (sta == KV_SECTOR_STA_WRITABLE)
+    {
+        head.state[sta] = B_KV_STA_WRITABLE;
+    }
+    else if (sta == KV_SECTOR_STA_FULL)
+    {
+        if (messy == 0 && joint == 0)
+        {
+            head.state[sta] = B_KV_STA_FULL;
+        }
+        else if (messy == 0 && joint != 0)
+        {
+            head.state[sta] = B_KV_STA_JOINT;
+        }
+        else
+        {
+            head.state[sta] = B_KV_STA_MESSY_FULL;
+        }
+    }
+    bLseek(fd, pinstance->address + sector_index * pinstance->erase_size +
+                   B_OFFSET_OF(bKVSectorHead_t, state) + sta * sizeof(uint32_t));
+    bWrite(fd, (uint8_t *)&head.state[sta], sizeof(uint32_t));
+    bClose(fd);
+    return 0;
+}
+
+static int _bKVSectorDefrag()
+{
+}
 
 /**
  * \}
@@ -156,78 +244,53 @@ typedef struct
  */
 int bKVInit(bKVInstance_t *pinstance)
 {
-    int             fd     = -1;
-    int             retval = -1, i = 0, windex = -1;
-    uint32_t        erase_size   = 0;
+    int             retval = -1, i = 0;
     uint32_t        sector_count = 0;
-    uint8_t         erase_flag   = 0;
     uint32_t        empty_count  = 0;
-    bFlashErase_t   param;
     bKVSectorHead_t sector_head;
 
     if (pinstance == NULL)
     {
         return -1;
     }
-    fd = bOpen(pinstance->dev, BCORE_FLAG_RW);
-    if (fd < 0)
+    if (pinstance->size == 0 || pinstance->size <= pinstance->erase_size)
     {
-        return -2;
+        return -1;
     }
-    retval = bCtl(fd, bCMD_GET_SECTOR_SIZE, &erase_size);
-    if (retval == 0)
+    pinstance->write_index = -1;
+    if (pinstance->erase_size == 0)
     {
-        pinstance->erase_size = erase_size;
+        pinstance->erase_size = pinstance->total_size / 2
     }
-    else
-    {
-        pinstance->erase_size = 0;
-    }
-
-    if (pinstance->erase_size > 0)
-    {
-        sector_count = pinstance->total_size / pinstance->erase_size;
-    }
-    else
-    {
-        pinstance->erase_size = pinstance->total_size / 2;
-        sector_count          = 2;
-    }
-
+    sector_count = pinstance->total_size / pinstance->erase_size;
     for (i = 0; i < sector_count; i++)
     {
-        bLseek(fd, pinstance->address + i * pinstance->erase_size);
-        bRead(fd, (uint8_t *)&sector_head, sizeof(sector_head));
+        _bKVReadSectorHead(pinstance, i, &sector_head);
         if (sector_head.flag != B_KV_FLAG)
         {
-            param.addr = pinstance->address + i * pinstance->erase_size;
-            param.num  = 1;
-            bCtl(fd, bCMD_ERASE_SECTOR, &param);
-            sector_head.flag = B_KV_FLAG;
-            bLseek(fd, pinstance->address + i * pinstance->erase_size);
-            bWrite(fd, &sector_head.flag, sizeof(sector_head.flag));
+            _bKVEraseSector(pinstance, i);
+            _bKVSetSectorFlag(pinstance, i);
             empty_count += 1;
             continue;
         }
-
         if (B_KV_STA_IS_FULL(sector_head.state[KV_SECTOR_STA_FULL]))
         {
             continue;
         }
-
         if (sector_head.state[KV_SECTOR_STA_WRITABLE] == B_KV_STA_WRITABLE)
         {
-            windex = i;
+            pinstance->write_index = i;
             continue;
         }
         empty_count += 1;
     }
-    if (windex >= 0)
+
+    if (pinstance->write_index >= 0)
     {
-        pinstance->write_index = windex;
         return 0;
     }
-    if (empty_count == 1)
+
+    if (empty_count <= 1)
     {
         ;  // 增加整理区块
     }

@@ -69,7 +69,7 @@ typedef struct
     const uint32_t address;
     const uint32_t total_size;
     uint32_t       erase_size;
-    uint32_t       write_index;
+    int32_t        write_index;
 } bKVStruct_t;
 
 typedef bKVStruct_t bKVInstance_t;
@@ -83,8 +83,11 @@ typedef bKVStruct_t bKVInstance_t;
  * \{
  */
 
-#define bKV_INSTANCE(name, dev_no, addr, size) \
-    bKVInstance_t name = {.dev = dev_no, .address = addr, .total_size = size, erase_size = 0};
+/**
+ * \brief 定义实例，如果存储器不需要擦除，则e_size为0
+ */
+#define bKV_INSTANCE(name, dev_no, addr, size, e_size) \
+    bKVInstance_t name = {.dev = dev_no, .address = addr, .total_size = size, erase_size = e_size};
 
 /**
  * \}

@@ -89,6 +89,8 @@ extern "C" {
 
 #define B_SIZE_ALIGNMENT(size, align) (((size) + (align)-1) & ~((align)-1))
 
+#define B_OFFSET_OF(type, member) ((uint32_t)(&((type *)0)->member))
+
 /**
  * \}
  */
