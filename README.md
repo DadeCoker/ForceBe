@@ -2,20 +2,9 @@
 
 # BabyOS
 
-<img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/2.png" alt="logo" style="zoom:33%;" />
+<img src="https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/2.png" alt="logo"  />
 
-
-
-```shell
-______________________________________________
-    ____                         __       __  
-    /   )          /           /    )   /    )
----/__ /-----__---/__---------/----/----\-----
-  /    )   /   ) /   ) /   / /    /      \    
-_/____/___(___(_(___/_(___/_(____/___(____/___
-                         /                    
-                     (_ /                     
-```
+​                  
 
 BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
 
@@ -61,19 +50,9 @@ Linux下需要安装python、python-pip以及make 用于配置和编译代码
 
  [《BabyOS设计和使用手册》](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md)
 
-[1.项目介绍](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#1-%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D)
+[项目介绍](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#1-%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D)
 
-[2.设计思路](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#2-%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF)
-
-[3.快速体验](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#3-%E5%BF%AB%E9%80%9F%E4%BD%93%E9%AA%8C)
-
-[4.进阶体验](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#4-%E8%BF%9B%E9%98%B6%E4%BD%93%E9%AA%8C)
-
-[5.概要介绍](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#5%E6%A6%82%E8%A6%81%E4%BB%8B%E7%BB%8D)
-
-[6.功能模块](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#6-%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97)
-
-[7.工具模块](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#7%E5%B7%A5%E5%85%B7%E6%A8%A1%E5%9D%97)
+[快速体验](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#3-%E5%BF%AB%E9%80%9F%E4%BD%93%E9%AA%8C)
 
 # 5 BabyOS教程
 

@@ -12,9 +12,9 @@
 
 # BabyOS设计和使用手册
 
-*V0.3.1*
+*V0.3.2*
 
-***BabyOS V8.1.6***
+***BabyOS V8.2.0***
 
 
 
@@ -34,6 +34,7 @@
 | 2022.10.22 | 链接文件增加b_mod_state段<br>增加状态机介绍 | notrynohigh |
 | 2022.12.07 | 更新驱动部分描述以及部分功能模块接口描述    | notrynohigh |
 | 2023.01.16 | 更新算法模块描述和IAP接口描述               | notrynohigh |
+| 2023.01.22 | 更新配置和快速体验描述                      | notrynohigh |
 
 
 
@@ -69,6 +70,10 @@ BabyOS是想搭建一个货架，那么货架上是怎么存放东西的呢？�
 
 虚拟机中装有ubuntu系统，没有板子也可以快速体验BabyOS
 
+确认安装了python、python-pip和make
+
+进入Modules Configuration，选定KV功能模块。
+
 ```shell
 virtual-machine:~$ git clone https://gitee.com/notrynohigh/BabyOS.git
 正克隆到 'BabyOS'...
@@ -80,6 +85,12 @@ remote: Total 9990 (delta 1192), reused 71 (delta 44), pack-reused 8383
 处理 delta 中: 100% (7687/7687), 完成.
 正在检出文件: 100% (312/312), 完成.
 virtual-machine:~$ cd BabyOS/test/kv/
+virtual-machine:~/BabyOS/test/kv$ make menuconfig                 
+```
+
+![](https://foruda.gitee.com/images/1674371507501425422/0030e1cc_1789704.png)
+
+```shell
 virtual-machine:~/BabyOS/test/kv$ make
 ....
 i_port.o build/nr_micro_shell.o build/ansi.o build/sfud.o build/sfud_sfdp.o build/ugui.o build/b_drv_testflash.o build/port.o build/kv_main.o  -T../../test/babyos.ld -lpthread -o build/BabyOS
@@ -95,7 +106,6 @@ ______________________________________________
 _/____/___(___(_(___/_(___/_(____/___(____/___
                          /                    
                      (_ /                     
-
 ```
 
 
@@ -191,26 +201,11 @@ NVIC_SetPriority(SysTick_IRQn, 0x0);
 
 ### 3.2.3 修改配置
 
-| 配置项                   | 说明                                             | 用于快速体验                         |
-| ------------------------ | ------------------------------------------------ | ------------------------------------ |
-| Version Configuration    | 版本配置项，硬件和固件版本                       | *无改动*                             |
-| Platform Configuration   | 平台配置项，指定心跳频率和MCU平台                | *MCU平台选择STM32F10X_CL*            |
-| Hal Configuration        | 硬件接口配置，可配置硬件接口参数是固定还是可变的 | *无改动*                             |
-| Utils Configuration      | 实用软件配置，部分软件代码的配置                 | *无改动*                             |
-| Algorithm Configuration  | 算法模块配置，各个算法模块配置                   | 无改动                               |
-| Modules Configuration    | 模块配置项，各个功能模块的配置                   | *无改动*                             |
-| Thirdparty Configuration | 第三方开源代码配置项                             | *勾选 NR Micro Shell Enable/Disable* |
+确认已安装python，双击 _config/b_config.bat
 
-`b_hal_if.h`中指定DEBUG接口
+![](https://foruda.gitee.com/images/1674371527647147457/4ed86ab0_1789704.png)
 
-```C
-#ifndef __B_HAL_IF_H__
-#define __B_HAL_IF_H__
-#include "b_config.h"
-// debug
-#define HAL_LOG_UART B_HAL_UART_1
-#endif
-```
+![](https://foruda.gitee.com/images/1674371572819091280/bfbb54d9_1789704.png)
 
 ### 3.2.4 调用必要的函数
 
@@ -225,7 +220,7 @@ void SysTick_Handler()
 }
 ```
 
-②调用`bInit();`bExec();`
+②调用 `bInit();  bExec();`
 
 ```C
 int main()
@@ -275,15 +270,7 @@ BabyOS里面SPIFLASH的驱动是基于sfud代码编写。因此也要添加sfud�
 
 ## 4.3 添加硬件接口
 
-在b_hal_if.h里面添加硬件接口。
-
-可利用BabyOS配置工具生成代码。https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2
-
-![微信截图_20220319185454](https://images.gitee.com/uploads/images/2022/0319/235605_6a0db0d4_1789704.png)
-
-![微信截图_20220319185642](https://images.gitee.com/uploads/images/2022/0319/235618_72df059e_1789704.png)
-
-
+在b_hal_if.h里面修改硬件接口。
 
 ## 4.4 记录开机次数
 
@@ -328,21 +315,29 @@ SPI和I2C接口支持模拟时序，HAL层判断是否使用模拟时序，然�
 
 ②实现蓝色部分的接口
 
-③修改`_config/b_config.h`，为*MCU Platform*增加一个选项
+③修改bos/mcu/Kconfig，为其增加一个选项
 
 ```C
-//<o> MCU Platform
-//<1001=> STM32F10X_LD
-//<1002=> STM32F10X_MD
-//<1003=> STM32F10X_HD
-//<1004=> STM32F10X_CL
-//<1101=> STM32G0X0
-//<2001=> NATION_F40X
-//<3001=> MM32SPIN2X
-//<3002=> MM32SPIN0X
-//<4001=> HC32L13X
-//<7001=> CH32F103
-#define MCU_PLATFORM 1004
+#假设增加 xxxx厂商的  yyyy型号的芯片
+#选择厂商
+choice
+    prompt "Select Vendor"
+config VENDOR_UBUNTU
+    bool "ubuntu"
+config VENDOR_ST
+    bool "STMicroelectronics"
+config VENDOR_XXXX
+    bool "xxxx"
+endchoice
+
+#选择xxxx厂商的芯片
+choice
+    prompt "Select xxxx Chip"
+    depends on VENDOR_XXXX
+config yyyy
+    bool "yyyy"
+endchoice
+
 ```
 
 <div STYLE="page-break-after: always;"></div>
@@ -831,7 +826,7 @@ SECTIONS
 | 功能模块   | 收集BabyOS开发者编写的通用软件模块 | b_mod_adchub<br>b_mod_button<br>b_mod_error<br>b_mod_fs<br>b_mod_gui<br>b_mod_kv<br>b_mod_menu<br>b_mod_modbus<br>b_mod_param<br>b_mod_protocol<br>b_mod_pwm<br>b_mod_shell<br>b_mod_timer<br>b_mod_trace<br>b_mod_xm128<br>b_mod_ymodem |
 | 第三方开源 | 收集第三方实用的开源代码           | cjson<br>cm_backtrace<br>fatfs<br>flexiblebutton<br>littlefs<br>nr_micro_shell<br>ugui<br>sfud |
 | 算法模块   | 收集常用的算法。                   | algo_base64<br>algo_crc<br>algo_md5<br>algo_sort<br>algo_utf8_unicode<br>algo_hmac_sha1 |
-| 工具模块   | 支持其他各模块的通用代码           | b_util_at<br>b_util_fifo<br>b_util_i2c<br>b_util_log<br>b_util_lunar<br>b_util_memp<br>b_util_spi<br>b_util_uart<br>b_util_utc |
+| 工具模块   | 支持其他各模块的通用代码           | b_util_at<br>b_util_fifo<br>b_util_log<br>b_util_lunar<br>b_util_memp<br>b_util_uart<br>b_util_utc |
 
 组件的每个部分都可以通过全局配置文件使能以及配置参数。组件中的代码，操作MCU资源只能调用HAL层接口，操作设备只能基于设备号进行操作。
 
