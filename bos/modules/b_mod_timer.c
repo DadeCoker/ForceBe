@@ -129,12 +129,12 @@ static void _bSoftTimerCore()
     bSoftTimerStruct_t *ptmp = pSoftTimer;
     while (ptmp)
     {
-        if (bUtilGetTick() - ptmp->tick >= MS2TICKS(ptmp->period))
+        if (bHalGetSysTick() - ptmp->tick >= MS2TICKS(ptmp->period))
         {
             ptmp->handler();
             if (ptmp->repeat)
             {
-                ptmp->tick = bUtilGetTick();
+                ptmp->tick = bHalGetSysTick();
             }
             else
             {
@@ -173,7 +173,7 @@ int bSoftTimerStart(bSoftTimerInstance_t *pTimerInstance, pTimerHandler handler)
         pSoftTimer->next     = pTimerInstance;
     }
     pTimerInstance->handler = handler;
-    pTimerInstance->tick    = bUtilGetTick();
+    pTimerInstance->tick    = bHalGetSysTick();
     return 0;
 }
 
@@ -193,7 +193,7 @@ int bSoftTimerReset(bSoftTimerInstance_t *pTimerInstance)
     {
         return -1;
     }
-    pTimerInstance->tick = bUtilGetTick();
+    pTimerInstance->tick = bHalGetSysTick();
     return 0;
 }
 

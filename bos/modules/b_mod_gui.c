@@ -173,9 +173,9 @@ static void _bGUI_TouchExec()
 static void _bGUI_Core()
 {
     static uint32_t tick = 0;
-    if (bUtilGetTick() - tick > MS2TICKS(10))
+    if (bHalGetSysTick() - tick > MS2TICKS(10))
     {
-        tick = bUtilGetTick();
+        tick = bHalGetSysTick();
         _bGUI_TouchExec();
     }
     UG_Update();

@@ -126,9 +126,9 @@ static uint8_t _bButtonRead(void *p)
 static void _bButtonCore()
 {
     static uint32_t tick = 0;
-    if (bUtilGetTick() - tick > MS2TICKS(1000 / FLEX_BTN_SCAN_FREQ_HZ))
+    if (bHalGetSysTick() - tick > MS2TICKS(1000 / FLEX_BTN_SCAN_FREQ_HZ))
     {
-        tick = bUtilGetTick();
+        tick = bHalGetSysTick();
         flex_button_scan();
     }
 }

@@ -98,7 +98,7 @@ bSD_Driver_t             bSD_Driver;
  * interface*******/
 static int _bSD_WaitReady()
 {
-    uint32_t tick = bUtilGetTick();
+    uint32_t tick = bHalGetSysTick();
     uint8_t  tmp  = 0;
 
     for (;;)
@@ -108,7 +108,7 @@ static int _bSD_WaitReady()
         {
             return 0;
         }
-        if (bUtilGetTick() - tick > 500)
+        if (bHalGetSysTick() - tick > 500)
         {
             break;
         }
@@ -131,7 +131,7 @@ static int _bSD_PowerON()
     uint8_t  tmp    = 0xff;
     uint8_t  cmd[6] = {CMD0, 0, 0, 0, 0, 0X95};
     uint32_t cnt;
-    bUtilDelayMS(100);
+    bHalDelayMs(100);
     bHalSPI_SetSpeed(bSD_HalIf.spi, 300000);
     SD_CS_SET();
     _bSD_SendDump(10);

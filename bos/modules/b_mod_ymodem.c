@@ -168,9 +168,9 @@ static void _bYmodemTimeout()
     {
         return;
     }
-    if (bUtilGetTick() - bYmodemInfo.tick >= MS2TICKS(2000))
+    if (bHalGetSysTick() - bYmodemInfo.tick >= MS2TICKS(2000))
     {
-        bYmodemInfo.tick = bUtilGetTick();
+        bYmodemInfo.tick = bHalGetSysTick();
 
         if (bYmodemInfo.tt_count >= 10)
         {
@@ -231,7 +231,7 @@ int bYmodemStart()
     if (bYmodemInfo.statu == YM_S_NULL)
     {
         bYmodemInfo.send_f(YMODEM_C);
-        bYmodemInfo.tick        = bUtilGetTick();
+        bYmodemInfo.tick        = bHalGetSysTick();
         bYmodemInfo.statu       = YM_S_WAIT_NAME;
         bYmodemInfo.next_number = 0;
         bYmodemInfo.tt_count    = 0;
@@ -262,7 +262,7 @@ int bYmodemParse(uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    bYmodemInfo.tick     = bUtilGetTick();
+    bYmodemInfo.tick     = bHalGetSysTick();
     bYmodemInfo.tt_count = 0;
 
     if (bYmodemInfo.statu == YM_S_WAIT_NAME)

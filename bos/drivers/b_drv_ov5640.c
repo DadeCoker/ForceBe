@@ -318,7 +318,7 @@ static uint8_t _OV5640_FocusInit()
     do
     {
         state = _OV5640_ReadReg(0x3029);
-        bUtilDelayMS(5);
+        bHalDelayMs(5);
         i++;
         if (i > 1000)
             return 1;
@@ -400,9 +400,9 @@ int bOV5640_Init()
     uint16_t reg, i;
 
     bHalGPIO_WritePin(bOV5640_HalIf.reset.port, bOV5640_HalIf.reset.pin, 0);
-    bUtilDelayMS(20);
+    bHalDelayMs(20);
     bHalGPIO_WritePin(bOV5640_HalIf.reset.port, bOV5640_HalIf.reset.pin, 1);
-    bUtilDelayMS(20);
+    bHalDelayMs(20);
 
     reg = _OV5640_ReadReg(OV5640_CHIPIDH);
     reg <<= 8;
@@ -418,7 +418,7 @@ int bOV5640_Init()
 
     _OV5640_WriteReg(0x3103, 0X11);
     _OV5640_WriteReg(0X3008, 0X82);
-    bUtilDelayMS(10);
+    bHalDelayMs(10);
 
     for (i = 0; i < sizeof(ov5640_uxga_init_reg_tbl) / 4; i++)
     {

@@ -327,7 +327,7 @@ int bILI9341_Init()
     _bLcdWriteData(0x00);
     _bLcdWriteData(0xef);
     _bLcdWriteCmd(0x11);
-    bUtilDelayMS(120);
+    bHalDelayMs(120);
     _bLcdWriteCmd(0x29);
     bILI9341_Driver.status = 0;
     bILI9341_Driver.close  = NULL;

@@ -115,9 +115,9 @@ static const AO_InitFunc_t AO_InitFuncTable[] = {
 static void _bQPN_Run()
 {
     static uint32_t tick = 0;
-    if (bUtilGetTick() - tick >= QPN_PER_SEC)
+    if (bHalGetSysTick() - tick >= QPN_PER_SEC)
     {
-        tick = bUtilGetTick();
+        tick = bHalGetSysTick();
         QF_tickXISR(0U); /* process time events for rate 0 */
         QF_run();        /* transfer control to QF-nano */
     }

@@ -247,9 +247,9 @@ int bILI9320_Init()
     _bILI9320WriteReg(0x0c, (1 << 0));  // Extern Display Interface Contral 1.(0x0000)
     _bILI9320WriteReg(0x0d, 0x0000);    // Frame Maker Position.
     _bILI9320WriteReg(0x0f, 0x0000);    // Extern Display Interface Contral 2.
-    bUtilDelayMS(50);
+    bHalDelayMs(50);
     _bILI9320WriteReg(0x07, 0x0101);  // Display Contral.
-    bUtilDelayMS(50);
+    bHalDelayMs(50);
     _bILI9320WriteReg(
         0x10, (1 << 12) | (0 << 8) | (1 << 7) | (1 << 6) | (0 << 4));  // Power Control 1.(0x16b0)
     _bILI9320WriteReg(0x11, 0x0007);                                   // Power Control 2.(0x0001)

@@ -200,7 +200,7 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
         bHalSPI_Send(_if->_if.spi, &cmd, 1);
     }
     bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
-    bUtilDelayUS(10);
+    bHalDelayUs(10);
     return 0;
 }
 
@@ -219,7 +219,7 @@ static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
         bHalSPI_Send(_if->_if.spi, &cmd, 1);
     }
     bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
-    bUtilDelayUS(10);
+    bHalDelayUs(10);
     return 0;
 }
 

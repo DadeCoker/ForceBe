@@ -213,7 +213,7 @@ static int _bOLEDWrite(bOLED_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf, uint1
  */
 int bOLED_Init()
 {
-    bUtilDelayMS(100);
+    bHalDelayMs(100);
     _bOLED_WriteCmd(0xAE);  /// display off
     _bOLED_WriteCmd(0x20);  /// Set Memory Addressing Mode
     _bOLED_WriteCmd(0x10);  /// 00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page

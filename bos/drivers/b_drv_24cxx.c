@@ -106,21 +106,21 @@ static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint
     else
     {
         bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, l_c);
-        bUtilDelayMS(5);
+        bHalDelayMs(5);
         off += l_c;
         pbuf += l_c;
         len -= l_c;
         for (i = 0; i < len / 8; i++)
         {
             bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, 8);
-            bUtilDelayMS(5);
+            bHalDelayMs(5);
             off += 8;
             pbuf += 8;
         }
         if ((len % 8) > 0)
         {
             bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, (len % 8));
-            bUtilDelayMS(5);
+            bHalDelayMs(5);
         }
     }
     return len;
