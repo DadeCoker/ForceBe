@@ -106,16 +106,16 @@ static uint8_t            bButtonInitFlag = 0;
  * \defgroup BUTTON_Private_Functions
  * \{
  */
-
 static bButtonInstance_t *_bButtonFindInstance(void *pflex, uint8_t id)
 {
+    uint32_t           addr_val = 0;
     bDeviceMsg_t       msg;
     bButtonInstance_t *p = pButtonHead;
-    pflex                = (void *)(((uint32_t)pflex) - id * sizeof(flex_button_t));
+    addr_val             = (((uint32_t)pflex) - id * sizeof(flex_button_t));
     while (p != NULL)
     {
         bDeviceReadMessage(p->dev_no, &msg);
-        if (msg._p == pflex)
+        if (msg.v == addr_val)
         {
             break;
         }
@@ -239,9 +239,9 @@ int bButtonAddMatrixKeys(bButtonInstance_t *pbutton, flex_button_t *pflex)
     bDeviceWriteMessage(pbutton->dev_no, &msg);
     for (i = 0; i < (MATRIX_KEYS_ROWS * MATRIX_KEYS_COLUMNS); i++)
     {
-        pflex->id                  = i;
-        pflex->pressed_logic_level = 1;
-        flex_button_register(pflex);
+        pflex[i].id                  = i;
+        pflex[i].pressed_logic_level = 1;
+        flex_button_register(&pflex[i]);
     }
     return 0;
 }
