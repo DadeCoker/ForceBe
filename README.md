@@ -100,11 +100,7 @@ BabyOS							//可作git子模块使用
 │   ├── modules					//功能模块，全部添加至工程，由配置文件b_config.h配置
 │   ├── thirdparty				//第三方代码，选择SFUD第三方代码添加至工程
 │   └── utils					//实用代码，选择delay部分代码添加至工程
-├── build						
-├── CMakeLists.txt
 ├── doc							//相关文档
-├── Examples					
-│   └── qpn
 ├── LICENSE						//开源协议
 └── README.md
 BabyOS_Config					//克隆后放入工程目录，全部添加至工程
@@ -345,4 +341,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2020.06 | 分解为3个仓库管理代码。增加SFUD作为SPIFLASH驱动，增加SD卡驱动，增加FatFS和LittleFS等 |      |
 | 2020.07 | 内容未更新，增加两个视频教程用于快速了解BabyOS               |      |
 | 2020.08 | BabyOS_Hal仓库增加ST标准库，增加标准库例子。对代码中细节进行优化 |      |
+| 2021.01 | 去掉多余的文件，修改section部分的内容。                      |      |
 
