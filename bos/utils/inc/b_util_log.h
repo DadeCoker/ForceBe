@@ -107,6 +107,15 @@ extern "C" {
 
 #endif
 
+#else
+
+#define b_log_i(...)
+#define b_log_w(...)
+#define b_log_e(...)
+#define b_log(...)
+
+#endif
+
 /**
  * \}
  */

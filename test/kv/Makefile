@@ -94,7 +94,7 @@ C_INCLUDES =  \
 -I$(SOURCE_ROOT)/bos \
 -I$(SOURCE_ROOT)/test/ \
 -I../ \
--I$(SOURCE_ROOT)/test/kv/config/ \
+-I$(SOURCE_ROOT)/test/kv/_config/ \
 
 # compile gcc flags
 ASFLAGS = $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
