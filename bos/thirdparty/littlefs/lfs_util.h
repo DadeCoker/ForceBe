@@ -19,12 +19,12 @@
 #include LFS_STRINGIZE(LFS_CONFIG)
 #else
 #include "b_config.h"
+#include "utils/inc/b_util_log.h"
 // System includes
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-
 
 #ifndef LFS_NO_MALLOC
 #include <stdlib.h>

@@ -93,7 +93,7 @@
  */
 uint32_t ft(int t, uint32_t x, uint32_t y, uint32_t z)
 {
-    uint32_t a, b, c;
+    uint32_t a = 0, b = 0, c = 0;
 
     if (t < 20)
     {
@@ -121,7 +121,7 @@ uint32_t ft(int t, uint32_t x, uint32_t y, uint32_t z)
 
 uint32_t k(int t)
 {
-    uint32_t c;
+    uint32_t c = 0;
 
     if (t < 20)
     {

@@ -119,6 +119,7 @@ extern bDriverInterface_t bFM25CL_Driver[];
 extern bDriverInterface_t b24CXX_Driver[];
 extern bDriverInterface_t bSD_Driver;
 extern bDriverInterface_t bMCUFLASH_Driver;
+extern bDriverInterface_t bTESTFLASH_Driver;
 
 extern bDriverInterface_t bSSD1289_Driver;
 extern bDriverInterface_t bILI9341_Driver;

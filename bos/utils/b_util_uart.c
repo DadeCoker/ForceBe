@@ -119,8 +119,7 @@ static void _UtilUartListAdd(bUitlUartInstance_t *pinstance)
 
 static void _bUtilUartDetectIdle()
 {
-    uint32_t             c_tick = bHalGetSysTick();
-    bUitlUartInstance_t *phead  = &bUitlUartHead;
+    bUitlUartInstance_t *phead = &bUitlUartHead;
     for (;;)
     {
         if (phead->next != NULL)
