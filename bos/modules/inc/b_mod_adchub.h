@@ -104,7 +104,7 @@ typedef bAdcInfo_t bAdcInstance_t;
  * \{
  */
 
-int bAdchubRegist(bAdcInstance_t *pInstance);
+int bAdchubRegist(bAdcInstance_t *pinstance);
 int bAdchubFeedValue(uint8_t ad_srq, uint32_t ad_val);
 
 /**

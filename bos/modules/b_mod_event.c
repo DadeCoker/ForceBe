@@ -127,47 +127,47 @@ BOS_REG_POLLING_FUNC(_bEventCore);
 
 /**
  * \brief Regist event instance
- * \param pInstance Pointer to the event instance
+ * \param pinstance Pointer to the event instance
  * \param handler The Callback function
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bEventRegist(bEventInstance_t *pInstance, pEventHandler_t handler)
+int bEventRegist(bEventInstance_t *pinstance, pEventHandler_t handler)
 {
-    if (handler == NULL || pInstance == NULL)
+    if (handler == NULL || pinstance == NULL)
     {
         return -1;
     }
-    pInstance->pnext = NULL;
+    pinstance->pnext = NULL;
     if (pEventInstanceHead == NULL)
     {
-        pEventInstanceHead = pInstance;
+        pEventInstanceHead = pinstance;
     }
     else
     {
-        pInstance->pnext          = pEventInstanceHead->pnext;
-        pEventInstanceHead->pnext = pInstance;
+        pinstance->pnext          = pEventInstanceHead->pnext;
+        pEventInstanceHead->pnext = pinstance;
     }
-    pInstance->trigger  = 0;
-    pInstance->phandler = handler;
+    pinstance->trigger  = 0;
+    pinstance->phandler = handler;
     return 0;
 }
 
 /**
  * \brief Call this function after the event is generated
- * \param pInstance Pointer to the event instance
+ * \param pinstance Pointer to the event instance
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bEventTrigger(bEventInstance_t *pInstance)
+int bEventTrigger(bEventInstance_t *pinstance)
 {
-    if (pInstance == NULL)
+    if (pinstance == NULL)
     {
         return -1;
     }
-    pInstance->trigger = 1;
+    pinstance->trigger = 1;
     return 0;
 }
 

@@ -106,18 +106,18 @@ static bAdcInstance_t AdcListHead = {
  * \{
  */
 
-static void _AdcListAdd(bAdcInstance_t *pInstance)
+static void _AdcListAdd(bAdcInstance_t *pinstance)
 {
     bAdcInstance_t *phead = &AdcListHead;
     for (;;)
     {
         if (phead->next == NULL)
         {
-            phead->next      = pInstance;
-            pInstance->prev  = phead;
-            pInstance->next  = NULL;
-            pInstance->flag  = 0;
-            pInstance->index = 0;
+            phead->next      = pinstance;
+            pinstance->prev  = phead;
+            pinstance->next  = NULL;
+            pinstance->flag  = 0;
+            pinstance->index = 0;
             break;
         }
         else
@@ -151,37 +151,37 @@ static bAdcInstance_t *_AdcFindInstance(uint8_t srq)
     return NULL;
 }
 
-static uint32_t _AdcFilterFeedVal(bAdcInstance_t *pInstance, uint32_t val)
+static uint32_t _AdcFilterFeedVal(bAdcInstance_t *pinstance, uint32_t val)
 {
     int      i   = 0;
     uint32_t max = 0, min = 0xffffffff, sum = 0;
-    if (pInstance->flag == 0)
+    if (pinstance->flag == 0)
     {
         for (i = 0; i < FILTER_BUF_SIZE; i++)
         {
-            pInstance->buf[i] = val;
+            pinstance->buf[i] = val;
         }
-        pInstance->flag = 1;
+        pinstance->flag = 1;
     }
     else
     {
-        pInstance->buf[pInstance->index] = val;
-        pInstance->index                 = (pInstance->index + 1) % FILTER_BUF_SIZE;
+        pinstance->buf[pinstance->index] = val;
+        pinstance->index                 = (pinstance->index + 1) % FILTER_BUF_SIZE;
     }
 
     for (i = 0; i < FILTER_BUF_SIZE; i++)
     {
-        if (pInstance->buf[i] >= max)
+        if (pinstance->buf[i] >= max)
         {
-            max = pInstance->buf[i];
+            max = pinstance->buf[i];
         }
 
-        if (pInstance->buf[i] <= min)
+        if (pinstance->buf[i] <= min)
         {
-            min = pInstance->buf[i];
+            min = pinstance->buf[i];
         }
 
-        sum += pInstance->buf[i];
+        sum += pinstance->buf[i];
     }
 
     return ((sum - max - min) / (FILTER_BUF_SIZE - 2));
@@ -196,34 +196,34 @@ static uint32_t _AdcFilterFeedVal(bAdcInstance_t *pInstance, uint32_t val)
  * \{
  */
 
-int bAdchubRegist(bAdcInstance_t *pInstance)
+int bAdchubRegist(bAdcInstance_t *pinstance)
 {
-    if (pInstance == NULL)
+    if (pinstance == NULL)
     {
         return -1;
     }
-    _AdcListAdd(pInstance);
+    _AdcListAdd(pinstance);
     return 0;
 }
 
 int bAdchubFeedValue(uint8_t adc_srq, uint32_t ad_val)
 {
-    bAdcInstance_t *pInstance = _AdcFindInstance(adc_srq);
+    bAdcInstance_t *pinstance = _AdcFindInstance(adc_srq);
     uint32_t        value     = ad_val;
-    if (pInstance == NULL)
+    if (pinstance == NULL)
     {
         return -1;
     }
 
-    if (pInstance->filter == 0)
+    if (pinstance->filter == 0)
     {
         value = ad_val;
     }
     else
     {
-        value = _AdcFilterFeedVal(pInstance, ad_val);
+        value = _AdcFilterFeedVal(pinstance, ad_val);
     }
-    pInstance->callback(value, pInstance->arg);
+    pinstance->callback(value, pinstance->arg);
     return 0;
 }
 

@@ -36,8 +36,10 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
 #include <stdint.h>
+
+#include "b_config.h"
+
 #if _EVENT_MANAGE_ENABLE
 /**
  * \addtogroup BABYOS
@@ -86,9 +88,9 @@ typedef bEventInfo_t bEventInstance_t;
  * \{
  */
 
-///< pInstance \ref bEVENT_INSTANCE
-int bEventRegist(bEventInstance_t *pInstance, pEventHandler_t handler);
-int bEventTrigger(bEventInstance_t *pInstance);
+///< pinstance \ref bEVENT_INSTANCE
+int bEventRegist(bEventInstance_t *pinstance, pEventHandler_t handler);
+int bEventTrigger(bEventInstance_t *pinstance);
 int bEventIsIdle(void);
 /**
  * \}

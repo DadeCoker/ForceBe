@@ -100,11 +100,15 @@ typedef bUitlUart_t bUitlUartInstance_t;
  * \defgroup UART_Exported_Functions
  * \{
  */
-void bUtilUartBind(uint8_t uart_no, bUitlUartInstance_t *pInstance);
+void bUtilUartBind(uint8_t uart_no, bUitlUartInstance_t *pinstance);
 //    bUtilUartRxHandler 和 bUtilUartRxHandler2 效果是一样
 //    但是，只有通过bUtilUartBind绑定串口号，才能调用bUtilUartRxHandler2
-void bUtilUartRxHandler(bUitlUartInstance_t *pInstance, uint8_t dat);
+void bUtilUartRxHandler(bUitlUartInstance_t *pinstance, uint8_t dat);
 void bUtilUartRxHandler2(uint8_t uart_no, uint8_t dat);
+
+//    获取当前BUF中已经收到的数据长度
+uint16_t bUtilUartReceivedSize(bUitlUartInstance_t *pinstance);
+uint16_t bUtilUartReceivedSize2(uint8_t uart_no);
 /**
  * \}
  */
