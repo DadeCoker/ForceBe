@@ -35,14 +35,16 @@
 
 #if (MCU_PLATFORM == 1201)
 
+#include "cmsis_compiler.h"
+
 void bMcuIntEnable()
 {
-    ;
+    __enable_irq();
 }
 
 void bMcuIntDisable()
 {
-    ;
+    __disable_irq();
 }
 
 #endif
