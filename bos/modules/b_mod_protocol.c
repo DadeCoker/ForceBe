@@ -53,7 +53,11 @@
  * \defgroup PROTOCOL_Private_TypesDefinitions
  * \{
  */
-
+typedef struct
+{
+    bProtoID_t id;
+    pdispatch  f;
+} bProtocolInfo_t;
 /**
  * \}
  */

@@ -71,7 +71,7 @@ typedef uint32_t bProtoID_t;
 #define INVALID_ID 0XFFFFFFFF
 #endif
 
-#if _PROTO_FLEN_SIZE == 1
+#if PROTO_FLEN_SIZE == 1
 typedef uint8_t bProtoLen_t;
 #else
 typedef uint16_t bProtoLen_t;
@@ -96,12 +96,6 @@ typedef struct
 #pragma pack()
 
 typedef int (*pdispatch)(uint8_t cmd, uint8_t *param, bProtoLen_t param_len);
-
-typedef struct
-{
-    bProtoID_t id;
-    pdispatch  f;
-} bProtocolInfo_t;
 
 /**
  * \}
