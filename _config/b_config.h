@@ -217,12 +217,6 @@
 #define FLEX_BTN_NUMBER 3
 //</e>
 
-//<e> QPN Enable/Disable
-#define _QPN_ENABLE 0
-//<o> How often ISR_TIMER_COMPA_vect() and qpn_run() is called (ms)
-#define QPN_PER_SEC 10
-//</e>
-
 //<e> UGUI Enable/Disable
 #define _UGUI_ENABLE 0
 //<o> X PHYSICAL SIZE
@@ -257,22 +251,6 @@
 #define _ENCODING 0
 //<o> XBF Base Address
 #define _XBF_FILE_ADDR 0
-//</e>
-
-//<e> CmBacktrace Enable/Disable
-#define _CMBACKTRACE_ENABLE 0
-
-//<o> CMB_CPU_ARM_CORTEX_M?
-//<0=> ARM_CORTEX_M0
-//<1=> ARM_CORTEX_M3
-//<2=> ARM_CORTEX_M4
-//<3=> ARM_CORTEX_M7
-#define CMB_CPU_PLATFORM_TYPE 1
-
-//<o> Print Language
-//<0=> English
-//<1=> Chinese
-#define CMB_PRINT_LANGUAGE 1
 //</e>
 
 //<e> FS Enable/Disable
