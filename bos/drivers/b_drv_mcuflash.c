@@ -128,6 +128,24 @@ static int _bMCUFLASHCtl(bMCUFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
             }
         }
         break;
+        case bCMD_GET_SECTOR_SIZE:
+        {
+            if (param)
+            {
+                ((uint32_t *)param)[0] = bHalFlashSectorSize();
+                retval                 = 0;
+            }
+        }
+        break;
+        case bCMD_GET_SECTOR_COUNT:
+        {
+            if (param)
+            {
+                ((uint32_t *)param)[0] = bHalFlashChipSize() / bHalFlashSectorSize();
+                retval                 = 0;
+            }
+        }
+        break;
     }
     return retval;
 }

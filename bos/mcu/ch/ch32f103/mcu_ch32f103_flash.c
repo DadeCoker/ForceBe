@@ -171,6 +171,16 @@ int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
     return len;
 }
 
+uint32_t bMcuFlashSectorSize()
+{
+    return FLASH_PAGE_SIZE;
+}
+
+uint32_t bMcuFlashChipSize()
+{
+    return FLASH_MAX_SIZE;
+}
+
 #endif
 
 /************************ Copyright (c) 2021 Bean *****END OF FILE****/

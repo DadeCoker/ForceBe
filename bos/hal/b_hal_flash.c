@@ -76,6 +76,16 @@ __WEAKDEF int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
     return -1;
 }
 
+__WEAKDEF uint32_t bMcuFlashSectorSize()
+{
+    return 0;
+}
+
+__WEAKDEF uint32_t bMcuFlashChipSize()
+{
+    return 0;
+}
+
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
@@ -107,6 +117,16 @@ int bHalFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 int bHalFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
     return bMcuFlashRead(raddr, pbuf, len);
+}
+
+uint32_t bHalFlashSectorSize()
+{
+    return bMcuFlashSectorSize();
+}
+
+uint32_t bHalFlashChipSize()
+{
+    return bMcuFlashChipSize();
 }
 
 /**

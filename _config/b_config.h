@@ -37,7 +37,9 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70400
+#define FW_VERSION 70401
+//<s> Firware Name
+#define FW_NAME "BabyOS"
 //</h>
 
 //<h> Platform Configuration
@@ -179,6 +181,32 @@
 //<q> Tuning Parameters Enable/Disable
 #define _PARAM_ENABLE 0
 
+//<e> IAP Enable/Disable
+#define _IAP_ENABLE 1
+
+//<q> File Checksum Enable/Disable
+#define _IAP_CHECKSUM_ENABLE 1
+
+//<o> Bootloader Start Address
+#define BOOT_START_ADDR 0x08000000
+
+//<o> IAP Flag Address
+#define IAP_FLAG_ADDR 0x08014000
+
+//<o> App Start Address
+#define APP_START_ADDR 0x08014800
+
+//<o> File Cache
+//<0=> NONE
+//<1=> On-Chip Flash
+//<2=> SPI FLASH
+#define IAP_FILE_CACHE 2
+
+//<o> Firmware Save Address
+#define IAP_FW_SAVE_ADDR 0x0802D800
+
+//</e>
+
 //</h>
 
 //<h> Third Party Configuration
@@ -312,11 +340,6 @@
 
 //</h>
 
-#if _DEBUG_ENABLE
-// RESERVED FOR BCONFIGTOOL
-#else
-// RESERVED FOR BCONFIGTOOL
-#endif
 
 #include "b_type.h"
 

@@ -91,6 +91,13 @@ typedef struct
     char file_name[B_IAP_FILENAME_MAXLEN + (4 - (B_IAP_FILENAME_MAXLEN % 4))];
 } bIapFlag_t;
 
+typedef struct
+{
+    uint8_t  dev_no;   //暂存新固件的设备号，不需要暂存可以忽略
+    uint32_t len;      //固件长度
+    uint32_t c_crc32;  //固件数据CRC32校验值
+} bIapFwInfo_t;
+
 typedef void (*pJumpFunc_t)(void);
 
 /**
@@ -105,11 +112,14 @@ typedef void (*pJumpFunc_t)(void);
 void bIapJump2Boot(void);
 void bIapJump2App(void);
 
-bIapFlag_t *bIapGetFlag(void);
-int         bIapStart(const char *pfname);
-int         bIapAppCheckFlag(void);
-int         bIapBootCheckFlag(void);
-int         bIapUpdateFWResult(int result);
+int bIapInit(uint8_t dev_no);
+int bIapStart(const char *pfname);
+int bIapAppCheckFlag(void);
+int bIapBootCheckFlag(void);
+int bIapUpdateFwResult(int result);
+int bIapSetFwInfo(bIapFwInfo_t *pinfo);
+int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len);
+int bIapVerifyFwData(void);
 /**
  * \}
  */
