@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "hal.h"
+#include "b_hal.h"
 
 /**
  * \addtogroup B_UTILS
