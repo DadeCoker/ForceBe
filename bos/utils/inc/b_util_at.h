@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_utils.h
+ * \file        b_util_at.h
  * \version     v0.0.1
  * \date        2019/12/23
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,20 +28,76 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTILS_H__
-#define __B_UTILS_H__
+#ifndef __B_UTIL_AT_H__
+#define __B_UTIL_AT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*Includes ----------------------------------------------*/
+#include <stdlib.h>
+#include <string.h>
 
-#include "b_util_at.h"
-#include "b_util_fifo.h"
-#include "b_util_i2c.h"
-#include "b_util_log.h"
-#include "b_util_lunar.h"
-#include "b_util_memp.h"
-#include "b_util_spi.h"
-#include "b_util_uart.h"
-#include "b_util_utc.h"
+#include "b_config.h"
 
+#if _AT_ENABLE
+
+/**
+ * \addtogroup B_UTILS
+ * \{
+ */
+
+/**
+ * \addtogroup AT
+ * \{
+ */
+
+/**
+ * \defgroup AT_Exported_TypesDefinitions
+ * \{
+ */
+#define AT_STA_NULL (0)
+#define AT_STA_OK (1)
+#define AT_STA_ERR (2)
+#define AT_STA_ID_INVALID (3)
+/**
+ * \}
+ */
+
+/**
+ * \defgroup AT_Exported_Defines
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup AT_Exported_Functions
+ * \{
+ */
+int bAtGetStat(uint8_t id);
+int bAtFeedRespData(uint8_t *pbuf, uint16_t len);
+int bAtCmdSend(uint8_t *pcmd, uint16_t cmd_len, uint8_t *presp, uint16_t resp_len, uint8_t uart);
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

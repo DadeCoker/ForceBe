@@ -68,6 +68,25 @@
 //<2=> warn+error
 //<3=> error
 #define _DEBUG_ENABLE 1
+
+//<e> MemoryPool Enable/Disable
+#define _MEMP_ENABLE 0
+//<o> MemoryPool Block Size (B)
+#define MEMP_BLOCK_SIZE 32
+//<o> MemoryPool Max Size (B)
+#define MEMP_MAX_SIZE 512
+//</e>
+
+//<e> AT Enable/Disable
+#define _AT_ENABLE 0
+//<o> AT Queue Length
+#define AT_Q_LEN 3
+//<o> AT Command Retry Count
+#define AT_RETRY_COUNT 2
+//<o> AT Timeout (MS)
+#define AT_TIMEOUT_MS 1000
+//</e>
+
 //</h>
 
 //<h> Modules Configuration
