@@ -37,10 +37,7 @@
         B_HAL_GPIOA, B_HAL_PIN4 \
     }
 
-#define HAL_ESP12F_IF \
-    {                 \
-        B_HAL_UART_2  \
-    }
+#define HAL_ESP12F_IF B_HAL_UART_2
 
 #define HAL_FM25CL_IF                                                                \
     {                                                                                \
