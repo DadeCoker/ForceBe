@@ -89,10 +89,6 @@ typedef struct
 #define BCORE_STA_OPEN 1
 
 #define BCORE_FD_MAX 10
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 /**
  * \}
  */

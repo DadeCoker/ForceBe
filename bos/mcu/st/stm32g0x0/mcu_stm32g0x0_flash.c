@@ -69,13 +69,13 @@ typedef struct
 
 static uint32_t sMcuFlashSize = 0;
 
-static int _FlashInit()
+int bMcuFlashInit()
 {
     sMcuFlashSize = (*((volatile uint16_t *)0x1FFF75E0)) * 1024;
     return 0;
 }
 
-static int _FlashUnlock()
+int bMcuFlashUnlock()
 {
     int retval      = 0;
     MCU_FLASH->KEYR = FLASH_KEY_1;
@@ -83,16 +83,16 @@ static int _FlashUnlock()
     return retval;
 }
 
-static int _FlashLock()
+int bMcuFlashLock()
 {
-    int retval = 0;
+    int      retval = 0;
     uint32_t tmp;
-    tmp = MCU_FLASH->CR | 0x80000000;
+    tmp           = MCU_FLASH->CR | 0x80000000;
     MCU_FLASH->CR = tmp;
     return retval;
 }
 
-static int _FlashErase(uint32_t raddr, uint8_t pages)
+int bMcuFlashErase(uint32_t raddr, uint8_t pages)
 {
     int      retval  = 0;
     int      timeout = 0;
@@ -130,7 +130,7 @@ static int _FlashErase(uint32_t raddr, uint8_t pages)
     return retval;
 }
 
-static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
+int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 {
     int      timeout  = 0;
     uint32_t wdata[2] = {0, 0};
@@ -150,11 +150,11 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
         wdata[1] = (wdata[1] << 8) | pbuf[i * 8 + 5];
         wdata[1] = (wdata[1] << 8) | pbuf[i * 8 + 4];
 
-        wdata[0] = (wdata[0] << 8) | pbuf[i * 8 + 3];
-        wdata[0] = (wdata[0] << 8) | pbuf[i * 8 + 2];
-        wdata[0] = (wdata[0] << 8) | pbuf[i * 8 + 1];
-        wdata[0] = (wdata[0] << 8) | pbuf[i * 8 + 0];
-        MCU_FLASH->SR = 0x83ff;
+        wdata[0]                            = (wdata[0] << 8) | pbuf[i * 8 + 3];
+        wdata[0]                            = (wdata[0] << 8) | pbuf[i * 8 + 2];
+        wdata[0]                            = (wdata[0] << 8) | pbuf[i * 8 + 1];
+        wdata[0]                            = (wdata[0] << 8) | pbuf[i * 8 + 0];
+        MCU_FLASH->SR                       = 0x83ff;
         tmp                                 = MCU_FLASH->CR | (0x00000001 << 0);
         MCU_FLASH->CR                       = tmp;
         *((volatile uint32_t *)raddr)       = wdata[0];
@@ -177,7 +177,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     return (wlen * 8);
 }
 
-static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
+int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
     if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (sMcuFlashSize + FLASH_BASE_ADDR))
     {
@@ -187,15 +187,6 @@ static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
     memcpy(pbuf, (const uint8_t *)raddr, len);
     return len;
 }
-
-bHalFlashDriver_t bHalFlashDriver = {
-    .pFlashInit   = _FlashInit,
-    .pFlashUnlock = _FlashUnlock,
-    .pFlashLock   = _FlashLock,
-    .pFlashErase  = _FlashErase,
-    .pFlashWrite  = _FlashWrite,
-    .pFlashRead   = _FlashRead,
-};
 
 #endif
 

@@ -49,25 +49,16 @@ extern "C" {
  */
 
 /**
- * \defgroup IT_Exported_TypesDefinitions
+ * \defgroup IT_Exported_Functions
  * \{
  */
 
-typedef struct
-{
-    void (*pIntEnable)(void);
-    void (*pIntDisable)(void);
-} const bHalITDriver_t;
-
-/**
- * \}
- */
-
-/**
- * \defgroup IT_Exported_Variables
- * \{
- */
-extern bHalITDriver_t bHalITDriver;
+void bMcuIntEnable(void);
+void bMcuIntDisable(void);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+void bHalIntEnable(void);
+void bHalIntDisable(void);
 /**
  * \}
  */

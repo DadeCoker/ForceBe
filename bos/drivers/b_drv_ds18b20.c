@@ -98,15 +98,13 @@ static uint8_t _bSbusReady()
 {
     uint16_t cp     = 0;
     uint8_t  retval = 1;
-    bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 0);
+    bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 0);
     bHalDelayUs(600);  // 480~960us
-    bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
+    bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
 
-    bHalGPIODriver.pGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_INPUT,
-                               B_HAL_GPIO_NOPULL);
+    bHalGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
     cp = 0;
-    while (((bHalGPIODriver.pGpioReadPin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin)) == 1) &&
-           (cp++ < 100))
+    while (((bHalGpioReadPin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin)) == 1) && (cp++ < 100))
     {
         bHalDelayUs(1);
     }
@@ -115,9 +113,8 @@ static uint8_t _bSbusReady()
         retval = 0;
     }
     bHalDelayUs(250);  // 60~240us
-    bHalGPIODriver.pGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_OUTPUT,
-                               B_HAL_GPIO_NOPULL);
-    bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
+    bHalGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+    bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
     return retval;
 }
 
@@ -128,20 +125,20 @@ static uint8_t _bSbusReadByte()
     uint8_t i;
     for (i = 0; i < 8; i++)
     {
-        bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 0);
+        bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 0);
         bHalDelayUs(2);
-        bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
+        bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
 
-        bHalGPIODriver.pGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_INPUT,
-                                   B_HAL_GPIO_NOPULL);
+        bHalGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_INPUT,
+                       B_HAL_GPIO_NOPULL);
         bHalDelayUs(2);  // < 15us
-        bit  = bHalGPIODriver.pGpioReadPin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin);
+        bit  = bHalGpioReadPin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin);
         byte = (byte >> 1) | (bit << 7);
         bHalDelayUs(100);  // > 60us
 
-        bHalGPIODriver.pGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_OUTPUT,
-                                   B_HAL_GPIO_NOPULL);
-        bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
+        bHalGpioConfig(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, B_HAL_GPIO_OUTPUT,
+                       B_HAL_GPIO_NOPULL);
+        bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
     }
     return byte;
 }
@@ -153,11 +150,11 @@ static void _bSbusWriteByte(uint8_t dat)
     {
         wbit = dat & 0x1;
         dat >>= 1;
-        bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 0);
+        bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 0);
         bHalDelayUs(2);
-        bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, wbit);
+        bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, wbit);
         bHalDelayUs(100);  // 60~120us
-        bHalGPIODriver.pGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
+        bHalGpioWritePin(bDS18B20_HalIf.port, bDS18B20_HalIf.pin, 1);
         bHalDelayUs(2);
     }
 }

@@ -106,31 +106,31 @@ uint8_t bUtilSPI_WriteRead(bUtilSPI_t spi, uint8_t dat)
     uint8_t polarity = (spi.CPOL == 0) ? 0 : 1;
     uint8_t init_p   = polarity;
     uint8_t i        = 0;
-    bHalGPIODriver.pGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+    bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
     if (spi.CPHA)
     {
         polarity = polarity ^ 0x01;
-        bHalGPIODriver.pGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
     }
     for (i = 0; i < 8; i++)
     {
-        bHalGPIODriver.pGpioWritePin(spi.mosi.port, spi.mosi.pin, dat & 0x80);
+        bHalGpioWritePin(spi.mosi.port, spi.mosi.pin, dat & 0x80);
         dat <<= 1;
         polarity = polarity ^ 0x01;
-        bHalGPIODriver.pGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
 
-        if (bHalGPIODriver.pGpioReadPin(spi.miso.port, spi.miso.pin))
+        if (bHalGpioReadPin(spi.miso.port, spi.miso.pin))
         {
             dat++;
         }
 
         polarity = polarity ^ 0x01;
-        bHalGPIODriver.pGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
     }
     if (init_p != polarity)
     {
         polarity = polarity ^ 0x01;
-        bHalGPIODriver.pGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
+        bHalGpioWritePin(spi.clk.port, spi.clk.pin, polarity);
     }
     return dat;
 }

@@ -33,6 +33,7 @@
 #include "modules/inc/b_mod_protocol.h"
 #if _PROTO_ENABLE
 #include <string.h>
+#include "utils/inc/b_util_log.h"
 /**
  * \addtogroup BABYOS
  * \{

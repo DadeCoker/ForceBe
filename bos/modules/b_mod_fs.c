@@ -33,6 +33,7 @@
 #include "modules/inc/b_mod_fs.h"
 #if _FS_ENABLE
 #include <stdio.h>
+#include "utils/inc/b_util_log.h"
 /**
  * \addtogroup BABYOS
  * \{

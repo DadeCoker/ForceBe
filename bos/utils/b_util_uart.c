@@ -31,8 +31,10 @@
 
 /*Includes ----------------------------------------------*/
 #include "utils/inc/b_util_uart.h"
-#include "core/inc/b_section.h"
+
+#include "b_section.h"
 #include "hal/inc/b_hal.h"
+
 
 /**
  * \addtogroup B_UTILS
@@ -57,9 +59,6 @@
  * \defgroup UART_Private_Defines
  * \{
  */
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 
 /**
  * \}

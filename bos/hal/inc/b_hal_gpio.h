@@ -107,16 +107,6 @@ typedef struct
     bHalGPIOPin_t  pin;
 } bHalGPIOInstance_t;
 
-typedef struct
-{
-    void (*pGpioConfig)(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
-                        bHalGPIOPull_t pull);
-    void (*pGpioWritePin)(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
-    void (*pGpioWritePort)(bHalGPIOPort_t port, uint16_t dat);
-    uint8_t (*pGpioReadPin)(bHalGPIOPort_t port, bHalGPIOPin_t pin);
-    uint16_t (*pGpioReadPort)(bHalGPIOPort_t port);
-} const bHalGPIODriver_t;
-
 /**
  * \}
  */
@@ -133,12 +123,22 @@ typedef struct
  */
 
 /**
- * \defgroup GPIO_Exported_Variables
+ * \defgroup GPIO_Exported_Functions
  * \{
  */
 
-extern bHalGPIODriver_t bHalGPIODriver;
-
+void bMcuGpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir, bHalGPIOPull_t pull);
+void bMcuGpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
+void bMcuGpioWritePort(bHalGPIOPort_t port, uint16_t dat);
+uint8_t  bMcuGpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin);
+uint16_t bMcuGpioReadPort(bHalGPIOPort_t port);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+void bHalGpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir, bHalGPIOPull_t pull);
+void bHalGpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
+void bHalGpioWritePort(bHalGPIOPort_t port, uint16_t dat);
+uint8_t  bHalGpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin);
+uint16_t bHalGpioReadPort(bHalGPIOPort_t port);
 /**
  * \}
  */

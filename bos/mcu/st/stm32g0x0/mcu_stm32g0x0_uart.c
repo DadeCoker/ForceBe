@@ -34,9 +34,6 @@
 #include "hal/inc/b_hal_uart.h"
 
 #if (_MCU_PLATFORM == 1101)
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 
 //      Register Address
 #define UART1_BASE_ADDR (0x40013800)
@@ -72,7 +69,7 @@ typedef struct
 static McuUartReg_t *UartTable[6] = {MCU_UART1, MCU_UART2, MCU_UART3,
                                      MCU_UART4, MCU_UART5, MCU_UART6};
 
-static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
+int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
     int           i       = 0;
     int           timeout = 0x000B0000;
@@ -98,7 +95,7 @@ static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
     return len;
 }
 
-static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
+int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
 {
     int           i       = 0;
     int           timeout = 0x000B0000;
@@ -123,11 +120,6 @@ static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     }
     return len;
 }
-
-bHalUartDriver_t bHalUartDriver = {
-    .pSend    = _UartSend,
-    .pReceive = _UartReceive,
-};
 
 #endif
 

@@ -25,7 +25,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 # 1 代码结构
 
-![frame](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/frame.bmp)
+待补充........
 
 # 2 适用项目
 
@@ -279,4 +279,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2021.11 | 针对警告和报错点进行优化, mcu目录下的代码默认用寄存器操作方式 |      |
 | 2021.12 | 优化整体结构，增加对应配置工具，方便使用。支持V7.3.0及更新版本的 b_config.h |      |
 | 2022.01 | 增加bReinit和bModifyHalIf接口，并修复模拟I2C中BUG            |      |
+| 2022.02 | 调整结构，使得依赖关系更加合理。                             |      |
 

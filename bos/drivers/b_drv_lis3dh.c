@@ -104,17 +104,15 @@ static int _bLis3dhReadRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bLIS3DH_HalIf.is_spi)
     {
         reg |= 0xC0;
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
-                                     0);
-        bHalSPIDriver.pSend(&bLIS3DH_HalIf._if._spi, &reg, 1);
-        bHalSPIDriver.pReceive(&bLIS3DH_HalIf._if._spi, data, len);
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
-                                     1);
+        bHalGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
+        bHalSpiSend(&bLIS3DH_HalIf._if._spi, &reg, 1);
+        bHalSpiReceive(&bLIS3DH_HalIf._if._spi, data, len);
+        bHalGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
     }
     else
     {
         reg = reg | 0x80;
-        bHalI2CDriver.pMemRead(&bLIS3DH_HalIf._if._i2c, reg, data, len);
+        bHalI2CMemRead(&bLIS3DH_HalIf._if._i2c, reg, data, len);
     }
     return 0;
 }
@@ -124,16 +122,14 @@ static int _bLis3dhWriteRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bLIS3DH_HalIf.is_spi)
     {
         reg |= 0x40;
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
-                                     0);
-        bHalSPIDriver.pSend(&bLIS3DH_HalIf._if._spi, &reg, 1);
-        bHalSPIDriver.pSend(&bLIS3DH_HalIf._if._spi, data, len);
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
-                                     1);
+        bHalGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
+        bHalSpiSend(&bLIS3DH_HalIf._if._spi, &reg, 1);
+        bHalSpiSend(&bLIS3DH_HalIf._if._spi, data, len);
+        bHalGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
     }
     else
     {
-        bHalI2CDriver.pMemWrite(&bLIS3DH_HalIf._if._i2c, reg, data, len);
+        bHalI2CMemWrite(&bLIS3DH_HalIf._if._i2c, reg, data, len);
     }
     return 0;
 }

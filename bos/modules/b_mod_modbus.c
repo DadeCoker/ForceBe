@@ -35,6 +35,7 @@
 #include "modules/inc/b_mod_modbus.h"
 #if _MODBUS_ENABLE
 #include <string.h>
+#include "utils/inc/b_util_log.h"
 /**
  * \addtogroup BABYOS
  * \{

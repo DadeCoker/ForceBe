@@ -45,7 +45,7 @@
 void ansi_show_char(char ch)
 {
 #if NR_SHELL_ECHO_ENABLE
-    bHalUartDriver.pSend(HAL_LOG_UART, (uint8_t *)&ch, 1);
+    bHalUartSend(HAL_LOG_UART, (uint8_t *)&ch, 1);
 #endif
 }
 

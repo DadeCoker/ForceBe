@@ -31,7 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_shell.h"
-
+#include "utils/inc/b_util_log.h"
 #include <string.h>
 #if _NR_MICRO_SHELL_ENABLE
 /**

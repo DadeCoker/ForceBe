@@ -34,7 +34,8 @@
 
 #include <string.h>
 
-#include "core/inc/b_section.h"
+#include "b_section.h"
+
 
 #if _FLEXIBLEBUTTON_ENABLE
 #include "hal/inc/b_hal.h"
@@ -120,7 +121,7 @@ const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
 static uint8_t _bButtonRead(void *p)
 {
     flex_button_t *btn = (flex_button_t *)p;
-    return bHalGPIODriver.pGpioReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
+    return bHalGpioReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
 }
 
 static void _bButtonCore()

@@ -44,6 +44,7 @@ extern "C" {
 
 #if (_FS_SELECT == 0)
 #include "thirdparty/FatFS/ff.h"
+#include "thirdparty/FatFS/diskio.h"
 #endif
 
 #if (_FS_SELECT == 1)
@@ -87,8 +88,6 @@ typedef enum
  * \defgroup FS_Exported_Defines
  * \{
  */
-#define DEV_SPIFLASH 0 /* Map SPIFLASH to physical drive 0*/
-#define DEV_SDCARD 1   /* Map SDCARD to physical drive 1*/
 
 /**
  * \}

@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70301
+#define FW_VERSION 70302
 //</h>
 
 //<h> Platform Configuration
@@ -54,10 +54,20 @@
 //<4001=> HC32L13X
 //<7001=> CH32F103
 #define _MCU_PLATFORM 1004
+//</h>
 
 //<h> Hal Configuration
 //<q> Hardware Interface Variable Enable/Disable
 #define _HALIF_VARIABLE_ENABLE 0
+//</h>
+
+//<h> Utils Configuration
+//<o> Debug level
+//<0=> off
+//<1=> all
+//<2=> warn+error
+//<3=> error
+#define _DEBUG_ENABLE 1
 //</h>
 
 //<h> Modules Configuration
@@ -66,19 +76,6 @@
 
 //<q> Modules Enable/Disable
 #define _BOS_MODULES_ENABLE 1
-
-//<q> UTC2000 Enable/Disable
-#define _UTC2000_ENABLE 0
-
-//<q> Lunar Enable/Disable
-#define _LUNAR_ENABLE 0
-
-//<o> Debug level
-//<0=> off
-//<1=> all
-//<2=> warn+error
-//<3=> error
-#define _DEBUG_ENABLE 1
 
 //<e> Adchub Enable/Disable
 #define _ADCHUB_ENABLE 0
@@ -138,9 +135,6 @@
 //<q> KV Enable/Disable
 #define _KV_ENABLE 0
 
-//<q> FIFO Enable/Disable
-#define _FIFO_ENABLE 0
-
 //<q> XMODEM128 Enable/Disable
 #define _XMODEM128_ENABLE 0
 
@@ -151,17 +145,6 @@
 #define _MENU_ENABLE 0
 //<o> Menu Item Number
 #define MENU_ITEM_NUMBER 10
-//</e>
-
-//<e> Heap4 Enable/Disable
-#define _HEAP_ENABLE 0
-//<o> Heap Size
-#define HEAP_SIZE 1024
-//<e> External SDRAM ?
-#define _EX_SDRAM_ENABLE 0
-//<o> Heap Address
-#define EX_HEAP_ADDRESS 0xC0000000
-//</e>
 //</e>
 
 //<q> Soft-timer Enable/Disable
@@ -282,13 +265,13 @@
 #define _FS_SELECT 0
 
 //<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
-#define _SPIFLASH_ENABLE 0
+#define _SPIFLASH_ENABLE 1
 //<o> SPI Flash x(MB)
 #define SPIFLASH_SIZE 8
 //</e>
 
 //<e> SD Card Enable/Disable (Device No:SD)
-#define _SD_ENABLE 1
+#define _SD_ENABLE 0
 //<o> SD Card x(G)
 #define _SD_SIZE 1
 //</e>
@@ -297,13 +280,12 @@
 //</h>
 
 #if _DEBUG_ENABLE
-#include "modules/inc/b_mod_log.h"
+// RESERVED FOR BCONFIGTOOL
 #else
-#define b_log_i(...)
-#define b_log_w(...)
-#define b_log_e(...)
-#define b_log(...)
+// RESERVED FOR BCONFIGTOOL
 #endif
+
+#include "b_type.h"
 
 #endif
 

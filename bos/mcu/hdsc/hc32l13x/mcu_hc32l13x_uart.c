@@ -35,10 +35,6 @@
 
 #if (_MCU_PLATFORM == 4001)
 
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
 //      Register Address
 
 #define UART1_BASE_ADDR (0x40000000)
@@ -51,8 +47,8 @@ typedef struct
     volatile uint32_t SADDR;
     volatile uint32_t SADEN;
     volatile uint32_t ISR;
-    volatile uint32_t ICR;    
-    volatile uint32_t SCNT;  
+    volatile uint32_t ICR;
+    volatile uint32_t SCNT;
 } McuUartReg_t;
 
 #define MCU_UART1 ((McuUartReg_t *)UART1_BASE_ADDR)
@@ -60,7 +56,7 @@ typedef struct
 
 static McuUartReg_t *UartTable[2] = {MCU_UART1, MCU_UART2};
 
-static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
+int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
     int           i       = 0;
     int           timeout = 0x000B0000;
@@ -69,7 +65,7 @@ static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    
+
     pUart = UartTable[uart];
 
     for (i = 0; i < len; i++)
@@ -84,7 +80,7 @@ static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
             return -2;
         }
         pUart->SBUF = pbuf[i];
-        
+
         timeout = 0x000B0000;
         while (timeout > 0 && ((pUart->ISR & (0x1 << 1)) == 0))
         {
@@ -99,10 +95,10 @@ static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
     return len;
 }
 
-static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
+int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
 {
-    int           i       = 0;
-    McuUartReg_t *pUart   = NULL;
+    int           i     = 0;
+    McuUartReg_t *pUart = NULL;
     if (uart > B_HAL_UART_2 || pbuf == NULL)
     {
         return -1;
@@ -114,11 +110,6 @@ static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     }
     return len;
 }
-
-bHalUartDriver_t bHalUartDriver = {
-    .pSend    = _UartSend,
-    .pReceive = _UartReceive,
-};
 
 #endif
 

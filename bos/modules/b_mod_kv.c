@@ -33,7 +33,7 @@
 #include "modules/inc/b_mod_kv.h"
 #if _KV_ENABLE
 #include <string.h>
-
+#include "utils/inc/b_util_log.h"
 #include "core/inc/b_core.h"
 #include "drivers/inc/b_driver.h"
 
