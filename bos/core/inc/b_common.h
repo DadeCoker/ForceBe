@@ -90,7 +90,7 @@ typedef void (*pbPoling_t)(void);
 /**
  * \brief the beginning of a section
  */
-#if defined(__CC_ARM)
+#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000))
 #define BOS_SECTION_START_ADDR(section_name) &CONCAT_2(section_name, $$Base)
 
 #elif defined(__GNUC__)
@@ -103,7 +103,7 @@ typedef void (*pbPoling_t)(void);
 /**
  * \brief the end of a section.
  */
-#if defined(__CC_ARM)
+#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000))
 #define BOS_SECTION_END_ADDR(section_name) &CONCAT_2(section_name, $$Limit)
 
 #elif defined(__GNUC__)
@@ -122,7 +122,7 @@ typedef void (*pbPoling_t)(void);
 /**
  * \brief creating a section
  */
-#if defined(__CC_ARM)
+#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000))
 #define BOS_SECTION_DEF(section_name, data_type)      \
     extern data_type *CONCAT_2(section_name, $$Base); \
     extern void *     CONCAT_2(section_name, $$Limit)
@@ -141,7 +141,7 @@ typedef void (*pbPoling_t)(void);
 /**
  * \brief declaring a variable and registering it in a section.
  */
-#if defined(__CC_ARM)
+#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000))
 #define BOS_SECTION_ITEM_REGISTER(section_name, section_var) \
     section_var __attribute__((section(STRINGIFY(section_name)))) __attribute__((used))
 

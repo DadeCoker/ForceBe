@@ -44,7 +44,6 @@ extern "C" {
 #if _NR_MICRO_SHELL_ENABLE
 
 struct nr_ansi_struct;
-typedef struct nr_ansi_struct ansi_st;
 
 void nr_ansi_ctrl_common_slover(ansi_st *ansi);
 void nr_ansi_in_newline(ansi_st *ansi);
