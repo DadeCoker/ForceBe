@@ -29,7 +29,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 # 2 适用项目
 
-MCU裸机开发项目。编译器勾选C99   
+MCU开发项目。编译器勾选C99   
 
 # 3 前世今生
 
@@ -53,154 +53,39 @@ MCU裸机开发项目。编译器勾选C99
 
 新项目启动时，以搭积木的方式即可完成一部分工作，以此来缩短开发时间。
 
-# 4 使用方法
+# 4 BabyOS手册
 
-【STM32F107 使用STM32标准库函数为例】
+移步查看《BabyOS设计和使用手册》：
 
-## 4.1 准备基础工程
+ [BabyOS设计和使用手册](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md)
 
-基础工程是基于STM32标准库建立的工程。需要用到的MCU资源初始化完成。
+[1.项目介绍](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#1-%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D)
 
-## 4.2 加入BabyOS代码
+[2.设计思路](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#2-%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF)
 
-### 4.2.1 添加BabyOS代码
+[3.快速体验](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#3-%E5%BF%AB%E9%80%9F%E4%BD%93%E9%AA%8C)
 
-加入BabyOS代码有两种方式：
+[4.进阶体验](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#4-%E8%BF%9B%E9%98%B6%E4%BD%93%E9%AA%8C)
 
-①下载代码，复制 bos 和 _config 目录到自己的代码目录。
+[5.概要介绍](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#5%E6%A6%82%E8%A6%81%E4%BB%8B%E7%BB%8D)
 
-② 当作子模块加入：`git submodule add https://gitee.com/notrynohigh/BabyOS.git babyos`
+[6.功能模块](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#6-%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97)
 
-​     babyos/_config 用户根据需要进行修改
-
-​     babyos/bos BabyOS的主要代码
-
-### 4.2.2 加入代码至工程
-
-| 路径           | 部分/全部    | 备注                                                         |
-| -------------- | ------------ | ------------------------------------------------------------ |
-| bos/algorithm  | 根据需要添加 |                                                              |
-| bos/core       | 全部添加     |                                                              |
-| bos/drivers    | 根据需要添加 | 不需要的驱动不要添加到工程中                                 |
-| bos/hal        | 全部添加     |                                                              |
-| bos/mcu        | 根据需要添加 | 根据平台添加对应的代码，对应b_config.h中的配置               |
-| bos/modules    | 全部添加     | 全部添加后，可在b_config中配置                               |
-| bos/thirdparty | 根据需要添加 | cmbacktrace 错误跟踪<br>fatfs文件系统<br>littlefs 文件系统<br>flexiblebutton 使用按键模块则需要添加<br>nr_micro_shell 命令行<br>ugui 简单的GUI库 |
-| bos/utils      | 全部添加     | 通用代码，有模拟的IIC和SPI代码，模拟串口接收空闲事件         |
-| bos/_config    |              | b_config.h BabyOS 配置文件<br>b_device_list.h 注册设备的文件<br>b_hal_if.h 驱动接口文件 |
-
-### 4.2.3 添加头文件路径
-
-添加两个路径即可：
-
-`bos/`
-
- `_config/`   如果配置文件拷贝到其他路径了，则添加相应路径即可。 
-
-### 4.2.4 修改配置
-
-| 配置项                   | 说明                                             | 备注 |
-| ------------------------ | ------------------------------------------------ | ---- |
-| Version Configuration    | 版本配置项，硬件和固件版本                       |      |
-| Platform Configuration   | 平台配置项，指定心跳频率和MCU平台                |      |
-| Hal Configuration        | 硬件接口配置，可配置硬件接口参数是固定还是可变的 |      |
-| Utils Configuration      | 实用软件配置，部分软件代码的配置                 |      |
-| Modules Configuration    | 模块配置项，各个功能模块的配置                   |      |
-| Thirdparty Configuration | 第三方开源代码配置项                             |      |
-
-### 4.2.5 调用必要的函数
-
-Include头文件 `b_os.h`
-
-①滴答定时器中断服务函数调用 `bHalIncSysTick();`
-
-②初始化代码 `bInit();`
-
-③主循环调用 `bExec();`
-
-## 4.3 配置接口&注册设备
-
-可以由配置工具生成如下代码。
-
-配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/
-
-![](https://gitee.com/notrynohigh/bconfig-tool/raw/master/doc/1.png)
-
-加入drivers内文件至工程后，则需要配置驱动的接口：`b_hal_if.h`
-
-例如24C02芯片，IIC引脚 PB6-SCL   PB7-SDA
-
-```C
-// 24cxx
-#define HAL_24CXX_IF                                             \
-    {                                                            \
-        {                                                        \
-            .dev_addr               = 0xa0,                      \
-            .is_simulation          = 1,                         \
-            ._if.simulating_i2c.clk = {B_HAL_GPIOB, B_HAL_PIN6}, \
-            ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7}, \
-        },                                                       \
-    }
-```
-
-注册设备：`b_device_list.h`
-
-```C
-B_DEVICE_REG(b24CXX, b24CXX_Driver[0], "24cxx")
-```
-
-## 4.4 使用设备
-
-编写测试代码：
-
-```C
-int main()
-{
-    int      fd         = -1;
-    uint32_t boot_count = 0;
-    BoardInit();
-
-    SysTick_Config(SystemCoreClock / TICK_FRQ_HZ);
-    NVIC_SetPriority(SysTick_IRQn, 0x0);
-
-    bInit();
-
-    fd = bOpen(b24CXX, BCORE_FLAG_RW);
-    bLseek(fd, 0);
-    bRead(fd, (uint8_t *)&boot_count, sizeof(boot_count));
-
-    b_log("boot:%d\r\n", boot_count);
-    boot_count += 1;
-
-    bLseek(fd, 0);
-    bWrite(fd, (uint8_t *)&boot_count, sizeof(boot_count));
-    bClose(fd);
-
-    while (1)
-    {
-        bExec();
-    }
-}
-```
-
-记录启动次数，然后再读出来并打印：
-
-```C
-    ____                         __       __                                    
-    /   )          /           /    )   /    \                                  
----/__ /-----__---/__---------/----/----\-----                                  
-  /    )   /   ) /   ) /   / /    /      \                                      
-_/____/___(___(_(___/_(___/_(____/___(____/___                                  
-                         /                                                      
-                     (_ /                                                       
-HW:21.12.12 FW:7.3.0 COMPILE:Dec 12 2021-21:17:51                               
-device number:2                                                                 
-boot:1819043356  
-```
+[7.工具模块](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#7%E5%B7%A5%E5%85%B7%E6%A8%A1%E5%9D%97)
 
 # 5 BabyOS教程
 
-教程的代码仓库中不同分支对应着不同实验：
+<iframe src="//player.bilibili.com/player.html?aid=300842435&bvid=BV1Ff4y1o7bZ&cid=769630997&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<iframe src="//player.bilibili.com/player.html?aid=513285928&bvid=BV1Lg411f7cH&cid=769641102&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<iframe src="//player.bilibili.com/player.html?aid=685829080&bvid=BV1iU4y1q7EJ&cid=770570520&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<iframe src="//player.bilibili.com/player.html?aid=385762470&bvid=BV1JZ4y1Y7S7&cid=771576161&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+# 6 BabyOS例程
+
+例程仓库中不同分支对应着不同实验：
 
 <https://gitee.com/notrynohigh/BabyOS_Example>  
 
@@ -208,15 +93,17 @@ BabyOS私有协议上位机Demo：
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 
 
-BabyOS配置工具：
+# 7 BabyOS配置工具
 
 https://gitee.com/notrynohigh/bconfig-tool/releases/
 
+![](https://gitee.com/notrynohigh/bconfig-tool/raw/master/doc/1.png)
 
 
-# 6 Baby如何成长
 
-之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
+# 8 Baby如何成长
+
+BabyOS如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。希望借助广大网友的力量，一起“喂养”她，是她成为MCU开发中不可缺少的一部分。
 
 **码云**（主仓库，开发者提交代码于dev分支，由管理员合并至master分支）：
 
@@ -289,4 +176,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2022.04 | 增加WIFI模块驱动，增加获取驱动私有信息的接口，增加QSPI       |      |
 | 2022.05 | 重写配置工具、增加IAP功能模块                                |      |
 | 2022.06 | 更新设计和使用文档，详细介绍软件模块。增加对矩阵按键的支持   |      |
+| 2022.07 | 增加视频教程，在README中展现                                 |      |
 
