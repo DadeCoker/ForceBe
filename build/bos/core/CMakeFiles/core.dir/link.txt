@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC   -shared -Wl,-soname,libcore.so -o libcore.so CMakeFiles/core.dir/b_core.o CMakeFiles/core.dir/b_device.o CMakeFiles/core.dir/b_os.o 

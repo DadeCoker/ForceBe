@@ -31,6 +31,7 @@
    
 /*Includes ----------------------------------------------*/
 #include "b_hal.h" 
+#include <stdio.h>
 #include <string.h>
 /** 
  * \addtogroup B_HAL

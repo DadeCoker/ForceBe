@@ -37,7 +37,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-#include "stm32f1xx_hal.h"
+//#include "stm32f1xx_hal.h"   //add the platform h file
 
 #include "b_hal_uart.h"
 #include "b_hal_lcd.h"
@@ -75,20 +75,20 @@
 //                               Flash  
 //
 ///< SPIFLASH
-//#define HAL_SPIFLASH_QSPI_EN            0
-//#define HAL_SPIFLASH_TOTAL_NUMBER       1 
-//#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}    ////{{qspi, spi, {cs_port, cs_pin}},} 
+#define HAL_SPIFLASH_QSPI_EN            0
+#define HAL_SPIFLASH_TOTAL_NUMBER       1 
+#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}    ////{{qspi, spi, {cs_port, cs_pin}},} 
 
 ///< FM25CL
-//#define HAL_FM25CL_IF                   {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
+#define HAL_FM25CL_IF                   {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
 
 ///< 24cxx
-//#define HAL_24CXX_IF                    {{B_HAL_I2C_1, 0xa0},}
+#define HAL_24CXX_IF                    {{B_HAL_I2C_1, 0xa0},}
 
 ///< SD
-//#define HAL_SD_SPI                      B_HAL_SPI_2
-//#define HAL_SD_CS_PORT                  B_HAL_GPIOD
-//#define HAL_SD_CS_PIN                   B_HAL_PIN2
+#define HAL_SD_SPI                      B_HAL_SPI_2
+#define HAL_SD_CS_PORT                  B_HAL_GPIOD
+#define HAL_SD_CS_PIN                   B_HAL_PIN2
 
 //
 //                               LCD   
@@ -108,17 +108,17 @@
 #endif
 
 ///< OLED
-//#define HAL_OLED_I2C                    B_HAL_I2C_1
-//#define HAL_OLED_I2C_ADDR               0X78
+#define HAL_OLED_I2C                    B_HAL_I2C_1
+#define HAL_OLED_I2C_ADDR               0X78
 
 
 //
 //                               TOUCH   
 //
 ///< XPT2046
-//#define HAL_XPT2046_SPI                 B_HAL_SPI_3
-//#define HAL_XPT2046_CS_PORT             B_HAL_GPIOC             
-//#define HAL_XPT2046_CS_PIN              B_HAL_PIN9
+#define HAL_XPT2046_SPI                 B_HAL_SPI_3
+#define HAL_XPT2046_CS_PORT             B_HAL_GPIOC             
+#define HAL_XPT2046_CS_PIN              B_HAL_PIN9
 
 
 
@@ -126,34 +126,34 @@
 //                               CAMERA   
 //
 ///<OV5640
-//#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
-//#define HAL_OV5640_SCCB_ADDR            0X78
-//#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
-//#define HAL_OV5640_RESET_PIN            B_HAL_PIN15
+#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
+#define HAL_OV5640_SCCB_ADDR            0X78
+#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
+#define HAL_OV5640_RESET_PIN            B_HAL_PIN15
 
 
 //
 //                               IO   
 //
 ///<PCF8574
-//#define HAL_PCF8574_I2C                 B_HAL_I2C_2
-//#define HAL_PCF8574_I2C_ADDR            0X40
+#define HAL_PCF8574_I2C                 B_HAL_I2C_2
+#define HAL_PCF8574_I2C_ADDR            0X40
 
 
 //
 //                               G-Sensor  
 //
 //ST-LIS3DH
-//#define HAL_LIS3DH_I2C_ENABLE           0
-//#if HAL_LIS3DH_I2C_ENABLE
-//#define HAL_LIS3DH_I2C                  B_HAL_I2C_1
-//#define HAL_LIS3DH_I2C_ADDR             0X30
-//#else
-//#define HAL_LIS3DH_SPI                  B_HAL_SPI_1
-//#define HAL_LIS3DH_CS_PORT              B_HAL_GPIOB
-//#define HAL_LIS3DH_CS_PIN               B_HAL_PIN0
-//#endif
-//#define HAL_LIS3DH_INT_PIN              B_HAL_PIN4
+#define HAL_LIS3DH_I2C_ENABLE           0
+#if HAL_LIS3DH_I2C_ENABLE
+#define HAL_LIS3DH_I2C                  B_HAL_I2C_1
+#define HAL_LIS3DH_I2C_ADDR             0X30
+#else
+#define HAL_LIS3DH_SPI                  B_HAL_SPI_1
+#define HAL_LIS3DH_CS_PORT              B_HAL_GPIOB
+#define HAL_LIS3DH_CS_PIN               B_HAL_PIN0
+#endif
+#define HAL_LIS3DH_INT_PIN              B_HAL_PIN4
 
 
 //
@@ -182,8 +182,7 @@
  * \defgroup HAL_Exported_Variables
  * \{
  */
-extern UART_HandleTypeDef huart1;
-//extern SPI_HandleTypeDef hspi2;
+
 /**
  * \}
  */

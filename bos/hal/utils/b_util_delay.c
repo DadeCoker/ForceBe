@@ -118,7 +118,7 @@ void bUtilDelayUS(uint32_t xus)
 {
     while(xus--)
     {
-        __nop();
+        ;
     }
 }
 

@@ -277,7 +277,7 @@ static int _bLis3dhIntSet(bLis3dhIntCfg_t val)
 }
 
 //--------------------------------------------------------------------------------
-//len has to be a multiple of sizeof(bLis3dh3Axis_t)
+//len has to be a multiple of sizeof(bGsensor3Axis_t)
 static int _bLis3dhRead(bLIS3DH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     uint8_t c = len / sizeof(bGsensor3Axis_t);
@@ -357,7 +357,7 @@ static void _bLis3dhPolling()
  */
 
 #if __GNUC__ 
-void __attribute__((weak)) bGsensor3AxisCallback(bLis3dh3Axis_t *xyz, uint8_t number)
+void __attribute__((weak)) bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number)
 #else
 __weak void bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number)
 #endif

@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC   -shared -Wl,-soname,libalgorithm.so -o libalgorithm.so CMakeFiles/algorithm.dir/algo_base64.o CMakeFiles/algorithm.dir/algo_gps.o CMakeFiles/algorithm.dir/algo_hmac_sha1.o CMakeFiles/algorithm.dir/algo_kalman.o CMakeFiles/algorithm.dir/algo_matrix.o CMakeFiles/algorithm.dir/algo_sort.o CMakeFiles/algorithm.dir/algo_speedpid.o 

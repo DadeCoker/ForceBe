@@ -33,6 +33,7 @@
 #include "b_hal.h" 
 #include "b_utils.h"
 #include <string.h>
+#include <stdio.h>
 /** 
  * \addtogroup B_HAL
  * \{
@@ -144,7 +145,7 @@ void bHalUartSend(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     switch(uart)
     {
         case B_HAL_UART_1:
-            HAL_UART_Transmit(&huart1, pbuf, len, 0xfff);
+            printf("%s", pbuf);
             break;
         case B_HAL_UART_2:
     
