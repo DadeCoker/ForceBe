@@ -1,6 +1,8 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
+#include <stdint.h>
+
 typedef struct
 {
     /* Dimensions */

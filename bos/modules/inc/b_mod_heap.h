@@ -37,6 +37,7 @@ extern "C" {
 
 /*Includes ----------------------------------------------*/
 #include <stddef.h>
+#include <stdint.h>
 
 #include "b_config.h"
 
