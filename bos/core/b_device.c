@@ -34,7 +34,6 @@
 
 #include "drivers/inc/b_driver.h"
 
-
 /**
  * \addtogroup BABYOS
  * \{
@@ -87,11 +86,13 @@ static bDriverInterface_t bNullDriver;
 static bDriverInterface_t *bDriverTable[bDEV_MAX_NUM] = {
 #define B_DEVICE_REG(dev, driver, desc) &driver,
 #include "b_device_list.h"
+    &bNullDriver,
 };
 
 static const char *bDeviceDescTable[bDEV_MAX_NUM] = {
 #define B_DEVICE_REG(dev, driver, desc) desc,
 #include "b_device_list.h"
+    "null",
 };
 
 bSECTION_DEF_FLASH(driver_init_0, pbDriverInit_t);
@@ -114,6 +115,14 @@ bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);
  * \{
  */
 
+static int _bDriverNullInit()
+{
+    return -1;
+}
+
+bDRIVER_REG_INIT_0(_bDriverNullInit);
+bDRIVER_REG_INIT(_bDriverNullInit);
+
 /**
  * \}
  */
@@ -132,7 +141,7 @@ int bDeviceInit()
     bSECTION_FOR_EACH(driver_init_0, pbDriverInit_t, pdriver_init_0)
     {
         (*pdriver_init_0)();
-    }    
+    }
     bSECTION_FOR_EACH(driver_init, pbDriverInit_t, pdriver_init)
     {
         (*pdriver_init)();
