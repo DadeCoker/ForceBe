@@ -12,9 +12,9 @@
 
 # BabyOS设计和使用手册
 
-**V0.2**
+**V0.2.1**
 
-
+***BabyOS V7.4.5***
 
 
 
@@ -26,11 +26,11 @@
 
 **修订记录：**
 
-| 日期       | 记录                 | 修订人      |
-| ---------- | -------------------- | ----------- |
-| 2022.03.18 | 编写初稿             | notrynohigh |
-| 2022.06.05 | 增加功能模块详细介绍 | notrynohigh |
-|            |                      |             |
+| 日期       | 记录                                     | 修订人      |
+| ---------- | ---------------------------------------- | ----------- |
+| 2022.03.18 | 编写初稿                                 | notrynohigh |
+| 2022.06.05 | 增加功能模块详细介绍                     | notrynohigh |
+| 2022.06.06 | 修改按键模块的描述，文档对应代码的版本号 | notrynohigh |
 
 
 
@@ -782,7 +782,7 @@ void ADC1_2_IRQHandler()
 
 ## 6.2 b_mod_button
 
-此功能模块是对第三方代码FlexibleButton的封装。
+此功能模块是对第三方代码FlexibleButton的封装。支持独立按键和矩阵按键。
 
 ### 6.2.1 数据结构
 
@@ -814,18 +814,20 @@ void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler);
 
 ### 6.2.3 使用例子
 
-b_config.h **配置独立按键的数量**。
+b_config.h **配置独立按键的数量**，**配置矩阵按键的行和列**
 
 b_hal_if定义按键的硬件接口，**顺序决定了按键的ID**。
 
 ```C
 // Button
-//{PORT, PIN, 按键按下时IO电平}
+//独立按键：{PORT, PIN, 按键按下时IO电平}
 #define HAL_B_BUTTON_GPIO                                                \
     {                                                                    \
         {B_HAL_GPIOC, B_HAL_PIN4, 0}, {B_HAL_GPIOB, B_HAL_PIN10, 0},     \
             {B_HAL_GPIOC, B_HAL_PIN13, 0}, {B_HAL_GPIOA, B_HAL_PIN0, 0}, \
     }
+//矩阵按键，{{行对应的GPIO}，{列对应的GPIO}}
+#define HAL_B_MATRIXKEY_GPIO {{{B_HAL_GPIOE, B_HAL_PIN8}, {B_HAL_GPIOE, B_HAL_PIN9}}, {{B_HAL_GPIOE, B_HAL_PIN10}, {B_HAL_GPIOE, B_HAL_PIN11}}}
 
 void BtnEventHandler(uint16_t event, uint8_t param)
 {
@@ -864,6 +866,17 @@ int main()
     bButtonRegEvent(2, BTN_EVENT_LONG, BtnEventHandler);
     //ID 3 对应PA0口接的按键 
     bButtonRegEvent(3, BTN_EVENT_LONGLONG, BtnEventHandler);
+    //矩阵按键的ID在独立按键之后。矩阵按键的ID
+    /*  --------------->行
+        key(4)   key(5)
+        key(6)   key(7)
+    */
+#if _MATRIXKEY_ENABLE 
+    bButtonRegEvent(4, BTN_EVENT_CLICK | BTN_EVENT_DOUBLE_CLICK, BtnEventHandler);
+    bButtonRegEvent(5, BTN_EVENT_SHORT, BtnEventHandler);
+    bButtonRegEvent(6, BTN_EVENT_LONG, BtnEventHandler);
+    bButtonRegEvent(7, BTN_EVENT_LONGLONG, BtnEventHandler);    
+#endif      
     ...
 }
 ```
