@@ -50,10 +50,26 @@
  */
 
 /**
- * \defgroup STATE_Private_TypesDefinitions
+ * \defgroup STATE_Private_Defines
  * \{
  */
+#define STATE_SAFE_INVOKE(f) \
+    do                       \
+    {                        \
+        if (f != NULL)       \
+        {                    \
+            f();             \
+        }                    \
+    } while (0)
 
+#define STATE_SAFE_INVOKE_ARG(f, arg) \
+    do                                \
+    {                                 \
+        if (f != NULL)                \
+        {                             \
+            f(arg);                   \
+        }                             \
+    } while (0)
 /**
  * \}
  */
@@ -79,11 +95,7 @@ static void _bStatePolling()
     {
         return;
     }
-    if (pbStateInfo->handler == NULL)
-    {
-        return;
-    }
-    pbStateInfo->handler();
+    STATE_SAFE_INVOKE(pbStateInfo->handler);
 }
 
 BOS_REG_POLLING_FUNC(_bStatePolling);
@@ -117,12 +129,12 @@ int bStateTransfer(int state)
         {
             if (pbStateInfo != NULL)
             {
-                pbStateInfo->exit();
-                ptmp->enter(pbStateInfo->state);
+                STATE_SAFE_INVOKE(pbStateInfo->exit);
+                STATE_SAFE_INVOKE_ARG(ptmp->enter, pbStateInfo->state);
             }
             else
             {
-                ptmp->enter(ptmp->state);
+                STATE_SAFE_INVOKE_ARG(ptmp->enter, ptmp->state);
             }
             pbStateInfo = ptmp;
             return 0;
@@ -146,10 +158,7 @@ int bStateInvokeEvent(int event, void *arg)
     {
         if (pbStateInfo->event_table.p_event_table[i].event == event)
         {
-            if (pbStateInfo->event_table.p_event_table[i].handler != NULL)
-            {
-                pbStateInfo->event_table.p_event_table[i].handler(arg);
-            }
+            STATE_SAFE_INVOKE_ARG(pbStateInfo->event_table.p_event_table[i].handler, arg);
             break;
         }
     }
