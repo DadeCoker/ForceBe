@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_utils.h
+ * \file        b_util_sBus.h
  * \version     v0.0.1
- * \date        2019/12/26
- * \author      Bean(notrynohigh@outlook.com)
+ * \date        2020/04/29
+ * \author      polyGithub(baoli.chen@outlook.com)
  *******************************************************************************
  * @attention
  *
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2021 polyGithub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,31 +28,42 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTILS_H__
-#define __B_UTILS_H__
+#ifndef __B_UTIL_SBUS_H__
+#define __B_UTIL_SBUS_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_util_at.h"
-#include "b_util_delay.h"
-#include "b_util_i2c.h"
-#include "b_util_spi.h"
-#include "b_util_sBus.h"
+#include "b_config.h"
+#include "b_hal_gpio.h"
+
 /**
  * \addtogroup B_UTILS
  * \{
  */
 
 /**
- * \addtogroup UTILS
+ * \addtogroup SBUS
  * \{
  */
 
 /**
- * \defgroup UTILS_Exported_TypesDefinitions
+ * \defgroup SBUS_Exported_TypesDefinitions
+ * \{
+ */
+typedef struct
+{
+    bHalGPIOInstance_t sBusIo;
+} bUtilSbus_t;
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup SBUS_Exported_Defines
  * \{
  */
 
@@ -61,7 +72,7 @@ extern "C" {
  */
 
 /**
- * \defgroup UTILS_Exported_Defines
+ * \defgroup SBUS_Exported_Macros
  * \{
  */
 
@@ -70,7 +81,7 @@ extern "C" {
  */
 
 /**
- * \defgroup UTILS_Exported_Macros
+ * \defgroup SBUS_Exported_Variables
  * \{
  */
 
@@ -79,19 +90,12 @@ extern "C" {
  */
 
 /**
- * \defgroup UTILS_Exported_Variables
+ * \defgroup SBUS_Exported_Functions
  * \{
  */
-
-/**
- * \}
- */
-
-/**
- * \defgroup UTILS_Exported_Functions
- * \{
- */
-
+uint8_t bUtilSbus_Ready(bUtilSbus_t Sbus);
+void SbusWriteByte(bUtilSbus_t Sbus,uint8_t dat) ;
+uint8_t  SbusReadByte(bUtilSbus_t Sbus);
 /**
  * \}
  */
@@ -110,4 +114,4 @@ extern "C" {
 
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2021 polyGithub *****END OF FILE****/
