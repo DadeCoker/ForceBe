@@ -89,25 +89,25 @@ typedef struct bButtonInstance
 #define BTN_EVENT_LONGLONG (0x100)
 #define BTN_EVENT_LONGLONG_UP (0x200)
 
-#define bBUTTON_ADD_KEY(dev, e, e_handler) \
-    static flex_button_t     button_##dev; \
-    static bButtonInstance_t key_##dev = { \
-        .dev_no  = dev,                    \
-        .event   = e,                      \
-        .handler = e_handler,              \
-        .next    = NULL,                   \
-    };                                     \
-    bButtonAddKey(&key_##dev, &button_##dev_no)
+#define bBUTTON_ADD_KEY(dev, e, e_handler)           \
+    static flex_button_t     CONCAT_2(button_, dev); \
+    static bButtonInstance_t CONCAT_2(key_, dev) = { \
+        .dev_no  = dev,                              \
+        .event   = e,                                \
+        .handler = e_handler,                        \
+        .next    = NULL,                             \
+    };                                               \
+    bButtonAddKey(&CONCAT_2(key_, dev), &CONCAT_2(button_, dev))
 
-#define bBUTTON_ADD_MATRIXKEYS(dev, e, e_handler)                                  \
-    static flex_button_t     button_##dev[MATRIX_KEYS_ROWS * MATRIX_KEYS_COLUMNS]; \
-    static bButtonInstance_t key_##dev = {                                         \
-        .dev_no  = dev,                                                            \
-        .event   = e,                                                              \
-        .handler = e_handler,                                                      \
-        .next    = NULL,                                                           \
-    };                                                                             \
-    bButtonAddMatrixKeys(&key_##dev, button_##dev_no)
+#define bBUTTON_ADD_MATRIXKEYS(dev, e, e_handler)                                            \
+    static flex_button_t     CONCAT_2(button_, dev)[MATRIX_KEYS_ROWS * MATRIX_KEYS_COLUMNS]; \
+    static bButtonInstance_t CONCAT_2(key_, dev) = {                                         \
+        .dev_no  = dev,                                                                      \
+        .event   = e,                                                                        \
+        .handler = e_handler,                                                                \
+        .next    = NULL,                                                                     \
+    };                                                                                       \
+    bButtonAddMatrixKeys(&CONCAT_2(key_, dev), CONCAT_2(button_, dev))
 
 /**
  * \}
