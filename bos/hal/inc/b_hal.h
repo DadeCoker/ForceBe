@@ -73,9 +73,18 @@ typedef struct
             bHalGPIOInstance_t wr;
             bHalGPIOInstance_t cs;
         } _io;
+        struct
+        {
+            bHalGPIOInstance_t rs;
+            bHalSPIIf_t        _spi;
+        } _spi;
     } _if;
-    uint8_t is_rw_addr;
+    uint8_t if_type;  // 0: _io  1: rw_addr  2: _spi
 } bLCD_HalIf_t;
+
+#define LCD_IF_TYPE_IO (0)
+#define LCD_IF_TYPE_RWADDR (1)
+#define LCD_IF_TYPE_SPI (2)
 
 /**
  * \}

@@ -106,11 +106,11 @@ bILI9341_Driver_t              bILI9341_Driver;
 
 static void _bLcdWriteData(uint16_t dat)
 {
-    if (bILI9341_HalIf.is_rw_addr)
+    if (bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         ((bLcdRWAddress_t *)bILI9341_HalIf._if.rw_addr)->dat = dat;
     }
-    else
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_IO)
     {
         bHalGpioWritePin(bILI9341_HalIf._if._io.rs.port, bILI9341_HalIf._if._io.rs.pin, 1);
         bHalGpioWritePin(bILI9341_HalIf._if._io.rd.port, bILI9341_HalIf._if._io.rd.pin, 1);
@@ -120,16 +120,41 @@ static void _bLcdWriteData(uint16_t dat)
         bHalGpioWritePin(bILI9341_HalIf._if._io.wr.port, bILI9341_HalIf._if._io.wr.pin, 1);
         bHalGpioWritePin(bILI9341_HalIf._if._io.cs.port, bILI9341_HalIf._if._io.cs.pin, 1);
     }
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_SPI)
+    {
+        bHalGpioWritePin(bILI9341_HalIf._if._spi.rs.port, bILI9341_HalIf._if._spi.rs.pin, 1);
+        bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
+                         0);
+        bHalSpiSend(&bILI9341_HalIf._if._spi._spi, (uint8_t *)&dat, 1);
+        bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
+                         1);
+    }
+}
+
+static void _bLcdWriteGRam(uint16_t dat)
+{
+    if (bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR || bILI9341_HalIf.if_type == LCD_IF_TYPE_IO)
+    {
+        _bLcdWriteData(dat);
+    }
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_SPI)
+    {
+        bHalGpioWritePin(bILI9341_HalIf._if._spi.rs.port, bILI9341_HalIf._if._spi.rs.pin, 1);
+        bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
+                         0);
+        bHalSpiSend(&bILI9341_HalIf._if._spi._spi, (uint8_t *)&dat, 2);
+        bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
+                         1);
+    }
 }
 
 static void _bLcdWriteCmd(uint16_t cmd)
 {
-
-    if (bILI9341_HalIf.is_rw_addr)
+    if (bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         ((bLcdRWAddress_t *)bILI9341_HalIf._if.rw_addr)->reg = cmd;
     }
-    else
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_IO)
     {
         bHalGpioWritePin(bILI9341_HalIf._if._io.rs.port, bILI9341_HalIf._if._io.rs.pin, 0);
         bHalGpioWritePin(bILI9341_HalIf._if._io.rd.port, bILI9341_HalIf._if._io.rd.pin, 1);
@@ -139,17 +164,26 @@ static void _bLcdWriteCmd(uint16_t cmd)
         bHalGpioWritePin(bILI9341_HalIf._if._io.wr.port, bILI9341_HalIf._if._io.wr.pin, 1);
         bHalGpioWritePin(bILI9341_HalIf._if._io.cs.port, bILI9341_HalIf._if._io.cs.pin, 1);
     }
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_SPI)
+    {
+        bHalGpioWritePin(bILI9341_HalIf._if._spi.rs.port, bILI9341_HalIf._if._spi.rs.pin, 0);
+        bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
+                         0);
+        bHalSpiSend(&bILI9341_HalIf._if._spi._spi, (uint8_t *)&cmd, 1);
+        bHalGpioWritePin(bILI9341_HalIf._if._spi._spi.cs.port, bILI9341_HalIf._if._spi._spi.cs.pin,
+                         1);
+    }
 }
 
 static uint16_t _bLcdReadData()
 {
     uint16_t dat;
 
-    if (bILI9341_HalIf.is_rw_addr)
+    if (bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         dat = ((bLcdRWAddress_t *)bILI9341_HalIf._if.rw_addr)->dat;
     }
-    else
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_IO)
     {
         bHalGpioConfig(bILI9341_HalIf._if._io.data.port, bILI9341_HalIf._if._io.data.pin,
                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
@@ -165,31 +199,25 @@ static uint16_t _bLcdReadData()
     return dat;
 }
 
-/*
-static uint16_t _bLcdReadCmd()
+static int _bILI9341CheckId()
 {
-    uint16_t cmd;
-
-    if (bILI9341_HalIf.is_rw_addr)
+    uint16_t id = 0x9341;
+    if(bILI9341_HalIf.if_type == LCD_IF_TYPE_IO || bILI9341_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
-        cmd = ((bLcdRWAddress_t *)bILI9341_HalIf._if.rw_addr)->reg;
+        _bLcdWriteCmd(0XD3);
+        id = _bLcdReadData();
+        id = _bLcdReadData();
+        id = _bLcdReadData();
+        id <<= 8;
+        id |= _bLcdReadData();
     }
-    else
+    else if (bILI9341_HalIf.if_type == LCD_IF_TYPE_SPI)
     {
-        bHalGpioConfig(bILI9341_HalIf._if._io.data.port,
-bILI9341_HalIf._if._io.data.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-        bHalGpioWritePin(bILI9341_HalIf._if._io.rs.port, bILI9341_HalIf._if._io.rs.pin,
-0); bHalGpioWritePin(bILI9341_HalIf._if._io.rd.port, bILI9341_HalIf._if._io.rd.pin, 0);
-        bHalGpioWritePin(bILI9341_HalIf._if._io.cs.port, bILI9341_HalIf._if._io.cs.pin,
-0); bHalGpioWritePin(bILI9341_HalIf._if._io.rd.port, bILI9341_HalIf._if._io.rd.pin, 1);
-        cmd = bHalGpioReadPort(bILI9341_HalIf._if._io.data.port);
-        bHalGpioWritePin(bILI9341_HalIf._if._io.cs.port, bILI9341_HalIf._if._io.cs.pin,
-1); bHalGpioConfig(bILI9341_HalIf._if._io.data.port, bILI9341_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
+        
     }
-    return cmd;
+    return ((id == 0x9341) ? 0 : -1);
 }
-*/
+
 
 static void _bILI9341SetCursor(uint16_t Xpos, uint16_t Ypos)
 {
@@ -210,9 +238,9 @@ static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf,
     if (y >= _LCD_Y_SIZE || pbuf == NULL || len < sizeof(bLcdWrite_t))
     {
         return -1;
-    }
+    }    
     _bILI9341SetCursor(x, y);
-    _bLcdWriteData(pcolor->color);
+    _bLcdWriteGRam(pcolor->color);   
     return 2;
 }
 
@@ -224,17 +252,10 @@ static int _bILI9341Write(bILI9341_Driver_t *pdrv, uint32_t addr, uint8_t *pbuf,
  * \addtogroup ILI9341_Exported_Functions
  * \{
  */
+
 int bILI9341_Init()
-{
-    uint16_t id;
-    _bLcdWriteCmd(0XD3);
-    id = _bLcdReadData();
-    id = _bLcdReadData();
-    id = _bLcdReadData();
-    id <<= 8;
-    id |= _bLcdReadData();
-    b_log("id:%x\r\n", id);
-    if (id != 0x9341)
+{       
+    if (_bILI9341CheckId() < 0)
     {
         bILI9341_Driver.status = -1;
         return -1;

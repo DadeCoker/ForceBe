@@ -106,11 +106,11 @@ bILI9320_Driver_t              bILI9320_Driver;
 
 static void _bLcdWriteData(uint16_t dat)
 {
-    if (bILI9320_HalIf.is_rw_addr)
+    if (bILI9320_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->dat = dat;
     }
-    else
+    else if (bILI9320_HalIf.if_type == LCD_IF_TYPE_IO)
     {
         bHalGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 1);
         bHalGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
@@ -124,12 +124,11 @@ static void _bLcdWriteData(uint16_t dat)
 
 static void _bLcdWriteCmd(uint16_t cmd)
 {
-
-    if (bILI9320_HalIf.is_rw_addr)
+    if (bILI9320_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->reg = cmd;
     }
-    else
+    else if (bILI9320_HalIf.if_type == LCD_IF_TYPE_IO)
     {
         bHalGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin, 0);
         bHalGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
@@ -145,11 +144,11 @@ static uint16_t _bLcdReadData()
 {
     uint16_t dat;
 
-    if (bILI9320_HalIf.is_rw_addr)
+    if (bILI9320_HalIf.if_type == LCD_IF_TYPE_RWADDR)
     {
         dat = ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->dat;
     }
-    else
+    else if (bILI9320_HalIf.if_type == LCD_IF_TYPE_IO)
     {
         bHalGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
@@ -164,32 +163,6 @@ static uint16_t _bLcdReadData()
     }
     return dat;
 }
-
-/*
-static uint16_t _bLcdReadCmd()
-{
-    uint16_t cmd;
-
-    if (bILI9320_HalIf.is_rw_addr)
-    {
-        cmd = ((bLcdRWAddress_t *)bILI9320_HalIf._if.rw_addr)->reg;
-    }
-    else
-    {
-        bHalGpioConfig(bILI9320_HalIf._if._io.data.port,
-bILI9320_HalIf._if._io.data.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-        bHalGpioWritePin(bILI9320_HalIf._if._io.rs.port, bILI9320_HalIf._if._io.rs.pin,
-0); bHalGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 0);
-        bHalGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
-0); bHalGpioWritePin(bILI9320_HalIf._if._io.rd.port, bILI9320_HalIf._if._io.rd.pin, 1);
-        cmd = bHalGpioReadPort(bILI9320_HalIf._if._io.data.port);
-        bHalGpioWritePin(bILI9320_HalIf._if._io.cs.port, bILI9320_HalIf._if._io.cs.pin,
-1); bHalGpioConfig(bILI9320_HalIf._if._io.data.port, bILI9320_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
-    }
-    return cmd;
-}
-*/
 
 static void _bILI9320WriteReg(uint16_t reg, uint16_t dat)
 {
@@ -231,7 +204,6 @@ int bILI9320_Init()
     uint16_t id;
     _bLcdWriteCmd(0x0);
     id = _bLcdReadData();
-    b_log("id:%x\r\n", id);
     if (id != 0x9320)
     {
         bILI9320_Driver.status = -1;
