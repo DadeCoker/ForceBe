@@ -100,6 +100,43 @@ uint16_t bHalGpioReadPort(bHalGPIOPort_t port)
     return bMcuGpioReadPort(port);
 }
 
+static bHalGPIOExti_t *pExtiHead = NULL;
+
+int bHalGpioAddExtiCallback(bHalGPIOExti_t *pexti)
+{
+    if (pexti == NULL)
+    {
+        return -1;
+    }
+    if (pExtiHead == NULL)
+    {
+        pExtiHead       = pexti;
+        pExtiHead->next = NULL;
+    }
+    else
+    {
+        pexti->next     = pExtiHead->next;
+        pExtiHead->next = pexti;
+    }
+    return 0;
+}
+
+void bHalGpioNotifyExti(bHalGPIOExtiLine_t line, bHalGPIOExtiTrig_t trig)
+{
+    bHalGPIOExti_t *p = pExtiHead;
+    while (p != NULL)
+    {
+        if (p->line == line && p->trig == trig)
+        {
+            if (p->cb != NULL)
+            {
+                p->cb(line, trig, p->arg);
+            }
+            break;
+        }
+    }
+}
+
 /**
  * \}
  */

@@ -62,6 +62,43 @@ typedef struct
     } _if;
     uint8_t is_spi;
 } bLIS3DH_HalIf_t;
+
+typedef enum
+{
+    LIS3DH_POWER_DOWN                   = 0x00,
+    LIS3DH_ODR_1Hz                      = 0x01,
+    LIS3DH_ODR_10Hz                     = 0x02,
+    LIS3DH_ODR_25Hz                     = 0x03,
+    LIS3DH_ODR_50Hz                     = 0x04,
+    LIS3DH_ODR_100Hz                    = 0x05,
+    LIS3DH_ODR_200Hz                    = 0x06,
+    LIS3DH_ODR_400Hz                    = 0x07,
+    LIS3DH_ODR_1kHz620_LP               = 0x08,
+    LIS3DH_ODR_5kHz376_LP_1kHz344_NM_HP = 0x09,
+} bLis3dhODR_t;
+
+typedef enum
+{
+    LIS3DH_FS_2G  = 0,
+    LIS3DH_FS_4G  = 1,
+    LIS3DH_FS_8G  = 2,
+    LIS3DH_FS_16G = 3,
+} bLis3dhFS_t;
+
+typedef enum
+{
+    LIS3DH_HR_12BIT = 0,
+    LIS3DH_NM_10BIT = 1,
+    LIS3DH_LP_8BIT  = 2,
+} bLis3dhOptMode_t;
+
+typedef struct
+{
+    bLis3dhODR_t     odr;
+    bLis3dhFS_t      fs;
+    bLis3dhOptMode_t opmode;
+} bList3dhPrivate_t;
+
 /**
  * \}
  */

@@ -54,8 +54,8 @@ typedef struct
 ///////////////////////////////////////////////////////////
 // GSensor Command & Data Structure
 ///////////////////////////////////////////////////////////
-#define bCMD_CFG_ODR 0        // uint16_t Hz
-#define bCMD_CFG_FS 1         // uint8_t g
+#define bCMD_CFG_ODR 0        // b_drv_xxx.h odr struct
+#define bCMD_CFG_FS 1         // b_drv_xxx.h fs struct
 #define bCMD_CFG_FIFO 2       // bGSensorFifo_t
 #define bCMD_CFG_POWERDOWN 3  // none
 
