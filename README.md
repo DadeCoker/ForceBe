@@ -344,5 +344,3 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2020.05 | 优化代码结构，增加：b_mod_timer b_mod_qpn等 ,优化b_mod_xmodem等，增加算法base64 sha1 sort等 |      |
 | 2020.06 | 分解为3个仓库管理代码。增加SFUD作为SPIFLASH驱动，增加SD卡驱动，增加FatFS和LittleFS等 |      |
 
-<iframe src="//player.bilibili.com/player.html?aid=968819444&bvid=BV1ap4y1S7o8&cid=211689136&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-<iframe src="//player.bilibili.com/player.html?aid=626287625&bvid=BV1pt4y1Q7vz&cid=211719853&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
