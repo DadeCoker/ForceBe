@@ -299,7 +299,7 @@ static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
         bHalSpiSend(&_if->_if._spi, &cmd, 1);
         bHalGpioWritePin(_if->_if._spi.cs.port, _if->_if._spi.cs.pin, 1);
     }
-    bHalDelayUs(10);
+    bHalDelayMs(10);
     return 0;
 }
 
