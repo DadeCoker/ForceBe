@@ -62,12 +62,12 @@ BABYOS_C_SOURCE = \
 BabyOS/bos/algorithm/algo_utf8_unicode.c \
 BabyOS/bos/core/b_core.c \
 BabyOS/bos/core/b_device.c \
-BabyOS/bos/core/b_os.c \
-BabyOS/bos/drivers/flash/b_drv_spiflash.c \
-BabyOS/bos/drivers/flash/b_drv_24cxx.c \
-BabyOS/bos/drivers/flash/b_drv_sd.c \
-BabyOS/bos/drivers/lcd/b_drv_ssd1289.c \
-BabyOS/bos/drivers/touch/b_drv_xpt2046.c \
+BabyOS/bos/drivers/b_drv_spiflash.c \
+BabyOS/bos/drivers/b_drv_24cxx.c \
+BabyOS/bos/drivers/b_drv_sd.c \
+BabyOS/bos/drivers/b_drv_ssd1289.c \
+BabyOS/bos/drivers/b_drv_xpt2046.c \
+BabyOS/bos/drivers/b_drv_mcuflash.c \
 BabyOS/bos/modules/b_mod_battery.c \
 BabyOS/bos/modules/b_mod_button.c \
 BabyOS/bos/modules/b_mod_error.c \
@@ -90,7 +90,6 @@ BabyOS/bos/modules/b_mod_timer.c \
 BabyOS/bos/modules/b_mod_trace.c \
 BabyOS/bos/modules/b_mod_utc.c \
 BabyOS/bos/modules/b_mod_xm128.c \
-BabyOS/bos/utils/b_util_delay.c \
 BabyOS/bos/thirdparty/FatFS/diskio.c \
 BabyOS/bos/thirdparty/FatFS/ff.c \
 BabyOS/bos/thirdparty/FatFS/ffsystem.c \
@@ -105,9 +104,9 @@ BabyOS/bos/thirdparty/UGUI/ugui.c \
 BabyOS_Hal/b_hal.c \
 BabyOS_Hal/b_hal_gpio.c \
 BabyOS_Hal/b_hal_i2c.c \
-BabyOS_Hal/b_hal_lcd.c \
 BabyOS_Hal/b_hal_spi.c \
-BabyOS_Hal/b_hal_uart.c 
+BabyOS_Hal/b_hal_uart.c \
+BabyOS_Hal/b_hal_flash.c \
 
 C_SOURCES += $(BABYOS_C_SOURCE)
 
@@ -173,16 +172,7 @@ C_INCLUDES =  \
 
 # BabyOS C includes
 BABYOS_C_INCLUD = \
--IBabyOS/bos/algorithm/inc \
--IBabyOS/bos/core/inc \
--IBabyOS/bos/drivers/inc \
--IBabyOS/bos/modules/inc \
--IBabyOS/bos/utils/inc \
--IBabyOS/bos/thirdparty/FatFS \
--IBabyOS/bos/thirdparty/FlexibleButton \
--IBabyOS/bos/thirdparty/nr_micro_shell/inc \
--IBabyOS/bos/thirdparty/SFUD/inc \
--IBabyOS/bos/thirdparty/UGUI \
+-IBabyOS/bos \
 -IBabyOS_Config \
 -IBabyOS_Hal/inc
 

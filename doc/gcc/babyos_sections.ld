@@ -1,18 +1,15 @@
+/**
+修改链接文件，添加BabyOS需要的Section信息。
+可参考例程仓库 full_func_test_gcc 分支的链接文件
+*/
+##需要添加到.data段信息：
 
-SECTIONS
-{
-  . = ALIGN(4);
-  .mem_section_dummy_ram :
-  {
-  }
-  .b_hal_uart :
-  {
-    PROVIDE(__start_b_hal_uart = .);
-    KEEP(*(SORT(.b_hal_uart*)))
-    PROVIDE(__stop_b_hal_uart = .);
-  } >RAM
-}
+PROVIDE(__start_b_hal_uart = .);
+KEEP(*(SORT(.b_hal_uart*)))
+PROVIDE(__stop_b_hal_uart = .);
 
+
+##在链接文件再添加如下信息：
 SECTIONS
 {
   . = ALIGN(4);
