@@ -75,7 +75,7 @@ extern "C" {
 
 #define B_LOG_PARAM_DEFAULT __FILE__, __func__, __LINE__
 
-#ifdef _DEBUG_ENABLE
+#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE > 0))
 #if (_DEBUG_ENABLE <= 1)
 #define b_log_i(...) bLogOut(0, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
 #define b_log(...) bLogOut(3, B_LOG_PARAM_DEFAULT, __VA_ARGS__)
