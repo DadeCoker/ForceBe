@@ -228,7 +228,7 @@ int     bFS_Init()
     }
     else if (result != FR_OK)
     {
-        b_log_e("sd mount err..%d\r\n", result);
+        b_log_e("spiflash mount err..%d\r\n", result);
         return -1;
     }
     /* Get volume information and free clusters of drive 1 */

@@ -101,13 +101,14 @@ typedef uint8_t (*pOptFunc_t)(void *param);
 #define OPT_MQTT_SUB (15)
 #define OPT_MQTT_PUB (16)
 #define OPT_CONN_TCP_SERVER (17)
-#define OPT_TCP_SEND_1 (18)
-#define OPT_TCP_SEND_2 (19)
-#define OPT_TCP_CLOSE (20)
-#define OPT_DISABLE_MUX (21)
-#define OPT_PING (22)
-#define OPT_ECHO_OFF (23)
-#define OPT_NUMBER (24)
+#define OPT_CONN_UDP_SERVER (18)
+#define OPT_TCP_UDP_SEND_1 (19)
+#define OPT_TCP_UDP_SEND_2 (20)
+#define OPT_TCP_UDP_CLOSE (21)
+#define OPT_DISABLE_MUX (22)
+#define OPT_PING (23)
+#define OPT_ECHO_OFF (24)
+#define OPT_NUMBER (25)
 #define OPT_NULL (OPT_NUMBER + 1)
 #define IS_ESP_OPT(n)                                                                             \
     ((n == OPT_AT) || (n == OPT_ENTER_AT) || (n == OPT_RESET) || (n == OPT_SET_MUX) ||            \
@@ -115,8 +116,9 @@ typedef uint8_t (*pOptFunc_t)(void *param);
      (n == OPT_AP_MODE) || (n == OPT_STA_AP_MODE) || (n == OPT_SETUP_TCP_SERVER) ||               \
      (n == OPT_MQTT_CLOSE) || (n == OPT_CFG_MQTTUSER) || (n == OPT_MQTT_CONN) ||                  \
      (n == OPT_MQTT_CONN_CHECK) || (n == OPT_MQTT_SUB) || (n == OPT_MQTT_PUB) ||                  \
-     (n == OPT_CONN_TCP_SERVER) || (n == OPT_TCP_SEND_1) || (n == OPT_TCP_SEND_2) ||              \
-     (n == OPT_TCP_CLOSE) || (n == OPT_DISABLE_MUX) || (n == OPT_PING) || (n == OPT_ECHO_OFF))
+     (n == OPT_CONN_TCP_SERVER) || (n == OPT_CONN_UDP_SERVER) || (n == OPT_TCP_UDP_SEND_1) ||     \
+     (n == OPT_TCP_UDP_SEND_2) || (n == OPT_TCP_UDP_CLOSE) || (n == OPT_DISABLE_MUX) ||           \
+     (n == OPT_PING) || (n == OPT_ECHO_OFF))
 /**
  * \}
  */
@@ -145,9 +147,10 @@ static uint8_t _bEspMqttConnCheck(void *param);
 static uint8_t _bEspMqttSub(void *param);
 static uint8_t _bEspMqttPub(void *param);
 static uint8_t _bEspConnTcpServer(void *param);
-static uint8_t _bEspTcpSend1(void *param);
-static uint8_t _bEspTcpSend2(void *param);
-static uint8_t _bEspTcpClose(void *param);
+static uint8_t _bEspConnUdpServer(void *param);
+static uint8_t _bEspTcpUdpSend1(void *param);
+static uint8_t _bEspTcpUdpSend2(void *param);
+static uint8_t _bEspTcpUdpClose(void *param);
 static uint8_t _bEspDisableMux(void *param);
 static uint8_t _bEspPing(void *param);
 static uint8_t _bEspEchoOff(void *param);
@@ -177,12 +180,15 @@ const static uint8_t bWifiStaApOptList[] = {
     OPT_SET_MUX,  OPT_SET_AUTOCONN, OPT_STA_AP_MODE, OPT_SET_AP, OPT_ECHO_OFF, OPT_NULL};
 const static uint8_t bWifiJoinApOptList[]         = {OPT_JOIN_AP, OPT_NULL};
 const static uint8_t bWifiSetupTcpServerOptList[] = {OPT_SETUP_TCP_SERVER, OPT_NULL};
-const static uint8_t bWifiConnTcpServerOptList[]  = {OPT_TCP_CLOSE, OPT_CONN_TCP_SERVER, OPT_NULL};
+const static uint8_t bWifiConnTcpServerOptList[]  = {OPT_TCP_UDP_CLOSE, OPT_CONN_TCP_SERVER,
+                                                    OPT_NULL};
+const static uint8_t bWifiConnUdpServerOptList[]  = {OPT_TCP_UDP_CLOSE, OPT_CONN_UDP_SERVER,
+                                                    OPT_NULL};
 const static uint8_t bWifiMqttConnOptList[]       = {
     OPT_MQTT_CLOSE, OPT_MQTT_CLOSE, OPT_CFG_MQTTUSER, OPT_MQTT_CONN, OPT_MQTT_CONN_CHECK, OPT_NULL};
 const static uint8_t bWifiMqttSubOptList[] = {OPT_MQTT_SUB, OPT_NULL};
 const static uint8_t bWifiMqttPubOptList[] = {OPT_MQTT_PUB, OPT_NULL};
-const static uint8_t bWifiTcpSendOptList[] = {OPT_TCP_SEND_1, OPT_TCP_SEND_2, OPT_NULL};
+const static uint8_t bWifiTcpSendOptList[] = {OPT_TCP_UDP_SEND_1, OPT_TCP_UDP_SEND_2, OPT_NULL};
 const static uint8_t bWifiPingOptList[]    = {OPT_PING, OPT_NULL};
 
 const static pOptFunc_t bOptFuncTable[OPT_NUMBER] = {
@@ -190,8 +196,9 @@ const static pOptFunc_t bOptFuncTable[OPT_NUMBER] = {
     _bEspSetAutoConn, _bEspStaMode,       _bEspJoinAp,         _bEspSetAp,
     _bEspApMode,      _bEspStaApMode,     _bEspSetupTcpServer, _bEspMqttClose,
     _bEspCfgMqttUser, _bEspMqttConn,      _bEspMqttConnCheck,  _bEspMqttSub,
-    _bEspMqttPub,     _bEspConnTcpServer, _bEspTcpSend1,       _bEspTcpSend2,
-    _bEspTcpClose,    _bEspDisableMux,    _bEspPing,           _bEspEchoOff,
+    _bEspMqttPub,     _bEspConnTcpServer, _bEspConnUdpServer,  _bEspTcpUdpSend1,
+    _bEspTcpUdpSend2, _bEspTcpUdpClose,   _bEspDisableMux,     _bEspPing,
+    _bEspEchoOff,
 };
 static void       *bParam       = NULL;
 static bWiFiData_t bWiFiRecData = {
@@ -302,14 +309,18 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
         }
         retp = strstr((const char *)retp, "+IPD");
     }
-    retp      = _bEspStrStr(pbuf, len, "+HTTPCLIENT:");
-    pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nOK");
+    retp = _bEspStrStr(pbuf, len, "+HTTPCLIENT:");
     while (retp)
     {
+        pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nOK");
         if (pcheckend == NULL)
         {
-            bWiFiRecDataLock = 0;
-            return -3;
+            pcheckend = _bEspStrStr(pbuf, len, "\r\n\r\nERR");
+            if (pcheckend == NULL)
+            {
+                bWiFiRecDataLock = 0;
+                return -3;  //没有接收完整，继续接收
+            }
         }
         retval = sscanf((const char *)retp, "+HTTPCLIENT:%d,%*s", &rlen);
         if (retval == 1 && rlen > 0 && rlen < len)
@@ -535,10 +546,10 @@ static uint8_t _bEspReset(void *param)
 
 static uint8_t _bEspSetupTcpServer(void *param)
 {
-    uint8_t     retval = AT_INVALID_ID;
-    char        buf[32];
-    uint8_t     len;
-    bTcpInfo_t *pinfo = (bTcpInfo_t *)param;
+    uint8_t        retval = AT_INVALID_ID;
+    char           buf[32];
+    uint8_t        len;
+    bTcpUdpInfo_t *pinfo = (bTcpUdpInfo_t *)param;
     if (param == NULL)
     {
         return retval;
@@ -653,10 +664,10 @@ static uint8_t _bEspMqttPub(void *param)
 
 static uint8_t _bEspConnTcpServer(void *param)
 {
-    uint8_t     retval = AT_INVALID_ID;
-    char        buf[100];
-    uint8_t     len;
-    bTcpInfo_t *pinfo = (bTcpInfo_t *)param;
+    uint8_t        retval = AT_INVALID_ID;
+    char           buf[100];
+    uint8_t        len;
+    bTcpUdpInfo_t *pinfo = (bTcpUdpInfo_t *)param;
     if (param == NULL)
     {
         return retval;
@@ -669,12 +680,30 @@ static uint8_t _bEspConnTcpServer(void *param)
     return retval;
 }
 
-static uint8_t _bEspTcpSend1(void *param)
+static uint8_t _bEspConnUdpServer(void *param)
 {
-    uint8_t     retval = AT_INVALID_ID;
-    bTcpData_t *pdata  = (bTcpData_t *)param;
-    char        buf[32];
-    uint8_t     len;
+    uint8_t        retval = AT_INVALID_ID;
+    char           buf[100];
+    uint8_t        len;
+    bTcpUdpInfo_t *pinfo = (bTcpUdpInfo_t *)param;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    len = sprintf(buf, "AT+CIPSTART=\"UDP\",\"%s\",%d\r\n", pinfo->ip, pinfo->port);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 1000);
+    }
+    return retval;
+}
+
+static uint8_t _bEspTcpUdpSend1(void *param)
+{
+    uint8_t        retval = AT_INVALID_ID;
+    bTcpUdpData_t *pdata  = (bTcpUdpData_t *)param;
+    char           buf[32];
+    uint8_t        len;
     if (param == NULL)
     {
         return retval;
@@ -687,10 +716,10 @@ static uint8_t _bEspTcpSend1(void *param)
     return retval;
 }
 
-static uint8_t _bEspTcpSend2(void *param)
+static uint8_t _bEspTcpUdpSend2(void *param)
 {
-    uint8_t     retval = AT_INVALID_ID;
-    bTcpData_t *pdata  = (bTcpData_t *)param;
+    uint8_t        retval = AT_INVALID_ID;
+    bTcpUdpData_t *pdata  = (bTcpUdpData_t *)param;
     if (param == NULL)
     {
         return retval;
@@ -699,7 +728,7 @@ static uint8_t _bEspTcpSend2(void *param)
     return retval;
 }
 
-static uint8_t _bEspTcpClose(void *param)
+static uint8_t _bEspTcpUdpClose(void *param)
 {
     uint8_t retval = AT_INVALID_ID;
     retval = bAtCmdSend("AT+CIPCLOSE\r\n", strlen("AT+CIPCLOSE\r\n"), "ERROR", strlen("ERROR"),
@@ -800,21 +829,28 @@ static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
             if (param != NULL)
             {
                 _bEspCmdStart(cmd, bWifiSetupTcpServerOptList, sizeof(bWifiSetupTcpServerOptList),
-                              param, sizeof(bTcpInfo_t));
+                              param, sizeof(bTcpUdpInfo_t));
             }
             break;
         case bCMD_WIFI_REMOT_TCP_SERVER:
             if (param != NULL)
             {
                 _bEspCmdStart(cmd, bWifiConnTcpServerOptList, sizeof(bWifiConnTcpServerOptList),
-                              param, sizeof(bTcpInfo_t));
+                              param, sizeof(bTcpUdpInfo_t));
+            }
+            break;
+        case bCMD_WIFI_REMOT_UDP_SERVER:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiConnUdpServerOptList, sizeof(bWifiConnUdpServerOptList),
+                              param, sizeof(bTcpUdpInfo_t));
             }
             break;
         case bCMD_WIFI_TCP_SEND:
             if (param != NULL)
             {
                 _bEspCmdStart(cmd, bWifiTcpSendOptList, sizeof(bWifiTcpSendOptList), param,
-                              sizeof(bTcpData_t));
+                              sizeof(bTcpUdpData_t));
             }
             break;
         case bCMD_WIFI_PING:

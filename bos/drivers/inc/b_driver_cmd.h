@@ -130,10 +130,11 @@ typedef struct
 #define bCMD_WIFI_MQTT_CONN 4         // bMqttConnInfo_t
 #define bCMD_WIFI_MQTT_SUB 5          // bMqttTopicInfo_t
 #define bCMD_WIFI_MQTT_PUB 6          // bMqttTopicData_t
-#define bCMD_WIFI_LOCAL_TCP_SERVER 7  // bTcpInfo_t
-#define bCMD_WIFI_REMOT_TCP_SERVER 8  // bTcpInfo_t
-#define bCMD_WIFI_TCP_SEND 9          // bTcpData_t
-#define bCMD_WIFI_PING 10             // char *ip
+#define bCMD_WIFI_LOCAL_TCP_SERVER 7  // bTcpUdpInfo_t
+#define bCMD_WIFI_REMOT_TCP_SERVER 8  // bTcpUdpInfo_t
+#define bCMD_WIFI_REMOT_UDP_SERVER 9  // bTcpUdpInfo_t
+#define bCMD_WIFI_TCP_SEND 10         // bTcpUdpData_t
+#define bCMD_WIFI_PING 11             // char *ip
 
 typedef struct
 {
@@ -147,13 +148,13 @@ typedef struct
 {
     char     ip[64];
     uint16_t port;
-} bTcpInfo_t;
+} bTcpUdpInfo_t;
 
 typedef struct
 {
     uint16_t len;
     char    *pstr;
-} bTcpData_t;
+} bTcpUdpData_t;
 
 typedef struct
 {
@@ -178,7 +179,7 @@ typedef struct
 
 typedef struct
 {
-    bTcpData_t       tcp;
+    bTcpUdpData_t    tcp;
     bMqttTopicData_t mqtt;
 } bWiFiData_t;
 
