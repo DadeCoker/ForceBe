@@ -57,16 +57,8 @@ typedef struct
 {
     union
     {
-        struct
-        {
-            bHalI2CNumber_t iic;
-            uint8_t         addr;
-        } _iic;
-        struct
-        {
-            bHalSPINumber_t    spi;
-            bHalGPIOInstance_t cs;
-        } _spi;
+        bHalI2CIf_t _i2c;
+        bHalSPIIf_t _spi;
     } _if;
     uint8_t is_spi;
 } bLIS3DH_HalIf_t;
@@ -210,11 +202,11 @@ typedef enum
 
 typedef struct
 {
-    uint8_t            fifo_enable;  // 0:disable   1:enable
-    uint8_t            fth;          // Set FIFO watermark 0 <= fth <= 31
-    bLis3dhODR_t       odr;          // Output data rates \ref bLis3dhODR_t
-    bLis3dhFS_t        fs;           // Full scale \ref bLis3dhFS_t
-    bLis3dhOpMode_t    op_mode;      // Operating mode \ref bLis3dhOpMode_t
+    uint8_t           fifo_enable;  // 0:disable   1:enable
+    uint8_t           fth;          // Set FIFO watermark 0 <= fth <= 31
+    bLis3dhODR_t      odr;          // Output data rates \ref bLis3dhODR_t
+    bLis3dhFS_t       fs;           // Full scale \ref bLis3dhFS_t
+    bLis3dhOpMode_t   op_mode;      // Operating mode \ref bLis3dhOpMode_t
     bLis3dhFifoMode_t fifo_mode;    // FIFO Mode \ref bLis3dhFifoMode_t
 } bLis3dhConfig_t;
 

@@ -38,6 +38,8 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
+#include "hal/inc/b_hal_gpio.h"
+
 /**
  * \addtogroup B_HAL
  * \{
@@ -70,10 +72,28 @@ typedef enum
 
 typedef struct
 {
-    int (*pSetSpeed)(bHalSPINumber_t spi, bHalSPISpeed_t speed);
-    int (*pSend)(bHalSPINumber_t spi, const uint8_t *pbuf, uint16_t len);
-    int (*pReceive)(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len);
-    uint8_t (*pTransfer)(bHalSPINumber_t spi, uint8_t dat);
+    uint8_t is_simulation;
+    union
+    {
+        bHalSPINumber_t spi;
+        struct
+        {
+            bHalGPIOInstance_t miso;
+            bHalGPIOInstance_t mosi;
+            bHalGPIOInstance_t clk;
+            uint8_t            CPOL;
+            uint8_t            CPHA;
+        } simulating_spi;
+    } _if;
+    bHalGPIOInstance_t cs;
+} const bHalSPIIf_t;
+
+typedef struct
+{
+    int (*pSetSpeed)(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed);
+    int (*pSend)(bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len);
+    int (*pReceive)(bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len);
+    uint8_t (*pTransfer)(bHalSPIIf_t *spi_if, uint8_t dat);
 } const bHalSPIDriver_t;
 
 /**

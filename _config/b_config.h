@@ -33,24 +33,31 @@
 
 //<<< Use Configuration Wizard in Context Menu >>>
 
-//<h> Compile Configuration
-
+//<h> Version Configuration
 //<o> Hardware version
 #define HW_VERSION 211026
-
 //<o> Firmware version
 #define FW_VERSION 60100
+//</h>
 
+//<h> Platform Configuration
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ 1000
-#define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
-
 //<o> MCU Platform
 //<1001=> STM32 STD
 //<1002=> STM32 HAL
 //<2001=> NATION_F40X
 #define _MCU_PLATFORM 2001
+//</h>
 
+//<h> Utils Configuration
+//<q> Simulating IIC Enable/Disable
+#define _SIMULATING_IIC_ENABLE 1
+//<q> Simulating SPI Enable/Disable
+#define _SIMULATING_SPI_ENABLE 1
+//</h>
+
+//<h> Modules Configuration
 //<q> Algorithm Enable/Disable
 #define _BOS_ALGO_ENABLE 1
 
@@ -73,15 +80,15 @@
 //<e> Battery Enable/Disable
 #define _BATTERY_ENABLE 1
 //<o> Battery Threshold (mv)
-#define _BATTERY_THRESHOLD 3350
+#define BATTERY_THRESHOLD 3350
 //<o> Battery Detection Cycle (ms)
-#define _BATTERY_D_CYCLE 60000
+#define BATTERY_D_CYCLE 500
 //</e>
 
 //<e> Error Manage Enable/Disable
 #define _ERROR_MANAGE_ENABLE 1
 //<o> Error Queue Length
-#define _ERROR_Q_LENGTH 10
+#define ERROR_Q_LENGTH 10
 //</e>
 
 //<q> Event Manage Enable/Disable
@@ -90,7 +97,7 @@
 //<e> Modbus Enable/Disable
 #define _MODBUS_ENABLE 1
 //<o> Modbus Buffer Size
-#define _MODBUS_BUF_SIZE 200
+#define MODBUS_BUF_SIZE 200
 //</e>
 
 //<e> Protocol Enable/Disable
@@ -98,21 +105,21 @@
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
-#define _PROTO_FID_SIZE 4
+#define PROTO_FID_SIZE 4
 //<o> Size of The Len Field
 //<1=> 1Byte
 //<2=> 2Bytes
-#define _PROTO_FLEN_SIZE 1
+#define PROTO_FLEN_SIZE 1
 //<e> Encrypt Enable/Disable
 #define _PROTO_ENCRYPT_ENABLE 0
 //<o> Secret Key 1
-#define _SECRET_KEY1 1
+#define SECRET_KEY1 1
 //<o> Secret Key 2
-#define _SECRET_KEY2 22
+#define SECRET_KEY2 22
 //<o> Secret Key 3
-#define _SECRET_KEY3 333
+#define SECRET_KEY3 333
 //<o> Secret Key 4
-#define _SECRET_KEY4 4444
+#define SECRET_KEY4 4444
 //</e>
 //</e>
 
@@ -142,17 +149,17 @@
 //<e> Menu Enable/Disable
 #define _MENU_ENABLE 1
 //<o> Menu Item Number
-#define _MENU_ITEM_NUMBER 10
+#define MENU_ITEM_NUMBER 10
 //</e>
 
 //<e> Heap4 Enable/Disable
 #define _HEAP_ENABLE 1
 //<o> Heap Size
-#define _HEAP_SIZE 1024
+#define HEAP_SIZE 1024
 //<e> External SDRAM ?
 #define _EX_SDRAM_ENABLE 0
 //<o> Heap Address
-#define _EX_HEAP_ADDRESS 0xC0000000
+#define EX_HEAP_ADDRESS 0xC0000000
 //</e>
 //</e>
 
@@ -160,7 +167,7 @@
 #define _TIMER_ENABLE 1
 
 //<q> Tuning Parameters Enable/Disable
-#define _PARAM_ENABLE 0
+#define _PARAM_ENABLE 1
 
 //</h>
 
@@ -224,19 +231,19 @@
 //<e> UGUI Enable/Disable
 #define _UGUI_ENABLE 1
 //<o> X PHYSICAL SIZE
-#define _LCD_X_SIZE 240
+#define LCD_X_SIZE 240
 //<o> Y PHYSICAL SIZE
-#define _LCD_Y_SIZE 320
+#define LCD_Y_SIZE 320
 
 //<o> X TOUCH AD MIN
-#define _X_TOUCH_AD_MIN 476
+#define X_TOUCH_AD_MIN 476
 //<o> X TOUCH AD MAX
-#define _X_TOUCH_AD_MAX 3752
+#define X_TOUCH_AD_MAX 3752
 
 //<o> Y TOUCH AD MIN
-#define _Y_TOUCH_AD_MIN 338
+#define Y_TOUCH_AD_MIN 338
 //<o> Y TOUCH AD MAX
-#define _Y_TOUCH_AD_MAX 3592
+#define Y_TOUCH_AD_MAX 3592
 
 //<o> LCD DISPLAY MODE
 //<0=> H
@@ -287,7 +294,7 @@
 //<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
 #define _SPIFLASH_ENABLE 0
 //<o> SPI Flash x(MB)
-#define _SPIFLASH_SIZE 8
+#define SPIFLASH_SIZE 8
 //</e>
 
 //<e> SD Card Enable/Disable (Device No:SD)

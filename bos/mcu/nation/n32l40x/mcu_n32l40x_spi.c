@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #include "hal/inc/b_hal_spi.h"
-
+#include "utils/inc/b_util_spi.h"
 #if (_MCU_PLATFORM == 2001)
 #include "n32l40x.h"
 
@@ -40,17 +40,15 @@
 #define NULL ((void *)0)
 #endif
 
-static int _SpiSetSpeed(bHalSPINumber_t spi, bHalSPISpeed_t speed)
+static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 {
-    switch (spi)
+    if(IS_NULL(spi_if))
+    {
+        return -1;
+    }
+    switch (spi_if->_if.spi)
     {
         case B_HAL_SPI_1:
-
-            break;
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
 
             break;
         default:
@@ -59,70 +57,103 @@ static int _SpiSetSpeed(bHalSPINumber_t spi, bHalSPISpeed_t speed)
     return 0;
 }
 
-static uint8_t _SpiTransfer(bHalSPINumber_t spi, uint8_t dat)
+static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    uint8_t tmp;
-    switch (spi)
+    uint8_t    tmp;
+    bUtilSPI_t simulating_spi;
+    if(IS_NULL(spi_if))
     {
-        case B_HAL_SPI_1:
+        return 0;
+    }    
+    if (spi_if->is_simulation == 1)
+    {
+        simulating_spi.clk  = spi_if->_if.simulating_spi.clk;
+        simulating_spi.mosi = spi_if->_if.simulating_spi.mosi;
+        simulating_spi.miso = spi_if->_if.simulating_spi.miso;
+        simulating_spi.CPHA = spi_if->_if.simulating_spi.CPHA;
+        simulating_spi.CPOL = spi_if->_if.simulating_spi.CPOL;
+        tmp                 = bUtilSPI_WriteRead(simulating_spi, dat);
+    }
+    else
+    {
+        switch (spi_if->_if.spi)
+        {
+            case B_HAL_SPI_1:
 
-            break;
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
-
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
     }
     return tmp;
 }
 
-static int _SpiSend(bHalSPINumber_t spi, const uint8_t *pbuf, uint16_t len)
+static int _SpiSend(bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len)
 {
-    if (pbuf == NULL)
+    bUtilSPI_t simulating_spi;
+    int i = 0;
+    if(IS_NULL(spi_if) || IS_NULL(pbuf))
     {
-        return -1;
+        return 0;
+    }  
+    if (spi_if->is_simulation == 1)
+    {
+        simulating_spi.clk  = spi_if->_if.simulating_spi.clk;
+        simulating_spi.mosi = spi_if->_if.simulating_spi.mosi;
+        simulating_spi.miso = spi_if->_if.simulating_spi.miso;
+        simulating_spi.CPHA = spi_if->_if.simulating_spi.CPHA;
+        simulating_spi.CPOL = spi_if->_if.simulating_spi.CPOL;
+        for(i = 0;i < len;i++)
+        {
+            bUtilSPI_WriteRead(simulating_spi, pbuf[i]);
+        }
     }
-    switch (spi)
+    else
     {
-        case B_HAL_SPI_1:
+        switch (spi_if->_if.spi)
+        {
+            case B_HAL_SPI_1:
 
-            break;
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
-
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
     }
     return 0;
 }
 
-static int _SpiReceive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
+static int _SpiReceive(bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len)
 {
-    if (pbuf == NULL)
+    bUtilSPI_t simulating_spi;
+    int i = 0;
+    if(IS_NULL(spi_if) || IS_NULL(pbuf))
     {
-        return -1;
-    }
-    switch (spi)
+        return 0;
+    } 
+    if (spi_if->is_simulation == 1)
     {
-        case B_HAL_SPI_1:
-
-            break;
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
-
-            break;
-        default:
-            break;
+        simulating_spi.clk  = spi_if->_if.simulating_spi.clk;
+        simulating_spi.mosi = spi_if->_if.simulating_spi.mosi;
+        simulating_spi.miso = spi_if->_if.simulating_spi.miso;
+        simulating_spi.CPHA = spi_if->_if.simulating_spi.CPHA;
+        simulating_spi.CPOL = spi_if->_if.simulating_spi.CPOL;
+        for(i = 0;i < len;i++)
+        {
+            pbuf[i] = bUtilSPI_WriteRead(simulating_spi, 0xff);
+        }
     }
-    return 0;
+    else
+    {
+        switch (spi_if->_if.spi)
+        {
+            case B_HAL_SPI_1:
+
+                break;
+            default:
+                break;
+        }
+    }
+    return 0;    
 }
 
 bHalSPIDriver_t bHalSPIDriver = {

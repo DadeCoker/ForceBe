@@ -102,7 +102,7 @@ static void _FM25_WR_Enable(bFM25CL_HalIf_t *_if)
 {
     uint8_t cmd = SFC_WREN;
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 0);
-    bHalSPIDriver.pSend(_if->spi, &cmd, 1);
+    bHalSPIDriver.pSend(_if, &cmd, 1);
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 1);
 }
 
@@ -110,7 +110,7 @@ static void _FM25_WR_Lock(bFM25CL_HalIf_t *_if)
 {
     uint8_t cmd = SFC_WRDI;
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 0);
-    bHalSPIDriver.pSend(_if->spi, &cmd, 1);
+    bHalSPIDriver.pSend(_if, &cmd, 1);
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 1);
 }
 
@@ -127,8 +127,8 @@ static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, 
     cmd[2] = (uint8_t)(addr >> 0);
 
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 0);
-    bHalSPIDriver.pSend(_if->spi, cmd, 3);
-    bHalSPIDriver.pReceive(_if->spi, pDat, len);
+    bHalSPIDriver.pSend(_if, cmd, 3);
+    bHalSPIDriver.pReceive(_if, pDat, len);
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 1);
     return len;
 }
@@ -143,8 +143,8 @@ static int _FM25_WritBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pdat, 
     cmd[1] = (uint8_t)(addr >> 8);
     cmd[2] = (uint8_t)(addr >> 0);
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 0);
-    bHalSPIDriver.pSend(_if->spi, cmd, 3);
-    bHalSPIDriver.pSend(_if->spi, pdat, len);
+    bHalSPIDriver.pSend(_if, cmd, 3);
+    bHalSPIDriver.pSend(_if, pdat, len);
     bHalGPIODriver.pGpioWritePin(_if->cs.port, _if->cs.pin, 1);
     //-----------------------------------------------------------
     _FM25_WR_Lock(_if);

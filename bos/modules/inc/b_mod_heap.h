@@ -69,8 +69,7 @@ extern "C" {
  * \defgroup HEAP_Exported_Defines
  * \{
  */
-#define HEAP_ADDRESS _EX_HEAP_ADDRESS
-#define HEAP_SIZE _HEAP_SIZE
+#define HEAP_ADDRESS EX_HEAP_ADDRESS
 /**
  * \}
  */

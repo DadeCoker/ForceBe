@@ -38,6 +38,8 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
+#include "hal/inc/b_hal_gpio.h"
+
 /**
  * \addtogroup B_HAL
  * \{
@@ -58,17 +60,30 @@ typedef enum
     B_HAL_I2C_2,
     B_HAL_I2C_3,
     B_HAL_I2C_4,
-    B_HAL_I2C_INVALID
+    B_HAL_I2C_NUMBER,
 } bHalI2CNumber_t;
 
 typedef struct
 {
-    void (*pWriteByte)(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat);
-    uint8_t (*pReadByte)(bHalI2CNumber_t i2c, uint8_t dev_addr);
-    int (*pMemWrite)(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, const uint8_t *pbuf,
-                     uint16_t len);
-    int (*pMemRead)(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf,
-                    uint16_t len);
+    uint8_t dev_addr;
+    uint8_t is_simulation;
+    union
+    {
+        bHalI2CNumber_t i2c;
+        struct
+        {
+            bHalGPIOInstance_t clk;
+            bHalGPIOInstance_t sda;
+        } simulating_i2c;
+    } _if;
+} const bHalI2CIf_t;
+
+typedef struct
+{
+    void (*pWriteByte)(bHalI2CIf_t *i2c_if, uint8_t dat);
+    uint8_t (*pReadByte)(bHalI2CIf_t *i2c_if);
+    int (*pMemWrite)(bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf, uint16_t len);
+    int (*pMemRead)(bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
 } const bHalI2CDriver_t;
 
 /**

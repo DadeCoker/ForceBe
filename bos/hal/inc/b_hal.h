@@ -68,6 +68,12 @@ extern "C" {
 #define NULL ((void *)0)
 #endif
 
+#define IS_NULL(p) ((p) == NULL)
+
+#define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
+
+
+
 /**
  * \}
  */

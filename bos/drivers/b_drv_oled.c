@@ -118,7 +118,7 @@ static void _bOLED_WriteCmd(uint8_t cmd)
     }
     else
     {
-        ret = bHalI2CDriver.pMemWrite(bOLED_HalIf._if._iic.iic, bOLED_HalIf._if._iic.addr, 0x00, &cmd, 1);
+        ret = bHalI2CDriver.pMemWrite(&bOLED_HalIf._if._i2c, 0x00, &cmd, 1);
     }
 
     if (ret < 0)
@@ -138,7 +138,7 @@ static void _bOLED_WriteData(uint8_t dat)
     }
     else
     {
-        ret = bHalI2CDriver.pMemWrite(bOLED_HalIf._if._iic.iic, bOLED_HalIf._if._iic.addr, 0x40, &dat, 1);
+        ret = bHalI2CDriver.pMemWrite(&bOLED_HalIf._if._i2c, 0x40, &dat, 1);
     }
 
     if (ret < 0)

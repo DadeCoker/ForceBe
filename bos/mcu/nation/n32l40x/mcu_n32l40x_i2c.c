@@ -32,81 +32,80 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #include "hal/inc/b_hal_i2c.h"
-
+#include "utils/inc/b_util_i2c.h"
 #if (_MCU_PLATFORM == 2001)
 #include "n32l40x.h"
 
-static void _I2CSendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat)
+static void _I2CSendByte(bHalI2CIf_t *pi2c_if, uint8_t dat)
 {
-    switch (i2c)
-    {
-        case B_HAL_I2C_1:
-
-            break;
-        case B_HAL_I2C_2:
-
-            break;
-
-        default:
-            break;
-    }
 }
 
-static uint8_t _I2CReadByte(bHalI2CNumber_t i2c, uint8_t dev_addr)
+static uint8_t _I2CReadByte(bHalI2CIf_t *pi2c_if)
 {
     uint8_t tmp;
-    switch (i2c)
-    {
-        case B_HAL_I2C_1:
-
-            break;
-        case B_HAL_I2C_2:
-
-            break;
-        default:
-            break;
-    }
     return tmp;
 }
 
-static int _I2CMemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr,
-                        const uint8_t *pbuf, uint16_t len)
+static int _I2CMemWrite(bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf, uint16_t len)
 {
-    int retval = 0;
-    switch (i2c)
+    int        retval = 0;
+    bUtilI2C_t simulating_iic;
+    if (IS_NULL(i2c_if))
     {
-        case B_HAL_I2C_1:
+        return -1;
+    }
+    if (i2c_if->is_simulation == 1)
+    {
+        simulating_iic.sda = i2c_if->_if.simulating_i2c.sda;
+        simulating_iic.clk = i2c_if->_if.simulating_i2c.clk;
+        bUtilI2C_WriteBuff(simulating_iic, i2c_if->dev_addr, mem_addr, pbuf, len);
+    }
+    else
+    {
+        switch (i2c_if->_if.i2c)
+        {
+            case B_HAL_I2C_1:
 
-            break;
-        case B_HAL_I2C_2:
+                break;
+            case B_HAL_I2C_2:
 
-            break;
-        case B_HAL_I2C_3:
+                break;
 
-            break;
-        default:
-            break;
+            default:
+                break;
+        }
     }
     return retval;
 }
 
-static int _I2CMemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf,
-                       uint16_t len)
+static int _I2CMemRead(bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
 {
-    int retval = 0;
-    switch (i2c)
+    int        retval = 0;
+    bUtilI2C_t simulating_iic;
+    if (IS_NULL(i2c_if))
     {
-        case B_HAL_I2C_1:
+        return -1;
+    }
+    if (i2c_if->is_simulation == 1)
+    {
+        simulating_iic.sda = i2c_if->_if.simulating_i2c.sda;
+        simulating_iic.clk = i2c_if->_if.simulating_i2c.clk;
+        bUtilI2C_ReadBuff(simulating_iic, i2c_if->dev_addr, mem_addr, pbuf, len);
+    }
+    else
+    {
+        switch (i2c_if->_if.i2c)
+        {
+            case B_HAL_I2C_1:
 
-            break;
-        case B_HAL_I2C_2:
+                break;
+            case B_HAL_I2C_2:
 
-            break;
-        case B_HAL_I2C_3:
+                break;
 
-            break;
-        default:
-            break;
+            default:
+                break;
+        }
     }
     return retval;
 }

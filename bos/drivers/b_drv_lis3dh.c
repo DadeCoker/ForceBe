@@ -106,15 +106,17 @@ static int _bLis3dhReadRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bLIS3DH_HalIf.is_spi)
     {
         reg |= 0xC0;
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
-        bHalSPIDriver.pSend(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
-        bHalSPIDriver.pReceive(bLIS3DH_HalIf._if._spi.spi, data, len);
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
+                                     0);
+        bHalSPIDriver.pSend(&bLIS3DH_HalIf._if._spi, &reg, 1);
+        bHalSPIDriver.pReceive(&bLIS3DH_HalIf._if._spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
+                                     1);
     }
     else
     {
         reg = reg | 0x80;
-        bHalI2CDriver.pMemRead(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemRead(&bLIS3DH_HalIf._if._i2c, reg, data, len);
     }
     return 0;
 }
@@ -124,14 +126,16 @@ static int _bLis3dhWriteRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bLIS3DH_HalIf.is_spi)
     {
         reg |= 0x40;
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
-        bHalSPIDriver.pSend(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
-        bHalSPIDriver.pSend(bLIS3DH_HalIf._if._spi.spi, data, len);
-        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
+                                     0);
+        bHalSPIDriver.pSend(&bLIS3DH_HalIf._if._spi, &reg, 1);
+        bHalSPIDriver.pSend(&bLIS3DH_HalIf._if._spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin,
+                                     1);
     }
     else
     {
-        bHalI2CDriver.pMemWrite(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemWrite(&bLIS3DH_HalIf._if._i2c, reg, data, len);
     }
     return 0;
 }
@@ -146,7 +150,7 @@ static uint8_t _bLis3dhGetID()
 // change the values of bdu in reg CTRL_REG4
 static int _bLis3dhBlockDataUpdateSet(uint8_t val)
 {
-    int                retval = 0;
+    int               retval = 0;
     bLis3dhCtrlReg4_t ctrl_reg4;
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
     if (retval == 0)
@@ -160,7 +164,7 @@ static int _bLis3dhBlockDataUpdateSet(uint8_t val)
 // Output data rate selection
 static int _bLis3dhODR_Set(bLis3dhODR_t odr)
 {
-    int                retval = 0;
+    int               retval = 0;
     bLis3dhCtrlReg1_t ctrl_reg1;
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
     if (retval == 0)
@@ -174,7 +178,7 @@ static int _bLis3dhODR_Set(bLis3dhODR_t odr)
 // Full-scale configuration.
 static int _bLis3dhFullScaleSet(bLis3dhFS_t val)
 {
-    int                retval = 0;
+    int               retval = 0;
     bLis3dhCtrlReg4_t ctrl_reg4;
 
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
@@ -191,7 +195,7 @@ static int _bLis3dhOpModeSet(bLis3dhOpMode_t val)
 {
     bLis3dhCtrlReg1_t ctrl_reg1;
     bLis3dhCtrlReg4_t ctrl_reg4;
-    int                retval = 0;
+    int               retval = 0;
 
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
     if (retval < 0)
@@ -238,7 +242,7 @@ static int _bLis3dhFIFO_Set(uint8_t fth, bLis3dhFifoMode_t mode, uint8_t enable)
 {
     bLis3dhFifoCtrlReg_t fifo_ctrl_reg;
     bLis3dhCtrlReg5_t    ctrl_reg5;
-    int                   retval = 0;
+    int                  retval = 0;
     retval = _bLis3dhReadRegs(LIS3DH_FIFO_CTRL_REG, (uint8_t *)&fifo_ctrl_reg, 1);
     if (retval < 0)
     {
@@ -331,8 +335,8 @@ static int _bLis3dhCtl(bLIS3DH_Driver_t *pdrv, uint8_t cmd, void *param)
 static void _bLis3dhPolling()
 {
     bLis3dhFifoSrcReg_t fifo_src_reg;
-    int                  i   = 0;
-    uint8_t              fss = 0;
+    int                 i   = 0;
+    uint8_t             fss = 0;
     if (bIntFlag)
     {
         bIntFlag = 0;
@@ -385,7 +389,6 @@ int bLIS3DH_Init()
     bLIS3DH_Driver.ctl    = _bLis3dhCtl;
     return 0;
 }
-
 
 BOS_REG_POLLING_FUNC(_bLis3dhPolling);
 bDRIVER_REG_INIT(bLIS3DH_Init);

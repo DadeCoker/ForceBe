@@ -106,15 +106,17 @@ static int _bL3gd20ReadRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bL3GD20_HalIf.is_spi)
     {
         reg |= 0xC0;
-        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 0);
-        bHalSPIDriver.pSend(bL3GD20_HalIf._if._spi.spi, &reg, 1);
-        bHalSPIDriver.pReceive(bL3GD20_HalIf._if._spi.spi, data, len);
-        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin,
+                                     0);
+        bHalSPIDriver.pSend(&bL3GD20_HalIf._if._spi, &reg, 1);
+        bHalSPIDriver.pReceive(&bL3GD20_HalIf._if._spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin,
+                                     1);
     }
     else
     {
         reg = reg | 0x80;
-        bHalI2CDriver.pMemRead(bL3GD20_HalIf._if._iic.iic, bL3GD20_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemRead(&bL3GD20_HalIf._if._i2c, reg, data, len);
     }
     return 0;
 }
@@ -125,14 +127,16 @@ static int _bL3gd20WriteRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bL3GD20_HalIf.is_spi)
     {
         reg |= 0x40;
-        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 0);
-        bHalSPIDriver.pSend(bL3GD20_HalIf._if._spi.spi, &reg, 1);
-        bHalSPIDriver.pSend(bL3GD20_HalIf._if._spi.spi, data, len);
-        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin,
+                                     0);
+        bHalSPIDriver.pSend(&bL3GD20_HalIf._if._spi, &reg, 1);
+        bHalSPIDriver.pSend(&bL3GD20_HalIf._if._spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin,
+                                     1);
     }
     else
     {
-        bHalI2CDriver.pMemWrite(bL3GD20_HalIf._if._iic.iic, bL3GD20_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemWrite(&bL3GD20_HalIf._if._i2c, reg, data, len);
     }
     return 0;
 }
@@ -148,7 +152,7 @@ static uint8_t _bL3gd20GetID()
 static int _bL3gd20BlockDataUpdateSet(uint8_t val)
 {
     int                retval = 0;
-    bL3gd20CTRL_REG4_t ctrl_reg4;
+    bL3gd20CtrlReg4_t ctrl_reg4;
     retval = _bL3gd20ReadRegs(L3GD20_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
     if (retval == 0)
     {
@@ -162,7 +166,7 @@ static int _bL3gd20BlockDataUpdateSet(uint8_t val)
 static int _bL3gd20ODR_Set(bL3gd20ODR_t odr)
 {
     int                retval = 0;
-    bL3gd20CTRL_REG1_t ctrl_reg1;
+    bL3gd20CtrlReg1_t ctrl_reg1;
     retval = _bL3gd20ReadRegs(L3GD20_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
     if (retval == 0)
     {
@@ -176,7 +180,7 @@ static int _bL3gd20ODR_Set(bL3gd20ODR_t odr)
 static int _bL3gd20FullScaleSet(bL3gd20FS_t val)
 {
     int                retval = 0;
-    bL3gd20CTRL_REG4_t ctrl_reg4;
+    bL3gd20CtrlReg4_t ctrl_reg4;
 
     retval = _bL3gd20ReadRegs(L3GD20_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
     if (retval == 0)
@@ -190,8 +194,8 @@ static int _bL3gd20FullScaleSet(bL3gd20FS_t val)
 // Operating mode selection.
 static int _bL3gd20OpModeSet(bL3gd20OpMode_t val)
 {
-    bL3gd20CTRL_REG1_t ctrl_reg1;
-    bL3gd20CTRL_REG4_t ctrl_reg4;
+    bL3gd20CtrlReg1_t ctrl_reg1;
+    bL3gd20CtrlReg4_t ctrl_reg4;
     int                retval = 0;
 
     retval = _bL3gd20ReadRegs(L3GD20_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
@@ -235,10 +239,10 @@ static int _bL3gd20OpModeSet(bL3gd20OpMode_t val)
 }
 
 // FIFO configuration.
-static int _bL3gd20FIFO_Set(uint8_t fth, bL3gd20FIFO_Mode_t mode, uint8_t enable)
+static int _bL3gd20FIFO_Set(uint8_t fth, bL3gd20FifoMode_t mode, uint8_t enable)
 {
-    bL3gd20FIFO_CtrlReg_t fifo_ctrl_reg;
-    bL3gd20CTRL_REG5_t    ctrl_reg5;
+    bL3gd20FifoCtrlReg_t fifo_ctrl_reg;
+    bL3gd20CtrlReg5_t    ctrl_reg5;
     int                   retval = 0;
     retval = _bL3gd20ReadRegs(L3GD20_FIFO_CTRL_REG, (uint8_t *)&fifo_ctrl_reg, 1);
     if (retval < 0)
@@ -325,7 +329,7 @@ static int _bL3gd20Ctl(bL3GD20_Driver_t *pdrv, uint8_t cmd, void *param)
 
 static void _bL3gd20Polling()
 {
-    bL3gd20FIFO_SrcReg_t fifo_src_reg;
+    bL3gd20FifoSrcReg_t fifo_src_reg;
     int                  i   = 0;
     uint8_t              fss = 0;
     if (IntFlag)

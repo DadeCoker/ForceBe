@@ -51,11 +51,7 @@ extern "C" {
  * \defgroup SD_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    bHalSPINumber_t    spi;
-    bHalGPIOInstance_t cs;
-} bSD_HalIf_t;
+typedef bHalSPIIf_t bSD_HalIf_t;
 
 typedef bDriverInterface_t bSD_Driver_t;
 /**

@@ -51,11 +51,7 @@ extern "C" {
  * \defgroup PCF8574_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    bHalI2CNumber_t iic;
-    uint8_t         addr;
-} bPCF8574_HalIf_t;
+typedef bHalI2CIf_t bPCF8574_HalIf_t;
 
 typedef bDriverInterface_t bPCF8574_Driver_t;
 /**
