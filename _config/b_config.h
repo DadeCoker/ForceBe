@@ -265,25 +265,6 @@
 
 //<e> UGUI Enable/Disable
 #define _UGUI_ENABLE 0
-//<o> X PHYSICAL SIZE
-#define LCD_X_SIZE 240
-//<o> Y PHYSICAL SIZE
-#define LCD_Y_SIZE 320
-
-//<o> X TOUCH AD MIN
-#define X_TOUCH_AD_MIN 476
-//<o> X TOUCH AD MAX
-#define X_TOUCH_AD_MAX 3752
-
-//<o> Y TOUCH AD MIN
-#define Y_TOUCH_AD_MIN 338
-//<o> Y TOUCH AD MAX
-#define Y_TOUCH_AD_MAX 3592
-
-//<o> LCD DISPLAY MODE
-//<0=> H
-//<1=> V
-#define LCD_DISP_MODE 0
 
 //<o> Font
 //<0=> FONT_6X8

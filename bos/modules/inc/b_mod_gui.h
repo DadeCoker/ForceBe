@@ -58,10 +58,68 @@ extern "C" {
  */
 
 /**
+ * \defgroup GUI_Exported_Typedefines
+ * \{
+ */
+
+typedef struct bGUIStruct
+{
+    const uint8_t      lcd_dev_no;
+    const uint8_t      touch_dev_no;
+    const int          touch_type;
+    const uint16_t     lcd_x_size;
+    const uint16_t     lcd_y_size;
+    uint8_t            lcd_disp_dir;
+    uint8_t            gui_id;
+    uint16_t           touch_ad_x[2];
+    uint16_t           touch_ad_y[2];
+    UG_GUI             gui_handle;
+    struct bGUIStruct *pnext;
+} bGUIStruct_t;
+
+typedef bGUIStruct_t bGUIInstance_t;
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup GUI_Exported_Defines
+ * \{
+ */
+#define TOUCH_TYPE_RES (0)
+#define TOUCH_TYPE_CAP (1)
+
+#define LCD_DISP_H (0)
+#define LCD_DISP_V (1)
+
+#define bGUI_INSTANCE(name, _lcd, _touch, _x_size, _y_size, _touch_type) \
+    bGUIInstance_t name = {                                              \
+        .lcd_dev_no   = _lcd,                                            \
+        .touch_dev_no = _touch,                                          \
+        .touch_type   = _touch_type,                                     \
+        .lcd_x_size   = _x_size,                                         \
+        .lcd_y_size   = _y_size,                                         \
+    };
+
+/**
+ * \}
+ */
+
+/**
  * \defgroup GUI_Exported_Functions
  * \{
  */
-int bGUI_Init(int lcd, int touch);
+// 注册GUI实例，返回GUI ID
+int bGUIRegist(bGUIInstance_t *pInstance);
+// 选择当前操作的目标，传入GUI ID
+int bGUISelect(uint8_t id);
+// 设置电阻屏触摸的AD值范围
+int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
+                   uint16_t y_ad_max);
+// 设置屏幕显示方向，默认是LCD_DISP_V
+int bGUIDispDir(uint8_t id, uint8_t dir);
+
 /**
  * \}
  */
