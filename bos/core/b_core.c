@@ -32,9 +32,9 @@
 /*Includes ----------------------------------------------*/
 #include "core/inc/b_core.h"
 
-#include "hal/inc/b_hal.h"
 #include "core/inc/b_device.h"
 #include "core/inc/b_section.h"
+#include "hal/inc/b_hal.h"
 
 /**
  * \addtogroup BABYOS
@@ -94,7 +94,8 @@ bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
  * \defgroup CORE_Private_FunctionPrototypes
  * \{
  */
-
+static void _bCoreMonitor(void);
+BOS_REG_POLLING_FUNC(_bCoreMonitor);
 /**
  * \}
  */
@@ -103,6 +104,12 @@ bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
  * \defgroup CORE_Private_Functions
  * \{
  */
+
+static void _bCoreMonitor()
+{
+    ;
+}
+
 static int _bCoreCreateFd(uint8_t dev_no, uint8_t flag)
 {
     int            i    = 0;

@@ -64,6 +64,7 @@ typedef enum
 {
 #define B_DEVICE_REG(dev, driver, desc) dev,
 #include "b_device_list.h"
+    bDEV_NULL,
     bDEV_MAX_NUM
 } bDeviceName_t;
 

@@ -98,6 +98,18 @@
  * \defgroup SHELL_Private_Functions
  * \{
  */
+static void _CmdBosHandler(char argc, char *argv)
+{
+    if (argc == 2)
+    {
+        if (!strcmp("-v", &argv[argv[1]]))
+        {
+            b_log("Version:%d.%d.%d\r\n", FW_VERSION / 10000, (FW_VERSION % 10000) / 100, FW_VERSION % 100);
+        }
+    }
+}
+
+bSHELL_REG_INSTANCE("bos", _CmdBosHandler);
 
 /**
  * \}
