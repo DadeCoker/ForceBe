@@ -62,15 +62,15 @@ typedef struct
 {
     uint32_t instruction;
     uint32_t address;
-    uint32_t alternate;
-    uint32_t dummy;
-    uint32_t imode;
-    uint32_t admode;
-    uint32_t abmode;
-    uint32_t dmode;
-    uint32_t adsize;
-    uint32_t absize;
-    uint32_t dsize;
+    uint32_t alternate;    /*  the Alternate Bytes to be sent */
+    uint32_t dummy;        /*  the Number of Dummy Cycles  */
+    uint32_t imode;        /*  the Instruction Mode  */
+    uint32_t admode;       /*  the Address Mode  */
+    uint32_t abmode;       /*  the Alternate Bytes Mode  */
+    uint32_t dmode;        /*  the Data Mode   */
+    uint32_t adsize;       /*  the Address Size   */
+    uint32_t absize;       /*  the Alternate Bytes Size  */
+    uint32_t dsize;        /*  the number of data to transfer  */
 } bHalQSPICmdInfo_t;
 
 /**
