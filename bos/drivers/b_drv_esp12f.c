@@ -105,7 +105,8 @@ typedef uint8_t (*pOptFunc_t)(void *param);
 #define OPT_TCP_SEND_2 (19)
 #define OPT_TCP_CLOSE (20)
 #define OPT_DISABLE_MUX (21)
-#define OPT_NUMBER (22)
+#define OPT_PING (22)
+#define OPT_NUMBER (23)
 #define OPT_NULL (OPT_NUMBER + 1)
 #define IS_ESP_OPT(n)                                                                             \
     ((n == OPT_AT) || (n == OPT_ENTER_AT) || (n == OPT_RESET) || (n == OPT_SET_MUX) ||            \
@@ -114,7 +115,7 @@ typedef uint8_t (*pOptFunc_t)(void *param);
      (n == OPT_MQTT_CLOSE) || (n == OPT_CFG_MQTTUSER) || (n == OPT_MQTT_CONN) ||                  \
      (n == OPT_MQTT_CONN_CHECK) || (n == OPT_MQTT_SUB) || (n == OPT_MQTT_PUB) ||                  \
      (n == OPT_CONN_TCP_SERVER) || (n == OPT_TCP_SEND_1) || (n == OPT_TCP_SEND_2) ||              \
-     (n == OPT_TCP_CLOSE) || (n == OPT_DISABLE_MUX))
+     (n == OPT_TCP_CLOSE) || (n == OPT_DISABLE_MUX) || (n == OPT_PING))
 /**
  * \}
  */
@@ -146,6 +147,7 @@ static uint8_t _bEspTcpSend1(void *param);
 static uint8_t _bEspTcpSend2(void *param);
 static uint8_t _bEspTcpClose(void *param);
 static uint8_t _bEspDisableMux(void *param);
+static uint8_t _bEspPing(void *param);
 /**
  * \}
  */
@@ -178,6 +180,7 @@ const static uint8_t bWifiMqttConnOptList[]       = {
 const static uint8_t bWifiMqttSubOptList[] = {OPT_MQTT_SUB, OPT_NULL};
 const static uint8_t bWifiMqttPubOptList[] = {OPT_MQTT_PUB, OPT_NULL};
 const static uint8_t bWifiTcpSendOptList[] = {OPT_TCP_SEND_1, OPT_TCP_SEND_2, OPT_NULL};
+const static uint8_t bWifiPingOptList[]    = {OPT_PING, OPT_NULL};
 
 const static pOptFunc_t bOptFuncTable[OPT_NUMBER] = {
     _bEspAt,          _bEspEnterAt,       _bEspReset,          _bEspSetMux,
@@ -185,7 +188,7 @@ const static pOptFunc_t bOptFuncTable[OPT_NUMBER] = {
     _bEspApMode,      _bEspStaApMode,     _bEspSetupTcpServer, _bEspMqttClose,
     _bEspCfgMqttUser, _bEspMqttConn,      _bEspMqttConnCheck,  _bEspMqttSub,
     _bEspMqttPub,     _bEspConnTcpServer, _bEspTcpSend1,       _bEspTcpSend2,
-    _bEspTcpClose,    _bEspDisableMux,
+    _bEspTcpClose,    _bEspDisableMux,    _bEspPing,
 };
 static void       *bParam       = NULL;
 static bWiFiData_t bWiFiRecData = {
@@ -226,7 +229,7 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
     {
         return -1;
     }
-    
+
     bWiFiRecDataLock = 1;
     retp             = strstr((const char *)pbuf, "+MQTTSUBRECV");
     if (retp != NULL && bWiFiRecData.mqtt.pstr == NULL)
@@ -252,7 +255,7 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
         return 0;
     }
     retp = strstr((const char *)pbuf, "+IPD");
-    while(retp)
+    while (retp)
     {
         retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
         if (retval == 1 && rlen > 0 && rlen < len)
@@ -599,8 +602,11 @@ static uint8_t _bEspConnTcpServer(void *param)
     {
         return retval;
     }
-    len    = sprintf(buf, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", pinfo->ip, pinfo->port);
-    retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 1000);
+    len = sprintf(buf, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", pinfo->ip, pinfo->port);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 1000);
+    }
     return retval;
 }
 
@@ -614,8 +620,11 @@ static uint8_t _bEspTcpSend1(void *param)
     {
         return retval;
     }
-    len    = sprintf(buf, "AT+CIPSEND=%d\r\n", pdata->len);
-    retval = bAtCmdSend(buf, len, ">", strlen(">"), bESP12F_HalIf, 500);
+    len = sprintf(buf, "AT+CIPSEND=%d\r\n", pdata->len);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, ">", strlen(">"), bESP12F_HalIf, 500);
+    }
     return retval;
 }
 
@@ -639,6 +648,23 @@ static uint8_t _bEspTcpClose(void *param)
     return retval;
 }
 
+static uint8_t _bEspPing(void *param)
+{
+    uint8_t retval = AT_INVALID_ID;
+    char    buf[100];
+    uint8_t len;
+    if (param == NULL)
+    {
+        return retval;
+    }
+    len = sprintf(buf, "AT+PING=\"%s\"\r\n", (char *)param);
+    if (len > 0)
+    {
+        retval = bAtCmdSend(buf, len, "OK", strlen("OK"), bESP12F_HalIf, 5000);
+    }
+    return retval;
+}
+
 static void _bEspPolling()
 {
     if (bEspOptInfo.plist == NULL || bEspOptInfo.at_id != AT_INVALID_ID)
@@ -649,7 +675,6 @@ static void _bEspPolling()
     {
         return;
     }
-
     bEspOptInfo.at_id = bOptFuncTable[(bEspOptInfo.plist[bEspOptInfo.index])](bParam);
 }
 
@@ -726,6 +751,12 @@ static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
                               sizeof(bTcpData_t));
             }
             break;
+        case bCMD_WIFI_PING:
+            if (param != NULL)
+            {
+                _bEspCmdStart(cmd, bWifiPingOptList, sizeof(bWifiPingOptList), param, strlen(param));
+            }
+            break;
         default:
             break;
     }
@@ -743,8 +774,8 @@ static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uin
     {
         return 0;
     }
-    bWiFiRecDataLock      = 1;
-    if(bTcpDataList.total_size > 0)
+    bWiFiRecDataLock = 1;
+    if (bTcpDataList.total_size > 0)
     {
         bWiFiRecData.tcp.pstr = (char *)bMempList2Array(&bTcpDataList);
         bWiFiRecData.tcp.len  = bTcpDataList.total_size;
