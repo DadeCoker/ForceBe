@@ -57,7 +57,7 @@ extern "C" {
  * \defgroup XPT2046_Exported_TypesDefinitions
  * \{
  */
-
+//<HALIF 1 SPI
 typedef bHalSPIIf_t bXPT2046_HalIf_t;
 
 typedef bDriverInterface_t bXPT2046_Driver_t;

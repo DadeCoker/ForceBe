@@ -57,7 +57,7 @@ extern "C" {
  * \defgroup OLED_Exported_TypesDefinitions
  * \{
  */
-
+//<HALIF 2 SPI_I2C
 typedef struct
 {
     union

@@ -92,7 +92,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive nmuber to identify the drive *
         {
             // translate the arguments here
 
-            fd = bOpen(SD, BCORE_FLAG_RW);
+            fd = bOpen(bSD, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 bLseek(fd, sector);
@@ -170,7 +170,7 @@ DRESULT disk_write(BYTE        pdrv,   /* Physical drive nmuber to identify the 
         {
             // translate the arguments here
 
-            fd = bOpen(SD, BCORE_FLAG_RW);
+            fd = bOpen(bSD, BCORE_FLAG_RW);
             if (fd >= 0)
             {
                 bLseek(fd, sector);

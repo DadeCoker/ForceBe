@@ -52,10 +52,8 @@ extern "C" {
  * \defgroup DS18B20_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    bHalGPIOInstance_t sBusIo;
-} bDS18B20_HalIf_t;
+//<HALIF 1 GPIO
+typedef bHalGPIOInstance_t bDS18B20_HalIf_t;
 
 typedef bDriverInterface_t bDS18B20_Driver_t;
 

@@ -52,7 +52,7 @@ extern "C" {
  * \defgroup LIS3DH_Exported_TypesDefinitions
  * \{
  */
-
+//<HALIF 2 SPI_I2C
 typedef struct
 {
     union

@@ -39,15 +39,13 @@ extern "C" {
 #include <stdint.h>
 
 #include "b_config.h"
-
 #include "b_hal_flash.h"
 #include "b_hal_gpio.h"
 #include "b_hal_i2c.h"
+#include "b_hal_if.h"
+#include "b_hal_it.h"
 #include "b_hal_spi.h"
 #include "b_hal_uart.h"
-#include "b_hal_it.h"
-
-#include "b_hal_if.h"
 
 /**
  * \addtogroup B_HAL
@@ -57,6 +55,31 @@ extern "C" {
 /**
  * \addtogroup HAL
  * \{
+ */
+
+/**
+ * \defgroup HAL_Exported_TypesDefinitions
+ * \{
+ */
+typedef struct
+{
+    union
+    {
+        uint32_t rw_addr;
+        struct
+        {
+            bHalGPIOInstance_t data;
+            bHalGPIOInstance_t rs;
+            bHalGPIOInstance_t rd;
+            bHalGPIOInstance_t wr;
+            bHalGPIOInstance_t cs;
+        } _io;
+    } _if;
+    uint8_t is_rw_addr;
+} bLCD_HalIf_t;
+
+/**
+ * \}
  */
 
 /**
@@ -72,12 +95,9 @@ extern "C" {
 
 #define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
 
-
-
 /**
  * \}
  */
-
 
 /**
  * \defgroup HAL_Exported_Functions

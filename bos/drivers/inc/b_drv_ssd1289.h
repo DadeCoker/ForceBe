@@ -57,22 +57,8 @@ extern "C" {
  * \defgroup SSD1289_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    union
-    {
-        uint32_t rw_addr;
-        struct
-        {
-            bHalGPIOInstance_t data;
-            bHalGPIOInstance_t rs;
-            bHalGPIOInstance_t rd;
-            bHalGPIOInstance_t wr;
-            bHalGPIOInstance_t cs;
-        } _io;
-    } _if;
-    uint8_t is_rw_addr;
-} bSSD1289_HalIf_t;
+//<HALIF 1 LCD
+typedef bLCD_HalIf_t bSSD1289_HalIf_t;
 
 typedef bDriverInterface_t bSSD1289_Driver_t;
 

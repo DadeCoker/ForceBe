@@ -51,6 +51,7 @@ extern "C" {
  * \defgroup PCF8574_Exported_TypesDefinitions
  * \{
  */
+//<HALIF 1 I2C
 typedef bHalI2CIf_t bPCF8574_HalIf_t;
 
 typedef bDriverInterface_t bPCF8574_Driver_t;
