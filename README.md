@@ -69,7 +69,7 @@ MCU裸机开发项目。编译器勾选C99
 
 ①下载代码，复制 bos 和 _config 目录到自己的代码目录。
 
-② 当作子模块加入：`git submodule add https://gitee.com/notrynohigh/BabyOS.git babyos` bos
+② 当作子模块加入：`git submodule add https://gitee.com/notrynohigh/BabyOS.git babyos`
 
 ​     babyos/_config 用户根据需要进行修改
 
