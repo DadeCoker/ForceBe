@@ -75,7 +75,7 @@
  * \defgroup L3GD20_Private_Variables
  * \{
  */
-const static bLIS3DH_HalIf_t bL3GD20_HalIf = HAL_L3GD20_IF;
+const static bL3GD20_HalIf_t bL3GD20_HalIf = HAL_L3GD20_IF;
 bL3GD20_Driver_t             bL3GD20_Driver;
 
 static bL3gd20Config_t  bL3gd20Config = L3GD20_DEFAULT_CONFIG;
@@ -106,15 +106,15 @@ static int _bL3gd20ReadRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bL3GD20_HalIf.is_spi)
     {
         reg |= 0xC0;
-        bHalGPIO_WritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 0);
-        bHalSPI_Send(bL3GD20_HalIf._if._spi.spi, &reg, 1);
-        bHalSPI_Receive(bL3GD20_HalIf._if._spi.spi, data, len);
-        bHalGPIO_WritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 0);
+        bHalSPIDriver.pSend(bL3GD20_HalIf._if._spi.spi, &reg, 1);
+        bHalSPIDriver.pReceive(bL3GD20_HalIf._if._spi.spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 1);
     }
     else
     {
         reg = reg | 0x80;
-        bHalI2C_MemRead(bL3GD20_HalIf._if._iic.iic, bL3GD20_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemRead(bL3GD20_HalIf._if._iic.iic, bL3GD20_HalIf._if._iic.addr, reg, data, len);
     }
     return 0;
 }
@@ -125,14 +125,14 @@ static int _bL3gd20WriteRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bL3GD20_HalIf.is_spi)
     {
         reg |= 0x40;
-        bHalGPIO_WritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 0);
-        bHalSPI_Send(bL3GD20_HalIf._if._spi.spi, &reg, 1);
-        bHalSPI_Send(bL3GD20_HalIf._if._spi.spi, data, len);
-        bHalGPIO_WritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 0);
+        bHalSPIDriver.pSend(bL3GD20_HalIf._if._spi.spi, &reg, 1);
+        bHalSPIDriver.pSend(bL3GD20_HalIf._if._spi.spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bL3GD20_HalIf._if._spi.cs.port, bL3GD20_HalIf._if._spi.cs.pin, 1);
     }
     else
     {
-        bHalI2C_MemWrite(bL3GD20_HalIf._if._iic.iic, bL3GD20_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemWrite(bL3GD20_HalIf._if._iic.iic, bL3GD20_HalIf._if._iic.addr, reg, data, len);
     }
     return 0;
 }
@@ -346,7 +346,6 @@ static void _bL3gd20Polling()
                 (bL3gd20FifoValue[i].z_mg >> DataShiftTable[bL3gd20Config.op_mode]) *
                 Digit2mgTable[bL3gd20Config.fs][bL3gd20Config.op_mode];
         }
-        bGsensorL3gd20Callback(bL3gd20FifoValue, fss + 1);
     }
 }
 /**
@@ -357,21 +356,6 @@ static void _bL3gd20Polling()
  * \addtogroup L3GD20_Exported_Functions
  * \{
  */
-
-#if __GNUC__
-void __attribute__((weak)) bGsensorL3gd20Callback(bGsensor3Axis_t *xyz, uint8_t number)
-#else
-__weak void bGsensorL3gd20Callback(bGsensor3Axis_t *xyz, uint8_t number)
-#endif
-{
-    int i = 0;
-    for (i = 0; i < number; i++)
-    {
-        b_log("x:%d y:%d z:%d\r\n", xyz[i].x_mg, xyz[i].y_mg, xyz[i].z_mg);
-    }
-    IntFlag = 1;
-}
-
 int bL3GD20_Init()
 {
     uint8_t id = 0;

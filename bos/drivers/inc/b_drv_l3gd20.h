@@ -67,7 +67,6 @@ typedef struct
         } _spi;
     } _if;
     uint8_t is_spi;
-    uint8_t exti_line;
 } bL3GD20_HalIf_t;
 
 typedef bDriverInterface_t bL3GD20_Driver_t;

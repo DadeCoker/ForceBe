@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -81,7 +81,7 @@ static void _bHalUpdateDelayParam()
 int fputc(int c, FILE *p)
 {
     uint8_t ch = c & 0xff;
-    bHalUartSend(HAL_LOG_UART, &ch, 1);
+    bHalUartDriver.pSend(HAL_LOG_UART, &ch, 1);
     return c;
 }
 #endif

@@ -29,7 +29,7 @@
 #ifndef _SFUD_CFG_H_
 #define _SFUD_CFG_H_
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 
 #define SFUD_DEBUG_MODE
 

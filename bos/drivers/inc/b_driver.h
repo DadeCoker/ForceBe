@@ -149,15 +149,6 @@ typedef struct
  */
 
 //-----------------------------------------COMMAND--
-// Camera
-#define bCMD_CONF_LIGHTMODE 0   // bCameraCfg_t
-#define bCMD_CONF_COLOR_SAT 1   // bCameraCfg_t
-#define bCMD_CONF_BRIGHTNESS 2  // bCameraCfg_t
-#define bCMD_CONF_CONTRAST 3    // bCameraCfg_t
-#define bCMD_CONF_SHARPNESS 4   // bCameraCfg_t
-#define bCMD_CONF_FLASH_LED 5   // bCameraCfg_t
-#define bCMD_CONF_OUTSIZE 6
-
 // Flash
 #define bCMD_ERASE_SECTOR 0      // <==> bFlashErase_t
 #define bCMD_GET_SECTOR_SIZE 1   // <==> uint32_t
@@ -166,8 +157,9 @@ typedef struct
 // Gsensor
 #define bCMD_CFG_ODR 0        // uint16_t Hz
 #define bCMD_CFG_FS 1         // uint8_t g
-#define bCMD_CFG_POWERDOWN 2  // no param
+#define bCMD_CFG_POWERDOWN 2  // none
 #define bCMD_CFG_FIFO 3       // bGSensorFifo_t
+#define bCMD_SIG_INT 4       // none
 
 /**
  * \}
@@ -208,8 +200,6 @@ extern bDriverInterface_t bILI9320_Driver;
 extern bDriverInterface_t bOLED_Driver;
 
 extern bDriverInterface_t bXPT2046_Driver;
-
-extern bDriverInterface_t bOV5640_Driver;
 
 extern bDriverInterface_t bPCF8574_Driver;
 

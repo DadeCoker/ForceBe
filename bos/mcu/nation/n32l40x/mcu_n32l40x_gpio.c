@@ -40,25 +40,25 @@ static GPIO_Module*   GPIO_PortTable[] = {GPIOA, GPIOB, GPIOC, GPIOD};
 const static uint16_t GPIO_PinTable[]  = {
     GPIO_PIN_0,  GPIO_PIN_1,  GPIO_PIN_2,  GPIO_PIN_3,  GPIO_PIN_4,  GPIO_PIN_5,
     GPIO_PIN_6,  GPIO_PIN_7,  GPIO_PIN_8,  GPIO_PIN_9,  GPIO_PIN_10, GPIO_PIN_11,
-    GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_All};
+    GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_ALL};
 
 static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
                         bHalGPIOPull_t pull)
 {
-    GPIO_InitType GPIO_InitStruct;
-    GPIO_InitStruct(&GPIO_InitStruct);
+    GPIO_InitType GPIO_Init;
+    GPIO_InitStruct(&GPIO_Init);
     if (port > B_HAL_GPIOD)
     {
         return;
     }
-    GPIO_InitStruct.Pin       = GPIO_PinTable[pin];
-    GPIO_InitStruct.GPIO_Mode = (dir == B_HAL_GPIO_INPUT) ? GPIO_Mode_Input : GPIO_Mode_Out_PP;
+    GPIO_Init.Pin       = GPIO_PinTable[pin];
+    GPIO_Init.GPIO_Mode = (dir == B_HAL_GPIO_INPUT) ? GPIO_Mode_Input : GPIO_Mode_Out_PP;
     if (pull != B_HAL_GPIO_NOPULL)
     {
-        GPIO_InitStruct.GPIO_Pull = (pull == B_HAL_GPIO_PULLUP) ? GPIO_Pull_Up : GPIO_Pull_Down;
+        GPIO_Init.GPIO_Pull = (pull == B_HAL_GPIO_PULLUP) ? GPIO_Pull_Up : GPIO_Pull_Down;
     }
-    GPIO_InitStruct.GPIO_Slew_Rate = GPIO_Slew_Rate_High;
-    GPIO_InitPeripheral(GPIO_PortTable[port], &GPIO_InitStruct);
+    GPIO_Init.GPIO_Slew_Rate = GPIO_Slew_Rate_High;
+    GPIO_InitPeripheral(GPIO_PortTable[port], &GPIO_Init);
 }
 
 static void _GpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)

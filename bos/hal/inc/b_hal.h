@@ -39,12 +39,15 @@ extern "C" {
 #include <stdint.h>
 
 #include "b_config.h"
+
 #include "b_hal_flash.h"
 #include "b_hal_gpio.h"
 #include "b_hal_i2c.h"
 #include "b_hal_spi.h"
 #include "b_hal_uart.h"
 #include "b_hal_it.h"
+
+#include "b_hal_if.h"
 
 /**
  * \addtogroup B_HAL
@@ -55,6 +58,20 @@ extern "C" {
  * \addtogroup HAL
  * \{
  */
+
+/**
+ * \defgroup HAL_Exported_Defines
+ * \{
+ */
+
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
+/**
+ * \}
+ */
+
 
 /**
  * \defgroup HAL_Exported_Functions

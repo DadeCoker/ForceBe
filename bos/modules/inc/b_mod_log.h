@@ -37,6 +37,8 @@ extern "C" {
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
+#include <stdint.h>
+
 #if _DEBUG_ENABLE
 /**
  * \addtogroup BABYOS

@@ -36,6 +36,10 @@
 #if (_MCU_PLATFORM == 2001)
 #include "n32l40x.h"
 
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
+
 static int _SpiSetSpeed(bHalSPINumber_t spi, bHalSPISpeed_t speed)
 {
     switch (spi)
@@ -75,7 +79,7 @@ static uint8_t _SpiTransfer(bHalSPINumber_t spi, uint8_t dat)
     return tmp;
 }
 
-static int _SpiSend(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
+static int _SpiSend(bHalSPINumber_t spi, const uint8_t *pbuf, uint16_t len)
 {
     if (pbuf == NULL)
     {

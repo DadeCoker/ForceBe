@@ -60,16 +60,17 @@ static int _FlashLock()
     return retval;
 }
 
-static int _FlashErase(uint32_t page_addr, uint8_t pages)
+static int _FlashErase(uint32_t raddr, uint8_t pages)
 {
     int     retval = 0;
     uint8_t i      = 0;
-    page_addr      = page_addr / _FLASH_PAGE_SIZE * _FLASH_PAGE_SIZE;
+    raddr = _FLASH_BASE_ADDR + raddr;
+    raddr      = raddr / _FLASH_PAGE_SIZE * _FLASH_PAGE_SIZE;
     for (i = 0; i < pages; i++)
     {
-        if (FLASH_COMPL == FLASH_EraseOnePage(page_addr))
+        if (FLASH_COMPL == FLASH_EraseOnePage(raddr))
         {
-            page_addr += _FLASH_PAGE_SIZE;
+            raddr += _FLASH_PAGE_SIZE;
         }
         else
         {
@@ -80,13 +81,12 @@ static int _FlashErase(uint32_t page_addr, uint8_t pages)
     return retval;
 }
 
-static int _FlashWrite(uint32_t addr, const uint8_t *pbuf, uint16_t len)
+static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 {
-    int      retval = -1;
     uint32_t wdata  = 0;
     uint16_t wlen = (len + 3) / 4, i = 0;
-
-    if (pbuf == NULL || (addr & 0x3))
+    raddr = _FLASH_BASE_ADDR + raddr;
+    if (pbuf == NULL || (raddr & 0x3))
     {
         return -1;
     }
@@ -97,19 +97,20 @@ static int _FlashWrite(uint32_t addr, const uint8_t *pbuf, uint16_t len)
         wdata = (wdata << 8) | pbuf[i * 4 + 2];
         wdata = (wdata << 8) | pbuf[i * 4 + 1];
         wdata = (wdata << 8) | pbuf[i * 4 + 0];
-        FLASH_ProgramWord(addr, wdata);
-        addr += 4;
+        FLASH_ProgramWord(raddr, wdata);
+        raddr += 4;
     }
     return (wlen * 4);
 }
 
-static int _FlashRead(uint32_t addr, uint8_t *pbuf, uint16_t len)
+static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
     if (pbuf == NULL)
     {
         return -1;
     }
-    memcpy(pbuf, (const uint8_t *)addr, len);
+    raddr = _FLASH_BASE_ADDR + raddr;
+    memcpy(pbuf, (const uint8_t *)raddr, len);
     return len;
 }
 

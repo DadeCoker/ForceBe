@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "b_hal.h"
+#include "hal/inc/b_hal.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -122,7 +122,7 @@ static const char    bLogPrefix[3]     = {'I', 'W', 'E'};
 
 void bLogOutput(void *p)
 {
-    bHalUartSend(HAL_LOG_UART, p, strlen(p));
+    bHalUartDriver.pSend(HAL_LOG_UART, p, strlen(p));
 }
 
 /**

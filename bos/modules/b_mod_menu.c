@@ -61,7 +61,9 @@
  * \defgroup MENU_Private_Defines
  * \{
  */
-
+#ifndef NULL
+#define NULL ((void *)0)
+#endif
 /**
  * \}
  */

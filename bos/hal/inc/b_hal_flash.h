@@ -58,9 +58,9 @@ typedef struct
     int (*pFlashInit)(void);
     int (*pFlashUnlock)(void);
     int (*pFlashLock)(void);
-    int (*pFlashErase)(uint32_t page_addr, uint8_t pages);
-    int (*pFlashWrite)(uint32_t addr, uint8_t *pbuf, uint16_t len);
-    int (*pFlashRead)(uint32_t addr, uint8_t *pbuf, uint16_t len);
+    int (*pFlashErase)(uint32_t raddr, uint8_t pages);
+    int (*pFlashWrite)(uint32_t raddr, const uint8_t *pbuf, uint16_t len);
+    int (*pFlashRead)(uint32_t raddr, uint8_t *pbuf, uint16_t len);
 } const bHalFlashDriver_t;
 
 /**

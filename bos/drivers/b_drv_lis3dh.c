@@ -82,7 +82,7 @@ static bLis3dhConfig_t  bLis3dhConfig = LIS3DH_DEFAULT_CONFIG;
 static bGsensor3Axis_t  bLis3dhFifoValue[32];
 static const int        Digit2mgTable[4][3] = {{1, 4, 16}, {2, 8, 32}, {4, 16, 64}, {12, 48, 192}};
 static const int        DataShiftTable[3]   = {4, 6, 8};
-static volatile uint8_t IntFlag             = 1;
+static volatile uint8_t bIntFlag            = 1;
 
 /**
  * \}
@@ -106,15 +106,15 @@ static int _bLis3dhReadRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bLIS3DH_HalIf.is_spi)
     {
         reg |= 0xC0;
-        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
-        bHalSPI_Send(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
-        bHalSPI_Receive(bLIS3DH_HalIf._if._spi.spi, data, len);
-        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
+        bHalSPIDriver.pSend(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
+        bHalSPIDriver.pReceive(bLIS3DH_HalIf._if._spi.spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
     }
     else
     {
         reg = reg | 0x80;
-        bHalI2C_MemRead(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemRead(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
     }
     return 0;
 }
@@ -124,14 +124,14 @@ static int _bLis3dhWriteRegs(uint8_t reg, uint8_t *data, uint16_t len)
     if (bLIS3DH_HalIf.is_spi)
     {
         reg |= 0x40;
-        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
-        bHalSPI_Send(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
-        bHalSPI_Send(bLIS3DH_HalIf._if._spi.spi, data, len);
-        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
+        bHalSPIDriver.pSend(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
+        bHalSPIDriver.pSend(bLIS3DH_HalIf._if._spi.spi, data, len);
+        bHalGPIODriver.pGpioWritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
     }
     else
     {
-        bHalI2C_MemWrite(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
+        bHalI2CDriver.pMemWrite(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
     }
     return 0;
 }
@@ -147,7 +147,7 @@ static uint8_t _bLis3dhGetID()
 static int _bLis3dhBlockDataUpdateSet(uint8_t val)
 {
     int                retval = 0;
-    bLis3dhCTRL_REG4_t ctrl_reg4;
+    bLis3dhCtrlReg4_t ctrl_reg4;
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
     if (retval == 0)
     {
@@ -161,7 +161,7 @@ static int _bLis3dhBlockDataUpdateSet(uint8_t val)
 static int _bLis3dhODR_Set(bLis3dhODR_t odr)
 {
     int                retval = 0;
-    bLis3dhCTRL_REG1_t ctrl_reg1;
+    bLis3dhCtrlReg1_t ctrl_reg1;
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
     if (retval == 0)
     {
@@ -175,7 +175,7 @@ static int _bLis3dhODR_Set(bLis3dhODR_t odr)
 static int _bLis3dhFullScaleSet(bLis3dhFS_t val)
 {
     int                retval = 0;
-    bLis3dhCTRL_REG4_t ctrl_reg4;
+    bLis3dhCtrlReg4_t ctrl_reg4;
 
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
     if (retval == 0)
@@ -189,8 +189,8 @@ static int _bLis3dhFullScaleSet(bLis3dhFS_t val)
 // Operating mode selection.
 static int _bLis3dhOpModeSet(bLis3dhOpMode_t val)
 {
-    bLis3dhCTRL_REG1_t ctrl_reg1;
-    bLis3dhCTRL_REG4_t ctrl_reg4;
+    bLis3dhCtrlReg1_t ctrl_reg1;
+    bLis3dhCtrlReg4_t ctrl_reg4;
     int                retval = 0;
 
     retval = _bLis3dhReadRegs(LIS3DH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
@@ -234,10 +234,10 @@ static int _bLis3dhOpModeSet(bLis3dhOpMode_t val)
 }
 
 // FIFO configuration.
-static int _bLis3dhFIFO_Set(uint8_t fth, bLis3dhFIFO_Mode_t mode, uint8_t enable)
+static int _bLis3dhFIFO_Set(uint8_t fth, bLis3dhFifoMode_t mode, uint8_t enable)
 {
-    bLis3dhFIFO_CtrlReg_t fifo_ctrl_reg;
-    bLis3dhCTRL_REG5_t    ctrl_reg5;
+    bLis3dhFifoCtrlReg_t fifo_ctrl_reg;
+    bLis3dhCtrlReg5_t    ctrl_reg5;
     int                   retval = 0;
     retval = _bLis3dhReadRegs(LIS3DH_FIFO_CTRL_REG, (uint8_t *)&fifo_ctrl_reg, 1);
     if (retval < 0)
@@ -318,23 +318,24 @@ static int _bLis3dhCtl(bLIS3DH_Driver_t *pdrv, uint8_t cmd, void *param)
             retval           = 0;
         }
         break;
+        case bCMD_SIG_INT:
+        {
+            bIntFlag = 1;
+            retval   = 0;
+        }
+        break;
     }
     return retval;
 }
 
-static void _bLis3dhEXTI()
-{
-    IntFlag = 1;
-}
-
 static void _bLis3dhPolling()
 {
-    bLis3dhFIFO_SrcReg_t fifo_src_reg;
+    bLis3dhFifoSrcReg_t fifo_src_reg;
     int                  i   = 0;
     uint8_t              fss = 0;
-    if (IntFlag)
+    if (bIntFlag)
     {
-        IntFlag = 0;
+        bIntFlag = 0;
         _bLis3dhReadRegs(LIS3DH_FIFO_SRC_REG, (uint8_t *)&fifo_src_reg, 1);
         fss = (uint8_t)fifo_src_reg.fss;
         for (i = 0; i <= fss; i++)
@@ -350,7 +351,6 @@ static void _bLis3dhPolling()
                 (bLis3dhFifoValue[i].z_mg >> DataShiftTable[bLis3dhConfig.op_mode]) *
                 Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
         }
-        bGsensor3AxisCallback(bLis3dhFifoValue, fss + 1);
     }
 }
 /**
@@ -361,19 +361,6 @@ static void _bLis3dhPolling()
  * \addtogroup LIS3DH_Exported_Functions
  * \{
  */
-
-#if __GNUC__
-void __attribute__((weak)) bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number)
-#else
-__weak void bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number)
-#endif
-{
-    int i = 0;
-    for (i = 0; i < number; i++)
-    {
-        b_log("x:%d y:%d z:%d\r\n", xyz[i].x_mg, xyz[i].y_mg, xyz[i].z_mg);
-    }
-}
 
 int bLIS3DH_Init()
 {
@@ -399,7 +386,7 @@ int bLIS3DH_Init()
     return 0;
 }
 
-bHAL_REG_GPIO_EXTI(bLIS3DH_HalIf.exti_line, _bLis3dhEXTI);
+
 BOS_REG_POLLING_FUNC(_bLis3dhPolling);
 bDRIVER_REG_INIT(bLIS3DH_Init);
 
