@@ -178,7 +178,7 @@ typedef struct
  * \{
  */
 #define bDRIVER_REG_INIT_0(func) \
-    bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func)) = func
+    bSECTION_ITEM_REGISTER_FLASH(driver_init_0, pbDriverInit_t, CONCAT_2(init0, func)) = func
 
 #define bDRIVER_REG_INIT(func) \
     bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func)) = func
