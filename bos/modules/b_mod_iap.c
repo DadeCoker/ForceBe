@@ -66,7 +66,9 @@
  * \defgroup IAP_Private_Defines
  * \{
  */
-
+#if ((RECEIVE_FIRMWARE_MODE == 1) && (IAP_FILE_CACHE == 0))
+#error IAP configuration is invalid
+#endif
 /**
  * \}
  */
@@ -84,12 +86,8 @@
  * \defgroup IAP_Private_Variables
  * \{
  */
-static uint8_t    bIapMcuDevNo = 0;
-static bIapFlag_t bIapFlag     = {
-        .stat = B_IAP_STA_NULL,
-};
-static bIapFwInfo_t bIapFwInfo = {
-    .len = 0,
+static bIapFlag_t bIapFlag = {
+    .stat = B_IAP_STA_NULL,
 };
 /**
  * \}
@@ -108,24 +106,6 @@ static bIapFwInfo_t bIapFwInfo = {
  * \defgroup IAP_Private_Functions
  * \{
  */
-static int _bIapSaveFlag()
-{
-    bFlashErase_t param;
-    int           fd = -1;
-    param.addr       = IAP_FLAG_ADDR - BOOT_START_ADDR;
-    param.num        = 1;
-    fd               = bOpen(bIapMcuDevNo, BCORE_FLAG_RW);
-    if (fd == -1)
-    {
-        return -1;
-    }
-    bCtl(fd, bCMD_ERASE_SECTOR, &param);
-    bLseek(fd, IAP_FLAG_ADDR - BOOT_START_ADDR);
-    bWrite(fd, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t));
-    bClose(fd);
-    return 0;
-}
-
 /**
  * \brief 计算CRC32
  * \param init_crc 第一次计算，初始CRC传入0
@@ -145,6 +125,17 @@ static uint32_t _bIapCalCRC32(uint32_t init_crc, uint8_t *pbuf, uint32_t len)
         }
     }
     return ~crc;
+}
+
+static int _bIapSaveFlag()
+{
+    bHalFlashUnlock();
+    bHalFlashErase(IAP_FLAG_ADDR - BOOT_START_ADDR, 1);
+    bIapFlag.flag_crc =
+        _bIapCalCRC32(0, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t) - sizeof(bIapFlag.flag_crc));
+    bHalFlashWrite(IAP_FLAG_ADDR - BOOT_START_ADDR, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t));
+    bHalFlashLock();
+    return 0;
 }
 
 /**
@@ -174,48 +165,67 @@ __WEAKDEF void bIapJump2App()
     ((pJumpFunc_t)(*((volatile uint32_t *)(APP_START_ADDR + 4))))();
 }
 
-int bIapInit(uint8_t dev_no)
+int bIapInit()
 {
-    int fd       = -1;
-    bIapMcuDevNo = dev_no;
-    fd           = bOpen(dev_no, BCORE_FLAG_R);
+    uint32_t flag_check = 0;
+    bHalFlashInit();
+    bHalFlashRead(IAP_FLAG_ADDR - BOOT_START_ADDR, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t));
+    flag_check =
+        _bIapCalCRC32(0, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t) - sizeof(bIapFlag.flag_crc));
+    if (flag_check != bIapFlag.flag_crc)
+    {
+        memset(&bIapFlag, 0, sizeof(bIapFlag_t));
+    }
+    return 0;
+}
+
+int bIapStart(bIapFwInfo_t *pinfo)
+{
+    char         *ptmp = NULL;
+    int           fd   = -1;
+    bFlashErase_t param;
+    uint32_t      sector_size = 0;
+    if (pinfo == NULL)
+    {
+        return -1;
+    }
+    //文件名中必须包含当前的固件名，否则认为是非法文件
+    ptmp = strstr(pinfo->name, FW_NAME);
+    if (ptmp == NULL)
+    {
+        return -2;
+    }
+    memset(&bIapFlag, 0, sizeof(bIapFlag_t));
+    //设置当前状态并复制固件信息
+    bIapFlag.stat           = B_IAP_STA_START;
+    bIapFlag.app_fail_count = 0;
+    bIapFlag.app_invalid    = 0;
+    memcpy(&bIapFlag.info, pinfo, sizeof(bIapFwInfo_t));
+    _bIapSaveFlag();
+
+#if (IAP_FILE_CACHE == 1)
+    bHalFlashUnlock();
+    bHalFlashErase(IAP_FW_SAVE_ADDR - BOOT_START_ADDR,
+                   (bIapFlag.info.len + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
+    bHalFlashLock();
+#elif (IAP_FILE_CACHE == 2)
+    fd = bOpen(bIapFlag.info.dev_no, BCORE_FLAG_RW);
     if (fd == -1)
     {
         return -1;
     }
-    bLseek(fd, IAP_FLAG_ADDR - BOOT_START_ADDR);
-    bRead(fd, (uint8_t *)&bIapFlag, sizeof(bIapFlag_t));
+    bCtl(fd, bCMD_GET_SECTOR_SIZE, &sector_size);
+    param.addr = IAP_FW_SAVE_ADDR;
+    param.num  = (bIapFlag.info.len + sector_size - 1) / sector_size;
+    //根据固件的大小，擦除区域等待数据写入
+    bCtl(fd, bCMD_ERASE_SECTOR, &param);
     bClose(fd);
-    return 0;
-}
+#endif
 
-int bIapStart(const char *pfname)
-{
-    char *ptmp = NULL;
-    if (pfname == NULL)
-    {
-        return -1;
-    }
-    if (strlen(pfname) > B_IAP_FILENAME_MAXLEN)
-    {
-        return -2;
-    }
-    //文件名中必须包含当前的固件名，否则认为是非法文件
-    ptmp = strstr(pfname, FW_NAME);
-    if (ptmp == NULL)
-    {
-        return -3;
-    }
-    memset(&bIapFlag, 0, sizeof(bIapFlag_t));
-    //设置当前状态并复制文件名
-    bIapFlag.stat           = B_IAP_STA_START;
-    bIapFlag.app_invalid    = 0;
-    bIapFlag.app_fail_count = 0;
-    memcpy(bIapFlag.file_name, pfname, strlen(pfname));
-    //标志写入到FLASH
-    _bIapSaveFlag();
+#if (RECEIVE_FIRMWARE_MODE == 0)
     //跳转到执行BOOT代码
     bIapJump2Boot();
+#endif
     return 0;
 }
 
@@ -253,6 +263,15 @@ int bIapBootCheckFlag()
     else if (bIapFlag.stat == B_IAP_STA_START)
     {
         retval = B_BOOT_WAIT_FW;
+        if (bIapFlag.app_invalid == 0)
+        {
+            bHalFlashUnlock();
+            bHalFlashErase(APP_START_ADDR - BOOT_START_ADDR,
+                           (bIapFlag.info.len + bHalFlashSectorSize() - 1) / bHalFlashSectorSize());
+            bHalFlashLock();
+            bIapFlag.app_invalid = 1;
+            _bIapSaveFlag();
+        }
     }
     return retval;
 }
@@ -293,47 +312,6 @@ int bIapUpdateFwResult(int result)
 }
 
 /**
- * \brief 传入固件信息，如果需要设备暂存固件，则根据固件大小，擦除区域
- * \param pinfo 固件暂存设备的设备号、固件大小以及固件校验值
- */
-int bIapSetFwInfo(bIapFwInfo_t *pinfo)
-{
-    bFlashErase_t param;
-    uint32_t      sector_size = 0;
-    int           fd          = -1;
-    if (pinfo == NULL)
-    {
-        return -1;
-    }
-    memcpy(&bIapFwInfo, pinfo, sizeof(bIapFwInfo_t));
-#if IAP_FILE_CACHE == 0
-    bIapFlag.app_invalid = 1;
-    _bIapSaveFlag();
-    bIapFwInfo.dev_no = bIapMcuDevNo;
-#endif
-#if ((IAP_FILE_CACHE == 0) || (IAP_FILE_CACHE == 1) || (IAP_FILE_CACHE == 2))
-    fd = bOpen(bIapFwInfo.dev_no, BCORE_FLAG_RW);
-    if (fd == -1)
-    {
-        return -1;
-    }
-    bCtl(fd, bCMD_GET_SECTOR_SIZE, &sector_size);
-#if IAP_FILE_CACHE == 0
-    param.addr = APP_START_ADDR - BOOT_START_ADDR;
-#elif IAP_FILE_CACHE == 1
-    param.addr = IAP_FW_SAVE_ADDR - BOOT_START_ADDR;
-#else
-    param.addr = IAP_FW_SAVE_ADDR;
-#endif
-    param.num = (bIapFwInfo.len + sector_size - 1) / sector_size;
-    //根据固件的大小，擦除区域等待数据写入
-    bCtl(fd, bCMD_ERASE_SECTOR, &param);
-    bClose(fd);
-#endif
-    return 0;
-}
-
-/**
  * \brief 传入新固件的数据用于写入存储区域
  * \param index 当前数据的起始序号，从0开始
  */
@@ -341,26 +319,32 @@ int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len)
 {
     int      fd   = -1;
     uint32_t addr = index;
-    if (pbuf == NULL || len == 0 || ((index + len) > bIapFwInfo.len))
+    if (pbuf == NULL || len == 0 || ((index) >= bIapFlag.info.len))
     {
         return -1;
     }
-#if ((IAP_FILE_CACHE == 0) || (IAP_FILE_CACHE == 1) || (IAP_FILE_CACHE == 2))
-    fd = bOpen(bIapFwInfo.dev_no, BCORE_FLAG_RW);
+#if (IAP_FILE_CACHE == 2)
+    fd = bOpen(bIapFlag.info.dev_no, BCORE_FLAG_RW);
     if (fd == -1)
     {
         return -1;
     }
-#if IAP_FILE_CACHE == 0
-    addr += APP_START_ADDR - BOOT_START_ADDR;
-#elif IAP_FILE_CACHE == 1
-    addr += IAP_FW_SAVE_ADDR - BOOT_START_ADDR;
-#else
     addr += IAP_FW_SAVE_ADDR;
-#endif
     bLseek(fd, addr);
     bWrite(fd, pbuf, len);
     bClose(fd);
+#elif ((IAP_FILE_CACHE == 0) || (IAP_FILE_CACHE == 1))
+    if (IAP_FILE_CACHE == 0)
+    {
+        addr += APP_START_ADDR - BOOT_START_ADDR;
+    }
+    else
+    {
+        addr += IAP_FW_SAVE_ADDR - BOOT_START_ADDR;
+    }
+    bHalFlashUnlock();
+    bHalFlashWrite(addr, pbuf, len);
+    bHalFlashLock();
 #endif
     return 0;
 }
@@ -425,9 +409,9 @@ int bIapVerifyFwData()
     bClose(fd_mcu);
     if (_bIapCalCRC32(0, (uint8_t *)APP_START_ADDR, bIapFwInfo.len) != bIapFwInfo.c_crc32)
     {
-#if _IAP_CHECKSUM_ENABLE        
+#if _IAP_CHECKSUM_ENABLE
         return -1;
-#endif        
+#endif
     }
     return 0;
 }

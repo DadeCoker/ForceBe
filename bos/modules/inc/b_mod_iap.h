@@ -83,20 +83,26 @@ extern "C" {
  * \defgroup IAP_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    int  stat;
-    int  app_invalid;
-    int  app_fail_count;
-    char file_name[B_IAP_FILENAME_MAXLEN + (4 - (B_IAP_FILENAME_MAXLEN % 4))];
-} bIapFlag_t;
+#pragma pack(1)
 
 typedef struct
 {
-    uint8_t  dev_no;   //暂存新固件的设备号，不需要暂存可以忽略
-    uint32_t len;      //固件长度
-    uint32_t c_crc32;  //固件数据CRC32校验值
+    uint8_t  dev_no;  //暂存新固件的设备号，不需要暂存可以忽略
+    char     name[B_IAP_FILENAME_MAXLEN];  //固件名，限制在64个字符
+    uint32_t len;                          //固件长度
+    uint32_t c_crc32;                      //固件数据CRC32校验值
 } bIapFwInfo_t;
+
+typedef struct
+{
+    int          stat;
+    int          app_invalid;
+    int          app_fail_count;
+    bIapFwInfo_t info;
+    uint32_t     flag_crc;
+} bIapFlag_t;
+
+#pragma pack()
 
 typedef void (*pJumpFunc_t)(void);
 
@@ -108,17 +114,32 @@ typedef void (*pJumpFunc_t)(void);
  * \defgroup IAP_Exported_Functions
  * \{
  */
-
+/**
+ * 跳转是弱函数，用户可自己实现
+ */
 void bIapJump2Boot(void);
 void bIapJump2App(void);
 
-int bIapInit(uint8_t dev_no);
-int bIapStart(const char *pfname);
+/**
+ * boot和app都先调用bIapInit
+ * 紧接着，按照不同的代码，调用bIapXXXCheckFlag()
+ * XXX: Boot or App
+ */
+int bIapInit(void);
 int bIapAppCheckFlag(void);
 int bIapBootCheckFlag(void);
-int bIapUpdateFwResult(int result);
-int bIapSetFwInfo(bIapFwInfo_t *pinfo);
+
+/**
+ * 应用程序调用，表示升级流程开始。传入新固件的信息。
+ */
+int bIapStart(bIapFwInfo_t *pinfo);
+
+/**
+ * 不管是再app还是boot接收新固件，收到数据后调用bIapUpdateFwData存储数据
+ */
 int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len);
+
+int bIapUpdateFwResult(int result);
 int bIapVerifyFwData(void);
 /**
  * \}
