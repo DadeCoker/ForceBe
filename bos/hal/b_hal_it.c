@@ -42,6 +42,17 @@
  */
 
 /**
+ * \defgroup IT_Private_Variables
+ * \{
+ */
+
+static LIST_HEAD(bHalItListHead);
+
+/**
+ * \}
+ */
+
+/**
  * \addtogroup IT_Exported_Functions
  * \{
  */
@@ -67,6 +78,48 @@ void bHalIntEnable()
 void bHalIntDisable()
 {
     bMcuIntDisable();
+}
+
+/**
+ * 注册中断处理函数。
+ * index : 例如，当int 为 B_HAL_IT_EXTI， index可以表示外部中断号
+ *         例如  当int 为 B_HAL_IT_UART_RX，index可以表示串口号
+ * 推荐使用：bHAL_IT_REGISTER(name, _interrupt, _index, _handler)
+ */
+int bHalItRegister(bHalIt_t *pit)
+{
+    if (pit == NULL)
+    {
+        return -1;
+    }
+    if (pit->handler == NULL)
+    {
+        return -1;
+    }
+    list_add(&pit->head, &bHalItListHead);
+    return 0;
+}
+
+/**
+ * MCU触发中断后，通过此函数告诉BOS有中断发生，并将数据传给BOS
+ */
+int bHalItInvoke(bHalItNumber_t it, uint8_t index, bHalItParam_t *param)
+{
+    bHalIt_t         *phalit = NULL;
+    struct list_head *pos;
+    list_for_each(pos, &bHalItListHead)
+    {
+        phalit = list_entry(pos, bHalIt_t, head);
+        if (it == phalit->it && index == phalit->index)
+        {
+            if (phalit->handler)
+            {
+                phalit->handler(it, index, param, phalit->user_data);
+                return 0;
+            }
+        }
+    }
+    return -1;
 }
 
 /**

@@ -3,7 +3,7 @@
 
 
 #define HW_VERSION 211212
-#define FW_VERSION 80202
+#define FW_VERSION 80203
 #define FW_NAME "BabyOS"
 #define TICK_FRQ_HZ 1000
 #define VENDOR_UBUNTU 1

@@ -64,6 +64,20 @@
  * \addtogroup QUEUE_Exported_Functions
  * \{
  */
+
+int bQueueInit(bQueueInstance_t *pinstance, uint8_t *pbuf, uint16_t item_size, uint16_t item_num)
+{
+    if (pinstance == NULL || pbuf == NULL)
+    {
+        return -1;
+    }
+    memset(pinstance, 0, sizeof(bQueueInstance_t));
+    pinstance->pbuf      = pbuf;
+    pinstance->item_size = item_size;
+    pinstance->item_num  = item_num;
+    return 0;
+}
+
 int bQueuePush(bQueueInstance_t *pinstance, void *data)
 {
     if (pinstance == NULL || data == NULL)

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_hal_spi.c
+ * \file        b_hal_i2c.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)

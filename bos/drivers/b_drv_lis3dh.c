@@ -220,7 +220,78 @@ static void bLis3dhFullScaleSet(bDriverInterface_t *pdrv, bLis3dhFS_t val)
     _private->fs = val;
 }
 
-void bLis3dhOptModeSet(bDriverInterface_t *pdrv, bLis3dhOptMode_t val)
+static void bLis3dhFifoSet(bDriverInterface_t *pdrv, uint8_t en)
+{
+    uint8_t reg = 0;
+    bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
+    _bLis3dhReadRegs(pdrv, LIS3DH_CTRL_REG5, &reg, 1);
+    if (en)
+    {
+        reg |= (0x1 << 6);
+    }
+    else
+    {
+        reg &= ~(0x1 << 6);
+    }
+    _bLis3dhWriteRegs(pdrv, LIS3DH_CTRL_REG5, &reg, 1);
+    _private->fifo_en = en;
+}
+
+static void bLis3dhFifoWatermarkSet(bDriverInterface_t *pdrv, uint8_t watermark)
+{
+    uint8_t reg = 0;
+    bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
+    _bLis3dhReadRegs(pdrv, LIS3DH_FIFO_CTRL_REG, &reg, 1);
+    reg = (reg & ~(0x1f)) | (watermark & 0x1f);
+    _bLis3dhWriteRegs(pdrv, LIS3DH_FIFO_CTRL_REG, &reg, 1);
+    _private->watermark = watermark & 0x1f;
+}
+
+static void bLis3dhFifoWatermarkInt(bDriverInterface_t *pdrv, uint8_t en)
+{
+    uint8_t reg = 0;
+    _bLis3dhReadRegs(pdrv, LIS3DH_CTRL_REG3, &reg, 1);
+    if (en)
+    {
+        reg |= (0x1) << 2;
+    }
+    else
+    {
+        reg &= ~((0x1) << 2);
+    }
+    _bLis3dhWriteRegs(pdrv, LIS3DH_CTRL_REG3, &reg, 1);
+}
+
+static void bLis3dhFifoModeSet(bDriverInterface_t *pdrv, bLis3dhFifoMode_t mode)
+{
+    uint8_t reg = 0;
+    bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
+    _bLis3dhReadRegs(pdrv, LIS3DH_FIFO_CTRL_REG, &reg, 1);
+    reg &= ~(0x3 << 6);
+    reg |= (mode) << 6;
+    b_log("reg:%x\r\n", reg);
+    _bLis3dhWriteRegs(pdrv, LIS3DH_FIFO_CTRL_REG, &reg, 1);
+    _private->fm = mode;
+}
+
+static void bLis3dhIntPolaritySet(bDriverInterface_t *pdrv, uint8_t horl)
+{
+    uint8_t reg = 0;
+    bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
+    _bLis3dhReadRegs(pdrv, LIS3DH_CTRL_REG6, &reg, 1);
+    if (horl)
+    {
+        reg &= ~((0x1) << 1);
+    }
+    else
+    {
+        reg |= (0x1) << 1;
+    }
+    _bLis3dhWriteRegs(pdrv, LIS3DH_CTRL_REG6, &reg, 1);
+    _private->int_polarity = (horl != 0);
+}
+
+static void bLis3dhOptModeSet(bDriverInterface_t *pdrv, bLis3dhOptMode_t val)
 {
     uint8_t reg1 = 0, reg4 = 0;
     bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
@@ -250,12 +321,18 @@ void bLis3dhOptModeSet(bDriverInterface_t *pdrv, bLis3dhOptMode_t val)
     _private->opmode = val;
 }
 
-static void _bLis3dhDefaultCfg(bDriverInterface_t *pdrv)
+static uint8_t _bLis3dhFifoFthFlagGet(bDriverInterface_t *pdrv)
 {
-    bLis3dhBlockDataUpdateSet(pdrv, 0);
-    bLis3dhDataRateSet(pdrv, LIS3DH_ODR_10Hz);
-    bLis3dhFullScaleSet(pdrv, LIS3DH_FS_4G);
-    bLis3dhOptModeSet(pdrv, LIS3DH_HR_12BIT);
+    uint8_t reg = 0;
+    _bLis3dhReadRegs(pdrv, LIS3DH_FIFO_SRC_REG, &reg, 1);
+    return ((reg & 0x80) >> 7);
+}
+
+static uint8_t _bLis3dhFifoDataLevelGet(bDriverInterface_t *pdrv)
+{
+    uint8_t reg = 0;
+    _bLis3dhReadRegs(pdrv, LIS3DH_FIFO_SRC_REG, &reg, 1);
+    return (reg & 0x1f);
 }
 
 static void _bLis3dhGetRawData(bDriverInterface_t *pdrv, bGsensor3Axis_t *pval)
@@ -270,22 +347,93 @@ static void _bLis3dhGetRawData(bDriverInterface_t *pdrv, bGsensor3Axis_t *pval)
     pval->z_mg = (pval->z_mg * 256) + (int16_t)buff[4];
 }
 
+static void _bLis3dhClearFifo(bDriverInterface_t *pdrv)
+{
+    uint8_t         flags;
+    uint8_t         num = 0, i = 0;
+    bGsensor3Axis_t tmp;
+    /* Check if FIFO level over threshold */
+    flags = _bLis3dhFifoFthFlagGet(pdrv);
+    if (flags)
+    {
+        /* Read number of sample in FIFO */
+        num = _bLis3dhFifoDataLevelGet(pdrv);
+        for (i = 0; i < num; i++)
+        {
+            _bLis3dhGetRawData(pdrv, &tmp);
+        }
+    }
+}
+
+static void _bLis3dhItHandler(bHalItNumber_t it, uint8_t index, bHalItParam_t *param,
+                              void *user_data)
+{
+    uint8_t             flags;
+    uint8_t             num = 0, i = 0;
+    bGsensor3Axis_t     tmp;
+    bDriverInterface_t *pdrv = user_data;
+    bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
+    /* Check if FIFO level over threshold */
+    flags = _bLis3dhFifoFthFlagGet(pdrv);
+    if (flags)
+    {
+        /* Read number of sample in FIFO */
+        num = _bLis3dhFifoDataLevelGet(pdrv);
+        for (i = 0; i < num; i++)
+        {
+            _bLis3dhGetRawData(pdrv, &tmp);
+            tmp.x_mg = (tmp.x_mg >> DataShiftTable[_private->opmode]) *
+                       Digit2mgTable[_private->fs][_private->opmode];
+            tmp.y_mg = (tmp.y_mg >> DataShiftTable[_private->opmode]) *
+                       Digit2mgTable[_private->fs][_private->opmode];
+            tmp.z_mg = (tmp.z_mg >> DataShiftTable[_private->opmode]) *
+                       Digit2mgTable[_private->fs][_private->opmode];
+            bQueuePush(&_private->q, &tmp);
+        }
+    }
+}
+
+static void _bLis3dhDefaultCfg(bDriverInterface_t *pdrv)
+{
+    bDRIVER_GET_HALIF(_if, bLIS3DH_HalIf_t, pdrv);
+    bLis3dhBlockDataUpdateSet(pdrv, 0);
+    bLis3dhDataRateSet(pdrv, LIS3DH_ODR_25Hz);
+    bLis3dhFullScaleSet(pdrv, LIS3DH_FS_4G);
+    bLis3dhOptModeSet(pdrv, LIS3DH_HR_12BIT);
+    if (_if->it[0].it == B_HAL_IT_EXTI)
+    {
+        bLis3dhFifoWatermarkSet(pdrv, 31);
+        bLis3dhFifoWatermarkInt(pdrv, 1);
+        bLis3dhFifoModeSet(pdrv, LIS3DH_DYNAMIC_STREAM_MODE);
+        bLis3dhFifoSet(pdrv, 1);
+        bLis3dhIntPolaritySet(pdrv, 0);
+        bHAL_IT_REGISTER(lis3dh_it, B_HAL_IT_EXTI, _if->it[0].index, _bLis3dhItHandler, pdrv);
+    }
+}
+
 static int _bLis3dhRead(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, uint32_t len)
 {
     bDRIVER_GET_PRIVATE(_private, bList3dhPrivate_t, pdrv);
-    bGsensor3Axis_t *pTemp = (bGsensor3Axis_t *)pbuf;
-    int              i     = 0;
-    uint8_t          c     = len / sizeof(bGsensor3Axis_t);
+    bGsensor3Axis_t *ptmp = (bGsensor3Axis_t *)pbuf;
+    int              i    = 0;
+    uint8_t          c    = len / sizeof(bGsensor3Axis_t);
 
     for (i = 0; i < c; i++)
     {
-        _bLis3dhGetRawData(pdrv, &pTemp[i]);
-        pTemp[i].x_mg = (pTemp[i].x_mg >> DataShiftTable[_private->opmode]) *
-                        Digit2mgTable[_private->fs][_private->opmode];
-        pTemp[i].y_mg = (pTemp[i].y_mg >> DataShiftTable[_private->opmode]) *
-                        Digit2mgTable[_private->fs][_private->opmode];
-        pTemp[i].z_mg = (pTemp[i].z_mg >> DataShiftTable[_private->opmode]) *
-                        Digit2mgTable[_private->fs][_private->opmode];
+        if (bQueuePop(&_private->q, &ptmp[i]) == 0)
+        {
+            ;
+        }
+        else
+        {
+            _bLis3dhGetRawData(pdrv, &ptmp[i]);
+            ptmp[i].x_mg = (ptmp[i].x_mg >> DataShiftTable[_private->opmode]) *
+                           Digit2mgTable[_private->fs][_private->opmode];
+            ptmp[i].y_mg = (ptmp[i].y_mg >> DataShiftTable[_private->opmode]) *
+                           Digit2mgTable[_private->fs][_private->opmode];
+            ptmp[i].z_mg = (ptmp[i].z_mg >> DataShiftTable[_private->opmode]) *
+                           Digit2mgTable[_private->fs][_private->opmode];
+        }
     }
     return (c * sizeof(bGsensor3Axis_t));
 }
@@ -304,12 +452,15 @@ int bLIS3DH_Init(bDriverInterface_t *pdrv)
     bDRIVER_STRUCT_INIT(pdrv, DRIVER_NAME, bLIS3DH_Init);
     pdrv->read        = _bLis3dhRead;
     pdrv->_private._p = &bLis3dhRunInfo[pdrv->drv_no];
-
+    memset(pdrv->_private._p, 0, sizeof(bList3dhPrivate_t));
     if ((_bLis3dhGetID(pdrv)) != LIS3DH_ID)
     {
         return -1;
     }
+    bQueueInit(&bLis3dhRunInfo[pdrv->drv_no].q, (uint8_t *)&bLis3dhRunInfo[pdrv->drv_no].data[0],
+               sizeof(bGsensor3Axis_t), 32);
     _bLis3dhDefaultCfg(pdrv);
+    _bLis3dhClearFifo(pdrv);
     return 0;
 }
 

@@ -37,7 +37,7 @@ extern "C" {
 
 /*Includes ----------------------------------------------*/
 #include "drivers/inc/b_driver.h"
-
+#include "utils/inc/b_util_queue.h"
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -60,7 +60,8 @@ typedef struct
         bHalI2CIf_t _i2c;
         bHalSPIIf_t _spi;
     } _if;
-    uint8_t is_spi;
+    uint8_t    is_spi;
+    bHalItIf_t it[2];
 } bLIS3DH_HalIf_t;
 
 typedef enum
@@ -92,11 +93,26 @@ typedef enum
     LIS3DH_LP_8BIT  = 2,
 } bLis3dhOptMode_t;
 
+typedef enum
+{
+    LIS3DH_BYPASS_MODE         = 0,
+    LIS3DH_FIFO_MODE           = 1,
+    LIS3DH_DYNAMIC_STREAM_MODE = 2,
+    LIS3DH_STREAM_TO_FIFO_MODE = 3,
+} bLis3dhFifoMode_t;
+
 typedef struct
 {
-    bLis3dhODR_t     odr;
-    bLis3dhFS_t      fs;
-    bLis3dhOptMode_t opmode;
+    bLis3dhODR_t      odr;
+    bLis3dhFS_t       fs;
+    bLis3dhOptMode_t  opmode;
+    uint8_t           fifo_en;
+    uint8_t           watermark;
+    uint8_t           fifo_intx;
+    bLis3dhFifoMode_t fm;
+    uint8_t           int_polarity;
+    bGsensor3Axis_t   data[32];
+    bQueueInstance_t  q;
 } bList3dhPrivate_t;
 
 /**
