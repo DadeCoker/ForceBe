@@ -12,9 +12,9 @@
 
 # BabyOS设计和使用手册
 
-**V0.2.1**
+**V0.2.2**
 
-***BabyOS V7.4.5***
+***BabyOS V7.4.6***
 
 
 
@@ -984,28 +984,87 @@ int main()
 
 ## 6.5 b_mod_gui
 
-### 6.5.1 接口介绍
+### 6.5.1数据结构
 
 ```C
-//b_mod_gui是对接ugui
-//b_mod_gui主要是提供初始化函数，其他图形化操作使用ugui提供的接口。
-//初始化函数，lcd:显示的设备号  touch:触摸的设备号
-int bGUI_Init(int lcd, int touch);
+#define TOUCH_TYPE_RES (0)
+#define TOUCH_TYPE_CAP (1)
+
+#define LCD_DISP_H (0)
+#define LCD_DISP_V (1)
+//创建实例，实例名、LCD设备号、触摸设备号、物理尺寸、触摸类型
+#define bGUI_INSTANCE(name, _lcd, _touch, _x_size, _y_size, _touch_type) \
+    bGUIInstance_t name = {                                              \
+        .lcd_dev_no   = _lcd,                                            \
+        .touch_dev_no = _touch,                                          \
+        .touch_type   = _touch_type,                                     \
+        .lcd_x_size   = _x_size,                                         \
+        .lcd_y_size   = _y_size,                                         \
+    };
+```
+
+
+
+### 6.5.2 接口介绍
+
+此模块支持多个屏使用uGUI。UI设计使用ugui.h文件提供的接口。
+
+```C
+// 注册GUI实例，返回GUI ID
+int bGUIRegist(bGUIInstance_t *pInstance);
+// 选择当前操作的目标，传入GUI ID
+int bGUISelect(uint8_t id);
+// 设置电阻屏触摸的AD值范围
+int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
+                   uint16_t y_ad_max);
+// 设置屏幕显示方向，默认是LCD_DISP_V
+int bGUIDispDir(uint8_t id, uint8_t dir);
 
 ```
 
-### 6.5.2 使用例子
+### 6.5.3 使用例子
 
 ```C
+//定义两个实例，tft屏和oled屏
+bGUI_INSTANCE(tft, bSSD1289, bXPT2046, 240, 320, TOUCH_TYPE_RES);
+bGUI_INSTANCE(oled, bOLED, NULL, 128, 64, TOUCH_TYPE_RES);
+
+void TouchTest()
+{
+    if(tft.gui_handle.touch.state == TOUCH_STATE_PRESSED)
+    {
+        b_log("x:%d y:%d \r\n", tft.gui_handle.touch.xp, tft.gui_handle.touch.yp);
+    }
+}
+
 int main()
 {
-    ...
+    ......
     bInit();
-    bGUI_Init(bILI9341, NULL);
-    UG_FillScreen(C_RED);
+    bGUIRegist(&tft);
+    bGUIRegist(&oled);
+    //设定电阻屏触摸的AD值范围
+    bGUITouchRange(0, 476, 3952, 338, 3592);
+    //选择ID 0的屏 即tft屏
+    bGUISelect(0);
+    UG_FillScreen(C_BLACK);
     UG_PutString(0, 0, "hello world");
-    UG_PutString(0, 100, "babyos ili9341");
-    ...
+    UG_PutString(0, 100, "babyos ssd1289");
+    //选择ID 1的屏 即oled屏
+    bGUISelect(1);
+    UG_FillScreen(0);
+    UG_PutString(0, 0, "hello world");
+    UG_PutString(0, 20, "babyos oled");
+    //再选择tft屏，并设置为横屏
+    bGUISelect(0);
+    bGUIDispDir(0, LCD_DISP_H);
+    UG_PutString(0, 20, "babyos oled tft");
+    while (1)
+    {
+        bExec();
+        //测试触摸
+        BOS_PERIODIC_TASK(TouchTest, 500);
+    }
 }
 ```
 

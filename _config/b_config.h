@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70405
+#define FW_VERSION 70406
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -142,8 +142,6 @@
 #define SECRET_KEY4 4444
 //</e>
 //</e>
-
-
 
 //<q> KV Enable/Disable
 #define _KV_ENABLE 0
