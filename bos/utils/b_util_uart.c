@@ -37,7 +37,6 @@
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
 
-
 /**
  * \addtogroup B_UTILS
  * \{
@@ -145,6 +144,7 @@ static void _bUtilUartDetectIdle()
                         if (phead->next->callback != NULL)
                         {
                             phead->next->callback(phead->next->pbuf, phead->next->index);
+                            memset(phead->next->pbuf, 0, phead->next->buf_size);
                             phead->next->index = 0;
                         }
                     }

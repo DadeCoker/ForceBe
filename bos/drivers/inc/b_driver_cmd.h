@@ -123,14 +123,16 @@ typedef struct
 ///////////////////////////////////////////////////////////
 // Wifi Module Command & Data Structure
 ///////////////////////////////////////////////////////////
-#define bCMD_WIFI_MODE_STA 0     // none
-#define bCMD_WIFI_MODE_AP 1      // bWifiApInfo_t
-#define bCMD_WIFI_MODE_STA_AP 2  // bWifiApInfo_t
-#define bCMD_WIFI_JOIN_AP 3      // bWifiApInfo_t
-#define bCMD_WIFI_TCP_SERVER 4   // bTcpInfo_t
-#define bCMD_WIFI_MQTT_CONN 5    // bMqttConnInfo_t
-#define bCMD_WIFI_MQTT_SUB 6     // bMqttTopicInfo_t
-#define bCMD_WIFI_MQTT_PUB 7     // bMqttTopicData_t
+#define bCMD_WIFI_MODE_STA 0          // none
+#define bCMD_WIFI_MODE_AP 1           // bWifiApInfo_t
+#define bCMD_WIFI_MODE_STA_AP 2       // bWifiApInfo_t
+#define bCMD_WIFI_JOIN_AP 3           // bWifiApInfo_t
+#define bCMD_WIFI_MQTT_CONN 4         // bMqttConnInfo_t
+#define bCMD_WIFI_MQTT_SUB 5          // bMqttTopicInfo_t
+#define bCMD_WIFI_MQTT_PUB 6          // bMqttTopicData_t
+#define bCMD_WIFI_LOCAL_TCP_SERVER 7  // bTcpInfo_t
+#define bCMD_WIFI_REMOT_TCP_SERVER 8  // bTcpInfo_t
+#define bCMD_WIFI_TCP_SEND 9          // bTcpData_t
 
 typedef struct
 {
@@ -145,6 +147,12 @@ typedef struct
     char     ip[64];
     uint16_t port;
 } bTcpInfo_t;
+
+typedef struct
+{
+    uint16_t len;
+    char    *pstr;
+} bTcpData_t;
 
 typedef struct
 {
@@ -166,6 +174,28 @@ typedef struct
     bMqttTopicInfo_t topic;
     char            *pstr;
 } bMqttTopicData_t;
+
+typedef struct
+{
+    bTcpData_t       tcp;
+    bMqttTopicData_t mqtt;
+} bWiFiData_t;
+
+#define WIFI_DATA_USE_END(dat)     \
+    do                             \
+    {                              \
+        if (dat.mqtt.pstr != NULL) \
+        {                          \
+            bFree(dat.mqtt.pstr);  \
+            dat.mqtt.pstr = NULL;  \
+        }                          \
+        if (dat.tcp.pstr != NULL)  \
+        {                          \
+            bFree(dat.tcp.pstr);   \
+            dat.tcp.pstr = NULL;   \
+        }                          \
+    } while (0)
+
 ///////////////////////////////////////////////////////////
 //
 ///////////////////////////////////////////////////////////

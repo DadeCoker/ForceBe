@@ -41,6 +41,8 @@
 #define UART3_BASE_ADDR (0x40004800)
 #define UART4_BASE_ADDR (0x40004C00)
 
+#define LPUART1_BASE_ADDR (0x40008000)
+
 typedef struct
 {
     volatile uint32_t CR1;
@@ -62,6 +64,8 @@ typedef struct
 #define MCU_UART3 ((McuUartReg_t *)UART3_BASE_ADDR)
 #define MCU_UART4 ((McuUartReg_t *)UART4_BASE_ADDR)
 
+#define MCU_LPUART1 ((McuUartReg_t *)LPUART1_BASE_ADDR)
+
 static McuUartReg_t *UartTable[4] = {MCU_UART1, MCU_UART2, MCU_UART3, MCU_UART4};
 
 int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
@@ -69,11 +73,18 @@ int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
     int           i       = 0;
     int           timeout = 0x000B0000;
     McuUartReg_t *pUart   = NULL;
-    if (uart > B_HAL_UART_6 || pbuf == NULL)
+    if ((uart > B_HAL_UART_4 && uart != B_HAL_LPUART_1) || pbuf == NULL)
     {
         return -1;
     }
-    pUart = UartTable[uart];
+    if(uart == B_HAL_LPUART_1)
+    {
+        pUart = MCU_LPUART1;
+    }
+    else
+    {
+        pUart = UartTable[uart];
+    }
     for (i = 0; i < len; i++)
     {
         timeout = 0x000B0000;
@@ -95,11 +106,18 @@ int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     int           i       = 0;
     int           timeout = 0x000B0000;
     McuUartReg_t *pUart   = NULL;
-    if (uart > B_HAL_UART_5 || pbuf == NULL)
+    if ((uart > B_HAL_UART_4 && uart != B_HAL_LPUART_1) || pbuf == NULL)
     {
         return -1;
     }
-    pUart = UartTable[uart];
+    if(uart == B_HAL_LPUART_1)
+    {
+        pUart = MCU_LPUART1;
+    }
+    else
+    {
+        pUart = UartTable[uart];
+    }
     for (i = 0; i < len; i++)
     {
         timeout = 0x000B0000;
