@@ -62,13 +62,13 @@ extern "C" {
  */
 
 typedef void (*pStateEvenHandler_t)(void *arg);
-typedef void (*pStateEnterHandler_t)(int pre_state);
+typedef void (*pStateEnterHandler_t)(uint32_t pre_state);
 typedef void (*pStateExitHandler_t)(void);
 typedef void (*pStateHandler_t)(void);
 
 typedef struct
 {
-    int                 event;
+    uint32_t            event;
     pStateEvenHandler_t handler;
 } bStateEvent_t;
 
@@ -80,7 +80,7 @@ typedef struct
 
 typedef struct
 {
-    int                  state;
+    uint32_t             state;
     pStateEnterHandler_t enter;
     pStateExitHandler_t  exit;
     pStateHandler_t      handler;
@@ -108,8 +108,9 @@ typedef bStateInfo_t *bStateInstance_t;
  * \defgroup STATE_Exported_Functions
  * \{
  */
-int bStateTransfer(int state);
-int bStateInvokeEvent(int event, void *arg);
+int bStateTransfer(uint32_t state);
+int bStateInvokeEvent(uint32_t event, void *arg);
+int bGetCurrentState(void);
 /**
  * \}
  */

@@ -171,7 +171,7 @@
 #define _PARAM_ENABLE 0
 
 //<q> State Machine Enable/Disable
-#define _STATE_ENABLE 1
+#define _STATE_ENABLE 0
 
 //<e> IAP Enable/Disable
 #define _IAP_ENABLE 0

@@ -50,31 +50,6 @@
  */
 
 /**
- * \defgroup STATE_Private_Defines
- * \{
- */
-#define STATE_SAFE_INVOKE(f) \
-    do                       \
-    {                        \
-        if (f != NULL)       \
-        {                    \
-            f();             \
-        }                    \
-    } while (0)
-
-#define STATE_SAFE_INVOKE_ARG(f, arg) \
-    do                                \
-    {                                 \
-        if (f != NULL)                \
-        {                             \
-            f(arg);                   \
-        }                             \
-    } while (0)
-/**
- * \}
- */
-
-/**
  * \defgroup STATE_Private_Variables
  * \{
  */
@@ -95,7 +70,7 @@ static void _bStatePolling()
     {
         return;
     }
-    STATE_SAFE_INVOKE(pbStateInfo->handler);
+    B_SAFE_INVOKE(pbStateInfo->handler);
 }
 
 BOS_REG_POLLING_FUNC(_bStatePolling);
@@ -109,7 +84,7 @@ BOS_REG_POLLING_FUNC(_bStatePolling);
  * \{
  */
 
-int bStateTransfer(int state)
+int bStateTransfer(uint32_t state)
 {
     if (pbStateInfo != NULL)
     {
@@ -118,7 +93,7 @@ int bStateTransfer(int state)
             return 0;
         }
     }
-    bSECTION_FOR_EACH(b_mod_state, bStateInstance_t, ptmp)
+    bSECTION_FOR_EACH(b_mod_state, bStateInfo_t, ptmp)
     {
         if (ptmp == NULL)
         {
@@ -129,12 +104,12 @@ int bStateTransfer(int state)
         {
             if (pbStateInfo != NULL)
             {
-                STATE_SAFE_INVOKE(pbStateInfo->exit);
-                STATE_SAFE_INVOKE_ARG(ptmp->enter, pbStateInfo->state);
+                B_SAFE_INVOKE(pbStateInfo->exit);
+                B_SAFE_INVOKE(ptmp->enter, pbStateInfo->state);
             }
             else
             {
-                STATE_SAFE_INVOKE_ARG(ptmp->enter, ptmp->state);
+                B_SAFE_INVOKE(ptmp->enter, ptmp->state);
             }
             pbStateInfo = ptmp;
             return 0;
@@ -143,7 +118,7 @@ int bStateTransfer(int state)
     return -1;
 }
 
-int bStateInvokeEvent(int event, void *arg)
+int bStateInvokeEvent(uint32_t event, void *arg)
 {
     int i = 0;
     if (pbStateInfo == NULL)
@@ -158,11 +133,20 @@ int bStateInvokeEvent(int event, void *arg)
     {
         if (pbStateInfo->event_table.p_event_table[i].event == event)
         {
-            STATE_SAFE_INVOKE_ARG(pbStateInfo->event_table.p_event_table[i].handler, arg);
+            B_SAFE_INVOKE(pbStateInfo->event_table.p_event_table[i].handler, arg);
             break;
         }
     }
     return 0;
+}
+
+int bGetCurrentState()
+{
+    if (pbStateInfo == NULL)
+    {
+        return -1;
+    }
+    return pbStateInfo->state;
 }
 
 /**
