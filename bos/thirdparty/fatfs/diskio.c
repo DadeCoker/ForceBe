@@ -215,8 +215,8 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
                    void *buff  /* Buffer to send/receive control data */
 )
 {
-#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1))
-    DRESULT res = RES_OK;
+#if (defined(_FS_ENABLE) && (_FS_ENABLE == 1))    
+    DRESULT res = RES_OK;    
     switch (pdrv)
     {
 #if _SPIFLASH_ENABLE
@@ -254,6 +254,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
             return res;
         }
 #endif
+#if _SD_ENABLE        
         case DEV_SDCARD:
             switch (cmd)
             {
@@ -268,9 +269,9 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive nmuber (0..) */
                     break;
             }
             // Process of the command for the MMC/SD card
-
-            return res;
-    }
+            return res;   
+#endif         
+    }       
 #endif
     return RES_PARERR;
 }

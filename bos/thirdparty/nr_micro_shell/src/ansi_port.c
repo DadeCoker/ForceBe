@@ -46,7 +46,7 @@ void ansi_show_char(char ch)
 {
 #if (defined(NR_SHELL_ECHO_ENABLE) && (NR_SHELL_ECHO_ENABLE == 1))
 #if defined(LOG_UART)
-    bHalUartSend(LOG_UART, (uint8_t *)&ch, 1);
+    bHalUartSend((bHalUartNumber_t)LOG_UART, (uint8_t *)&ch, 1);
 #else
     (void)ch;
 #endif

@@ -120,7 +120,7 @@ B_FPUTC
 {
     uint8_t ch = c & 0xff;
 #if defined(LOG_UART)
-    bHalUartSend(LOG_UART, &ch, 1);
+    bHalUartSend((bHalUartNumber_t)LOG_UART, &ch, 1);
 #else
     (void)ch;
 #endif
@@ -138,7 +138,7 @@ B_FPUTC
 void bLogOutput(void *p)
 {
 #if defined(LOG_UART)
-    bHalUartSend(LOG_UART, p, strlen(p));
+    bHalUartSend((bHalUartNumber_t)LOG_UART, p, strlen(p));
 #else
     (void)p;
 #endif
