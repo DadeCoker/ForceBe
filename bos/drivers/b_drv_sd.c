@@ -64,8 +64,8 @@
  * \defgroup SD_Private_Variables
  * \{
  */
-const static bSD_HalIf_t bSD_HalIf = HAL_SD_IF;
-bSD_Driver_t             bSD_Driver;
+HALIF_KEYWORD bSD_HalIf_t bSD_HalIf = HAL_SD_IF;
+bSD_Driver_t              bSD_Driver;
 /**
  * \}
  */
@@ -467,12 +467,14 @@ int bSD_Init()
         b_log("sd_err\r\n");
         return -1;
     }
-    bSD_Driver.status = 0;
-    bSD_Driver.close  = NULL;
-    bSD_Driver.read   = _bSD_Read;
-    bSD_Driver.ctl    = NULL;
-    bSD_Driver.open   = NULL;
-    bSD_Driver.write  = _bSD_Write;
+    bSD_Driver.status  = 0;
+    bSD_Driver.init    = bSD_Init;
+    bSD_Driver.close   = NULL;
+    bSD_Driver.read    = _bSD_Read;
+    bSD_Driver.ctl     = NULL;
+    bSD_Driver.open    = NULL;
+    bSD_Driver.write   = _bSD_Write;
+    bSD_Driver._hal_if = (void *)&bSD_HalIf;
     return 0;
 }
 

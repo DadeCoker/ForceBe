@@ -73,8 +73,8 @@
  * \defgroup PCF8574_Private_Variables
  * \{
  */
-const static bPCF8574_HalIf_t bPCF8574_HalIf = HAL_PCF8574_IF;
-bPCF8574_Driver_t             bPCF8574_Driver;
+HALIF_KEYWORD bPCF8574_HalIf_t bPCF8574_HalIf = HAL_PCF8574_IF;
+bPCF8574_Driver_t              bPCF8574_Driver;
 /**
  * \}
  */
@@ -143,12 +143,14 @@ static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
  */
 int bPCF8574_Init()
 {
-    bPCF8574_Driver.status = 0;
-    bPCF8574_Driver.close  = NULL;
-    bPCF8574_Driver.read   = _bPCF8574Read;
-    bPCF8574_Driver.ctl    = NULL;
-    bPCF8574_Driver.open   = NULL;
-    bPCF8574_Driver.write  = _bPCF8574Write;
+    bPCF8574_Driver.status  = 0;
+    bPCF8574_Driver.init    = bPCF8574_Init;
+    bPCF8574_Driver.close   = NULL;
+    bPCF8574_Driver.read    = _bPCF8574Read;
+    bPCF8574_Driver.ctl     = NULL;
+    bPCF8574_Driver.open    = NULL;
+    bPCF8574_Driver.write   = _bPCF8574Write;
+    bPCF8574_Driver._hal_if = (void *)&bPCF8574_HalIf;
     bHalI2CDriver.pWriteByte(&bPCF8574_HalIf, 0);
     return 0;
 }

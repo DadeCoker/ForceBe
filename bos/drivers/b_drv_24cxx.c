@@ -76,8 +76,8 @@
  * \{
  */
 
-const static b24CXX_HalIf_t b24CXX_HalIfTable[] = HAL_24CXX_IF;
-b24CXX_Driver_t             b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t)];
+HALIF_KEYWORD b24CXX_HalIf_t b24CXX_HalIfTable[] = HAL_24CXX_IF;
+b24CXX_Driver_t              b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t)];
 /**
  * \}
  */
@@ -148,13 +148,14 @@ int b24CXX_Init()
     uint8_t i = 0, num_drv = sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t);
     for (i = 0; i < num_drv; i++)
     {
-        b24CXX_Driver[i]._hal_if = (void *)&b24CXX_HalIfTable[i];
         b24CXX_Driver[i].status  = 0;
+        b24CXX_Driver[i].init    = b24CXX_Init;
         b24CXX_Driver[i].close   = NULL;
         b24CXX_Driver[i].read    = _b24CXXRead;
         b24CXX_Driver[i].ctl     = NULL;
         b24CXX_Driver[i].open    = NULL;
         b24CXX_Driver[i].write   = _b24CXXWrite;
+        b24CXX_Driver[i]._hal_if = (void *)&b24CXX_HalIfTable[i];
     }
     return 0;
 }

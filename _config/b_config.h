@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70300
+#define FW_VERSION 70301
 //</h>
 
 //<h> Platform Configuration
@@ -54,6 +54,10 @@
 //<4001=> HC32L13X
 //<7001=> CH32F103
 #define _MCU_PLATFORM 1004
+
+//<h> Hal Configuration
+//<q> Hardware Interface Variable Enable/Disable
+#define _HALIF_VARIABLE_ENABLE 0
 //</h>
 
 //<h> Modules Configuration

@@ -63,6 +63,7 @@ extern "C" {
 typedef struct bDriverIf
 {
     int status;
+    int (*init)(void);
     int (*open)(struct bDriverIf *pdrv);
     int (*close)(struct bDriverIf *pdrv);
     int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
@@ -166,7 +167,7 @@ typedef struct
 
 #define bDRIVER_REG_INIT_1 bDRIVER_REG_INIT
 
-#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)(pdrv->_hal_if)
+#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)((pdrv)->_hal_if)
 /**
  * \}
  */

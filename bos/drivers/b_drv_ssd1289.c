@@ -84,8 +84,8 @@
  * \defgroup SSD1289_Private_Variables
  * \{
  */
-const static bSSD1289_HalIf_t bSSD1289_HalIf = HAL_SSD1289_IF;
-bSSD1289_Driver_t             bSSD1289_Driver;
+HALIF_KEYWORD bSSD1289_HalIf_t bSSD1289_HalIf = HAL_SSD1289_IF;
+bSSD1289_Driver_t              bSSD1289_Driver;
 /**
  * \}
  */
@@ -112,13 +112,19 @@ static void _bLcdWriteData(uint16_t dat)
     }
     else
     {
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+                                     0);
         bHalGPIODriver.pGpioWritePort(bSSD1289_HalIf._if._io.data.port, dat);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+                                     1);
     }
 }
 
@@ -131,13 +137,19 @@ static void _bLcdWriteCmd(uint16_t cmd)
     }
     else
     {
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+                                     0);
         bHalGPIODriver.pGpioWritePort(bSSD1289_HalIf._if._io.data.port, cmd);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin,
+                                     0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.wr.port, bSSD1289_HalIf._if._io.wr.pin,
+                                     1);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+                                     1);
     }
 }
 /*
@@ -151,15 +163,15 @@ static uint16_t _bLcdReadData()
     }
     else
     {
-        bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port, bSSD1289_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin, 1);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 1);
+        bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port,
+bSSD1289_HalIf._if._io.data.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin,
+1); bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+0); bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 1);
         dat = bHalGPIODriver.pGpioReadPort(bSSD1289_HalIf._if._io.data.port);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 1);
-        bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port, bSSD1289_HalIf._if._io.data.pin,
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+1); bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port, bSSD1289_HalIf._if._io.data.pin,
                         B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
     }
     return dat;
@@ -177,15 +189,15 @@ static uint16_t _bLcdReadCmd()
     }
     else
     {
-        bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port, bSSD1289_HalIf._if._io.data.pin,
-                        B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 0);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 1);
+        bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port,
+bSSD1289_HalIf._if._io.data.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rs.port, bSSD1289_HalIf._if._io.rs.pin,
+0); bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 0);
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+0); bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.rd.port, bSSD1289_HalIf._if._io.rd.pin, 1);
         cmd = bHalGPIODriver.pGpioReadPort(bSSD1289_HalIf._if._io.data.port);
-        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin, 1);
-        bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port, bSSD1289_HalIf._if._io.data.pin,
+        bHalGPIODriver.pGpioWritePin(bSSD1289_HalIf._if._io.cs.port, bSSD1289_HalIf._if._io.cs.pin,
+1); bHalGPIODriver.pGpioConfig(bSSD1289_HalIf._if._io.data.port, bSSD1289_HalIf._if._io.data.pin,
                         B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
     }
     return cmd;
@@ -255,12 +267,14 @@ int bSSD1289_Init()
     _SSD1289WriteReg(0x0002, 0x0600);
     _SSD1289WriteReg(0x0001, 0x2B3F);
 
-    bSSD1289_Driver.status = 0;
-    bSSD1289_Driver.close  = NULL;
-    bSSD1289_Driver.read   = NULL;
-    bSSD1289_Driver.ctl    = NULL;
-    bSSD1289_Driver.open   = NULL;
-    bSSD1289_Driver.write  = _bSSD1289Write;
+    bSSD1289_Driver.status  = 0;
+    bSSD1289_Driver.init    = bSSD1289_Init;
+    bSSD1289_Driver.close   = NULL;
+    bSSD1289_Driver.read    = NULL;
+    bSSD1289_Driver.ctl     = NULL;
+    bSSD1289_Driver.open    = NULL;
+    bSSD1289_Driver.write   = _bSSD1289Write;
+    bSSD1289_Driver._hal_if = (void *)&bSSD1289_HalIf;
     return 0;
 }
 

@@ -82,12 +82,12 @@
  * \defgroup SPIFLASH_Private_Variables
  * \{
  */
-static char                    bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][4];
-static const bSPIFLASH_HalIf_t bSPIFLASH_HalIfTable[HAL_SPIFLASH_TOTAL_NUMBER] = HAL_SPIFLASH_IF;
-bSPIFLASH_Driver_t             bSPIFLASH_Driver[HAL_SPIFLASH_TOTAL_NUMBER];
 
-// sfud
-extern sfud_flash flash_table[];
+HALIF_KEYWORD bSPIFLASH_HalIf_t bSPIFLASH_HalIfTable[HAL_SPIFLASH_TOTAL_NUMBER] = HAL_SPIFLASH_IF;
+bSPIFLASH_Driver_t              bSPIFLASH_Driver[HAL_SPIFLASH_TOTAL_NUMBER];
+
+static char       bSPIFlashName[HAL_SPIFLASH_TOTAL_NUMBER][4];
+extern sfud_flash flash_table[];  // sfud
 
 /**
  * \}
@@ -293,7 +293,7 @@ int bSPIFLASH_Init()
         flash_table[i].name        = bSPIFlashName[i];
         flash_table[i].spi._hal_if = (void *)&bSPIFLASH_HalIfTable[i];
 
-        bSPIFLASH_Driver[i]._hal_if     = (void *)&bSPIFLASH_HalIfTable[i];
+        bSPIFLASH_Driver[i].init        = bSPIFLASH_Init;
         bSPIFLASH_Driver[i].open        = _bSPIFLASH_Open;
         bSPIFLASH_Driver[i].close       = _bSPIFLASH_Close;
         bSPIFLASH_Driver[i].ctl         = _bSPIFLASH_Ctl;
@@ -301,6 +301,7 @@ int bSPIFLASH_Init()
         bSPIFLASH_Driver[i].write       = _bSPIFLASH_WriteBuf;
         bSPIFLASH_Driver[i].status      = 0;
         bSPIFLASH_Driver[i]._private._p = &flash_table[i];
+        bSPIFLASH_Driver[i]._hal_if     = (void *)&bSPIFLASH_HalIfTable[i];
     }
 
     for (i = 0; i < number; i++)

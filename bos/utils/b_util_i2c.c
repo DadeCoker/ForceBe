@@ -137,6 +137,7 @@ int bUtilI2C_ACK(bUtilI2C_t i2c)
     if (tmp == 0)
     {
         bUtilI2C_Stop(i2c);
+        bHalGPIODriver.pGpioConfig(i2c.sda.port, i2c.sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);
         return -1;
     }
     bHalGPIODriver.pGpioWritePin(i2c.clk.port, i2c.clk.pin, 0);

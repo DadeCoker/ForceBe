@@ -117,7 +117,7 @@ bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);
 
 static int _bDriverNullInit()
 {
-    if(strcmp(bDeviceDescTable[0], "null") == 0)
+    if (strcmp(bDeviceDescTable[0], "null") == 0)
     {
         b_log_i("No device is registered\r\n");
     }
@@ -151,6 +151,19 @@ int bDeviceInit()
         (*pdriver_init)();
     }
     return 0;
+}
+
+int bDeviceReinit(uint8_t no)
+{
+    if (no >= bDEV_MAX_NUM)
+    {
+        return -1;
+    }
+    if (bDriverTable[no]->init == NULL)
+    {
+        return -2;
+    }
+    return bDriverTable[no]->init();
 }
 
 int bDeviceOpen(uint8_t no)
@@ -261,6 +274,26 @@ int bDeviceCtl(uint8_t no, uint8_t cmd, void *param)
         retval = -255;
     }
     return retval;
+}
+
+int bDeviceModifyHalIf(uint8_t no, uint32_t offset, const uint8_t *pVal, uint8_t size)
+{
+    uint32_t halif_addr = 0;
+    if (no >= bDEV_MAX_NUM || pVal == NULL || size == 0)
+    {
+        return -1;
+    }
+    if (bDriverTable[no]->_hal_if == NULL)
+    {
+        return -2;
+    }
+    halif_addr = ((uint32_t)bDriverTable[no]->_hal_if) + offset;
+#if _HALIF_VARIABLE_ENABLE
+    memcpy((uint8_t *)halif_addr, pVal, size);
+    return 0;
+#else
+    return -1;
+#endif
 }
 
 int bDeviceISNormal(uint8_t no)

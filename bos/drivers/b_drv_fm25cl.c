@@ -78,8 +78,8 @@
  * \defgroup FM25CL_Private_Variables
  * \{
  */
-static const bFM25CL_HalIf_t bFM25CL_HalIfTable[] = HAL_FM25CL_IF;
-bFM25CL_Driver_t             bFM25CL_Driver[sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t)];
+HALIF_KEYWORD bFM25CL_HalIf_t bFM25CL_HalIfTable[] = HAL_FM25CL_IF;
+bFM25CL_Driver_t              bFM25CL_Driver[sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t)];
 /**
  * \}
  */
@@ -164,13 +164,14 @@ int bFM25CL_Init()
     uint8_t i = 0, num_drv = (sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t));
     for (i = 0; i < num_drv; i++)
     {
-        bFM25CL_Driver[i]._hal_if = (void *)&bFM25CL_HalIfTable[i];
+        bFM25CL_Driver[i].init    = bFM25CL_Init;
         bFM25CL_Driver[i].status  = 0;
         bFM25CL_Driver[i].close   = NULL;
         bFM25CL_Driver[i].read    = _FM25_ReadBuff;
         bFM25CL_Driver[i].ctl     = NULL;
         bFM25CL_Driver[i].open    = NULL;
         bFM25CL_Driver[i].write   = _FM25_WritBuff;
+        bFM25CL_Driver[i]._hal_if = (void *)&bFM25CL_HalIfTable[i];
     }
     return 0;
 }
