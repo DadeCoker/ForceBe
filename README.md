@@ -1,5 +1,7 @@
 ![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
+![](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/2.png)
+
 # BabyOS
 
 BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
@@ -20,31 +22,9 @@ Windows下需要安装python（2或3均可）用于配置代码
 
 Linux下需要安装python、python-pip以及make 用于配置和编译代码   
 
-![b_config](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/bconfig.png)
+![b_config](https://foruda.gitee.com/images/1674379348907249447/3b414522_1789704.gif)
 
-# 3 前世今生
-
-说一说编写BabyOS原由
-
- ................
-
-使用MCU开发的项目大多有两个要求：**产品功耗**和**开发周期**
-
-## 3.1 功耗的考量
-
-设备的操作：唤醒设备，操作，设置休眠。
-
-文件的操作：打开文件，编辑，关闭文件。
-
-因此BabyOS中对设备的操作由统一的接口，即将设备看做文件一样对待。
-
-## 3.2 缩短开发周期
-
-项目中有较多使用率高的功能模块和外设，BabyOS提供友好的框架对功能模块和设备驱动进行收集和管理。
-
-新项目启动时，以搭积木的方式即可完成一部分工作，以此来缩短开发时间。
-
-# 4 BabyOS手册
+# 3 BabyOS手册
 
  [《BabyOS设计和使用手册》](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md)
 
@@ -52,7 +32,7 @@ Linux下需要安装python、python-pip以及make 用于配置和编译代码
 
 [快速体验](https://gitee.com/notrynohigh/BabyOS/blob/master/doc/BabyOS%E8%AE%BE%E8%AE%A1%E5%92%8C%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.md#3-%E5%BF%AB%E9%80%9F%E4%BD%93%E9%AA%8C)
 
-# 5 BabyOS教程
+# 4 BabyOS教程
 
 由于代码在不断更新，所以无法避免视频内容与最新代码匹配，如有疑问，请在issues描述问题！
 
@@ -64,7 +44,7 @@ Linux下需要安装python、python-pip以及make 用于配置和编译代码
 
 [第四讲BabyOS的功能组件](https://www.bilibili.com/video/BV1JZ4y1Y7S7?share_source=copy_web)
 
-# 6 BabyOS例程
+# 5 BabyOS例程
 
 例程仓库中不同分支对应着不同实验：
 
@@ -74,13 +54,7 @@ BabyOS私有协议上位机Demo：
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 
 
-# 7 BabyOS配置
-
-【详情可见  _config/README.md】
-
-![](https://foruda.gitee.com/images/1674378632892522802/c7c99b50_1789704.gif)
-
-# 8 Baby如何成长
+# 6 Baby如何成长
 
 BabyOS如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。希望借助广大网友的力量，一起“喂养”她，是她成为MCU开发中不可缺少的一部分。
 
@@ -118,17 +92,13 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 
 **如果您觉得这套开源代码有意义，请给个Star表示支持，谢谢！**
 
-
-
 管理员邮箱：notrynohigh@outlook.com
 
 开发小组QQ群&开发动态发布的公众号：
 
 ![qq](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/qq.png) ![qrcode](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/qrcode.jpg)
 
-
-
-## 更新记录
+# 更新记录
 
 | 日期    | 新增项                                                       | 备注 |
 | ------- | ------------------------------------------------------------ | ---- |
