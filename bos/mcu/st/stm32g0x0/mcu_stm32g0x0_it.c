@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_stm32f10x_it.c
+ * \file        mcu_stm32g0x0_it.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_it.h"
 
-#if (_MCU_PLATFORM == 1101 || _MCU_PLATFORM == 1102 || _MCU_PLATFORM == 1103)
+#if (_MCU_PLATFORM == 1101)
 
 static void _IntEnable()
 {

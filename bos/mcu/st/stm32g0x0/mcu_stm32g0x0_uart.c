@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_stm32f10x_uart.c
+ * \file        mcu_stm32g0x0_uart.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,12 +33,10 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_uart.h"
 
-#if (_MCU_PLATFORM == 1101 || _MCU_PLATFORM == 1102 || _MCU_PLATFORM == 1103)
+#if (_MCU_PLATFORM == 1101)
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
-
-#include "stm32g0xx_hal.h"
 
 //      Register Address
 #define UART1_BASE_ADDR (0x40013800)
@@ -53,21 +51,15 @@ typedef struct
     volatile uint32_t CR1;
     volatile uint32_t CR2;
     volatile uint32_t CR3;
-    volatile uint16_t BRR;
-    uint16_t          RESERVED1;
-    volatile uint16_t GTPR;
-    uint16_t          RESERVED2;
+    volatile uint32_t BRR;
+    volatile uint32_t GTPR;
     volatile uint32_t RTOR;
-    volatile uint16_t RQR;
-    uint16_t          RESERVED3;
+    volatile uint32_t RQR;
     volatile uint32_t ISR;
     volatile uint32_t ICR;
-    volatile uint16_t RDR;
-    uint16_t          RESERVED4;
-    volatile uint16_t TDR;
-    uint16_t          RESERVED5;
-    volatile uint16_t PRESC;
-    uint16_t          RESERVED6;
+    volatile uint32_t RDR;
+    volatile uint32_t TDR;
+    volatile uint32_t PRESC;
 } McuUartReg_t;
 
 #define MCU_UART1 ((McuUartReg_t *)UART1_BASE_ADDR)
@@ -77,46 +69,59 @@ typedef struct
 #define MCU_UART5 ((McuUartReg_t *)UART5_BASE_ADDR)
 #define MCU_UART6 ((McuUartReg_t *)UART6_BASE_ADDR)
 
-extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart2;
-
-// static McuUartReg_t *UartTable[6] = {MCU_UART1, MCU_UART2, MCU_UART3, MCU_UART4, MCU_UART5,
-// MCU_UART6};
+static McuUartReg_t *UartTable[6] = {MCU_UART1, MCU_UART2, MCU_UART3,
+                                     MCU_UART4, MCU_UART5, MCU_UART6};
 
 static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
-    int retval = 0;
-    switch (uart)
+    int           i       = 0;
+    int           timeout = 0x000B0000;
+    McuUartReg_t *pUart   = NULL;
+    if (uart > B_HAL_UART_6 || pbuf == NULL)
     {
-        case B_HAL_UART_1:
-            retval = HAL_UART_Transmit(&huart1, (uint8_t *)pbuf, len, 0xff);
-            break;
-        case B_HAL_UART_2:
-            retval = HAL_UART_Transmit(&huart2, (uint8_t *)pbuf, len, 0xff);
-            break;
-
-        default:
-            break;
+        return -1;
     }
-    return retval;
+    pUart = UartTable[uart];
+    for (i = 0; i < len; i++)
+    {
+        timeout = 0x000B0000;
+        while (timeout > 0 && ((pUart->ISR & (0x1 << 6)) == 0))
+        {
+            timeout--;
+        }
+        if (timeout <= 0)
+        {
+            return -2;
+        }
+        pUart->TDR = pbuf[i];
+    }
+    return len;
 }
 
 static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
 {
-    int retval = 0;
-    switch (uart)
+    int           i       = 0;
+    int           timeout = 0x000B0000;
+    McuUartReg_t *pUart   = NULL;
+    if (uart > B_HAL_UART_5 || pbuf == NULL)
     {
-        case B_HAL_UART_1:
-            retval = HAL_UART_Receive(&huart1, pbuf, len, 0xff);
-            break;
-        case B_HAL_UART_2:
-            retval = HAL_UART_Receive(&huart2, pbuf, len, 0xff);
-            break;
-
-        default:
-            break;
+        return -1;
     }
-    return retval;
+    pUart = UartTable[uart];
+    for (i = 0; i < len; i++)
+    {
+        timeout = 0x000B0000;
+        while (timeout > 0 && ((pUart->ISR & (0x1 << 5)) == 0))
+        {
+            timeout--;
+        }
+        if (timeout <= 0)
+        {
+            return -2;
+        }
+        pbuf[i] = pUart->RDR;
+    }
+    return len;
 }
 
 bHalUartDriver_t bHalUartDriver = {

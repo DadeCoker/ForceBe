@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_stm32f10x_i2c.c
+ * \file        mcu_stm32g0x0_i2c.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -34,7 +34,7 @@
 #include "hal/inc/b_hal_i2c.h"
 #include "utils/inc/b_util_i2c.h"
 
-#if (_MCU_PLATFORM == 1101 || _MCU_PLATFORM == 1102 || _MCU_PLATFORM == 1103)
+#if (_MCU_PLATFORM == 1101)
 
 static void _I2CSendByte(bHalI2CIf_t *pi2c_if, uint8_t dat)
 {

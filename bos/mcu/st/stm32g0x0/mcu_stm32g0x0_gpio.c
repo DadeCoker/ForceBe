@@ -1,6 +1,6 @@
 /**
  *!
- * \file        mcu_stm32f10x_gpio.c
+ * \file        mcu_stm32g0x0_gpio.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -33,7 +33,7 @@
 #include "b_config.h"
 #include "hal/inc/b_hal_gpio.h"
 
-#if (_MCU_PLATFORM == 1101 || _MCU_PLATFORM == 1102 || _MCU_PLATFORM == 1103)
+#if (_MCU_PLATFORM == 1101)
 
 //         Register Address
 
@@ -53,7 +53,6 @@ typedef struct
     volatile uint32_t AFRL;
     volatile uint32_t AFRH;
     volatile uint32_t BRR;
-
 } McuGpioReg_t;
 
 static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
@@ -72,12 +71,13 @@ static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t di
 
     if (dir == B_HAL_GPIO_OUTPUT)
     {
-        mode_val   = (pin == B_HAL_PINAll) ? 0x55555555 : 5;
+        mode_val   = (pin == B_HAL_PINAll) ? 0x55555555 : 1;
         otype_val  = (pin == B_HAL_PINAll) ? 0x00000000 : 0;
         ospeed_val = (pin == B_HAL_PINAll) ? 0xffffffff : 3;
         pupd_val   = (pin == B_HAL_PINAll) ? 0x00000000 : 0;
     }
-    else if (pull != B_HAL_GPIO_NOPULL)
+
+    if (pull != B_HAL_GPIO_NOPULL)
     {
         mode_val = (pin == B_HAL_PINAll) ? 0x00000000 : 0;
         if (pull == B_HAL_GPIO_PULLUP)
