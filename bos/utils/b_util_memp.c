@@ -265,6 +265,115 @@ void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo)
 }
 #endif
 
+int bMempListInit(bMempList_t *phead)
+{
+    if (phead == NULL)
+    {
+        return -1;
+    }
+    phead->p          = NULL;
+    phead->total_size = 0;
+    phead->size       = 0;
+    phead->next       = phead;
+    phead->prev       = phead;
+    return 0;
+}
+
+int bMempListAdd(bMempList_t *phead, uint8_t *p, uint32_t len)
+{
+    void        *ptmp  = NULL;
+    bMempList_t *pnode = NULL;
+    if (phead == NULL || p == NULL || len == 0)
+    {
+        return -1;
+    }
+    ptmp = bMalloc(len);
+    if (ptmp == NULL)
+    {
+        return -2;
+    }
+    memcpy(ptmp, p, len);
+    if (phead->p != NULL)
+    {
+        pnode = (bMempList_t *)bMalloc(sizeof(bMempList_t));
+        if (pnode == NULL)
+        {
+            bFree(ptmp);
+            return -2;
+        }
+        pnode->next       = phead;
+        pnode->prev       = phead->prev;
+        phead->prev->next = pnode;
+        phead->prev       = pnode;
+        pnode->size       = len;
+        pnode->total_size = 0;
+        pnode->p          = ptmp;
+    }
+    else
+    {
+        phead->p    = ptmp;
+        phead->size = len;
+    }
+    phead->total_size += len;
+    return 0;
+}
+
+uint8_t *bMempList2Array(const bMempList_t *phead)
+{
+    uint8_t           *p     = NULL;
+    const bMempList_t *ptmp  = phead;
+    uint32_t           index = 0;
+    if (phead == NULL)
+    {
+        return NULL;
+    }
+    if (phead->total_size == 0)
+    {
+        return NULL;
+    }
+    p = bMalloc(phead->total_size);
+    if (p == NULL)
+    {
+        return NULL;
+    }
+    memcpy(p + index, phead->p, phead->size);
+    index += phead->size;
+    while (ptmp->next != phead)
+    {
+        ptmp = ptmp->next;
+        memcpy(&p[index], ptmp->p, ptmp->size);
+        index += ptmp->size;
+    }
+    return p;
+}
+
+int bMempListFree(bMempList_t *phead)
+{
+    bMempList_t *ptmp = phead;
+    if (phead == NULL)
+    {
+        return -1;
+    }
+
+    if (phead->p != NULL)
+    {
+        bFree(phead->p);
+        phead->p          = NULL;
+        phead->size       = 0;
+        phead->total_size = 0;
+    }
+
+    while (phead->next != phead)
+    {
+        ptmp        = phead->next;
+        phead->next = ptmp->next;
+        bFree(ptmp->p);
+        bFree(ptmp);
+    }
+    phead->prev = phead;
+    return 0;
+}
+
 /**
  * \}
  */

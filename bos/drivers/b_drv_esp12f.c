@@ -193,6 +193,8 @@ static bWiFiData_t bWiFiRecData = {
     .mqtt.pstr = NULL,
 };
 
+static volatile uint8_t bWiFiRecDataLock = 0;
+static bMempList_t      bTcpDataList;
 /**
  * \}
  */
@@ -202,25 +204,45 @@ static bWiFiData_t bWiFiRecData = {
  * \{
  */
 
+static uint8_t _bEspNumLen(uint32_t n)
+{
+    uint32_t t   = 1;
+    uint8_t  len = 0;
+    while (n / t)
+    {
+        t *= 10;
+        len++;
+    }
+    return len;
+}
+
 static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
 {
     char *retp   = NULL;
     char *p      = NULL;
     int   retval = 0, id = 0, rlen = 0;
     char  tmp[64];
-    retp = strstr((const char *)pbuf, "+MQTTSUBRECV");
+    if (bWiFiRecDataLock)
+    {
+        return -1;
+    }
+    
+    bWiFiRecDataLock = 1;
+    retp             = strstr((const char *)pbuf, "+MQTTSUBRECV");
     if (retp != NULL && bWiFiRecData.mqtt.pstr == NULL)
     {
         memset(tmp, 0, sizeof(tmp));
         p = (char *)bMalloc(len);
         if (p == NULL)
         {
+            bWiFiRecDataLock = 0;
             return -2;
         }
         retval = sscanf((const char *)retp, "+MQTTSUBRECV:%d,%[^,],%d,%s", &id, tmp, &rlen, p);
         if (rlen <= 0 || rlen >= len || retval != 4)
         {
             bFree(p);
+            bWiFiRecDataLock = 0;
             return -2;
         }
         bWiFiRecData.mqtt.pstr = p;
@@ -229,24 +251,23 @@ static int _bEspRecHandler(uint8_t *pbuf, uint16_t len)
         return 0;
     }
     retp = strstr((const char *)pbuf, "+IPD");
-    if (retp != NULL && bWiFiRecData.tcp.pstr == NULL)
+    while(retp)
     {
-        p = (char *)bMalloc(len);
-        if (p == NULL)
+        retval = sscanf((const char *)retp, "+IPD,%d:%*s", &rlen);
+        if (retval == 1 && rlen > 0 && rlen < len)
         {
-            return -2;
+            retp = retp + 5 + _bEspNumLen(rlen) + 1;
+            bMempListAdd(&bTcpDataList, (uint8_t *)retp, rlen);
+            retp += rlen;
         }
-        retval = sscanf((const char *)retp, "+IPD,%d:%s", &rlen, p);
-        if (retval != 2 || rlen <= 0 || rlen >= len)
+        else
         {
-            bFree(p);
-            return -2;
+            break;
         }
-        bWiFiRecData.tcp.pstr = p;
-        bWiFiRecData.tcp.len  = rlen;
-        return 0;
+        retp = strstr((const char *)retp, "+IPD");
     }
-    return -1;
+    bWiFiRecDataLock = 0;
+    return 0;
 }
 
 static void _bEspUartIdleCb(uint8_t *pbuf, uint16_t len)
@@ -713,14 +734,18 @@ static int _bEspCtl(bESP12F_Driver_t *pdrv, uint8_t cmd, void *param)
 static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len)
 {
     int retval = 0;
-    if (len < sizeof(bWiFiData_t) || pbuf == NULL)
+    if (len < sizeof(bWiFiData_t) || pbuf == NULL || bWiFiRecDataLock)
     {
         return -1;
     }
-    if (bWiFiRecData.mqtt.pstr == NULL && bWiFiRecData.tcp.pstr == NULL)
+    if (bWiFiRecData.mqtt.pstr == NULL && bTcpDataList.total_size == 0)
     {
         return 0;
     }
+    bWiFiRecDataLock      = 1;
+    bWiFiRecData.tcp.pstr = (char *)bMempList2Array(&bTcpDataList);
+    bWiFiRecData.tcp.len  = bTcpDataList.total_size;
+    bMempListFree(&bTcpDataList);
     memcpy(pbuf, &bWiFiRecData, sizeof(bWiFiData_t));
     //读取并使用数据后，需要释放 bWiFiRecData.mqtt.pstr 和 bWiFiRecData.tcp.pstr 指向的内存
     if (bWiFiRecData.mqtt.pstr != NULL)
@@ -733,6 +758,7 @@ static int _bEspRead(bESP12F_Driver_t *pdrv, uint32_t offset, uint8_t *pbuf, uin
         retval += strlen(bWiFiRecData.tcp.pstr);
         bWiFiRecData.tcp.pstr = NULL;
     }
+    bWiFiRecDataLock = 0;
     return retval;
 }
 
@@ -751,6 +777,8 @@ int bESP12F_Init()
     bEspOptInfo.list_len = 0;
     bEspOptInfo.at_id    = AT_INVALID_ID;
     bAtRegistCallback(_bEspAtCb);
+
+    bMempListInit(&bTcpDataList);
 
     bESP12F_Driver.status  = 0;
     bESP12F_Driver.init    = bESP12F_Init;

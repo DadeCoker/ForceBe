@@ -61,6 +61,16 @@ typedef struct
 {
     uint16_t unused_unit;
 } bMempMonitorInfo_t;
+
+typedef struct bMempList
+{
+    uint8_t           *p;
+    uint32_t          total_size;
+    uint32_t          size;
+    struct bMempList *next;
+    struct bMempList *prev;
+} bMempList_t;
+
 /**
  * \}
  */
@@ -74,6 +84,11 @@ void  bFree(void *paddr);
 #if _MEMP_MONITOR_ENABLE
 void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo);
 #endif
+int bMempListInit(bMempList_t *phead);
+int bMempListAdd(bMempList_t *phead, uint8_t *p, uint32_t len);
+int bMempListFree(bMempList_t *phead);
+
+uint8_t * bMempList2Array(const bMempList_t *phead);
 /**
  * \}
  */
