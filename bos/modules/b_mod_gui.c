@@ -54,7 +54,11 @@
  * \defgroup GUI_Private_TypesDefinitions
  * \{
  */
-
+typedef struct
+{
+    int lcd_id;
+    int touch_id;
+} bGUI_Info_t;
 /**
  * \}
  */

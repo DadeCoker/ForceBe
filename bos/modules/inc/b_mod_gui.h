@@ -58,20 +58,6 @@ extern "C" {
  */
 
 /**
- * \defgroup GUI_Exported_TypesDefinitions
- * \{
- */
-typedef struct
-{
-    int lcd_id;
-    int touch_id;
-} bGUI_Info_t;
-
-/**
- * \}
- */
-
-/**
  * \defgroup GUI_Exported_Functions
  * \{
  */

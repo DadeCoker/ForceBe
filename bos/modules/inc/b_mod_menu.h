@@ -63,17 +63,6 @@ extern "C" {
 
 typedef void (*pCreateUI)(uint32_t pre_id);
 
-typedef struct bMenuItem
-{
-    uint32_t          id;
-    struct bMenuItem *prev;
-    struct bMenuItem *next;
-    struct bMenuItem *parent;
-    struct bMenuItem *child;
-    pCreateUI         create_ui;
-    uint8_t           visible;
-} bMenuItem_t;
-
 /**
  * \}
  */

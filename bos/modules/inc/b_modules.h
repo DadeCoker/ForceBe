@@ -39,7 +39,6 @@ extern "C" {
 #include "b_mod_adchub.h"
 #include "b_mod_button.h"
 #include "b_mod_error.h"
-#include "b_mod_event.h"
 #include "b_mod_fs.h"
 #include "b_mod_gui.h"
 #include "b_mod_kv.h"

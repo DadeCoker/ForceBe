@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 70401
+#define FW_VERSION 70402
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -113,9 +113,6 @@
 //<o> Error Queue Length
 #define ERROR_Q_LENGTH 10
 //</e>
-
-//<q> Event Manage Enable/Disable
-#define _EVENT_MANAGE_ENABLE 0
 
 //<e> Modbus Enable/Disable
 #define _MODBUS_ENABLE 0
@@ -339,7 +336,6 @@
 //</e>
 
 //</h>
-
 
 #include "b_type.h"
 

@@ -58,40 +58,6 @@ extern "C" {
  */
 
 /**
- * \defgroup KV_Exported_TypesDefinitions
- * \{
- */
-typedef struct
-{
-    uint32_t id;
-    uint32_t address;
-    uint32_t len;
-    uint32_t real_len;
-    uint32_t statu;
-} bKV_Index_t;
-
-typedef struct
-{
-    uint8_t  status;
-    uint32_t index;
-    int      dev_no;
-    uint32_t str_address;
-    uint32_t ts_address;
-    uint32_t te_address;
-    uint32_t t_index;
-    uint32_t t_max;
-    uint32_t e_size;
-    uint32_t ds_address;
-    uint32_t de_address;
-    uint32_t d_size;
-    uint32_t d_index;
-} bKV_Info_t;
-
-/**
- * \}
- */
-
-/**
  * \defgroup KV_Exported_Defines
  * \{
  */
@@ -122,6 +88,7 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
 int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len);
 int bKV_Get(const char *key, uint8_t *pvalue);
 int bKV_Delete(const char *key);
+
 /**
  * \}
  */

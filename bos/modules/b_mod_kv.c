@@ -56,7 +56,31 @@
  * \defgroup KV_Private_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    uint32_t id;
+    uint32_t address;
+    uint32_t len;
+    uint32_t real_len;
+    uint32_t statu;
+} bKV_Index_t;
 
+typedef struct
+{
+    uint8_t  status;
+    uint32_t index;
+    int      dev_no;
+    uint32_t str_address;
+    uint32_t ts_address;
+    uint32_t te_address;
+    uint32_t t_index;
+    uint32_t t_max;
+    uint32_t e_size;
+    uint32_t ds_address;
+    uint32_t de_address;
+    uint32_t d_size;
+    uint32_t d_index;
+} bKV_Info_t;
 /**
  * \}
  */

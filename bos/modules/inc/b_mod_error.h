@@ -36,8 +36,10 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
 #include <stdint.h>
+
+#include "b_config.h"
+
 #if _ERROR_MANAGE_ENABLE
 /**
  * \addtogroup BABYOS
@@ -58,17 +60,8 @@ extern "C" {
  * \defgroup ERROR_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    uint8_t  err;
-    uint8_t  ack;
-    uint8_t  type;
-    uint32_t utc;
-    uint32_t s_tick;
-    uint32_t d_tick;
-} bErrorInfo_t;
 
-typedef void (*pecb)(bErrorInfo_t *);
+typedef void (*pecb)(uint8_t err);
 
 /**
  * \}
@@ -78,7 +71,7 @@ typedef void (*pecb)(bErrorInfo_t *);
  * \defgroup ERROR_Exported_Defines
  * \{
  */
-#define INVALID_ERR ((uint8_t)0)
+#define INVALID_ERR ((uint8_t)0xFF)
 
 #define BERROR_LEVEL_0 0X00
 #define BERROR_LEVEL_1 0X01
@@ -92,11 +85,10 @@ typedef void (*pecb)(bErrorInfo_t *);
  * \{
  */
 int bErrorInit(pecb cb);
-int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level);
-int bErrorAck(uint8_t e_no);
+int bErrorRegist(uint8_t err, uint32_t interval_ms, uint32_t level);
 int bErrorClear(uint8_t e_no);
-int bErrorIS_Exist(uint8_t e_no);
-int bErrorIS_Empty(void);
+int bErrorIsExist(uint8_t e_no);
+int bErrorIsEmpty(void);
 /**
  * \}
  */
