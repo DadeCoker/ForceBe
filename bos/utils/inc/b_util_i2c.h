@@ -36,8 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#include "b_hal_gpio.h"
+#include "hal.h"
 
 /**
  * \addtogroup B_UTILS
@@ -58,33 +57,6 @@ typedef struct
     bHalGPIOInstance_t sda;
     bHalGPIOInstance_t clk;
 } bUtilI2C_t;
-/**
- * \}
- */
-
-/**
- * \defgroup I2C_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup I2C_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup I2C_Exported_Variables
- * \{
- */
-
 /**
  * \}
  */

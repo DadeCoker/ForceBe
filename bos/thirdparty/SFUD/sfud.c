@@ -26,7 +26,7 @@
  * Created on: 2016-04-23
  */
 
-#include "sfud.h"
+#include "inc/sfud.h"
 
 #include <string.h>
 

@@ -39,10 +39,11 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "ansi.h"
-#include "nr_micro_shell_config.h"
-#include "stdio.h"
+#include <stdio.h>
 
+#include "../inc/nr_micro_shell_config.h"
+#include "ansi.h"
+#include "core/inc/b_section.h"
 
 #if _NR_MICRO_SHELL_ENABLE
 
@@ -89,7 +90,7 @@ void               shell_his_queue_add_cmd(shell_his_queue_st *queue, char *str)
 unsigned short int shell_his_queue_search_cmd(shell_his_queue_st *queue, char *str);
 void shell_his_copy_queue_item(shell_his_queue_st *queue, unsigned short i, char *str_buf);
 
-extern shell_st            nr_shell;
+extern shell_st nr_shell;
 bSECTION_DEF_FLASH(b_mod_shell, static_cmd_st);
 
 #define shell_init()            \

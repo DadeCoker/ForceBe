@@ -29,10 +29,11 @@
 #ifndef _SFUD_FLASH_DEF_H_
 #define _SFUD_FLASH_DEF_H_
 
-#include <sfud_cfg.h>
 #include <stdint.h>
 
-#include "b_drv_spiflash.h"
+#include "drivers/inc/b_drv_spiflash.h"
+#include "sfud_cfg.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,14 +53,14 @@ enum sfud_write_mode
 /* manufacturer information */
 typedef struct
 {
-    char *  name;
+    char*   name;
     uint8_t id;
 } sfud_mf;
 
 /* flash chip information */
 typedef struct
 {
-    char *   name;           /**< flash chip name */
+    char*    name;           /**< flash chip name */
     uint8_t  mf_id;          /**< manufacturer ID */
     uint8_t  type_id;        /**< memory type ID */
     uint8_t  capacity_id;    /**< capacity ID */

@@ -30,9 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_timer.h"
+#include "modules/inc/b_mod_timer.h"
 
-#include "b_utils.h"
+#include "b_hal.h"
+#include "core/inc/b_section.h"
+
 #if _TIMER_ENABLE
 /**
  * \addtogroup BABYOS

@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_class_gsensor.h"
+#include "drivers/inc/b_driver.h"
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -51,6 +51,24 @@ extern "C" {
  * \defgroup L3GD20_Exported_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    union
+    {
+        struct
+        {
+            bHalI2CNumber_t iic;
+            uint8_t         addr;
+        } _iic;
+        struct
+        {
+            bHalSPINumber_t    spi;
+            bHalGPIOInstance_t cs;
+        } _spi;
+    } _if;
+    uint8_t is_spi;
+    uint8_t exti_line;
+} bL3GD20_HalIf_t;
 
 typedef bDriverInterface_t bL3GD20_Driver_t;
 

@@ -30,9 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_error.h"
+#include "modules/inc/b_mod_error.h"
 
-#include "b_utils.h"
+#include "b_hal.h"
+#include "core/inc/b_section.h"
+
 #if _ERROR_MANAGE_ENABLE
 /**
  * \addtogroup BABYOS

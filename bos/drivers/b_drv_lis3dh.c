@@ -30,9 +30,10 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_lis3dh.h"
+#include "drivers/inc/b_drv_lis3dh.h"
 
 #include <string.h>
+
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -74,15 +75,14 @@
  * \defgroup LIS3DH_Private_Variables
  * \{
  */
+const static bLIS3DH_HalIf_t bLIS3DH_HalIf = HAL_LIS3DH_IF;
+bLIS3DH_Driver_t             bLIS3DH_Driver;
 
-bLIS3DH_Driver_t bLIS3DH_Driver;
-
-static bLis3dhConfig_t bLis3dhConfig = LIS3DH_DEFAULT_CONFIG;
-static bGsensor3Axis_t bLis3dhFifoValue[32];
-static const int       Digit2mgTable[4][3] = {{1, 4, 16}, {2, 8, 32}, {4, 16, 64}, {12, 48, 192}};
-
-static const int        DataShiftTable[3] = {4, 6, 8};
-static volatile uint8_t IntFlag           = 1;
+static bLis3dhConfig_t  bLis3dhConfig = LIS3DH_DEFAULT_CONFIG;
+static bGsensor3Axis_t  bLis3dhFifoValue[32];
+static const int        Digit2mgTable[4][3] = {{1, 4, 16}, {2, 8, 32}, {4, 16, 64}, {12, 48, 192}};
+static const int        DataShiftTable[3]   = {4, 6, 8};
+static volatile uint8_t IntFlag             = 1;
 
 /**
  * \}
@@ -103,30 +103,36 @@ static volatile uint8_t IntFlag           = 1;
  */
 static int _bLis3dhReadRegs(uint8_t reg, uint8_t *data, uint16_t len)
 {
-#if HAL_LIS3DH_I2C_ENABLE
-    reg = reg | 0x80;
-    bHalI2C_MemRead(HAL_LIS3DH_I2C, HAL_LIS3DH_I2C_ADDR, reg, data, len);
-#else
-    reg |= 0xC0;
-    bHalGPIO_WritePin(HAL_LIS3DH_CS_PORT, HAL_LIS3DH_CS_PIN, 0);
-    bHalSPI_Send(HAL_LIS3DH_SPI, &reg, 1);
-    bHalSPI_Receive(HAL_LIS3DH_SPI, data, len);
-    bHalGPIO_WritePin(HAL_LIS3DH_CS_PORT, HAL_LIS3DH_CS_PIN, 1);
-#endif
+    if (bLIS3DH_HalIf.is_spi)
+    {
+        reg |= 0xC0;
+        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
+        bHalSPI_Send(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
+        bHalSPI_Receive(bLIS3DH_HalIf._if._spi.spi, data, len);
+        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
+    }
+    else
+    {
+        reg = reg | 0x80;
+        bHalI2C_MemRead(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
+    }
     return 0;
 }
 
 static int _bLis3dhWriteRegs(uint8_t reg, uint8_t *data, uint16_t len)
 {
-#if HAL_LIS3DH_I2C_ENABLE
-    bHalI2C_MemWrite(HAL_LIS3DH_I2C, HAL_LIS3DH_I2C_ADDR, reg, data, len);
-#else
-    reg |= 0x40;
-    bHalGPIO_WritePin(HAL_LIS3DH_CS_PORT, HAL_LIS3DH_CS_PIN, 0);
-    bHalSPI_Send(HAL_LIS3DH_SPI, &reg, 1);
-    bHalSPI_Send(HAL_LIS3DH_SPI, data, len);
-    bHalGPIO_WritePin(HAL_LIS3DH_CS_PORT, HAL_LIS3DH_CS_PIN, 1);
-#endif
+    if (bLIS3DH_HalIf.is_spi)
+    {
+        reg |= 0x40;
+        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 0);
+        bHalSPI_Send(bLIS3DH_HalIf._if._spi.spi, &reg, 1);
+        bHalSPI_Send(bLIS3DH_HalIf._if._spi.spi, data, len);
+        bHalGPIO_WritePin(bLIS3DH_HalIf._if._spi.cs.port, bLIS3DH_HalIf._if._spi.cs.pin, 1);
+    }
+    else
+    {
+        bHalI2C_MemWrite(bLIS3DH_HalIf._if._iic.iic, bLIS3DH_HalIf._if._iic.addr, reg, data, len);
+    }
     return 0;
 }
 
@@ -393,7 +399,7 @@ int bLIS3DH_Init()
     return 0;
 }
 
-bHAL_REG_GPIO_EXTI(HAL_LIS3DH_INT_PIN, _bLis3dhEXTI);
+bHAL_REG_GPIO_EXTI(bLIS3DH_HalIf.exti_line, _bLis3dhEXTI);
 BOS_REG_POLLING_FUNC(_bLis3dhPolling);
 bDRIVER_REG_INIT(bLIS3DH_Init);
 

@@ -36,7 +36,8 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_class_gsensor.h"
+#include "drivers/inc/b_driver.h"
+
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -51,22 +52,17 @@ extern "C" {
  * \defgroup DS18B20_Exported_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    bHalGPIOInstance_t sBusIo;
+} bDS18B20_HalIf_t;
 
 typedef bDriverInterface_t bDS18B20_Driver_t;
-//static bUtilSbus_t SBUS_IO = {
-//    .sBusIo = {B_HAL_GPIOA, B_HAL_PIN8},
-//};
 
-/**
- * \}
- */
-
-/**
- * \defgroup DS18B20_Exported_Defines
- * \{
- */
-/** Device Identification (Who am I) **/
-
+typedef struct
+{
+    uint16_t TempX10;
+} bDS18B20ReadStruct_t;
 
 /**
  * \}

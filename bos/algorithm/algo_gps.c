@@ -1,6 +1,6 @@
 /* Applying Kalman filters to GPS data. */
 ///<  liuwei 654188547@qq.com
-#include "algo_gps.h"
+#include "algorithm/inc/algo_gps.h"
 
 #include <assert.h>
 #include <math.h>

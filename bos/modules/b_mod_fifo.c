@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_fifo.h"
+#include "modules/inc/b_mod_fifo.h"
 #if _FIFO_ENABLE
 /**
  * \addtogroup BABYOS

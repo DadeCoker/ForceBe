@@ -30,7 +30,7 @@
  * Created on: 2016-05-26
  */
 
-#include "sfud.h"
+#include "inc/sfud.h"
 
 /**
  * JEDEC Standard JESD216 Terms and definitions:

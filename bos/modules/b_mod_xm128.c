@@ -30,9 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_xm128.h"
+#include "modules/inc/b_mod_xm128.h"
+
+#include "core/inc/b_section.h"
+
 #if _XMODEM128_ENABLE
-#include "b_utils.h"
+#include "b_hal.h"
 /**
  * \addtogroup BABYOS
  * \{

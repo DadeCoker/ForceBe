@@ -36,8 +36,10 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
 #include <stddef.h>
+
+#include "b_config.h"
+
 #if _HEAP_ENABLE
 /**
  * \addtogroup BABYOS

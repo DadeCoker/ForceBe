@@ -30,12 +30,14 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_button.h"
+#include "modules/inc/b_mod_button.h"
 
 #include <string.h>
+
+#include "core/inc/b_section.h"
+
 #if _FLEXIBLEBUTTON_ENABLE
 #include "b_hal.h"
-#include "b_utils.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -61,6 +63,13 @@ typedef struct
     bHalGPIOPin_t  pin;
     uint8_t        logic_level;
 } bButtonInfo_t;
+
+typedef struct
+{
+    uint16_t           event;
+    pBtnEventHandler_t handler;
+} bButtonEventInfo_t;
+
 /**
  * \}
  */
@@ -88,6 +97,7 @@ typedef struct
  * \{
  */
 static flex_button_t       bButtonList[FLEX_BTN_NUMBER];
+static bButtonEventInfo_t  bButtonEventInfo[FLEX_BTN_NUMBER];
 const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
 /**
  * \}
@@ -125,6 +135,23 @@ static void _bButtonCore()
 
 BOS_REG_POLLING_FUNC(_bButtonCore);
 
+static void _bButtonCallback(void *p)
+{
+    flex_button_t *btn = (flex_button_t *)p;
+    if (btn->id >= FLEX_BTN_NUMBER)
+    {
+        return;
+    }
+    if (bButtonEventInfo[btn->id].event & (0x0001 << btn->event))
+    {
+        if (bButtonEventInfo[btn->id].handler)
+        {
+            bButtonEventInfo[btn->id].handler((0x0001 << btn->event), btn->click_cnt);
+        }
+    }
+    b_log("id: [%d]  event: [%d]  repeat: %d\r\n", btn->id, btn->event, btn->click_cnt);
+}
+
 /**
  * \}
  */
@@ -134,7 +161,7 @@ BOS_REG_POLLING_FUNC(_bButtonCore);
  * \{
  */
 
-int bButtonInit()
+int bButtonInit(uint16_t short_xms, uint16_t long_xms, uint16_t llong_xms)
 {
     int i;
     for (i = 0; i < FLEX_BTN_NUMBER; i++)
@@ -142,19 +169,25 @@ int bButtonInit()
         bButtonList[i].id                     = i;
         bButtonList[i].pressed_logic_level    = bButtonInfo[i].logic_level;
         bButtonList[i].usr_button_read        = _bButtonRead;
-        bButtonList[i].cb                     = bButtonCallback;
-        bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(1500);
-        bButtonList[i].long_press_start_tick  = FLEX_MS_TO_SCAN_CNT(3000);
-        bButtonList[i].long_hold_start_tick   = FLEX_MS_TO_SCAN_CNT(4500);
+        bButtonList[i].cb                     = _bButtonCallback;
+        bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(short_xms);
+        bButtonList[i].long_press_start_tick  = FLEX_MS_TO_SCAN_CNT(long_xms);
+        bButtonList[i].long_hold_start_tick   = FLEX_MS_TO_SCAN_CNT(llong_xms);
         flex_button_register(&bButtonList[i]);
+        bButtonEventInfo[i].handler = NULL;
+        bButtonEventInfo[i].event   = 0;
     }
     return 0;
 }
 
-__WEAKDEF void bButtonCallback(void *p)
+void bButtonRegEvent(uint8_t id, uint16_t event, pBtnEventHandler_t handler)
 {
-    flex_button_t *btn = (flex_button_t *)p;
-    b_log("id: [%d]  event: [%d]  repeat: %d\r\n", btn->id, btn->event, btn->click_cnt);
+    if (id >= FLEX_BTN_NUMBER || handler == NULL)
+    {
+        return;
+    }
+    bButtonEventInfo[id].event   = event;
+    bButtonEventInfo[id].handler = handler;
 }
 
 /**

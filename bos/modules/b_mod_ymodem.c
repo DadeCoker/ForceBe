@@ -30,10 +30,15 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_ymodem.h"
+#include "modules/inc/b_mod_ymodem.h"
+
+#include "core/inc/b_section.h"
+
 #if _YMODEM_ENABLE
-#include "b_utils.h"
-#include "string.h"
+#include <string.h>
+
+#include "b_hal.h"
+
 /**
  * \addtogroup BABYOS
  * \{

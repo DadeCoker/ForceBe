@@ -30,9 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_core.h"
+#include "core/inc/b_core.h"
 
-#include "b_device.h"
+#include "b_hal.h"
+#include "core/inc/b_device.h"
+#include "core/inc/b_section.h"
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -82,6 +85,7 @@
 
 static bCoreFd_t bCoreFdTable[BCORE_FD_MAX];
 
+bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
 /**
  * \}
  */
@@ -283,6 +287,45 @@ int bCoreIsIdle()
         {
             return -1;
         }
+    }
+    return 0;
+}
+
+/**
+ * \brief Init
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bInit()
+{
+    bHalInit();
+    b_log("______________________________________________\r\n");
+    b_log("    ____                         __       __  \r\n");
+    b_log("    /   )          /           /    )   /    \\\r\n");
+    b_log("---/__ /-----__---/__---------/----/----\\-----\r\n");
+    b_log("  /    )   /   ) /   ) /   / /    /      \\    \r\n");
+    b_log("_/____/___(___(_(___/_(___/_(____/___(____/___\r\n");
+    b_log("                         /                    \r\n");
+    b_log("                     (_ /                     \r\n");
+    b_log("HW:%d.%d.%d FW:%d.%d.%d COMPILE:%s-%s\r\n", (HW_VERSION / 10000),
+          (HW_VERSION % 10000) / 100, HW_VERSION % 100, (FW_VERSION / 10000),
+          (FW_VERSION % 10000) / 100, FW_VERSION % 100, __DATE__, __TIME__);
+    b_log("device number:%d\r\n", bDEV_MAX_NUM);
+    return bDeviceInit();
+}
+
+/**
+ * \brief  Call this function inside the while(1)
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bExec()
+{
+    bSECTION_FOR_EACH(bos_polling, pbPoling_t, polling)
+    {
+        (*polling)();
     }
     return 0;
 }

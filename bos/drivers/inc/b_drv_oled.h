@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_class_lcd.h"
+#include "drivers/inc/b_driver.h"
 
 /**
  * \addtogroup BABYOS
@@ -57,6 +57,25 @@ extern "C" {
  * \defgroup OLED_Exported_TypesDefinitions
  * \{
  */
+
+typedef struct
+{
+    union
+    {
+        struct
+        {
+            bHalI2CNumber_t iic;
+            uint8_t         addr;
+        } _iic;
+        struct
+        {
+            bHalSPINumber_t    spi;
+            bHalGPIOInstance_t cs;
+        } _spi;
+    } _if;
+    uint8_t is_spi;
+} bOLED_HalIf_t;
+
 typedef bDriverInterface_t bOLED_Driver_t;
 /**
  * \}

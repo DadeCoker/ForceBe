@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algo_hmac_sha1.h"
+#include "algorithm/inc/algo_hmac_sha1.h"
 
 /**
  * \addtogroup ALGORITHM

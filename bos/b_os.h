@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_util_at.h
+ * \file        b_os.h
  * \version     v0.0.1
- * \date        2019/12/26
+ * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -28,104 +28,70 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTIL_AT_H__
-#define __B_UTIL_AT_H__
+#ifndef __B_OS_H__
+#define __B_OS_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
+#include <stdint.h>
+
 #include "b_config.h"
+#include "b_hal.h"
 
-/**
- * \addtogroup B_UTILS
- * \{
- */
-
-/**
- * \addtogroup AT
- * \{
- */
-
-/**
- * \defgroup AT_Exported_TypesDefinitions
- * \{
- */
-typedef void (*pbAT_Send_t)(uint8_t *, uint16_t len);
-
-typedef struct
-{
-    uint8_t           stat;
-    uint8_t *         pbuf;
-    volatile uint8_t  r_flag;
-    volatile uint16_t r_len;
-    uint16_t          buf_len;
-    uint32_t          ctick;
-    pbAT_Send_t       f_send;
-} bAT_Info_t;
-
-typedef struct
-{
-    uint8_t *pbuf;
-    uint16_t len;
-} bAT_RecResult_t;
-
-typedef bAT_Info_t bAT_Instance_t;
-/**
- * \}
- */
-
-/**
- * \defgroup AT_Exported_Defines
- * \{
- */
-#define AT_STA_NULL 0
-#define AT_STA_WAIT 1
-
-/**
- * \}
- */
-
-/**
- * \defgroup AT_Exported_Macros
- * \{
- */
-#define bAT_INSTANCE(name, send_func, _buf_len) \
-    static uint8_t name##buf[_buf_len];         \
-    bAT_Instance_t name = {                     \
-        .f_send  = send_func,                   \
-        .pbuf    = name##buf,                   \
-        .buf_len = _buf_len,                    \
-    }
-/**
- * \}
- */
-
-/**
- * \defgroup AT_Exported_Functions
- * \{
- */
-///< pInstance \ref bAT_INSTANCE
-int bAT_Write(bAT_Instance_t *pInstance, uint32_t timeout, bAT_RecResult_t *presult,
-              const char *pcmd, ...);
-int bAT_Read(bAT_Instance_t *pInstance, uint8_t *pbuf, uint16_t size);
-/**
- * \}
- */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
+#ifndef _BOS_ALGO_ENABLE
+#define _BOS_ALGO_ENABLE (0)
 #endif
+
+#ifndef _BOS_MODULES_ENABLE
+#define _BOS_MODULES_ENABLE (0)
+#endif
+
+/**
+ * \addtogroup BABYOS
+ * \{
+ */
+
+/**
+ * \addtogroup BOS
+ * \{
+ */
+#define BOS_PERIODIC_TASK(pf, ms)                         \
+    {                                                     \
+        static uint32_t tick##pf = 0;                     \
+        if (bHalGetSysTick() - tick##pf > (MS2TICKS(ms))) \
+        {                                                 \
+            tick##pf = bHalGetSysTick();                  \
+            pf();                                         \
+        }                                                 \
+    }
+
+#if _BOS_ALGO_ENABLE
+#include "algorithm/inc/algorithm.h"
+#endif
+
+#include "core/inc/b_core.h"
+#include "core/inc/b_device.h"
+#include "drivers/inc/b_driver.h"
+
+#if _BOS_MODULES_ENABLE
+#include "modules/inc/b_modules.h"
+#endif
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 #ifdef __cplusplus
 }
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+#endif
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/

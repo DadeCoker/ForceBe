@@ -31,9 +31,9 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_qpn.h"
+#include "modules/inc/b_mod_qpn.h"
 
-#include "b_utils.h"
+#include "b_hal.h"
 #if _QPN_ENABLE
 /*Includes AO -------------------------------------------*/
 //#include "blinky.h"    //blinky  Examples/qpn/

@@ -31,12 +31,11 @@
  */
 
 /* Includes ------------------------------------------------------------------ */
-#include "ansi.h"
+#include "../inc/ansi.h"
 
 #include <stdio.h>
 
-#include "ansi_port.h"
-
+#include "../inc/ansi_port.h"
 
 #if _NR_MICRO_SHELL_ENABLE
 

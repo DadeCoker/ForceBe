@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_shell.h"
+#include "modules/inc/b_mod_shell.h"
 
 #include <string.h>
 #if _NR_MICRO_SHELL_ENABLE

@@ -30,10 +30,10 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_gui.h"
+#include "modules/inc/b_mod_gui.h"
 #if _UGUI_ENABLE
-#include "b_core.h"
-#include "b_driver.h"
+#include "core/inc/b_core.h"
+#include "drivers/inc/b_driver.h"
 /**
  * \addtogroup BABYOS
  * \{

@@ -39,7 +39,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _QPN_ENABLE
-#include "qpn.h" /* QP-nano API */
+#include "thirdparty/qpn/inc/qpn.h" /* QP-nano API */
 
 /**
  * \addtogroup BABYOS

@@ -30,9 +30,11 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_battery.h"
+#include "modules/inc/b_mod_battery.h"
 
-#include "b_utils.h"
+#include "b_hal.h"
+#include "core/inc/b_section.h"
+
 #if _BATTERY_ENABLE
 /**
  * \addtogroup BABYOS

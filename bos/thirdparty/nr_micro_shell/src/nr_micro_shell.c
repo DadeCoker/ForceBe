@@ -31,13 +31,12 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "nr_micro_shell.h"
+#include "../inc/nr_micro_shell.h"
 
 #include <ctype.h>
 #include <string.h>
 
-#include "ansi.h"
-
+#include "../inc/ansi.h"
 
 #if _NR_MICRO_SHELL_ENABLE
 

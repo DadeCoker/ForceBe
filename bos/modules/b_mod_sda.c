@@ -30,13 +30,13 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_sda.h"
+#include "modules/inc/b_mod_sda.h"
 #if (_SAVE_DATA_ENABLE && _SAVE_DATA_A_ENABLE)
 #include <string.h>
 
-#include "b_core.h"
-#include "b_driver.h"
-#include "b_mod_utc.h"
+#include "core/inc/b_core.h"
+#include "drivers/inc/b_driver.h"
+#include "modules/inc/b_mod_utc.h"
 /**
  * \addtogroup BABYOS
  * \{

@@ -69,6 +69,7 @@ typedef struct
 typedef struct
 {
     uint8_t  status;
+    uint8_t  align;
     uint32_t index;
     int      dev_no;
     uint32_t str_address;
@@ -112,7 +113,7 @@ typedef struct
  * \{
  */
 
-int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
+int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size, uint8_t align);
 int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len);
 int bKV_Get(const char *key, uint8_t *pvalue);
 int bKV_Delete(const char *key);

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_common.h
+ * \file        b_section.h
  * \version     v0.0.1
  * \date        2020/05/30
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_COMMON_H__
-#define __B_COMMON_H__
+#ifndef __B_SECTION_H__
+#define __B_SECTION_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,12 +49,12 @@ extern "C" {
  */
 
 /**
- * \addtogroup COMMON
+ * \addtogroup SECTION
  * \{
  */
 
 /**
- * \defgroup COMMON_Exported_TypesDefinitions
+ * \defgroup SECTION_Exported_TypesDefinitions
  * \{
  */
 typedef void (*pbPoling_t)(void);
@@ -63,7 +63,7 @@ typedef void (*pbPoling_t)(void);
  */
 
 /**
- * \defgroup COMMON_Exported_Defines
+ * \defgroup SECTION_Exported_Defines
  * \{
  */
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000)
@@ -81,11 +81,6 @@ typedef void (*pbPoling_t)(void);
 #define CONCAT_2(s1, s2) s1##s2
 #define __stringify(x...) #x
 #define STRINGIFY(s1) __stringify(s1)
-
-/**
- * \defgroup SECTION
- * \{
- */
 
 /**
  * \brief the beginning of a section
@@ -184,11 +179,7 @@ typedef void (*pbPoling_t)(void);
  */
 
 /**
- * \}
- */
-
-/**
- * \defgroup COMMON_Exported_Macros
+ * \defgroup SECTION_Exported_Macros
  * \{
  */
 #define BOS_REG_POLLING_FUNC(func) \

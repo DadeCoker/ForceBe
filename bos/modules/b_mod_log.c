@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_log.h"
+#include "modules/inc/b_mod_log.h"
 #if _DEBUG_ENABLE
 #include <stdarg.h>
 #include <stdio.h>

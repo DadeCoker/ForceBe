@@ -93,7 +93,7 @@ typedef bSDA_Info_t bSDA_Instance_t;
     bSDA_Instance_t name = {.st.time_interval = _time_interval,                                  \
                             .st.total_time    = _total_time,                                     \
                             .st.data_size     = _data_size,                                      \
-                            .st.fbase_addr    = _fbase_addr,                                     \
+                            .st.fbase_address = _fbase_addr,                                     \
                             .st.fsector_size  = _fsector_size,                                   \
                             .dev_no           = _dev_no};
 

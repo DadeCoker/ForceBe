@@ -36,7 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_class_touch.h"
+#include "drivers/inc/b_driver.h"
 
 /**
  * \addtogroup BABYOS
@@ -57,6 +57,12 @@ extern "C" {
  * \defgroup XPT2046_Exported_TypesDefinitions
  * \{
  */
+
+typedef struct
+{
+    bHalSPINumber_t    spi;
+    bHalGPIOInstance_t cs;
+} bXPT2046_HalIf_t;
 
 typedef bDriverInterface_t bXPT2046_Driver_t;
 

@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _CMBACKTRACE_ENABLE
-#include "cm_backtrace.h"
+#include "thirdparty/CmBacktrace/cm_backtrace.h"
 /**
  * \addtogroup BABYOS
  * \{

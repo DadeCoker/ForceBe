@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_fs.h"
+#include "modules/inc/b_mod_fs.h"
 #if _FS_ENABLE
 #include <stdio.h>
 /**
@@ -105,8 +105,7 @@ lfs_t bLittleFS;
  * \{
  */
 #if _FS_SELECT == 1
-#include "b_core.h"
-#include "b_device.h"
+#include "core/inc/b_core.h"
 
 static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off,
                            void *buffer, lfs_size_t size)
@@ -265,11 +264,11 @@ int bFS_Test()
     uint32_t boot_count = 0;
     UINT     brw        = 0;
     FRESULT  fr; /* FatFs return code */
-#if _SD_ENABLE    
+#if _SD_ENABLE
     fr = f_open(&fil, "1:test.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
 #else
     fr = f_open(&fil, "0:test.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
-#endif    
+#endif
     if (fr)
     {
         b_log_e("open %d\r\n", fr);

@@ -30,12 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_sdb.h"
+#include "modules/inc/b_mod_sdb.h"
 #if (_SAVE_DATA_ENABLE && _SAVE_DATA_B_ENABLE)
 #include <string.h>
 
-#include "b_core.h"
-#include "b_driver.h"
+#include "core/inc/b_core.h"
+#include "drivers/inc/b_driver.h"
 /**
  * \addtogroup BABYOS
  * \{

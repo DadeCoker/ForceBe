@@ -30,12 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_kv.h"
+#include "modules/inc/b_mod_kv.h"
 #if _KV_ENABLE
 #include <string.h>
 
-#include "b_core.h"
-#include "b_driver.h"
+#include "core/inc/b_core.h"
+#include "drivers/inc/b_driver.h"
 
 /**
  * \addtogroup BABYOS
@@ -368,9 +368,9 @@ static int _bKV_ArrangeSpace(int fd)
     uint32_t    addr = 0;
     bKV_Index_t tmp;
     uint32_t    index_tmp = 0, t_addr;
-
-    index_tmp      = bKV_Info.index;
-    bKV_Info.index = (bKV_Info.index + 1) % 2;
+    uint16_t    real_len  = 0;
+    index_tmp             = bKV_Info.index;
+    bKV_Info.index        = (bKV_Info.index + 1) % 2;
 
     t_addr = bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size;
     addr   = bKV_Info.ds_address + bKV_Info.index * bKV_Info.d_size;
@@ -388,9 +388,10 @@ static int _bKV_ArrangeSpace(int fd)
         {
             continue;
         }
-        _bKV_MoveData(fd, tmp.address, addr, tmp.len);
+        real_len = (tmp.len + bKV_Info.align - 1) / bKV_Info.align * bKV_Info.align;
+        _bKV_MoveData(fd, tmp.address, addr, real_len);
         tmp.address = addr;
-        addr += tmp.len;
+        addr += real_len;
         bLseek(fd, t_addr);
         bWrite(fd, (uint8_t *)&tmp, sizeof(bKV_Index_t) - sizeof(uint32_t));
         t_addr += sizeof(bKV_Index_t);
@@ -414,14 +415,14 @@ static int _bKV_ArrangeSpace(int fd)
 static int _bKV_AddNew(int fd, uint32_t id, uint8_t *pbuf, uint16_t len)
 {
     bKV_Index_t tmp;
-
-    if (bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
+    uint16_t    real_len = (len + bKV_Info.align - 1) / bKV_Info.align * bKV_Info.align;
+    if (bKV_Info.d_index + real_len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
         bKV_Info.t_index >= bKV_Info.t_max)
     {
         _bKV_ArrangeSpace(fd);
     }
 
-    if (bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
+    if (bKV_Info.d_index + real_len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) ||
         bKV_Info.t_index >= bKV_Info.t_max)
     {
         return -1;
@@ -434,7 +435,7 @@ static int _bKV_AddNew(int fd, uint32_t id, uint8_t *pbuf, uint16_t len)
     bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size +
                    bKV_Info.t_index * sizeof(bKV_Index_t));
     bWrite(fd, (uint8_t *)&tmp, sizeof(bKV_Index_t) - sizeof(uint32_t));
-    bKV_Info.d_index += len;
+    bKV_Info.d_index += real_len;
     bKV_Info.t_index += 1;
     bLseek(fd, tmp.address);
     bWrite(fd, pbuf, len);
@@ -546,11 +547,12 @@ static void _bKV_InvalidTable(int fd)
  * \param s_addr Start address
  * \param size The amount of storage space that KV can use
  * \param e_size  The minimum unit that performs erasure \note if it neednt to be erased, its 0
+ * \param align Indicate x-bytes alignment : 1 2 4
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
+int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size, uint8_t align)
 {
     int retval      = 0;
     int fd          = -1;
@@ -560,8 +562,23 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
         b_log_e("dev_no %d error\r\n", dev_no);
         return -1;
     }
-    bKV_Info.dev_no = dev_no;
 
+    if (align != 1 && align != 2 && align != 4)
+    {
+        b_log_e("align %d error\r\n", align);
+        return -1;
+    }
+    else
+    {
+        if (s_addr % align)
+        {
+            b_log_e("s_addr %d error\r\n", s_addr);
+            return -1;
+        }
+    }
+
+    bKV_Info.dev_no      = dev_no;
+    bKV_Info.align       = align;
     bKV_Info.index       = 0;
     bKV_Info.e_size      = e_size;
     bKV_Info.str_address = s_addr;

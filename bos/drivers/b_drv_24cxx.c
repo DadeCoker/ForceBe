@@ -30,7 +30,8 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_24cxx.h"
+#include "drivers/inc/b_drv_24cxx.h"
+
 /**
  * \addtogroup B_DRIVER
  * \{
@@ -92,9 +93,6 @@ b24CXX_Driver_t             b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24
  * \defgroup 24CXX_Private_Functions
  * \{
  */
-
-/************************************************************************************************************driver
- * interface*******/
 
 static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {

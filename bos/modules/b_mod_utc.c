@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_utc.h"
+#include "modules/inc/b_mod_utc.h"
 #if _UTC2000_ENABLE
 
 /**

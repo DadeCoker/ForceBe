@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_mod_protocol.h"
+#include "modules/inc/b_mod_protocol.h"
 #if _PROTO_ENABLE
 #include <string.h>
 /**

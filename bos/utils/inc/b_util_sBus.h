@@ -36,8 +36,7 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#include "b_hal_gpio.h"
+#include "b_hal.h"
 
 /**
  * \addtogroup B_UTILS
@@ -63,39 +62,12 @@ typedef struct
  */
 
 /**
- * \defgroup SBUS_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup SBUS_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-
-/**
- * \defgroup SBUS_Exported_Variables
- * \{
- */
-
-/**
- * \}
- */
-
-/**
  * \defgroup SBUS_Exported_Functions
  * \{
  */
 uint8_t bUtilSbus_Ready(bUtilSbus_t Sbus);
-void SbusWriteByte(bUtilSbus_t Sbus,uint8_t dat) ;
-uint8_t  SbusReadByte(bUtilSbus_t Sbus);
+void    SbusWriteByte(bUtilSbus_t Sbus, uint8_t dat);
+uint8_t SbusReadByte(bUtilSbus_t Sbus);
 /**
  * \}
  */

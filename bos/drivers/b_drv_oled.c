@@ -30,9 +30,10 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_oled.h"
+#include "drivers/inc/b_drv_oled.h"
 
 #include <string.h>
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -86,9 +87,9 @@
  * \{
  */
 
-static uint8_t bOLED_Buff[_LCD_X_SIZE * _LCD_Y_SIZE / 8];
-
-bOLED_Driver_t bOLED_Driver;
+static uint8_t             bOLED_Buff[_LCD_X_SIZE * _LCD_Y_SIZE / 8];
+const static bOLED_HalIf_t bOLED_HalIf = HAL_OLED_IF;
+bOLED_Driver_t             bOLED_Driver;
 /**
  * \}
  */
@@ -110,7 +111,16 @@ bOLED_Driver_t bOLED_Driver;
 static void _bOLED_WriteCmd(uint8_t cmd)
 {
     int ret = 0;
-    ret     = bHalI2C_MemWrite(HAL_OLED_I2C, HAL_OLED_I2C_ADDR, 0x00, &cmd, 1);
+    if (bOLED_HalIf.is_spi)
+    {
+        ret = -1;
+        // add spi ...
+    }
+    else
+    {
+        ret = bHalI2C_MemWrite(bOLED_HalIf._if._iic.iic, bOLED_HalIf._if._iic.addr, 0x00, &cmd, 1);
+    }
+
     if (ret < 0)
     {
         b_log_e("oled write command err\n");
@@ -120,7 +130,17 @@ static void _bOLED_WriteCmd(uint8_t cmd)
 static void _bOLED_WriteData(uint8_t dat)
 {
     int ret = 0;
-    ret     = bHalI2C_MemWrite(HAL_OLED_I2C, HAL_OLED_I2C_ADDR, 0x40, &dat, 1);
+
+    if (bOLED_HalIf.is_spi)
+    {
+        ret = -1;
+        // add spi ...
+    }
+    else
+    {
+        ret = bHalI2C_MemWrite(bOLED_HalIf._if._iic.iic, bOLED_HalIf._if._iic.addr, 0x40, &dat, 1);
+    }
+
     if (ret < 0)
     {
         b_log_e("oled write data err\n");

@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algo_base64.h"
+#include "algorithm/inc/algo_base64.h"
 
 #include <string.h>
 /**

@@ -30,7 +30,7 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_xpt2046.h"
+#include "drivers/inc/b_drv_xpt2046.h"
 
 /**
  * \addtogroup BABYOS
@@ -80,7 +80,8 @@
  * \defgroup XPT2046_Private_Variables
  * \{
  */
-bXPT2046_Driver_t bXPT2046_Driver;
+const static bXPT2046_HalIf_t bXPT2046_HalIf = HAL_XPT2046_IF;
+bXPT2046_Driver_t             bXPT2046_Driver;
 
 /**
  * \}
@@ -101,24 +102,24 @@ bXPT2046_Driver_t bXPT2046_Driver;
  */
 static void _bXPT2046_SPIW(uint8_t dat)
 {
-    bHalSPI_Send(HAL_XPT2046_SPI, &dat, 1);
+    bHalSPI_Send(bXPT2046_HalIf.spi, &dat, 1);
 }
 
 static uint8_t _bXPT2046_SPIR()
 {
     uint8_t tmp;
-    bHalSPI_Receive(HAL_XPT2046_SPI, &tmp, 1);
+    bHalSPI_Receive(bXPT2046_HalIf.spi, &tmp, 1);
     return tmp;
 }
 
 static uint16_t _bXPT2046ReadVal(uint8_t r)
 {
     uint16_t l, h;
-    bHalGPIO_WritePin(HAL_XPT2046_CS_PORT, HAL_XPT2046_CS_PIN, 0);
+    bHalGPIO_WritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 0);
     _bXPT2046_SPIW(r);
     h = _bXPT2046_SPIR();
     l = _bXPT2046_SPIR();
-    bHalGPIO_WritePin(HAL_XPT2046_CS_PORT, HAL_XPT2046_CS_PIN, 1);
+    bHalGPIO_WritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 1);
     return ((h << 8) | (l)) >> 3;
 }
 
