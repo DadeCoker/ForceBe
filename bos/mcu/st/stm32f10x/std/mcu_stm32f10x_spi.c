@@ -79,7 +79,28 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
         switch (spi_if->_if.spi)
         {
             case B_HAL_SPI_1:
-
+                while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET)
+                    ;
+                SPI_I2S_SendData(SPI1, dat);
+                while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET)
+                    ;
+                tmp = SPI_I2S_ReceiveData(SPI1);
+                break;
+            case B_HAL_SPI_2:
+                while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET)
+                    ;
+                SPI_I2S_SendData(SPI2, dat);
+                while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET)
+                    ;
+                tmp = SPI_I2S_ReceiveData(SPI2);
+                break;
+            case B_HAL_SPI_3:
+                while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET)
+                    ;
+                SPI_I2S_SendData(SPI3, dat);
+                while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET)
+                    ;
+                tmp = SPI_I2S_ReceiveData(SPI3);
                 break;
             default:
                 break;
@@ -90,68 +111,28 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 
 static int _SpiSend(bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len)
 {
-    bUtilSPI_t simulating_spi;
-    int        i = 0;
+    int i = 0;
     if (IS_NULL(spi_if) || IS_NULL(pbuf))
     {
-        return 0;
+        return -1;
     }
-    if (spi_if->is_simulation == 1)
+    for (i = 0; i < len; i++)
     {
-        simulating_spi.clk  = spi_if->_if.simulating_spi.clk;
-        simulating_spi.mosi = spi_if->_if.simulating_spi.mosi;
-        simulating_spi.miso = spi_if->_if.simulating_spi.miso;
-        simulating_spi.CPHA = spi_if->_if.simulating_spi.CPHA;
-        simulating_spi.CPOL = spi_if->_if.simulating_spi.CPOL;
-        for (i = 0; i < len; i++)
-        {
-            bUtilSPI_WriteRead(simulating_spi, pbuf[i]);
-        }
-    }
-    else
-    {
-        switch (spi_if->_if.spi)
-        {
-            case B_HAL_SPI_1:
-
-                break;
-            default:
-                break;
-        }
+        _SpiTransfer(spi_if, pbuf[i]);
     }
     return 0;
 }
 
 static int _SpiReceive(bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len)
 {
-    bUtilSPI_t simulating_spi;
-    int        i = 0;
+    int i = 0;
     if (IS_NULL(spi_if) || IS_NULL(pbuf))
     {
-        return 0;
+        return -1;
     }
-    if (spi_if->is_simulation == 1)
+    for (i = 0; i < len; i++)
     {
-        simulating_spi.clk  = spi_if->_if.simulating_spi.clk;
-        simulating_spi.mosi = spi_if->_if.simulating_spi.mosi;
-        simulating_spi.miso = spi_if->_if.simulating_spi.miso;
-        simulating_spi.CPHA = spi_if->_if.simulating_spi.CPHA;
-        simulating_spi.CPOL = spi_if->_if.simulating_spi.CPOL;
-        for (i = 0; i < len; i++)
-        {
-            pbuf[i] = bUtilSPI_WriteRead(simulating_spi, 0xff);
-        }
-    }
-    else
-    {
-        switch (spi_if->_if.spi)
-        {
-            case B_HAL_SPI_1:
-
-                break;
-            default:
-                break;
-        }
+        pbuf[i] = _SpiTransfer(spi_if, 0xff);
     }
     return 0;
 }
