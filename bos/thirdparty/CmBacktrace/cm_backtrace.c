@@ -26,7 +26,7 @@
  * Created on: 2016-12-15
  */
 
-#include <cm_backtrace.h>
+#include "cm_backtrace.h"
 #if _CMBACKTRACE_ENABLE
 #include <stdbool.h>
 #include <stdio.h>
