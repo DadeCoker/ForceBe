@@ -127,14 +127,14 @@ static void _AdcListAdd(bAdcInstance_t *pinstance)
     }
 }
 
-static bAdcInstance_t *_AdcFindInstance(uint8_t srq)
+static bAdcInstance_t *_AdcFindInstance(uint8_t seq)
 {
     bAdcInstance_t *phead = &AdcListHead;
     for (;;)
     {
         if (phead->next != NULL)
         {
-            if (phead->next->srq == srq)
+            if (phead->next->seq == seq)
             {
                 return phead->next;
             }
@@ -206,9 +206,9 @@ int bAdchubRegist(bAdcInstance_t *pinstance)
     return 0;
 }
 
-int bAdchubFeedValue(uint8_t adc_srq, uint32_t ad_val)
+int bAdchubFeedValue(uint8_t adc_seq, uint32_t ad_val)
 {
-    bAdcInstance_t *pinstance = _AdcFindInstance(adc_srq);
+    bAdcInstance_t *pinstance = _AdcFindInstance(adc_seq);
     uint32_t        value     = ad_val;
     if (pinstance == NULL)
     {
