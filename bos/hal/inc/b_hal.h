@@ -36,8 +36,6 @@ extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include <stdint.h>
-
 #include "b_config.h"
 #include "b_hal_flash.h"
 #include "b_hal_gpio.h"
@@ -61,6 +59,23 @@ extern "C" {
  * \defgroup HAL_Exported_TypesDefinitions
  * \{
  */
+
+#if defined(__CC_ARM)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__GNUC__)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__ICCARM__)
+#if __ICCARM_V8
+#define __WEAKDEF __attribute__((weak))
+#else
+#define __WEAKDEF _Pragma("__weak")
+#endif
+#else
+#define __WEAKDEF __attribute__((weak))
+#endif
+
 typedef struct
 {
     union
@@ -86,19 +101,12 @@ typedef struct
  * \defgroup HAL_Exported_Defines
  * \{
  */
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
-#define IS_NULL(p) ((p) == NULL)
-
 #define MS2TICKS(m) (m / (1000 / _TICK_FRQ_HZ))
 
-#define B_SET_BIT(REG, BIT)     ((REG) |= (BIT))
-#define B_CLEAR_BIT(REG, BIT)   ((REG) &= ~(BIT))
-#define B_READ_BIT(REG, BIT)    ((REG) & (BIT))
-#define B_READ_REG(REG)         ((REG))
+#define B_SET_BIT(REG, BIT) ((REG) |= (BIT))
+#define B_CLEAR_BIT(REG, BIT) ((REG) &= ~(BIT))
+#define B_READ_BIT(REG, BIT) ((REG) & (BIT))
+#define B_READ_REG(REG) ((REG))
 
 #if _HALIF_VARIABLE_ENABLE
 #define HALIF_KEYWORD static

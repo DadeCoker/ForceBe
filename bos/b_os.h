@@ -74,6 +74,7 @@ extern "C" {
 #include "core/inc/b_core.h"
 #include "core/inc/b_device.h"
 #include "drivers/inc/b_driver.h"
+#include "utils/inc/b_utils.h"
 
 #if _BOS_MODULES_ENABLE
 #include "modules/inc/b_modules.h"

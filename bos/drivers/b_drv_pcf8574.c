@@ -101,7 +101,7 @@ static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, 
         return -1;
     }
 
-    tmp = bHalI2CDriver.pReadByte(&bPCF8574_HalIf);
+    tmp = bHalI2CReadByte(&bPCF8574_HalIf);
     if (pbuf[0])
     {
         tmp |= 1 << off;
@@ -110,7 +110,7 @@ static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, 
     {
         tmp &= ~(1 << off);
     }
-    bHalI2CDriver.pWriteByte(&bPCF8574_HalIf, tmp);
+    bHalI2CWriteByte(&bPCF8574_HalIf, tmp);
     return len;
 }
 
@@ -121,7 +121,7 @@ static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
     {
         return -1;
     }
-    tmp = bHalI2CDriver.pReadByte(&bPCF8574_HalIf);
+    tmp = bHalI2CReadByte(&bPCF8574_HalIf);
     if (tmp & (1 << off))
     {
         pbuf[0] = 1;
@@ -151,7 +151,7 @@ int bPCF8574_Init()
     bPCF8574_Driver.open    = NULL;
     bPCF8574_Driver.write   = _bPCF8574Write;
     bPCF8574_Driver._hal_if = (void *)&bPCF8574_HalIf;
-    bHalI2CDriver.pWriteByte(&bPCF8574_HalIf, 0);
+    bHalI2CWriteByte(&bPCF8574_HalIf, 0);
     return 0;
 }
 

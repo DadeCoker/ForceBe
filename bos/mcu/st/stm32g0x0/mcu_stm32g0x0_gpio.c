@@ -55,8 +55,7 @@ typedef struct
     volatile uint32_t BRR;
 } McuGpioReg_t;
 
-static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
-                        bHalGPIOPull_t pull)
+void bMcuGpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir, bHalGPIOPull_t pull)
 {
     uint32_t      mode_val   = 0;
     uint32_t      otype_val  = 0;
@@ -110,7 +109,7 @@ static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t di
     }
 }
 
-static void _GpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
+void bMcuGpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
 {
     uint32_t      cs_val = 0x00000001 << pin;
     McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
@@ -125,7 +124,7 @@ static void _GpioWritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
     pGpio->BSRR = cs_val;
 }
 
-static uint8_t _GpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
+uint8_t bMcuGpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 {
     uint32_t      id_val = 0;
     McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
@@ -137,7 +136,7 @@ static uint8_t _GpioReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
     return ((id_val & (0x0001 << pin)) != 0);
 }
 
-static void _GpioWrite(bHalGPIOPort_t port, uint16_t dat)
+void bMcuGpioWritePort(bHalGPIOPort_t port, uint16_t dat)
 {
     McuGpioReg_t *pGpio = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
     if (!B_HAL_GPIO_ISVALID(port, 0))
@@ -147,7 +146,7 @@ static void _GpioWrite(bHalGPIOPort_t port, uint16_t dat)
     pGpio->ODR = dat;
 }
 
-static uint16_t _GpioRead(bHalGPIOPort_t port)
+uint16_t bMcuGpioReadPort(bHalGPIOPort_t port)
 {
     uint32_t      id_val = 0;
     McuGpioReg_t *pGpio  = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
@@ -158,14 +157,6 @@ static uint16_t _GpioRead(bHalGPIOPort_t port)
     id_val = pGpio->IDR;
     return (id_val & 0xffff);
 }
-
-bHalGPIODriver_t bHalGPIODriver = {
-    .pGpioConfig    = _GpioConfig,
-    .pGpioWritePin  = _GpioWritePin,
-    .pGpioWritePort = _GpioWrite,
-    .pGpioReadPin   = _GpioReadPin,
-    .pGpioReadPort  = _GpioRead,
-};
 
 #endif
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/

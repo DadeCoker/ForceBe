@@ -43,7 +43,7 @@ extern "C" {
 
 #include "../inc/nr_micro_shell_config.h"
 #include "ansi.h"
-#include "core/inc/b_section.h"
+#include "b_section.h"
 
 #if _NR_MICRO_SHELL_ENABLE
 

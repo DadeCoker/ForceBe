@@ -32,8 +32,9 @@
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_pwm.h"
 
+#include "b_section.h"
 #include "hal/inc/b_hal.h"
-#include "core/inc/b_section.h"
+
 
 #if _PWM_ENABLE
 /**
@@ -130,31 +131,31 @@ static void _bSoftPwmCore()
     while (ptmp)
     {
         if (bHalGetSysTick() - ptmp->tick <= MS2TICKS(ptmp->ccr))
-		{
-			ptmp->handler1();
-		}
-		else if(bHalGetSysTick() - ptmp->tick <= MS2TICKS(ptmp->period))
-		{	
-			ptmp->handler2();
-		}
-		
-		if (bHalGetSysTick() - ptmp->tick >= MS2TICKS(ptmp->period))
+        {
+            ptmp->handler1();
+        }
+        else if (bHalGetSysTick() - ptmp->tick <= MS2TICKS(ptmp->period))
+        {
+            ptmp->handler2();
+        }
+
+        if (bHalGetSysTick() - ptmp->tick >= MS2TICKS(ptmp->period))
         {
             if (ptmp->repeat)
             {
-				if (ptmp->repeat > 1)
-				{
-					ptmp->repeat -= 1;
-					ptmp->tick = bHalGetSysTick();
-				}
-				else
-				{
-					_bSoftPwmDelete(ptmp);
-				}   
+                if (ptmp->repeat > 1)
+                {
+                    ptmp->repeat -= 1;
+                    ptmp->tick = bHalGetSysTick();
+                }
+                else
+                {
+                    _bSoftPwmDelete(ptmp);
+                }
             }
             else
             {
-				ptmp->tick = bHalGetSysTick();
+                ptmp->tick = bHalGetSysTick();
             }
         }
         ptmp = ptmp->next;
@@ -189,8 +190,8 @@ int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler1, pPwmHa
         pSoftPwm->next     = pPwmInstance;
     }
     pPwmInstance->handler1 = handler1;
-	pPwmInstance->handler2 = handler2;
-    pPwmInstance->tick    = bHalGetSysTick();
+    pPwmInstance->handler2 = handler2;
+    pPwmInstance->tick     = bHalGetSysTick();
     return 0;
 }
 

@@ -95,22 +95,22 @@ bMCUFLASH_Driver_t bMCUFLASH_Driver;
 
 static int _bMCUFLASHOpen(bMCUFLASH_Driver_t *pdrv)
 {
-    return bHalFlashDriver.pFlashUnlock();
+    return bHalFlashUnlock();
 }
 
 static int _bMCUFLASHClose(bMCUFLASH_Driver_t *pdrv)
 {
-    return bHalFlashDriver.pFlashLock();
+    return bHalFlashLock();
 }
 
 static int _bMCUFLASHWrite(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    return bHalFlashDriver.pFlashWrite(off, pbuf, len);
+    return bHalFlashWrite(off, pbuf, len);
 }
 
 static int _bMCUFLASHRead(bMCUFLASH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    return bHalFlashDriver.pFlashRead(off, pbuf, len);
+    return bHalFlashRead(off, pbuf, len);
 }
 
 static int _bMCUFLASHCtl(bMCUFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
@@ -123,7 +123,7 @@ static int _bMCUFLASHCtl(bMCUFLASH_Driver_t *pdrv, uint8_t cmd, void *param)
             if (param)
             {
                 bFlashErase_t *perase_param = (bFlashErase_t *)param;
-                bHalFlashDriver.pFlashErase(perase_param->addr, perase_param->num);
+                bHalFlashErase(perase_param->addr, perase_param->num);
                 retval = 0;
             }
         }
@@ -152,7 +152,7 @@ int bMCUFLASH_Init()
     bMCUFLASH_Driver.write   = _bMCUFLASHWrite;
     bMCUFLASH_Driver._hal_if = NULL;
 
-    if (bHalFlashDriver.pFlashInit() < 0)
+    if (bHalFlashInit() < 0)
     {
         bMCUFLASH_Driver.status = -1;
         retval                  = -1;

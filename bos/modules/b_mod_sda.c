@@ -36,7 +36,8 @@
 
 #include "core/inc/b_core.h"
 #include "drivers/inc/b_driver.h"
-#include "modules/inc/b_mod_utc.h"
+#include "utils/inc/b_util_log.h"
+#include "utils/inc/b_util_utc.h"
 /**
  * \addtogroup BABYOS
  * \{

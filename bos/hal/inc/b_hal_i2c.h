@@ -78,24 +78,26 @@ typedef struct
     } _if;
 } bHalI2CIf_t;
 
-typedef struct
-{
-    void (*pWriteByte)(bHalI2CIf_t *i2c_if, uint8_t dat);
-    uint8_t (*pReadByte)(bHalI2CIf_t *i2c_if);
-    int (*pMemWrite)(bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf, uint16_t len);
-    int (*pMemRead)(bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
-} const bHalI2CDriver_t;
-
 /**
  * \}
  */
 
 /**
- * \defgroup I2C_Exported_Variables
+ * \defgroup I2C_Exported_Functions
  * \{
  */
-
-extern bHalI2CDriver_t bHalI2CDriver;
+uint8_t bMcuI2CReadByte(const bHalI2CIf_t *i2c_if);
+int     bMcuI2CWriteByte(const bHalI2CIf_t *i2c_if, uint8_t dat);
+int     bMcuI2CMemWrite(const bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf,
+                        uint16_t len);
+int     bMcuI2CMemRead(const bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+uint8_t bHalI2CReadByte(const bHalI2CIf_t *i2c_if);
+int     bHalI2CWriteByte(const bHalI2CIf_t *i2c_if, uint8_t dat);
+int     bHalI2CMemWrite(const bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf,
+                        uint16_t len);
+int     bHalI2CMemRead(const bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
 
 /**
  * \}

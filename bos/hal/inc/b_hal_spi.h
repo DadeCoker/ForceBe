@@ -88,24 +88,26 @@ typedef struct
     bHalGPIOInstance_t cs;
 } bHalSPIIf_t;
 
-typedef struct
-{
-    int (*pSetSpeed)(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed);
-    int (*pSend)(bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len);
-    int (*pReceive)(bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len);
-    uint8_t (*pTransfer)(bHalSPIIf_t *spi_if, uint8_t dat);
-} const bHalSPIDriver_t;
-
 /**
  * \}
  */
 
 /**
- * \defgroup SPI_Exported_Variables
+ * \defgroup SPI_Exported_Functions
  * \{
  */
 
-extern bHalSPIDriver_t bHalSPIDriver;
+uint8_t bMcuSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat);
+int bMcuSpiSend(const bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len);
+int bMcuSpiReceive(const bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len);
+int bMcuSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+uint8_t bHalSpiTransfer(const bHalSPIIf_t *spi_if, uint8_t dat);
+int bHalSpiSend(const bHalSPIIf_t *spi_if, const uint8_t *pbuf, uint16_t len);
+int bHalSpiReceive(const bHalSPIIf_t *spi_if, uint8_t *pbuf, uint16_t len);
+int bHalSpiSetSpeed(const bHalSPIIf_t *spi_if, bHalSPISpeed_t speed);
+
 
 /**
  * \}

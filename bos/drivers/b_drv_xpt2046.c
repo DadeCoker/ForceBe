@@ -102,24 +102,24 @@ bXPT2046_Driver_t              bXPT2046_Driver;
  */
 static void _bXPT2046_SPIW(uint8_t dat)
 {
-    bHalSPIDriver.pSend(&bXPT2046_HalIf, &dat, 1);
+    bHalSpiSend(&bXPT2046_HalIf, &dat, 1);
 }
 
 static uint8_t _bXPT2046_SPIR()
 {
     uint8_t tmp;
-    bHalSPIDriver.pReceive(&bXPT2046_HalIf, &tmp, 1);
+    bHalSpiReceive(&bXPT2046_HalIf, &tmp, 1);
     return tmp;
 }
 
 static uint16_t _bXPT2046ReadVal(uint8_t r)
 {
     uint16_t l, h;
-    bHalGPIODriver.pGpioWritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 0);
+    bHalGpioWritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 0);
     _bXPT2046_SPIW(r);
     h = _bXPT2046_SPIR();
     l = _bXPT2046_SPIR();
-    bHalGPIODriver.pGpioWritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 1);
+    bHalGpioWritePin(bXPT2046_HalIf.cs.port, bXPT2046_HalIf.cs.pin, 1);
     return ((h << 8) | (l)) >> 3;
 }
 

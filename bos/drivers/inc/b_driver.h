@@ -38,7 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
-#include "core/inc/b_section.h"
+#include "b_section.h"
 #include "hal/inc/b_hal.h"
 
 /**
@@ -136,7 +136,7 @@ typedef struct
  * \{
  */
 
-//-----------------------------------------COMMAND--
+//-----------------------------------------Command List--
 // Flash
 #define bCMD_ERASE_SECTOR 0      // bFlashErase_t
 #define bCMD_GET_SECTOR_SIZE 1   // uint32_t

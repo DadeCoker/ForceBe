@@ -37,7 +37,7 @@
 #endif
 #include <stdlib.h>
 #include <string.h>
-
+#include "utils/inc/b_util_log.h"
 #include "modules/inc/b_mod_shell.h"
 /**
  * \addtogroup BABYOS

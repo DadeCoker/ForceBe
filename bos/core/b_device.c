@@ -33,7 +33,7 @@
 #include "core/inc/b_device.h"
 
 #include "drivers/inc/b_driver.h"
-
+#include "utils/inc/b_util_log.h"
 /**
  * \addtogroup BABYOS
  * \{
@@ -292,6 +292,7 @@ int bDeviceModifyHalIf(uint8_t no, uint32_t offset, const uint8_t *pVal, uint8_t
     memcpy((uint8_t *)halif_addr, pVal, size);
     return 0;
 #else
+    halif_addr = halif_addr;
     return -1;
 #endif
 }

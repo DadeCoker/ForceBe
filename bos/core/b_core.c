@@ -32,9 +32,10 @@
 /*Includes ----------------------------------------------*/
 #include "core/inc/b_core.h"
 
+#include "b_section.h"
 #include "core/inc/b_device.h"
-#include "core/inc/b_section.h"
 #include "hal/inc/b_hal.h"
+#include "utils/inc/b_util_log.h"
 
 /**
  * \addtogroup BABYOS

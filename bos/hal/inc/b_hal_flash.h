@@ -49,30 +49,24 @@ extern "C" {
  */
 
 /**
- * \defgroup FLASH_Exported_TypesDefinitions
+ * \defgroup FLASH_Exported_Functions
  * \{
  */
 
-typedef struct
-{
-    int (*pFlashInit)(void);
-    int (*pFlashUnlock)(void);
-    int (*pFlashLock)(void);
-    int (*pFlashErase)(uint32_t raddr, uint8_t pages);
-    int (*pFlashWrite)(uint32_t raddr, const uint8_t *pbuf, uint16_t len);
-    int (*pFlashRead)(uint32_t raddr, uint8_t *pbuf, uint16_t len);
-} const bHalFlashDriver_t;
-
-/**
- * \}
- */
-
-/**
- * \defgroup FLASH_Exported_Variables
- * \{
- */
-
-extern bHalFlashDriver_t bHalFlashDriver;
+int bMcuFlashInit(void);
+int bMcuFlashUnlock(void);
+int bMcuFlashLock(void);
+int bMcuFlashErase(uint32_t raddr, uint8_t pages);
+int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len);
+int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+int bHalFlashInit(void);
+int bHalFlashUnlock(void);
+int bHalFlashLock(void);
+int bHalFlashErase(uint32_t raddr, uint8_t pages);
+int bHalFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len);
+int bHalFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len);
 
 /**
  * \}

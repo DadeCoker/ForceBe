@@ -74,8 +74,8 @@ void bUtilI2C_mACK(bUtilI2C_t i2c);
 void    bUtilI2C_WriteByte(bUtilI2C_t i2c, uint8_t dat);
 uint8_t bUtilI2C_ReadByte(bUtilI2C_t i2c);
 
-int     bUtilI2C_WriteData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t dat);
-uint8_t bUtilI2C_ReadData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr);
+int     bUtilI2C_WriteData(bUtilI2C_t i2c, uint8_t dev, uint8_t dat);
+uint8_t bUtilI2C_ReadData(bUtilI2C_t i2c, uint8_t dev);
 
 int bUtilI2C_ReadBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, uint8_t len);
 int bUtilI2C_WriteBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, const uint8_t *pdat, uint8_t len);

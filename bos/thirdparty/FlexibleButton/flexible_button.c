@@ -32,10 +32,6 @@
 
 #if _FLEXIBLEBUTTON_ENABLE
 
-#ifndef NULL
-#define NULL 0
-#endif
-
 #define EVENT_SET_AND_EXEC_CB(btn, evt)   \
     do                                    \
     {                                     \

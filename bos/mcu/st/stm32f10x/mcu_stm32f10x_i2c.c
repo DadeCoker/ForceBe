@@ -32,91 +32,29 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #include "hal/inc/b_hal_i2c.h"
-#include "utils/inc/b_util_i2c.h"
 
 #if (_MCU_PLATFORM == 1001 || _MCU_PLATFORM == 1002 || _MCU_PLATFORM == 1003 || \
      _MCU_PLATFORM == 1004)
 
-static void _I2CSendByte(bHalI2CIf_t *pi2c_if, uint8_t dat)
+uint8_t bMcuI2CReadByte(const bHalI2CIf_t *i2c_if)
 {
+    return 0;
 }
 
-static uint8_t _I2CReadByte(bHalI2CIf_t *pi2c_if)
+int bMcuI2CWriteByte(const bHalI2CIf_t *i2c_if, uint8_t dat)
 {
-    uint8_t tmp;
-    return tmp;
+    return -1;
 }
 
-static int _I2CMemWrite(bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf, uint16_t len)
+int bMcuI2CMemWrite(const bHalI2CIf_t *i2c_if, uint16_t mem_addr, const uint8_t *pbuf, uint16_t len)
 {
-    int        retval = 0;
-    bUtilI2C_t simulating_iic;
-    if (IS_NULL(i2c_if))
-    {
-        return -1;
-    }
-    if (i2c_if->is_simulation == 1)
-    {
-        simulating_iic.sda = i2c_if->_if.simulating_i2c.sda;
-        simulating_iic.clk = i2c_if->_if.simulating_i2c.clk;
-        bUtilI2C_WriteBuff(simulating_iic, i2c_if->dev_addr, mem_addr, pbuf, len);
-    }
-    else
-    {
-        switch (i2c_if->_if.i2c)
-        {
-            case B_HAL_I2C_1:
-
-                break;
-            case B_HAL_I2C_2:
-
-                break;
-
-            default:
-                break;
-        }
-    }
-    return retval;
+    return -1;
 }
 
-static int _I2CMemRead(bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+int bMcuI2CMemRead(const bHalI2CIf_t *i2c_if, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
 {
-    int        retval = 0;
-    bUtilI2C_t simulating_iic;
-    if (IS_NULL(i2c_if))
-    {
-        return -1;
-    }
-    if (i2c_if->is_simulation == 1)
-    {
-        simulating_iic.sda = i2c_if->_if.simulating_i2c.sda;
-        simulating_iic.clk = i2c_if->_if.simulating_i2c.clk;
-        bUtilI2C_ReadBuff(simulating_iic, i2c_if->dev_addr, mem_addr, pbuf, len);
-    }
-    else
-    {
-        switch (i2c_if->_if.i2c)
-        {
-            case B_HAL_I2C_1:
-
-                break;
-            case B_HAL_I2C_2:
-
-                break;
-
-            default:
-                break;
-        }
-    }
-    return retval;
+    return -1;
 }
-
-bHalI2CDriver_t bHalI2CDriver = {
-    .pWriteByte = _I2CSendByte,
-    .pReadByte  = _I2CReadByte,
-    .pMemWrite  = _I2CMemWrite,
-    .pMemRead   = _I2CMemRead,
-};
 
 #endif
 

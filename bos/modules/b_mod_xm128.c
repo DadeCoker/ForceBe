@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_xm128.h"
 
-#include "core/inc/b_section.h"
+#include "b_section.h"
 
 #if _XMODEM128_ENABLE
 #include "hal/inc/b_hal.h"
@@ -67,7 +67,6 @@
 #define XM_S_NULL 0
 #define XM_S_WAIT_START 1
 #define XM_S_WAIT_DATA 2
-
 /**
  * \}
  */

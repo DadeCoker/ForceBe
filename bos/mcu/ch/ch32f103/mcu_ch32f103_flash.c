@@ -59,36 +59,36 @@ typedef struct
     volatile uint32_t RESERVED;
     volatile uint32_t OBR;
     volatile uint32_t WRPR;
-	volatile uint32_t MODEKEYR;
+    volatile uint32_t MODEKEYR;
 } McuFlashReg_t;
 
 #define MCU_FLASH ((McuFlashReg_t *)0x40022000)
 
-static int _FlashInit()
+int bMcuFlashInit()
 {
     return 0;
 }
 
-static int _FlashUnlock()
+int bMcuFlashUnlock()
 {
     int retval      = 0;
     MCU_FLASH->KEYR = FLASH_KEY_1;
     MCU_FLASH->KEYR = FLASH_KEY_2;
-	
-		/* Fast program mode unlock */
-	MCU_FLASH->MODEKEYR = FLASH_KEY_1;
-	MCU_FLASH->MODEKEYR = FLASH_KEY_2;
+
+    /* Fast program mode unlock */
+    MCU_FLASH->MODEKEYR = FLASH_KEY_1;
+    MCU_FLASH->MODEKEYR = FLASH_KEY_2;
     return retval;
 }
 
-static int _FlashLock()
+int bMcuFlashLock()
 {
     int retval = 0;
     MCU_FLASH->CR |= (0x00000001 << 7);
     return retval;
 }
 
-static int _FlashErase(uint32_t raddr, uint8_t pages)
+int bMcuFlashErase(uint32_t raddr, uint8_t pages)
 {
     int     retval  = 0;
     int     timeout = 0;
@@ -124,7 +124,7 @@ static int _FlashErase(uint32_t raddr, uint8_t pages)
     return retval;
 }
 
-static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
+int bMcuFlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 {
     int      timeout = 0;
     uint16_t wdata   = 0;
@@ -160,7 +160,7 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     return (wlen * 2);
 }
 
-static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
+int bMcuFlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
 {
     if (pbuf == NULL || (raddr + FLASH_BASE_ADDR + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR))
     {
@@ -170,15 +170,6 @@ static int _FlashRead(uint32_t raddr, uint8_t *pbuf, uint16_t len)
     memcpy(pbuf, (const uint8_t *)raddr, len);
     return len;
 }
-
-bHalFlashDriver_t bHalFlashDriver = {
-    .pFlashInit   = _FlashInit,
-    .pFlashUnlock = _FlashUnlock,
-    .pFlashLock   = _FlashLock,
-    .pFlashErase  = _FlashErase,
-    .pFlashWrite  = _FlashWrite,
-    .pFlashRead   = _FlashRead,
-};
 
 #endif
 

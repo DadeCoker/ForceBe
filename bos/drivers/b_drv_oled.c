@@ -34,6 +34,9 @@
 
 #include <string.h>
 
+#include "utils/inc/b_util_log.h"
+
+
 /**
  * \addtogroup BABYOS
  * \{
@@ -118,7 +121,7 @@ static void _bOLED_WriteCmd(uint8_t cmd)
     }
     else
     {
-        ret = bHalI2CDriver.pMemWrite(&bOLED_HalIf._if._i2c, 0x00, &cmd, 1);
+        ret = bHalI2CMemWrite(&bOLED_HalIf._if._i2c, 0x00, &cmd, 1);
     }
 
     if (ret < 0)
@@ -138,7 +141,7 @@ static void _bOLED_WriteData(uint8_t dat)
     }
     else
     {
-        ret = bHalI2CDriver.pMemWrite(&bOLED_HalIf._if._i2c, 0x40, &dat, 1);
+        ret = bHalI2CMemWrite(&bOLED_HalIf._if._i2c, 0x40, &dat, 1);
     }
 
     if (ret < 0)

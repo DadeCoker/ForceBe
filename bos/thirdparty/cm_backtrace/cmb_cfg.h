@@ -30,7 +30,7 @@
 #define _CMB_CFG_H_
 
 #include "b_config.h"
-
+#include "utils/inc/b_util_log.h"
 /* print line, must config by user */
 
 #if _CMBACKTRACE_ENABLE

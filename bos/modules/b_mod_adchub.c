@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_adchub.h"
 
-#include "core/inc/b_section.h"
+#include "b_section.h"
 #include "hal/inc/b_hal.h"
 
 #if _ADCHUB_ENABLE

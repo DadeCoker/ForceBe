@@ -35,13 +35,6 @@
 /////B_DEVICE_REG(dev, driver_interface, desc)
  */
 
-// B_DEVICE_REG(SSD1289, bSSD1289_Driver, "lcd")
-// B_DEVICE_REG(XPT2046, bXPT2046_Driver, "touch")
-// B_DEVICE_REG(SPIFLASH, bSPIFLASH_Driver[0], "flash")
-// B_DEVICE_REG(_24C02, b24CXX_Driver[0], "24c02")
-// B_DEVICE_REG(SD, bSD_Driver, "sd card")
-// B_DEVICE_REG(DS18B20, bDS18B20_Driver, "temp")
-// B_DEVICE_REG(MCUFLASH, bMCUFLASH_Driver, "st")
 
 #undef B_DEVICE_REG
 

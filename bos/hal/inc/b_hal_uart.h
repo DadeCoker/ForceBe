@@ -60,27 +60,27 @@ typedef enum
     B_HAL_UART_3,
     B_HAL_UART_4,
     B_HAL_UART_5,
-    B_HAL_UART_6, 
+    B_HAL_UART_6,
     B_HAL_UART_7,
-    B_HAL_UART_8,    
+    B_HAL_UART_8,
     B_HAL_UART_NUMBER
 } bHalUartNumber_t;
-
-typedef struct
-{
-    int (*pSend)(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len);
-    int (*pReceive)(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
-} const bHalUartDriver_t;
 
 /**
  * \}
  */
 
 /**
- * \defgroup UART_Exported_Variables
+ * \defgroup UART_Exported_Functions
  * \{
  */
-extern bHalUartDriver_t bHalUartDriver;
+
+int bMcuUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len);
+int bMcuReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+int bHalUartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len);
+int bHalReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */

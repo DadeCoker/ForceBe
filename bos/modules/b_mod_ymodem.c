@@ -32,7 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "modules/inc/b_mod_ymodem.h"
 
-#include "core/inc/b_section.h"
+#include "b_section.h"
 
 #if _YMODEM_ENABLE
 #include <string.h>
