@@ -122,7 +122,7 @@ Include头文件 `b_os.h`
 
 可以由配置工具生成如下代码。
 
-配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1
+配置工具：https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2
 
 ![](https://images.gitee.com/uploads/images/2021/1212/020923_ec27eb55_1789704.png)
 
@@ -206,7 +206,7 @@ boot:1819043356
 
 <https://gitee.com/notrynohigh/BabyOS_Protocol> 【BabyOS私有协议上位机Demo】
 
-[https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1](https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.1) 【BabyOS配置工具】
+[https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2](https://gitee.com/notrynohigh/bconfig-tool/releases/V0.0.2) 【BabyOS配置工具】
 
 
 
@@ -281,4 +281,5 @@ FS功能模块是基于FatFS和LittleFS,方便用户使用:
 | 2021.12 | 优化整体结构，增加对应配置工具，方便使用。支持V7.3.0及更新版本的 b_config.h |      |
 | 2022.01 | 增加bReinit和bModifyHalIf接口，并修复模拟I2C中BUG            |      |
 | 2022.02 | 调整结构，使得依赖关系更加合理。                             |      |
+| 2022.03 | 增加cjson第三方代码，并配上内存池。修改b_config.h中宏的命名以及文件夹、文件命名。 |      |
 
