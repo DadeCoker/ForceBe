@@ -41,8 +41,6 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _MEMP_ENABLE
-
 /**
  * \addtogroup B_UTILS
  * \{
@@ -74,7 +72,7 @@ typedef struct bMempList
 /**
  * \}
  */
-
+#if _MEMP_ENABLE
 /**
  * \defgroup MEMP_Exported_Functions
  * \{
@@ -92,16 +90,16 @@ uint8_t * bMempList2Array(const bMempList_t *phead);
 /**
  * \}
  */
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
 #endif
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+
 
 #ifdef __cplusplus
 }

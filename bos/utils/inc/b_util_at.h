@@ -41,8 +41,6 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _AT_ENABLE
-
 /**
  * \addtogroup B_UTILS
  * \{
@@ -75,7 +73,7 @@ typedef void (*bAtCallback_t)(uint8_t id, uint8_t result, void *arg);
 /**
  * \}
  */
-
+#if _AT_ENABLE
 /**
  * \defgroup AT_Exported_Functions
  * \{
@@ -89,15 +87,15 @@ int bAtCmdSend(const char *pcmd, uint16_t cmd_len, const char *presp, uint16_t r
  * \}
  */
 
-/**
- * \}
- */
-
-/**
- * \}
- */
-
 #endif
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 #ifdef __cplusplus
 }
