@@ -37,7 +37,7 @@
 //<o> Hardware version
 #define HW_VERSION 211212
 //<o> Firmware version
-#define FW_VERSION 80104
+#define FW_VERSION 80105
 //<s> Firware Name
 #define FW_NAME "BabyOS"
 //</h>
@@ -76,6 +76,9 @@
 //<2=> warn+error
 //<3=> error
 #define _DEBUG_ENABLE 1
+
+//<o> Log Buffer Size (B)
+#define LOG_BUF_SIZE 256
 
 //<e> MemoryPool Enable/Disable
 #define _MEMP_ENABLE 0

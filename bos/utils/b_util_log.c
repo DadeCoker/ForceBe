@@ -38,6 +38,8 @@
 
 #include "hal/inc/b_hal.h"
 
+#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE > 0))
+
 /**
  * \addtogroup B_UTILS
  * \{
@@ -106,7 +108,19 @@ static const char    bLogPrefix[3]     = {'I', 'W', 'E'};
  * \defgroup LOG_Private_Functions
  * \{
  */
-
+#if defined(__ARMCC_VERSION)
+    #define B_FPUTC int fputc(int c, FILE *f)
+#elif defined(__GNUC__)
+    #define B_FPUTC int __io_putchar(int c)
+#else
+    #define B_FPUTC int fputc(int c, FILE *f)
+#endif
+    
+B_FPUTC {
+    uint8_t ch = c & 0xff;
+    bHalUartSend(HAL_LOG_UART, &ch, 1);
+    return c;
+}
 /**
  * \}
  */
@@ -206,5 +220,7 @@ void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t 
 /**
  * \}
  */
+
+#endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

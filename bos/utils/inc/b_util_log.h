@@ -67,7 +67,7 @@ extern "C" {
 #define B_LOG_PARAM_FUNC 0X2
 #define B_LOG_PARAM_FILE 0X4
 
-#define B_LOG_BUF_SIZE 256
+#define B_LOG_BUF_SIZE LOG_BUF_SIZE
 
 #define B_LOG_I_PARAM (B_LOG_PARAM_NULL)
 #define B_LOG_W_PARAM (B_LOG_PARAM_FUNC | B_LOG_PARAM_LINE)
@@ -110,10 +110,11 @@ extern "C" {
  * \defgroup LOG_Exported_Functions
  * \{
  */
-
+#if ((defined(_DEBUG_ENABLE)) && (_DEBUG_ENABLE > 0))
 void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t line,
              const char *fmt, ...);
 void bLogOutput(void *p);
+#endif
 /**
  * \}
  */

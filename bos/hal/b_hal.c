@@ -77,15 +77,6 @@ static void _bHalUpdateDelayParam()
  * \addtogroup HAL_Exported_Functions
  * \{
  */
-#if _DEBUG_ENABLE
-int fputc(int c, FILE *p)
-{
-    uint8_t ch = c & 0xff;
-    bHalUartSend(HAL_LOG_UART, &ch, 1);
-    return c;
-}
-#endif
-
 __WEAKDEF void bHalUserInit()
 {
     ;
