@@ -59,15 +59,15 @@
 typedef struct
 {
     volatile uint32_t ACR;
-						 uint32_t RESERVED1;
+    uint32_t          RESERVED1;
     volatile uint32_t KEYR;
     volatile uint32_t OPTKEYR;
     volatile uint32_t SR;
     volatile uint32_t CR;
     volatile uint32_t ECCR;
-	  volatile uint32_t OTPR;
-						 uint32_t RESERVED2;
-						 uint32_t RESERVED3;
+    volatile uint32_t OTPR;
+    uint32_t          RESERVED2;
+    uint32_t          RESERVED3;
     volatile uint32_t WRP1AR;
     volatile uint32_t WRP1BR;
     volatile uint32_t WRP2AR;
@@ -85,23 +85,23 @@ static int _FlashInit()
 
 static int _FlashUnlock()
 {
-    int retval      = 0;
-		retval = HAL_FLASH_Unlock();
+    int retval = 0;
+    retval     = HAL_FLASH_Unlock();
     return retval;
 }
 
 static int _FlashLock()
 {
     int retval = 0;
-		retval = HAL_FLASH_Lock();
+    retval     = HAL_FLASH_Lock();
     return retval;
 }
 
 static int _FlashErase(uint32_t raddr, uint8_t pages)
 {
-    int     retval  = 0;
-		uint32_t     page_num  = 0;
-    uint8_t i       = 0;
+    int      retval   = 0;
+    uint32_t page_num = 0;
+    uint8_t  i        = 0;
 
     raddr = FLASH_BASE_ADDR + raddr;
     raddr = raddr / FLASH_PAGE_SIZE * FLASH_PAGE_SIZE;
@@ -110,31 +110,31 @@ static int _FlashErase(uint32_t raddr, uint8_t pages)
         return -1;
     }
 
-		page_num = (raddr-FLASH_BASE_ADDR)/FLASH_PAGE_SIZE - 1;
-		uint32_t PageError;
-		FLASH_EraseInitTypeDef FlashEraseInit;
-		FlashEraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-		FlashEraseInit.Page = page_num;
-		FlashEraseInit.NbPages = 1;
+    page_num = (raddr - FLASH_BASE_ADDR) / FLASH_PAGE_SIZE - 1;
+    uint32_t               PageError;
+    FLASH_EraseInitTypeDef FlashEraseInit;
+    FlashEraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
+    FlashEraseInit.Page      = page_num;
+    FlashEraseInit.NbPages   = 1;
 
     for (i = 0; i < pages; i++)
     {
-			FLASH_WaitForLastOperation(1000);
-			FlashEraseInit.Page = page_num +i;
-			if(HAL_FLASHEx_Erase(&FlashEraseInit,&PageError) != HAL_OK )
-			{
-				return -1;
-			}
+        FLASH_WaitForLastOperation(1000);
+        FlashEraseInit.Page = page_num + i;
+        if (HAL_FLASHEx_Erase(&FlashEraseInit, &PageError) != HAL_OK)
+        {
+            return -1;
+        }
     }
     return retval;
 }
 
 static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
 {
-    uint16_t wdata   = 0;
+    uint16_t wdata = 0;
     uint16_t wlen = (len + 1) / 2, i = 0;
     raddr = FLASH_BASE_ADDR + raddr;
-    if (pbuf == NULL || (raddr & 0x1) || (raddr + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR) )
+    if (pbuf == NULL || (raddr & 0x1) || (raddr + len) > (FLASH_MAX_SIZE + FLASH_BASE_ADDR))
     {
         return -1;
     }
@@ -143,9 +143,9 @@ static int _FlashWrite(uint32_t raddr, const uint8_t *pbuf, uint16_t len)
     {
         wdata = (wdata << 8) | pbuf[i * 2 + 1];
         wdata = (wdata << 8) | pbuf[i * 2 + 0];
-			
-				FLASH_WaitForLastOperation(1000);
-				HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD,raddr,wdata);
+
+        FLASH_WaitForLastOperation(1000);
+        HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, raddr, wdata);
         raddr += 2;
     }
     return (wlen * 2);

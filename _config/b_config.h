@@ -54,7 +54,7 @@
 //<2001=> NATION_F40X
 //<3001=> MM32SPIN2X
 //<4001=> HC32L13X
-#define _MCU_PLATFORM 1101
+#define _MCU_PLATFORM 1004
 //</h>
 
 //<h> Modules Configuration
@@ -165,7 +165,7 @@
 #define _TIMER_ENABLE 0
 
 //<q> Soft-pwm Enable/Disable
-#define _PWM_ENABLE 0 
+#define _PWM_ENABLE 0
 
 //<q> Tuning Parameters Enable/Disable
 #define _PARAM_ENABLE 0

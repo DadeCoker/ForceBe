@@ -45,7 +45,7 @@ typedef struct
     volatile uint32_t MODE;
     volatile uint32_t OTYPE;
     volatile uint32_t OSPEED;
-	  volatile uint32_t PUPDR;
+    volatile uint32_t PUPDR;
     volatile uint32_t IDR;
     volatile uint32_t ODR;
     volatile uint32_t BSRR;
@@ -59,11 +59,11 @@ typedef struct
 static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t dir,
                         bHalGPIOPull_t pull)
 {
-		uint32_t			mode_val = 0;
-		uint32_t			otype_val = 0;
-		uint32_t			ospeed_val = 0;
-		uint32_t			pupd_val = 0;
-    McuGpioReg_t *pGpio    = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
+    uint32_t      mode_val   = 0;
+    uint32_t      otype_val  = 0;
+    uint32_t      ospeed_val = 0;
+    uint32_t      pupd_val   = 0;
+    McuGpioReg_t *pGpio      = (McuGpioReg_t *)(GPIO_REG_BASE + port * GPIO_REG_OFF);
 
     if (!B_HAL_GPIO_ISVALID(port, pin))
     {
@@ -72,42 +72,41 @@ static void _GpioConfig(bHalGPIOPort_t port, bHalGPIOPin_t pin, bHalGPIODir_t di
 
     if (dir == B_HAL_GPIO_OUTPUT)
     {
-				mode_val 		= (pin == B_HAL_PINAll) ? 0x55555555 : 5;
-				otype_val 	= (pin == B_HAL_PINAll) ? 0x00000000 : 0;
-				ospeed_val 	= (pin == B_HAL_PINAll) ? 0xffffffff : 3;
-				pupd_val 		= (pin == B_HAL_PINAll) ? 0x00000000 : 0;  
+        mode_val   = (pin == B_HAL_PINAll) ? 0x55555555 : 5;
+        otype_val  = (pin == B_HAL_PINAll) ? 0x00000000 : 0;
+        ospeed_val = (pin == B_HAL_PINAll) ? 0xffffffff : 3;
+        pupd_val   = (pin == B_HAL_PINAll) ? 0x00000000 : 0;
     }
     else if (pull != B_HAL_GPIO_NOPULL)
     {
-				mode_val 		= (pin == B_HAL_PINAll) ? 0x00000000 : 0;		
+        mode_val = (pin == B_HAL_PINAll) ? 0x00000000 : 0;
         if (pull == B_HAL_GPIO_PULLUP)
         {
-            pupd_val 		= (pin == B_HAL_PINAll) ? 0x55555555 : 1; 
+            pupd_val = (pin == B_HAL_PINAll) ? 0x55555555 : 1;
         }
         else
         {
-            pupd_val 		= (pin == B_HAL_PINAll) ? 0xAAAAAAAA : 2; 
+            pupd_val = (pin == B_HAL_PINAll) ? 0xAAAAAAAA : 2;
         }
     }
 
     if (pin == B_HAL_PINAll)
     {
-        pGpio->MODE 	= mode_val;
+        pGpio->MODE   = mode_val;
         pGpio->OTYPE  = otype_val;
         pGpio->OSPEED = ospeed_val;
-				pGpio->PUPDR 	= pupd_val;
+        pGpio->PUPDR  = pupd_val;
     }
     else
     {
-        pGpio->MODE &= ~(0x00000003 << (pin * 2));	
-				pGpio->MODE |= (mode_val << (pin * 2));
-			  pGpio->OTYPE &= ~(0x00000001 << (pin * 1));	
-				pGpio->OTYPE |= (otype_val << (pin * 1));
-        pGpio->OSPEED &= ~(0x00000003 << (pin * 2));	
-				pGpio->OSPEED |= (ospeed_val << (pin * 2));
-        pGpio->PUPDR &= ~(0x00000003 << (pin * 2));	
-				pGpio->PUPDR |= (pupd_val << (pin * 2));
-			
+        pGpio->MODE &= ~(0x00000003 << (pin * 2));
+        pGpio->MODE |= (mode_val << (pin * 2));
+        pGpio->OTYPE &= ~(0x00000001 << (pin * 1));
+        pGpio->OTYPE |= (otype_val << (pin * 1));
+        pGpio->OSPEED &= ~(0x00000003 << (pin * 2));
+        pGpio->OSPEED |= (ospeed_val << (pin * 2));
+        pGpio->PUPDR &= ~(0x00000003 << (pin * 2));
+        pGpio->PUPDR |= (pupd_val << (pin * 2));
     }
 }
 

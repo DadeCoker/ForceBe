@@ -94,7 +94,7 @@ static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
     {
         return -1;
     }
-		
+
     pSpi = SpiTable[spi_if->_if.spi];
     while (pSpi->SR & 0x80)
     {
@@ -107,8 +107,8 @@ static int _SpiSetSpeed(bHalSPIIf_t *spi_if, bHalSPISpeed_t speed)
 
 static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
 {
-    uint8_t      tmp;
-    bUtilSPI_t   simulating_spi;
+    uint8_t    tmp;
+    bUtilSPI_t simulating_spi;
     if (IS_NULL(spi_if))
     {
         return 0;
@@ -124,22 +124,22 @@ static uint8_t _SpiTransfer(bHalSPIIf_t *spi_if, uint8_t dat)
     }
     else
     {
-			if (spi_if->_if.spi > B_HAL_SPI_3)
-			{
-					return 0;
-			}
-			switch (spi_if->_if.spi )
-			{
-					case B_HAL_SPI_1:
-							HAL_SPI_TransmitReceive(&hspi1,&dat,&tmp,1,0xff);
-							break;
-					case B_HAL_SPI_2:
+        if (spi_if->_if.spi > B_HAL_SPI_3)
+        {
+            return 0;
+        }
+        switch (spi_if->_if.spi)
+        {
+            case B_HAL_SPI_1:
+                HAL_SPI_TransmitReceive(&hspi1, &dat, &tmp, 1, 0xff);
+                break;
+            case B_HAL_SPI_2:
 
-							break;
+                break;
 
-					default:
-							break;
-			}	
+            default:
+                break;
+        }
     }
     return tmp;
 }

@@ -41,14 +41,12 @@
 #include "stm32g0xx_hal.h"
 
 //      Register Address
-	#define UART1_BASE_ADDR (0x40013800)
-	#define UART2_BASE_ADDR (0x40004400)
-	#define UART3_BASE_ADDR (0x40004800)
-	#define UART4_BASE_ADDR (0x40004C00)
-	#define UART5_BASE_ADDR (0x40005000)
-	#define UART6_BASE_ADDR (0x40013C00)
-
-
+#define UART1_BASE_ADDR (0x40013800)
+#define UART2_BASE_ADDR (0x40004400)
+#define UART3_BASE_ADDR (0x40004800)
+#define UART4_BASE_ADDR (0x40004C00)
+#define UART5_BASE_ADDR (0x40005000)
+#define UART6_BASE_ADDR (0x40013C00)
 
 typedef struct
 {
@@ -56,18 +54,18 @@ typedef struct
     volatile uint32_t CR2;
     volatile uint32_t CR3;
     volatile uint16_t BRR;
-	  uint16_t          RESERVED1;
+    uint16_t          RESERVED1;
     volatile uint16_t GTPR;
-	  uint16_t          RESERVED2;
+    uint16_t          RESERVED2;
     volatile uint32_t RTOR;
     volatile uint16_t RQR;
-	  uint16_t          RESERVED3;
+    uint16_t          RESERVED3;
     volatile uint32_t ISR;
     volatile uint32_t ICR;
     volatile uint16_t RDR;
-		uint16_t 					RESERVED4;
+    uint16_t          RESERVED4;
     volatile uint16_t TDR;
-		uint16_t 					RESERVED5;
+    uint16_t          RESERVED5;
     volatile uint16_t PRESC;
     uint16_t          RESERVED6;
 } McuUartReg_t;
@@ -82,42 +80,43 @@ typedef struct
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
-//static McuUartReg_t *UartTable[6] = {MCU_UART1, MCU_UART2, MCU_UART3, MCU_UART4, MCU_UART5, MCU_UART6};
+// static McuUartReg_t *UartTable[6] = {MCU_UART1, MCU_UART2, MCU_UART3, MCU_UART4, MCU_UART5,
+// MCU_UART6};
 
 static int _UartSend(bHalUartNumber_t uart, const uint8_t *pbuf, uint16_t len)
 {
-	int        retval = 0;
-	switch (uart)
-	{
-			case B_HAL_UART_1:
-					retval = HAL_UART_Transmit(&huart1,(uint8_t *)pbuf,len,0xff);
-					break;
-			case B_HAL_UART_2:
-					retval = HAL_UART_Transmit(&huart2,(uint8_t *)pbuf,len,0xff);
-					break;
+    int retval = 0;
+    switch (uart)
+    {
+        case B_HAL_UART_1:
+            retval = HAL_UART_Transmit(&huart1, (uint8_t *)pbuf, len, 0xff);
+            break;
+        case B_HAL_UART_2:
+            retval = HAL_UART_Transmit(&huart2, (uint8_t *)pbuf, len, 0xff);
+            break;
 
-			default:
-					break;
-	}
-	return retval;
+        default:
+            break;
+    }
+    return retval;
 }
 
 static int _UartReceive(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
 {
-	int        retval = 0;
-	switch (uart)
-	{
-			case B_HAL_UART_1:
-					retval = HAL_UART_Receive(&huart1,pbuf,len,0xff);
-					break;
-			case B_HAL_UART_2:
-					retval = HAL_UART_Receive(&huart2,pbuf,len,0xff);
-					break;
+    int retval = 0;
+    switch (uart)
+    {
+        case B_HAL_UART_1:
+            retval = HAL_UART_Receive(&huart1, pbuf, len, 0xff);
+            break;
+        case B_HAL_UART_2:
+            retval = HAL_UART_Receive(&huart2, pbuf, len, 0xff);
+            break;
 
-			default:
-					break;
-	}
-	return retval;
+        default:
+            break;
+    }
+    return retval;
 }
 
 bHalUartDriver_t bHalUartDriver = {
