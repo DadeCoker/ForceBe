@@ -92,7 +92,9 @@ typedef struct
 #ifdef USE_FONT_32X53
    extern const UG_FONT FONT_32X53;
 #endif
-
+#if _GUI_FONT == 3
+    extern UG_FONT bGUI_XBF_Font;
+#endif
 /* -------------------------------------------------------------------------------- */
 /* -- TYPEDEFS                                                                   -- */
 /* -------------------------------------------------------------------------------- */
@@ -879,6 +881,22 @@ typedef struct
 /* -------------------------------------------------------------------------------- */
 /* -- PROTOTYPES                                                                 -- */
 /* -------------------------------------------------------------------------------- */
+#if _GUI_FONT == 3
+
+typedef struct
+{
+    uint32_t addr;
+    uint16_t len;
+}XBF_Info_t;
+
+typedef struct
+{
+    uint16_t x_len;
+    uint16_t x_byte;
+}XBF_Data_t;
+
+int UG_ReadXBF(UG_U32 off, UG_U8 *pbuf, UG_U16 len);
+#endif
 /* Classic functions */
 UG_S16 UG_Init( UG_GUI* g, void (*p)(UG_S16,UG_S16,UG_COLOR), UG_S16 x, UG_S16 y );
 UG_S16 UG_SelectGUI( UG_GUI* g );
@@ -895,6 +913,7 @@ void UG_FillCircle( UG_S16 x0, UG_S16 y0, UG_S16 r, UG_COLOR c );
 void UG_DrawArc( UG_S16 x0, UG_S16 y0, UG_S16 r, UG_U8 s, UG_COLOR c );
 void UG_DrawLine( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c );
 void UG_PutString( UG_S16 x, UG_S16 y, char* str );
+void UG_PutCharUnicode(uint32_t v, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc );
 void UG_PutChar( char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc );
 void UG_ConsolePutString( char* str );
 void UG_ConsoleSetArea( UG_S16 xs, UG_S16 ys, UG_S16 xe, UG_S16 ye );

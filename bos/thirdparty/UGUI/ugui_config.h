@@ -16,16 +16,22 @@
 //#define  USE_FONT_4X6
 //#define  USE_FONT_5X8
 //#define  USE_FONT_5X12
-//#define  USE_FONT_6X8
+#if _GUI_FONT == 0
+#define  USE_FONT_6X8
+#endif
 //#define  USE_FONT_6X10
 //#define  USE_FONT_7X12
 //#define  USE_FONT_8X8
 //#define  USE_FONT_8X12_CYRILLIC
-#define  USE_FONT_8X12
 //#define  USE_FONT_8X12
+#if _GUI_FONT == 1
+#define  USE_FONT_8X12
+#endif
 //#define  USE_FONT_8X14
 //#define  USE_FONT_10X16
-//#define  USE_FONT_12X16
+#if _GUI_FONT == 2
+#define  USE_FONT_12X16
+#endif
 //#define  USE_FONT_12X20
 //#define  USE_FONT_16X26
 //#define  USE_FONT_22X36

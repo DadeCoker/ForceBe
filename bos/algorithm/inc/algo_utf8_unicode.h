@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_mod_fs.h
+ * \file        algo_utf8_unicode.h
  * \version     v0.0.1
- * \date        2020/06/02
+ * \date        2020/06/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,92 +28,36 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_MOD_FS_H__
-#define __B_MOD_FS_H__
+#ifndef __B_ALGO_UTF8_UNICODE_H__
+#define __B_ALGO_UTF8_UNICODE_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"  
-#if _FS_ENABLE
+#include "b_config.h" 
 
-#if (_FS_SELECT == 0) 
-#include "ff.h"
-#endif
-
-#if (_FS_SELECT == 1)
-#include "lfs.h"
-#endif
 
 /** 
- * \addtogroup BABYOS
+ * \addtogroup ALGORITHM
  * \{
  */
 
 /** 
- * \addtogroup MODULES
+ * \addtogroup UTF8_UNICODE
  * \{
  */
 
-/** 
- * \addtogroup FS
- * \{
- */
 
-/** 
- * \defgroup FS_Exported_TypesDefinitions
- * \{
- */
-typedef enum
-{
-#if _SPIFLASH_ENABLE    
-    E_DEV_SPIFLASH,           /* Map SPIFLASH to physical drive*/
-#endif
-#if _SD_ENABLE    
-    E_DEV_SDCARD,             /* Map MMC/SD card to physical drive*/
-#endif
-    E_DEV_NUMBER,
-}FS_DEV_Enum_t;
-/**
- * \}
- */
    
 /** 
- * \defgroup FS_Exported_Defines
+ * \defgroup UTF8_UNICODE_Exported_Functions
  * \{
  */
-#define DEV_SPIFLASH        0   /* Map SPIFLASH to physical drive 0*/
-#define DEV_SDCARD          1   /* Map SDCARD to physical drive 1*/
-
-/**
- * \}
- */
-   
-   
-/** 
- * \defgroup FS_Exported_Functions
- * \{
- */
-
-#if _FS_SELECT == 1 
-extern lfs_t bLittleFS;
-#endif
-
-int bFS_Init(void);
-
-int bFS_Test(void);
-
-
-/**
- * \}
- */
- 
-/**
- * \}
- */ 
-
+int utf8_to_unicode_size(const uint8_t utf8);
+int unicode_to_utf8(unsigned long unic, unsigned char *utf8, int utf8_size);
+int utf8_to_unicode(const uint8_t* utf8, uint32_t *unicode);
 /**
  * \}
  */
@@ -122,13 +66,17 @@ int bFS_Test(void);
  * \}
  */
 
-#endif
+/**
+ * \}
+ */
 
 #ifdef __cplusplus
 	}
 #endif
  
-#endif  
+#endif
+
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
 

@@ -53,12 +53,6 @@
  * \defgroup GUI_Private_TypesDefinitions
  * \{
  */
-static bGUI_Info_t GUI_Info = {
-    .lcd_id = -1,
-    .touch_id = -1,
-};  
-
-static UG_GUI bGUI_Handle;
 
 /**
  * \}
@@ -86,7 +80,17 @@ static UG_GUI bGUI_Handle;
  * \defgroup GUI_Private_Variables
  * \{
  */
+ 
+static bGUI_Info_t GUI_Info = {
+    .lcd_id = -1,
+    .touch_id = -1,
+};  
 
+static UG_GUI bGUI_Handle;
+
+#if _GUI_FONT == 3
+UG_FONT bGUI_XBF_Font;
+#endif
 /**
  * \}
  */
@@ -187,7 +191,6 @@ BOS_REG_POLLING_FUNC(_bGUI_Core);
  * \{
  */
 
-
 int bGUI_Init(int lcd, int touch)
 {
     if(lcd < 0)
@@ -204,13 +207,54 @@ int bGUI_Init(int lcd, int touch)
     UG_SelectGUI(&bGUI_Handle);
     UG_SetForecolor(C_WHITE);
     UG_SetBackcolor(C_BLACK);
+#if _GUI_FONT == 0
+    UG_FontSelect(&FONT_6X8);
+#elif _GUI_FONT == 1
     UG_FontSelect(&FONT_8X12);
+#elif _GUI_FONT == 2
+    UG_FontSelect(&FONT_12X16);
+#elif _GUI_FONT == 3
+    uint8_t xbf_info[18];
+    if(0 > UG_ReadXBF(_XBF_FILE_ADDR, xbf_info, 18))
+    {
+        b_log_e("read err\r\n");
+        return -1;
+    }
+    bGUI_XBF_Font.char_height = xbf_info[4];
+    bGUI_XBF_Font.char_width = xbf_info[4] / 2;
+    bGUI_XBF_Font.start_char = 0x00;
+    bGUI_XBF_Font.end_char = 0xff;
+    bGUI_XBF_Font.font_type = FONT_TYPE_1BPP;
+    bGUI_XBF_Font.p = NULL;
+    bGUI_XBF_Font.widths = NULL;
+    UG_FontSelect(&bGUI_XBF_Font);
+#endif
     return 0;
 }
 
+#if _GUI_FONT == 3
 
+#include "b_device.h"
 
-
+#if __GNUC__ 
+int __attribute__((weak)) UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
+#else
+__weak int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
+#endif
+{
+    int fd = -1;
+    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    if(fd < 0)
+    {
+        b_log_e("open err\r\n");
+        return -1;
+    }
+    bLseek(fd, off);
+    bRead(fd, pbuf, len);
+    bClose(fd);
+    return 0;
+}
+#endif  
 /**
  * \}
  */

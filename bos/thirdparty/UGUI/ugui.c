@@ -49,6 +49,9 @@
 /* -------------------------------------------------------------------------------- */
 #include "ugui.h"
 #if _UGUI_ENABLE
+#include "algo_utf8_unicode.h"
+
+
 /* Static functions */
  UG_RESULT _UG_WindowDrawTitle( UG_WINDOW* wnd );
  void _UG_WindowUpdate( UG_WINDOW* wnd );
@@ -4936,36 +4939,101 @@ void UG_DrawLine( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
    }  
 }
 
+uint8_t UG_GetUnicode(char *str, uint32_t *unicode)
+{
+    char chr = *str;
+    uint8_t utf_num = 1;
+    *unicode = chr;
+    if(chr & 0x80)
+    {
+#if _ENCODING == 0
+        utf_num = utf8_to_unicode_size(chr);
+        utf8_to_unicode((const uint8_t *)str, unicode);
+#elif _ENCODING == 1
+        *unicode = ((uint16_t *)str)[0];
+        utf_num = 2;
+#endif           
+    }
+    return utf_num;
+}
+
 void UG_PutString( UG_S16 x, UG_S16 y, char* str )
 {
-   UG_S16 xp,yp;
-   UG_U8 cw;
-   char chr;
+    UG_S16 xp,yp;
+    UG_U8 cw;
+    char chr;
+    UG_U32 unicode = 0;
+    xp=x;
+    yp=y;
 
-   xp=x;
-   yp=y;
-
-   while ( *str != 0 )
-   {
-      chr = *str++;
-	  if (chr < gui->font.start_char || chr > gui->font.end_char) continue;
-      if ( chr == '\n' )
-      {
-         xp = gui->x_dim;
-         continue;
-      }
-	  cw = gui->font.widths ? gui->font.widths[chr - gui->font.start_char] : gui->font.char_width;
-
-      if ( xp + cw > gui->x_dim - 1 )
-      {
-         xp = x;
-         yp += gui->font.char_height+gui->char_v_space;
-      }
-
-      UG_PutChar(chr, xp, yp, gui->fore_color, gui->back_color);
-
-      xp += cw + gui->char_h_space;
+    while ( *str != 0 )
+    {
+        chr = *str;
+        str += UG_GetUnicode(str, &unicode);  
+        if (chr < gui->font.start_char || chr > gui->font.end_char) continue;
+        if ( chr == '\n' )
+        {
+            xp = gui->x_dim;
+            continue;
+        }
+        cw = gui->font.widths ? gui->font.widths[chr - gui->font.start_char] : gui->font.char_width;
+        if(chr & 0x80)
+        {
+            cw += cw; 
+        }
+        if ( xp + cw > gui->x_dim - 1 )
+        {
+            xp = x;
+            yp += gui->font.char_height+gui->char_v_space;
+        }
+        if(gui->font.p == NULL)
+        {
+            UG_PutCharUnicode(unicode, xp, yp, gui->fore_color, gui->back_color);
+        }
+        else
+        {
+            UG_PutChar(chr, xp, yp, gui->fore_color, gui->back_color);
+        }    
+        xp += cw + gui->char_h_space;
    }
+}
+
+void UG_PutCharUnicode(uint32_t v, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc )
+{
+    uint8_t i = 0, j = 0, k = 0;
+    uint8_t tmp_data = 0;
+    XBF_Info_t info;   
+    XBF_Data_t _data;
+	uint32_t info_addr = 0;
+    info_addr = _XBF_FILE_ADDR + ((v - ' ') * 6) + 18;
+    UG_ReadXBF(info_addr, (uint8_t *)&info, sizeof(XBF_Info_t));
+    UG_ReadXBF(info.addr, (uint8_t *)&_data, sizeof(XBF_Data_t));
+    if((gui->font.char_height * _data.x_byte + sizeof(XBF_Data_t)) == info.len)
+    {
+        for(k = 0;k < (info.len - sizeof(XBF_Data_t));)
+        {
+            for(i = 0;i < _data.x_byte;i++)
+            {
+                UG_ReadXBF(info.addr + sizeof(XBF_Data_t) + k + i, &tmp_data, 1);
+                for(j = 0;j < 8;j++)
+                {
+                    if((i * 8 + j) >= _data.x_len)
+                    {
+                        break;
+                    }
+                    if((tmp_data << j) & 0x80)
+                    {
+                        gui->pset(x + i * 8 + j,y + k / _data.x_byte, fc);
+                    }
+                    else
+                    {
+                        gui->pset(x + i * 8 + j,y + k / _data.x_byte, bc);
+                    }
+                }
+            }
+            k += _data.x_byte;
+        }
+    }  
 }
 
 void UG_PutChar( char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc )
@@ -4977,34 +5045,43 @@ void UG_ConsolePutString( char* str )
 {
    char chr;
    UG_U8 cw;
-
+   UG_U32 unicode = 0; 
    while ( *str != 0 )
    {
-      chr = *str;
-      if ( chr == '\n' )
-      {
-         gui->console.x_pos = gui->x_dim;
-         str++;
-         continue;
-      }
-      
-      cw = gui->font.widths ? gui->font.widths[chr - gui->font.start_char] : gui->font.char_width;
-      gui->console.x_pos += cw+gui->char_h_space;
+        chr = *str;
+        if ( chr == '\n' )
+        {
+            gui->console.x_pos = gui->x_dim;
+            str++;
+            continue;
+        }
+        str += UG_GetUnicode(str, &unicode);  
+        cw = gui->font.widths ? gui->font.widths[chr - gui->font.start_char] : gui->font.char_width;
+        if(chr & 0x80)
+        {
+            cw += cw; 
+        }
+        gui->console.x_pos += cw+gui->char_h_space;
 
-      if ( gui->console.x_pos+cw > gui->console.x_end )
-      {
-         gui->console.x_pos = gui->console.x_start;
-         gui->console.y_pos += gui->font.char_height+gui->char_v_space;
-      }
-      if ( gui->console.y_pos+gui->font.char_height > gui->console.y_end )
-      {
-         gui->console.x_pos = gui->console.x_start;
-         gui->console.y_pos = gui->console.y_start;
-         UG_FillFrame(gui->console.x_start,gui->console.y_start,gui->console.x_end,gui->console.y_end,gui->console.back_color);
-      }
-
-      UG_PutChar(chr, gui->console.x_pos, gui->console.y_pos, gui->console.fore_color, gui->console.back_color);
-      str++;
+        if ( gui->console.x_pos+cw > gui->console.x_end )
+        {
+            gui->console.x_pos = gui->console.x_start;
+            gui->console.y_pos += gui->font.char_height+gui->char_v_space;
+        }
+        if ( gui->console.y_pos+gui->font.char_height > gui->console.y_end )
+        {
+            gui->console.x_pos = gui->console.x_start;
+            gui->console.y_pos = gui->console.y_start;
+            UG_FillFrame(gui->console.x_start,gui->console.y_start,gui->console.x_end,gui->console.y_end,gui->console.back_color);
+        }
+        if(gui->font.p == NULL)
+        {
+            UG_PutCharUnicode(unicode, gui->console.x_pos, gui->console.y_pos, gui->console.fore_color, gui->console.back_color);
+        }
+        else
+        {
+            UG_PutChar(chr, gui->console.x_pos, gui->console.y_pos, gui->console.fore_color, gui->console.back_color);
+        }       
    }
 }
 
@@ -5394,6 +5471,7 @@ void _UG_PutText(UG_TEXT* txt)
    UG_S16 xe=txt->a.xe;
    UG_S16 ye=txt->a.ye;
    UG_U8  align=txt->align;
+   UG_U32 unicode = 0;
    if(txt->font == NULL)
    {
    	return;	
@@ -5441,7 +5519,21 @@ void _UG_PutText(UG_TEXT* txt)
          if (*c < txt->font->start_char || *c > txt->font->end_char) {c++; continue;}
          sl++;
          wl += (txt->font->widths ? txt->font->widths[*c - txt->font->start_char] : char_width) + char_h_space;
-         c++;
+         
+         if(*c & 0x80)
+         {
+#if _ENCODING == 0 
+            c += utf8_to_unicode_size(*c);
+#elif _ENCODING == 1
+            c += 2;
+#endif
+             wl += wl;
+         }
+         else
+         {
+            c++;
+         }
+
       }
       wl -= char_h_space;
 
@@ -5455,9 +5547,21 @@ void _UG_PutText(UG_TEXT* txt)
 
       while( (*str != '\n') )
       {
-         chr = *str++;
+         chr = *str;
          if ( chr == 0 ) return;
-         _UG_PutChar(chr,xp,yp,txt->fc,txt->bc,txt->font);
+         str += UG_GetUnicode(str, &unicode); 
+        if(gui->font.p == NULL)
+        {
+            UG_PutCharUnicode(unicode, xp, yp, gui->fore_color, gui->back_color);
+            if(chr & 0x80)
+            {
+                xp += (txt->font->widths ? txt->font->widths[chr - txt->font->start_char] : char_width) + char_h_space;
+            }
+        }
+        else
+        {
+            _UG_PutChar(chr,xp,yp,txt->fc,txt->bc,txt->font);
+        }
          xp += (txt->font->widths ? txt->font->widths[chr - txt->font->start_char] : char_width) + char_h_space;
       }
       str++;

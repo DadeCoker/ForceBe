@@ -50,7 +50,7 @@
 #include "algo_matrix.h"
 #include "algo_speedpid.h"
 #include "algo_sort.h"
-
+#include "algo_utf8_unicode.h"
 
 
 /**

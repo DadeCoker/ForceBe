@@ -115,7 +115,6 @@ DRESULT disk_read (
 
             return res;
         }
-        break;
 #endif        
 	}
 #endif
@@ -196,7 +195,6 @@ DRESULT disk_write (
 
             return res;
         }
-        break;
 #endif        
 	}
 #endif
