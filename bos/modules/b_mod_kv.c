@@ -78,7 +78,6 @@ typedef struct
     uint8_t  md5[8];
     uint32_t crc;
     uint32_t len;
-    uint8_t  data[1];
 } bKVDataHead_t;
 
 /**
@@ -119,9 +118,10 @@ typedef struct
 
 #define B_KV_KEY_LENGTH(len) ((uint8_t)(((len) >> 24) & 0xff))
 #define B_KV_VALUE_LENGTH(len) ((len)&0x00ffffff)
+#define B_KV_DATA_LENGTH(len) \
+    (B_SIZE_ALIGNMENT(B_KV_KEY_LENGTH(len), 4) + B_SIZE_ALIGNMENT(B_KV_VALUE_LENGTH(len), 4))
 
 #define B_KV_SECTOR_NUM(i) ((i->erase_size == 0) ? 1 : (i->total_size / i->erase_size))
-
 /**
  * \}
  */
@@ -196,7 +196,7 @@ static int _bKVSetSectorFlag(bKVInstance_t *pinstance, uint32_t sector_index)
 }
 
 static int _bKVSetSectorState(bKVInstance_t *pinstance, uint32_t sector_index, bKVSectorStat_t sta,
-                              uint8_t messy, uint8_t joint)
+                              uint8_t joint)
 {
     int             fd = -1;
     bKVSectorHead_t head;
@@ -211,18 +211,18 @@ static int _bKVSetSectorState(bKVInstance_t *pinstance, uint32_t sector_index, b
     }
     else if (sta == KV_SECTOR_STA_FULL)
     {
-        if (messy == 0 && joint == 0)
+        if (joint == 0)
         {
             head.state[sta] = B_KV_STA_FULL;
         }
-        else if (messy == 0 && joint != 0)
+        else
         {
             head.state[sta] = B_KV_STA_JOINT;
         }
-        else
-        {
-            head.state[sta] = B_KV_STA_MESSY_FULL;
-        }
+    }
+    else if (sta == KV_SECTOR_STA_MESSY)
+    {
+        head.state[sta] = B_KV_STA_MESSY_FULL;
     }
     bLseek(fd, pinstance->address + sector_index * pinstance->erase_size +
                    B_OFFSET_OF(bKVSectorHead_t, state) + sta * sizeof(uint32_t));
@@ -231,30 +231,133 @@ static int _bKVSetSectorState(bKVInstance_t *pinstance, uint32_t sector_index, b
     return 0;
 }
 
-static int _bKVSectorDefrag(bKVInstance_t *pinstance)
+static void _bKVFindMessyEmptySector(bKVInstance_t *pinstance, int *messy, int *empty)
 {
     int             i = 0;
     bKVSectorHead_t sector_head;
+    *messy = -1;
+    *empty = -1;
+    for (i = 0; i < B_KV_SECTOR_NUM(pinstance); i--)
+    {
+        _bKVReadSectorHead(pinstance, i, &sector_head);
+        if (sector_head.state[KV_SECTOR_STA_MESSY] == B_KV_STA_MESSY_FULL)
+        {
+            if (*messy == -1)
+            {
+                *messy = i;
+            }
+            continue;
+        }
+        if (B_KV_STA_IS_FULL(sector_head.state[KV_SECTOR_STA_FULL]))
+        {
+            continue;
+        }
+        if (sector_head.state[KV_SECTOR_STA_WRITABLE] == B_KV_STA_WRITABLE)
+        {
+            continue;
+        }
+        if (*empty == -1)
+        {
+            *empty = i;
+        }
+        if (*empty != -1 && *messy != -1)
+        {
+            break;
+        }
+    }
+}
+
+static int _bKVReadDataHead(bKVInstance_t *pinstance, uint32_t addr, bKVDataHead_t *phead)
+{
+    int fd = -1;
+    fd     = bOpen(pinstance->dev, BCORE_FLAG_RW);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    bLseek(fd, addr);
+    bRead(fd, phead, sizeof(bKVDataHead_t));
+    bClose(fd);
+    return 0;
+}
+
+static int _bKVCheckValue(bKVInstance_t *pinstance, uint32_t addr, bKVDataHead_t head)
+{
+    int      fd = -1;
+    uint8_t  tmp[32];
+    uint32_t crc  = 0;
+    uint32_t rlen = 0;
+    CRC_REG_SBS_HANDLE(kv_crc, ALGO_CRC32);
+    addr = addr + sizeof(bKVDataHead_t) + B_SIZE_ALIGNMENT(B_KV_KEY_LENGTH(head.len), 4);
+    fd   = bOpen(pinstance->dev, BCORE_FLAG_R);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    bLseek(fd, addr);
+    while (rlen < B_KV_VALUE_LENGTH(head.len))
+    {
+        bRead(fd, tmp, sizeof(tmp));
+        crc_calculate_sbs(&kv_crc, tmp,
+                          ((B_KV_VALUE_LENGTH(head.len) - rlen) > sizeof(tmp))
+                              ? sizeof(tmp)
+                              : (B_KV_VALUE_LENGTH(head.len) - rlen));
+        rlen += sizeof(tmp);
+    }
+    bClose(fd);
+    if (kv_crc.crc != head.crc)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+static int _bKVMoveData(bKVInstance_t *pinstance, int src, int des)
+{
+    bKVDataHead_t head;
+    uint32_t r_addr = pinstance->address + src * pinstance->erase_size + sizeof(bKVSectorHead_t);
+    uint32_t w_addr = pinstance->address + des * pinstance->erase_size + sizeof(bKVSectorHead_t);
+    _bKVSetSectorState(pinstance, des, KV_SECTOR_STA_WRITABLE, 0);
+    while ((pinstance->address + (src + 1) * pinstance->erase_size - sizeof(bKVDataHead_t)) >
+           r_addr)
+    {
+        _bKVReadDataHead(pinstance, r_addr, &head);
+        if (B_KV_IS_MODIFIED(head.state) || B_KV_IS_DELETED(head.state))
+        {
+            r_addr += B_KV_DATA_LENGTH(head.len) + sizeof(bKVDataHead_t);
+        }
+        else if (head.state == 0xFFFFFFFF)
+        {
+            if (0 == _bKVCheckValue(pinstance, r_addr, head))
+            {
+                ;  // 待添加数据复制
+            }
+        }
+    }
+}
+
+static int _bKVSectorDefrag(bKVInstance_t *pinstance)
+{
+    int             i      = 0;
+    int             mindex = -1, eindex = -1;
+    bKVSectorHead_t sector_head;
     pinstance->write_index = -1;
+    _bKVFindMessyEmptySector(pinstance, &mindex, &eindex);
     if (pinstance->empty_count > 1)
     {
-        for (i = 0; i < B_KV_SECTOR_NUM(pinstance); i--)
+        if (eindex != -1)
         {
-            _bKVReadSectorHead(pinstance, i, &sector_head);
-            if (B_KV_STA_IS_FULL(sector_head.state[KV_SECTOR_STA_FULL]))
-            {
-                continue;
-            }
-            pinstance->write_index = i;
-            if (sector_head.state[KV_SECTOR_STA_WRITABLE] != B_KV_STA_WRITABLE)
-            {
-                pinstance->empty_count -= 1;
-            }
-            break;
+            pinstance->write_index = eindex;
+            pinstance->empty_count -= 1;
         }
     }
     else if (pinstance->empty_count == 1)
     {
+        if (mindex != -1 && eindex != -1)
+        {
+            _bKVMoveData(pinstance, mindex, eindex);
+            pinstance->write_index = eindex;
+        }
     }
 }
 
