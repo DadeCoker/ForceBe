@@ -25,7 +25,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 # 1 代码结构
 
-待补充........
+![BabyOS](https://gitee.com/notrynohigh/BabyOS/raw/dev/doc/BabyOS.png)
 
 # 2 适用项目
 
@@ -85,7 +85,7 @@ MCU裸机开发项目。编译器勾选C99
 | bos/hal        | 全部添加     |                                                              |
 | bos/mcu        | 根据需要添加 | 根据平台添加对应的代码，对应b_config.h中的配置               |
 | bos/modules    | 全部添加     | 全部添加后，可在b_config中配置                               |
-| bos/thirdparty | 根据需要添加 | CmBacktrace 错误跟踪<br>FatFS 文件系统<br>littlefs 文件系统<br>FlexibleButton 使用按键模块则需要添加<br>nr_micro_shell 命令行<br>SFUD 使用SPIFLASH驱动需要添加<br>UGUI 简单的GUI库 |
+| bos/thirdparty | 根据需要添加 | cmbacktrace 错误跟踪<br>fatfs文件系统<br>littlefs 文件系统<br>flexiblebutton 使用按键模块则需要添加<br>nr_micro_shell 命令行<br>ugui 简单的GUI库 |
 | bos/utils      | 全部添加     | 通用代码，有模拟的IIC和SPI代码，模拟串口接收空闲事件         |
 | bos/_config    |              | b_config.h BabyOS 配置文件<br>b_device_list.h 注册设备的文件<br>b_hal_if.h 驱动接口文件 |
 
@@ -104,6 +104,7 @@ MCU裸机开发项目。编译器勾选C99
 | Version Configuration    | 版本配置项，硬件和固件版本                       |      |
 | Platform Configuration   | 平台配置项，指定心跳频率和MCU平台                |      |
 | Hal Configuration        | 硬件接口配置，可配置硬件接口参数是固定还是可变的 |      |
+| Utils Configuration      | 实用软件配置，部分软件代码的配置                 |      |
 | Modules Configuration    | 模块配置项，各个功能模块的配置                   |      |
 | Thirdparty Configuration | 第三方开源代码配置项                             |      |
 
