@@ -12,7 +12,7 @@
 
 # BabyOS设计和使用手册
 
-**V0.2.2**
+**V0.2.3**
 
 ***BabyOS V7.4.6***
 
@@ -1804,54 +1804,115 @@ void USART1_IRQHandler()
 ### 6.17.1 数据结构
 
 ```C
-typedef struct
-{
-    int  stat;             //iap状态
-    int  app_invalid;      //应用程序有效性标志
-    int  app_fail_count;   //跳转app无法正常运行的次数
-    char file_name[B_IAP_FILENAME_MAXLEN + (4 - (B_IAP_FILENAME_MAXLEN % 4))];
-} bIapFlag_t;
+/**
+ * IAP状态，IAP介绍文档中有状态的切换路径
+ */
+#define B_IAP_STA_NULL (0)
+#define B_IAP_STA_START (1)
+#define B_IAP_STA_READY (2)
+#define B_IAP_STA_FINISHED (3)
+#define IS_IAP_STA(s)                                                                   \
+    (((s) == B_IAP_STA_NULL) || ((s) == B_IAP_STA_START) || ((s) == B_IAP_STA_READY) || \
+     ((s) == B_IAP_STA_FINISHED))
+
+#define B_IAP_FILENAME_LEN (64)    // 固件名的长度限制
+#define B_IAP_FAIL_COUNT (3)       // 固件失败的次数限制
+#define B_IAP_BACKUP_EN (0x55)     // 备份固件功能启用的标志
+#define B_IAP_BACKUP_VALID (0xAA)  // 存在有效备份固件的标志
 
 typedef struct
 {
-    uint8_t  dev_no;   //暂存新固件的设备号，不需要暂存可以忽略
-    uint32_t len;      //固件长度
-    uint32_t c_crc32;  //固件数据CRC32校验值
+    uint8_t  dev_no;                    //暂存新固件的设备号，不需要暂存可以忽略
+    char     name[B_IAP_FILENAME_LEN];  //固件名，限制在64个字符
+    uint32_t len;                       //固件长度
+    uint32_t c_crc32;                   //固件数据CRC32校验值
 } bIapFwInfo_t;
 
-typedef void (*pJumpFunc_t)(void);
+typedef struct
+{
+    uint8_t  dev_no;  //备份区额设备号
+    uint8_t  flag;    //备份标志，0xAA表示存在有效备份
+    uint32_t fcrc;    //备份区固件的crc32校验值
+    uint32_t second;  //运行多少秒后进行备份
+} bIapBackupInof_t;
+
+typedef struct
+{
+    int              stat;
+    int              fail_count;
+    bIapFwInfo_t     info;
+    bIapBackupInof_t backup;
+    uint32_t         fcrc;
+} bIapFlag_t;
 ```
 
 ### 6.17.2 接口介绍
 
 ```C
-//弱函数，用户可以自行实现跳转函数
+/**
+ * 跳转是弱函数，用户可自己实现
+ */
 void bIapJump2Boot(void);
 void bIapJump2App(void);
 
-//初始化函数，传入MCUFLASH的设备号
+/**
+ * boot和app都先调用bIapInit
+ * 紧接着，按照不同的代码，调用bIapXXXCheckFlag()
+ * XXX: Boot or App
+ * 主要用于判断，进入启动程序和进入应用程序时，当前状态是否合法
+ */
+/**
+ * \param dev_no：固件暂存区的设备号
+ *        注：暂存于内部FLASH 或 没有暂存区，dev_no = 0
+ */
 int bIapInit(uint8_t dev_no);
-//传入新固件的固件名，以此触发升级流程
-int bIapStart(const char *pfname);
-//应用程序调用，会判断当前升级状态，然后清除标志
+/**
+ * \return int 0：没有升级流程  1：升级流程正常运行中  -1：升级流程异常
+ */
 int bIapAppCheckFlag(void);
-//BOOT程序调用，根据升级标志返回下一步操作：等待新固件或者跳转
 int bIapBootCheckFlag(void);
-//BOOT程序调用，传入获取新固件数据的结果（成功或者失败）
-int bIapUpdateFwResult(int result);
-//BOOT程序调用，设置新固件信息，根据固件信息准备好存储区域
-int bIapSetFwInfo(bIapFwInfo_t *pinfo);
-//BOOT程序调用，将收到的固件数据传入，最终会写入到FLASH中
+
+/**
+ * 应用程序调用，表示升级流程开始。传入新固件的信息。
+ */
+int bIapStart(bIapFwInfo_t *pinfo);
+
+/**
+ * 固件备份位置的设备号 dev_no
+ * 注：备份到内部FLASH  则 dev_no = 0
+ * 不需要固件备份，便不需要调用此函数。
+ * s: 正常工作s秒后，进行固件备份
+ */
+int bIapBackupFwInit(uint8_t dev_no, uint32_t s);
+
+
+/**
+ * \brief 传入新固件的数据用于写入存储区域
+ * \param index 新固件数据的索引，即相对文件起始的偏移
+ * \return int 0：正常存储  -1：存储异常   -2：校验失败，重新接收
+ */
 int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len);
-//BOOT程序调用，获取完数据后，调用此函数校验固件
-int bIapVerifyFwData(void);
+
+/**
+ * 查询当前IAP的状态
+ * 应用程序，查询到是B_IAP_STA_READY状态，则跳转至启动程序
+ * 启动程序，查询到是B_IAP_STA_NULL或者B_IAP_STA_FINISHED状态，则跳转至应用程序
+ */
+uint8_t bIapGetStatus(void);
+
+/**
+ * 查询备份固件是否有效
+ */
+uint8_t bIapBackupIsValid(void);
 ```
 
 ### 6.17.3 使用例子
 
 https://gitee.com/notrynohigh/BabyOS_Example/tree/BearPi/
 
-例程仓库小熊派分支，利用XModem128传输数据进行固件升级
+例程仓库小熊派分支，利用BabyOS通用协议专用上位机进行固件升级
+
+https://gitee.com/notrynohigh/BabyOS_Protocol
 
 <div STYLE="page-break-after: always;"></div>
 
