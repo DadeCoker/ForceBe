@@ -82,4 +82,5 @@ LOG_LEVEL_INFO=y
 LOG_BUF_SIZE=256
 _MEMP_ENABLE=y
 MEMP_MAX_SIZE=10240
+# _MEMP_MONITOR_ENABLE is not set
 # end of Utils Configuration

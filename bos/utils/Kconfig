@@ -34,4 +34,9 @@ config MEMP_MAX_SIZE
     default 10240
     depends on _MEMP_ENABLE
 
+config _MEMP_MONITOR_ENABLE
+    bool "MemoryPool Monitor Enable/Disable"
+    default n
+    depends on _MEMP_ENABLE
+
 endmenu

@@ -56,12 +56,24 @@ extern "C" {
  * \defgroup MEMP_Exported_Functions
  * \{
  */
+#if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
+
+void* bMallocPlus(uint32_t size, const char* func, int line);
+void  bFreePlus(void* ptr, const char* func, int line);
+
+#define bMalloc(size)  bMallocPlus((size), __func__, __LINE__)
+#define bFree(addr)    bFreePlus((addr), __func__, __LINE__)
+
+#else
 
 void *bMalloc(uint32_t size);
 void  bFree(void *paddr);
 
+#endif
+
 uint32_t bGetFreeSize(void);
 void     bMallocFailedHook(void);
+
 /**
  * \}
  */
