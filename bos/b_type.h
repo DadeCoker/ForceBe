@@ -54,7 +54,23 @@ extern "C" {
 
 #define IS_NULL(p) ((p) == NULL)
 
-#define ERROR_PARAM_INVALID (-1)
+
+#if defined(__CC_ARM)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__GNUC__)
+#define __WEAKDEF __attribute__((weak))
+#elif defined(__ICCARM__)
+#if __ICCARM_V8
+#define __WEAKDEF __attribute__((weak))
+#else
+#define __WEAKDEF _Pragma("__weak")
+#endif
+#else
+#define __WEAKDEF __attribute__((weak))
+#endif
+
 
 /**
  * \}
