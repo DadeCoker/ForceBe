@@ -30,7 +30,9 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algorithm/inc/algo_sort.h"
+#include "inc/algo_sort.h"
+
+#if _ALGO_SORT_ENABLE
 
 /**
  * \addtogroup ALGORITHM
@@ -286,5 +288,7 @@ void InsertionSort(void *arr, int size, uint8_t type)
 /**
  * \}
  */
+
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/

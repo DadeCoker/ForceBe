@@ -38,6 +38,7 @@ extern "C" {
 /*Includes ----------------------------------------------*/
 #include <stdint.h>
 
+#include "../../algorithm/inc/algo_crc.h"
 #include "b_config.h"
 
 #if _IAP_ENABLE
@@ -76,6 +77,7 @@ extern "C" {
 #define B_IAP_FAIL_COUNT (3)       // 固件失败的次数限制
 #define B_IAP_BACKUP_EN (0x55)     // 备份固件功能启用的标志
 #define B_IAP_BACKUP_VALID (0xAA)  // 存在有效备份固件的标志
+
 /**
  * \}
  */
@@ -84,28 +86,37 @@ extern "C" {
  * \defgroup IAP_Exported_TypesDefinitions
  * \{
  */
+typedef struct
+{
+    uint8_t *pbuf;
+    uint32_t len;
+    void (*release)(void *);  // 如果pbuf不需要释放，则赋值NULL
+} bIapFwData_t;
+
 #pragma pack(1)
 
 typedef struct
 {
-    uint32_t dev_no;                    //暂存新固件的设备号，不需要暂存可以忽略
-    char     name[B_IAP_FILENAME_LEN];  //固件名，限制在64个字符
-    uint32_t len;                       //固件长度
-    uint32_t c_crc32;                   //固件数据CRC32校验值
+    char     name[B_IAP_FILENAME_LEN];  // 固件名，限制在64个字符
+    uint32_t version;                   // 固件版本号
+    uint32_t len;                       // 固件长度
+    uint32_t crc;                       // 固件数据的校验值
+    uint32_t crc_type;                  // CRC类型，参考algorithm/inc/algo_crc.h
 } bIapFwInfo_t;
 
 typedef struct
 {
-    uint32_t dev_no;  //备份区额设备号
-    uint8_t  flag;    //备份标志，0xAA表示存在有效备份
-    uint32_t fcrc;    //备份区固件的crc32校验值
-    uint32_t second;  //运行多少秒后进行备份
+    uint8_t  flag;    // 备份标志，0xAA表示存在有效备份
+    uint32_t fcrc;    // 备份区固件的crc32校验值
+    uint32_t second;  // 运行多少秒后进行备份
 } bIapBackupInof_t;
 
 typedef struct
 {
     int              stat;
     int              fail_count;
+    uint32_t         cache_dev;
+    uint32_t         backup_dev;
     bIapFwInfo_t     info;
     bIapBackupInof_t backup;
     uint32_t         fcrc;
@@ -114,6 +125,12 @@ typedef struct
 #pragma pack()
 
 typedef void (*pJumpFunc_t)(void);
+
+typedef enum
+{
+    B_IAP_EVENT_START,  // \ref bIapFwInfo_t
+    B_IAP_EVENT_DATA    // \ref bIapFwData_t
+} bIapEvent_t;
 
 /**
  * \}
@@ -130,41 +147,20 @@ void bIapJump2Boot(void);
 void bIapJump2App(void);
 
 /**
- * boot和app都先调用bIapInit
- * 紧接着，按照不同的代码，调用bIapXXXCheckFlag()
- * XXX: Boot or App
- * 主要用于判断，进入启动程序和进入应用程序时，当前状态是否合法
+ * \brief 初始化函数
+ * \param cache_dev_no   缓存固件的设备号，若不需要缓存则传入0
+ * \param backup_dev_no  备份固件的设备号，若不需要备份固件则传入0
+ * \param backup_time_s  运行多少s后备份固件，若不需要备份固件则忽略
+ * \note boot程序中调用初始化函数无需指定固件备份的参数
  */
-/**
- * \param dev_no：固件暂存区的设备号
- *        注：暂存于内部FLASH 或 没有暂存区，dev_no = 0
- */
-int bIapInit(uint32_t dev_no);
-/**
- * \return int 0：没有升级流程  1：升级流程正常运行中  -1：升级流程异常
- */
-int bIapAppCheckFlag(void);
-int bIapBootCheckFlag(void);
+int bIapInit(uint32_t cache_dev_no, uint32_t backup_dev_no, uint32_t backup_time_s);
 
 /**
- * 应用程序调用，表示升级流程开始。传入新固件的信息。
+ * \brief 事件处理函数
+ * \param event 、ref bIapEvent_t
+ * \param arg
  */
-int bIapStart(bIapFwInfo_t *pinfo);
-
-/**
- * 固件备份位置的设备号 dev_no
- * 注：备份到内部FLASH  则 dev_no = 0
- * 不需要固件备份，便不需要调用此函数。
- * s: 正常工作s秒后，进行固件备份
- */
-int bIapBackupFwInit(uint32_t dev_no, uint32_t s);
-
-/**
- * \brief 传入新固件的数据用于写入存储区域
- * \param index 新固件数据的索引，即相对文件起始的偏移
- * \return int 0：正常存储  -1：存储异常   -2：校验失败，重新接收
- */
-int bIapUpdateFwData(uint32_t index, uint8_t *pbuf, uint32_t len);
+int bIapEventHandler(bIapEvent_t event, void *arg);
 
 /**
  * 查询当前IAP的状态

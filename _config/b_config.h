@@ -112,9 +112,32 @@
 
 //</h>
 
-//<h> Modules Configuration
+//<h> Algorithm Configuration
+
 //<q> Algorithm Enable/Disable
-#define _BOS_ALGO_ENABLE 0
+#define _BOS_ALGO_ENABLE 1
+
+//<q> Algorithm base64 Enable/Disable
+#define _ALGO_BASE64_ENABLE 0
+
+//<q> Algorithm SHA1 Enable/Disable
+#define _ALGO_SHA1_ENABLE 0
+
+//<q> Algorithm Sort Enable/Disable
+#define _ALGO_SORT_ENABLE 0
+
+//<q> Algorithm Unicode Enable/Disable
+#define _ALGO_UNICODE_ENABLE 0
+
+//<q> Algorithm MD5 Enable/Disable
+#define _ALGO_MD5_ENABLE 0
+
+//<q> Algorithm CRC Enable/Disable
+#define _ALGO_CRC_ENABLE 0
+
+//</h>
+
+//<h> Modules Configuration
 
 //<q> Modules Enable/Disable
 #define _BOS_MODULES_ENABLE 1

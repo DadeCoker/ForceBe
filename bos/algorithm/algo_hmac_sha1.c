@@ -30,7 +30,9 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algorithm/inc/algo_hmac_sha1.h"
+#include "inc/algo_hmac_sha1.h"
+
+#if _ALGO_SHA1_ENABLE
 
 /**
  * \addtogroup ALGORITHM
@@ -467,5 +469,7 @@ void hmac_sha1(uint8_t *key, int key_length, uint8_t *data, int data_length, uin
 /**
  * \}
  */
+
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        algo_base64.h
+ * \file        algo_crc.h
  * \version     v0.0.1
  * \date        2020/04/27
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_ALGO_BASE64_H__
-#define __B_ALGO_BASE64_H__
+#ifndef __B_ALGO_CRC_H__
+#define __B_ALGO_CRC_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,38 +40,64 @@ extern "C" {
 
 #include "b_config.h"
 
-#if _ALGO_BASE64_ENABLE
-
 /**
  * \addtogroup ALGORITHM
  * \{
  */
 
 /**
- * \addtogroup BASE64
+ * \addtogroup CRC
  * \{
  */
 
 /**
- * \defgroup BASE64_Exported_Functions
+ * \defgroup CRC_Exported_Defines
  * \{
  */
-uint16_t base64_encode(const uint8_t *in, uint16_t inlen, char *out);
-uint16_t base64_decode(const char *in, uint16_t inlen, uint8_t *out);
+
+#define ALGO_CRC8 (0)               // Initial value 0x00
+#define ALGO_CRC8_ITU (1)           // Initial value 0x00
+#define ALGO_CRC8_ROHC (2)          // Initial value 0xff
+#define ALGO_CRC8_MAXIM (3)         // Initial value 0x00
+#define ALGO_CRC16_IBM (4)          // Initial value 0x00
+#define ALGO_CRC16_MAXIM (5)        // Initial value 0x00
+#define ALGO_CRC16_USB (6)          // Initial value 0xffff
+#define ALGO_CRC16_MODBUS (7)       // Initial value 0xffff
+#define ALGO_CRC16_CCITT (8)        // Initial value 0x00
+#define ALGO_CRC16_CCITT_FALSE (9)  // Initial value 0xffff
+#define ALGO_CRC16_X25 (10)         // Initial value 0xffff
+#define ALGO_CRC16_XMODEM (11)      // Initial value 0x00
+#define ALGO_CRC16_DNP (12)         // Initial value 0x00
+#define ALGO_CRC32 (13)             // Initial value 0xffffffff
+#define ALGO_CRC32_MPEG2 (14)       // Initial value 0xffffffff
+
+#define INITIAL_VALUE_IS_FF(t)                                                            \
+    (((t) == ALGO_CRC8_ROHC) || ((t) == ALGO_CRC16_USB) || ((t) == ALGO_CRC16_MODBUS) ||  \
+     ((t) == ALGO_CRC16_CCITT_FALSE) || ((t) == ALGO_CRC16_X25) || ((t) == ALGO_CRC32) || \
+     ((t) == ALGO_CRC32_MPEG2))
 
 /**
  * \}
  */
+#if _ALGO_CRC_ENABLE
+/**
+ * \defgroup CRC_Exported_Functions
+ * \{
+ */
+
+uint32_t crc_calculate(uint8_t type, uint32_t crc_val, uint8_t *pbuf, uint32_t len);
 
 /**
  * \}
  */
-
-/**
- * \}
- */
-
 #endif
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 #ifdef __cplusplus
 }

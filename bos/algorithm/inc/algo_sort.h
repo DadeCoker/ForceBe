@@ -65,7 +65,7 @@ extern "C" {
 /**
  * \}
  */
-
+#if _ALGO_SORT_ENABLE
 /**
  * \defgroup SORT_Exported_Functions
  * \{
@@ -78,7 +78,7 @@ void InsertionSort(void *arr, int size, uint8_t type);
 /**
  * \}
  */
-
+#endif
 /**
  * \}
  */

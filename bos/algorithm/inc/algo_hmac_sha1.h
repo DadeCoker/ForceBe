@@ -40,6 +40,8 @@ extern "C" {
 
 #include "b_config.h"
 
+#if _ALGO_SHA1_ENABLE
+
 /**
  * \addtogroup ALGORITHM
  * \{
@@ -68,6 +70,8 @@ void hmac_sha1(uint8_t *key, int key_length, uint8_t *data, int data_length, uin
 /**
  * \}
  */
+
+#endif
 
 #ifdef __cplusplus
 }

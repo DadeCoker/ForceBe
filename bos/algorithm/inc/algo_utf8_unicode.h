@@ -40,6 +40,8 @@ extern "C" {
 
 #include "b_config.h"
 
+#if _ALGO_UNICODE_ENABLE
+
 /**
  * \addtogroup ALGORITHM
  * \{
@@ -68,6 +70,8 @@ int utf8_to_unicode(const uint8_t *utf8, uint32_t *unicode);
 /**
  * \}
  */
+
+#endif
 
 #ifdef __cplusplus
 }

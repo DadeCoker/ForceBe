@@ -1,6 +1,6 @@
 /**
  *!
- * \file        algo_base64.h
+ * \file        algo_md5.h
  * \version     v0.0.1
  * \date        2020/04/27
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,19 +28,18 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_ALGO_BASE64_H__
-#define __B_ALGO_BASE64_H__
+#ifndef __ALGO_MD5_H__
+#define __ALGO_MD5_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*Includes ----------------------------------------------*/
 #include <stdint.h>
 
 #include "b_config.h"
 
-#if _ALGO_BASE64_ENABLE
+#if _ALGO_MD5_ENABLE
 
 /**
  * \addtogroup ALGORITHM
@@ -48,16 +47,17 @@ extern "C" {
  */
 
 /**
- * \addtogroup BASE64
+ * \addtogroup MD5
  * \{
  */
 
 /**
- * \defgroup BASE64_Exported_Functions
+ * \defgroup SORT_Exported_Functions
  * \{
  */
-uint16_t base64_encode(const uint8_t *in, uint16_t inlen, char *out);
-uint16_t base64_decode(const char *in, uint16_t inlen, uint8_t *out);
+
+void md5_16(uint8_t* input, uint32_t ilen, uint8_t output[16]);
+void md5_32(uint8_t* input, uint32_t ilen, uint8_t output[32]);
 
 /**
  * \}
@@ -78,5 +78,3 @@ uint16_t base64_decode(const char *in, uint16_t inlen, uint8_t *out);
 #endif
 
 #endif
-
-/************************ Copyright (c) 2020 Bean *****END OF FILE****/

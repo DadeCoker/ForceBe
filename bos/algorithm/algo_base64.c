@@ -30,9 +30,12 @@
  */
 
 /*Includes ----------------------------------------------*/
-#include "algorithm/inc/algo_base64.h"
+#include "inc/algo_base64.h"
 
 #include <string.h>
+
+#if _ALGO_BASE64_ENABLE
+
 /**
  * \addtogroup ALGORITHM
  * \{
@@ -275,5 +278,7 @@ uint16_t base64_decode(const char *in, uint16_t inlen, uint8_t *out)
 /**
  * \}
  */
+
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
