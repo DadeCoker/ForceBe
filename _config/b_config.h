@@ -55,7 +55,7 @@
 #define _BOS_ALGO_ENABLE 0
 
 //<q> Modules Enable/Disable
-#define _BOS_MODULES_ENABLE 0
+#define _BOS_MODULES_ENABLE 1
 
 //<q> UTC2000 Enable/Disable
 #define _UTC2000_ENABLE 0
