@@ -53,8 +53,7 @@ extern "C" {
  */
 typedef struct
 {
-    uint32_t e_size;  // 最小擦除单位的大小 B
-    uint32_t w_size;  // 支持单次写入的宽度 B : 1 2 4 8
+    uint32_t reserved;
 } bMCUFLASH_HalIf_t;
 /**
  * \}
