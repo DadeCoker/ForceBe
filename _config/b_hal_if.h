@@ -26,7 +26,7 @@
         ._if.simulating_i2c.sda = {B_HAL_GPIOB, B_HAL_PIN7},                                       \
     }
 
-#define HAL_BUTTON_IF                                                                           \
+#define HAL_KEY_IF                                                                              \
     {B_HAL_GPIOC, B_HAL_PIN4, 0}, {B_HAL_GPIOB, B_HAL_PIN10, 0}, {B_HAL_GPIOC, B_HAL_PIN13, 0}, \
     {                                                                                           \
         B_HAL_GPIOA, B_HAL_PIN0, 0                                                              \

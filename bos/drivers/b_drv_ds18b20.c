@@ -199,7 +199,6 @@ static int _bDS18B20Read(bDriverInterface_t *pdrv, uint32_t off, uint8_t *pbuf, 
     {
         return -1;
     }
-    bDRIVER_GET_HALIF(_if, bDS18B20_HalIf_t, pdrv);
 
     if (_bSbusReady(pdrv))
     {
