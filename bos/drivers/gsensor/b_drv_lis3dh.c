@@ -78,7 +78,7 @@
 bLIS3DH_Driver_t bLIS3DH_Driver;
 
 static bLis3dhConfig_t bLis3dhConfig = LIS3DH_DEFAULT_CONFIG;
-static bLis3dh3Axis_t bLis3dhFifoValue[32];
+static bGsensor3Axis_t bLis3dhFifoValue[32];
 static const int Digit2mgTable[4][3] = {
     {1, 4, 16},
     {2, 8, 32},
@@ -280,8 +280,8 @@ static int _bLis3dhIntSet(bLis3dhIntCfg_t val)
 //len has to be a multiple of sizeof(bLis3dh3Axis_t)
 static int _bLis3dhRead(bLIS3DH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    uint8_t c = len / sizeof(bLis3dh3Axis_t);
-    uint8_t c_off = off / sizeof(bLis3dh3Axis_t);
+    uint8_t c = len / sizeof(bGsensor3Axis_t);
+    uint8_t c_off = off / sizeof(bGsensor3Axis_t);
     if(c == 0 || c_off > bLis3dhConfig.fth)
     {
         return 0;
@@ -290,8 +290,8 @@ static int _bLis3dhRead(bLIS3DH_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uin
     {
         c = (bLis3dhConfig.fth + 1) - c_off;
     }
-    memcpy(pbuf, (uint8_t *)&bLis3dhFifoValue[c_off], c * sizeof(bLis3dh3Axis_t));
-    return (c * sizeof(bLis3dh3Axis_t));
+    memcpy(pbuf, (uint8_t *)&bLis3dhFifoValue[c_off], c * sizeof(bGsensor3Axis_t));
+    return (c * sizeof(bGsensor3Axis_t));
 }
 
 static int _bLis3dhCtl(bLIS3DH_Driver_t *pdrv, uint8_t cmd, void *param)
@@ -308,6 +308,15 @@ static int _bLis3dhCtl(bLIS3DH_Driver_t *pdrv, uint8_t cmd, void *param)
                 retval = 0;
             }
             break;
+        case bCMD_CFG_FS:
+            {
+                uint16_t g = ((uint16_t *)param)[0];
+                bLis3dhFS_t fs = (bLis3dhFS_t)G2FS(g);
+                _bLis3dhFullScaleSet(fs);
+                bLis3dhConfig.fs = fs;
+                retval = 0;
+            }
+            break;    
     }
     return retval;
 }
@@ -335,7 +344,7 @@ static void _bLis3dhPolling()
             bLis3dhFifoValue[i].y.i16bit =  (bLis3dhFifoValue[i].y.i16bit >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
             bLis3dhFifoValue[i].z.i16bit =  (bLis3dhFifoValue[i].z.i16bit >> DataShiftTable[bLis3dhConfig.op_mode]) * Digit2mgTable[bLis3dhConfig.fs][bLis3dhConfig.op_mode];
         }
-        bLis3dhDataReadyCallback(bLis3dhFifoValue, fss + 1);
+        bGsensor3AxisCallback(bLis3dhFifoValue, fss + 1);
     }
 }
 /**
@@ -348,9 +357,9 @@ static void _bLis3dhPolling()
  */
 
 #if __GNUC__ 
-void __attribute__((weak)) bLis3dhDataReadyCallback(bLis3dh3Axis_t *xyz, uint8_t number)
+void __attribute__((weak)) bGsensor3AxisCallback(bLis3dh3Axis_t *xyz, uint8_t number)
 #else
-__weak void bLis3dhDataReadyCallback(bLis3dh3Axis_t *xyz, uint8_t number)
+__weak void bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number)
 #endif
 {
     int i = 0;

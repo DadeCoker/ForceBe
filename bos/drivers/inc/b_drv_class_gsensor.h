@@ -48,9 +48,24 @@
  * \defgroup GSENSOR_Exported_TypesDefinitions
  * \{
  */
+
+typedef union
+{
+    int16_t i16bit;
+    uint8_t u8bit[2];
+}bAxisData_t;
+
 typedef struct
 {
-    uint8_t fifo_enable;
+    bAxisData_t x;
+    bAxisData_t y;
+    bAxisData_t z;
+}bGsensor3Axis_t;
+
+ 
+ 
+typedef struct
+{
     uint8_t fifo_mode;
     uint8_t fifo_length;
 }bGSensorCfgFIFO_t;    
@@ -71,7 +86,15 @@ typedef struct
  * \}
  */
    
+/** 
+ * \defgroup GSENSOR_Exported_Functions
+ * \{
+ */
+void bGsensor3AxisCallback(bGsensor3Axis_t *xyz, uint8_t number);
 
+/**
+ * \}
+ */
  
 /**
  * \}

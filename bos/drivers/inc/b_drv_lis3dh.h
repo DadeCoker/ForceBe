@@ -167,6 +167,8 @@ typedef enum {
 }bLis3dhODR_t;
 
 #define HZ2ODR(hz)          ((hz == 1) ? 1 : ((hz == 10) ? 2 : ((hz <= 400) ? (2 + (hz / 25)) : ((hz == 1000) ? 8 : 9))))
+#define G2FS(g)             ((g == 2) ? 0 : ((g == 4) ? 1 : ((g == 8) ? 2 : 3)))
+
 
 typedef enum {
   LIS3DH_2g   = 0,
@@ -181,20 +183,6 @@ typedef enum {
   LIS3DH_NM_10bit   = 1,            // Normal
   LIS3DH_LP_8bit    = 2,            // Low power
 }bLis3dhOpMode_t;
-
-typedef union
-{
-    int16_t i16bit;
-    uint8_t u8bit[2];
-}bLis3dhAxis_t;
-
-typedef struct
-{
-    bLis3dhAxis_t x;
-    bLis3dhAxis_t y;
-    bLis3dhAxis_t z;
-}bLis3dh3Axis_t;
-
 
 
 typedef struct
@@ -267,7 +255,7 @@ typedef struct
 
 
 #define LIS3DH_DEFAULT_CONFIG       {.fifo_enable = 1, \
-                                    .fth = 24, \
+                                    .fth = 12, \
                                     .odr = LIS3DH_ODR_25Hz, \
                                     .fs = LIS3DH_2g, \
                                     .op_mode = LIS3DH_LP_8bit,\
@@ -279,15 +267,7 @@ typedef struct
  * \}
  */
 
-/** 
- * \defgroup LIS3DH_Exported_Functions
- * \{
- */
-void bLis3dhDataReadyCallback(bLis3dh3Axis_t *xyz, uint8_t number);
 
-/**
- * \}
- */
                                     
 
 /**
