@@ -70,7 +70,6 @@ typedef struct bGUIStruct
     const uint16_t     lcd_x_size;
     const uint16_t     lcd_y_size;
     uint8_t            lcd_disp_dir;
-    uint8_t            gui_id;
     uint16_t           touch_ad_x[2];
     uint16_t           touch_ad_y[2];
     UG_GUI             gui_handle;
@@ -93,14 +92,16 @@ typedef bGUIStruct_t bGUIInstance_t;
 #define LCD_DISP_H (0)
 #define LCD_DISP_V (1)
 
-#define bGUI_INSTANCE(name, _lcd, _touch, _x_size, _y_size, _touch_type) \
-    bGUIInstance_t name = {                                              \
-        .lcd_dev_no   = _lcd,                                            \
-        .touch_dev_no = _touch,                                          \
-        .touch_type   = _touch_type,                                     \
-        .lcd_x_size   = _x_size,                                         \
-        .lcd_y_size   = _y_size,                                         \
-    };
+#define bGUI_ADD_DEVICE(_lcd_dev_no, _touch_dev_no, _x_size, _y_size, _touch_type) \
+    static bGUIInstance_t gui_##_lcd_dev_no = {                                    \
+        .lcd_dev_no   = _lcd_dev_no,                                               \
+        .touch_dev_no = _touch_dev_no,                                             \
+        .touch_type   = _touch_type,                                               \
+        .lcd_x_size   = _x_size,                                                   \
+        .lcd_y_size   = _y_size,                                                   \
+        .pnext        = NULL,                                                      \
+    };                                                                             \
+    bGUIRegist(&gui_##_lcd_dev_no);
 
 /**
  * \}
@@ -110,15 +111,21 @@ typedef bGUIStruct_t bGUIInstance_t;
  * \defgroup GUI_Exported_Functions
  * \{
  */
-// 注册GUI实例，返回GUI ID
+// 建议不要直接调用此接口，使用 bGUI_ADD_DEVICE 代替
 int bGUIRegist(bGUIInstance_t *pInstance);
-// 选择当前操作的目标，传入GUI ID
-int bGUISelect(uint8_t id);
+
+// 选择当前操作的目标
+int bGUISelect(uint32_t lcd_dev_no);
+
 // 设置电阻屏触摸的AD值范围
-int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
+int bGUITouchRange(uint32_t lcd_dev_no, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
                    uint16_t y_ad_max);
+
 // 设置屏幕显示方向，默认是LCD_DISP_V
-int bGUIDispDir(uint8_t id, uint8_t dir);
+int bGUIDispDir(uint32_t lcd_dev_no, uint8_t dir);
+
+// 如果将汉字字库存放在FLASH，通过此接口传入dev_no
+int bGUISetFontDevice(uint32_t dev_no);
 
 /**
  * \}

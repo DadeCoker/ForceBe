@@ -86,7 +86,8 @@ static bGUIInstance_t *pGUIHead    = NULL;
 static bGUIInstance_t *pGUICurrent = NULL;
 
 #if GUI_FONT == 3
-UG_FONT bGUI_XBF_Font;
+UG_FONT         bGUI_XBF_Font;
+static uint32_t bGUI_XBF_FontDevice = 0;
 #endif
 /**
  * \}
@@ -106,12 +107,12 @@ UG_FONT bGUI_XBF_Font;
  * \{
  */
 
-static bGUIInstance_t *_GUIId2Instance(uint8_t id)
+static bGUIInstance_t *_GUIId2Instance(uint32_t dev_no)
 {
     bGUIInstance_t *p = pGUIHead;
     while (p != NULL)
     {
-        if (p->gui_id == id)
+        if (p->lcd_dev_no == dev_no)
         {
             return p;
         }
@@ -266,21 +267,12 @@ int bGUIRegist(bGUIInstance_t *pInstance)
     if (pGUIHead == NULL)
     {
         pGUIHead         = pInstance;
-        pGUIHead->gui_id = 0;
         pGUIHead->pnext  = NULL;
     }
     else
     {
         pInstance->pnext = pGUIHead->pnext;
         pGUIHead->pnext  = pInstance;
-        if (pInstance->pnext == NULL)
-        {
-            pInstance->gui_id = 1;
-        }
-        else
-        {
-            pInstance->gui_id = pInstance->pnext->gui_id + 1;
-        }
     }
     pInstance->lcd_disp_dir            = LCD_DISP_V;
     pInstance->gui_handle.char_h_space = 0;
@@ -315,15 +307,14 @@ int bGUIRegist(bGUIInstance_t *pInstance)
     UG_FontSelect(&bGUI_XBF_Font);
 #endif
     pGUICurrent = pInstance;
-    return pInstance->gui_id;
+    return 0;
 }
 
 #if GUI_FONT == 3
-#include "b_device.h"
 __WEAKDEF int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     int fd = -1;
-    fd     = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    fd     = bOpen(bGUI_XBF_FontDevice, BCORE_FLAG_RW);
     if (fd < 0)
     {
         b_log_e("open err\r\n");
@@ -336,9 +327,9 @@ __WEAKDEF int UG_ReadXBF(uint32_t off, uint8_t *pbuf, uint16_t len)
 }
 #endif
 
-int bGUISelect(uint8_t id)
+int bGUISelect(uint32_t lcd_dev_no)
 {
-    bGUIInstance_t *p = _GUIId2Instance(id);
+    bGUIInstance_t *p = _GUIId2Instance(lcd_dev_no);
     if (p == NULL)
     {
         return -1;
@@ -348,11 +339,11 @@ int bGUISelect(uint8_t id)
     return 0;
 }
 
-int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
+int bGUITouchRange(uint32_t lcd_dev_no, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_ad_min,
                    uint16_t y_ad_max)
 {
 
-    bGUIInstance_t *p = _GUIId2Instance(id);
+    bGUIInstance_t *p = _GUIId2Instance(lcd_dev_no);
     if (p == NULL)
     {
         return -1;
@@ -371,14 +362,24 @@ int bGUITouchRange(uint8_t id, uint16_t x_ad_min, uint16_t x_ad_max, uint16_t y_
     return 0;
 }
 
-int bGUIDispDir(uint8_t id, uint8_t dir)
+int bGUIDispDir(uint32_t lcd_dev_no, uint8_t dir)
 {
-    bGUIInstance_t *p = _GUIId2Instance(id);
+    bGUIInstance_t *p = _GUIId2Instance(lcd_dev_no);
     if (p == NULL || (dir != LCD_DISP_H && dir != LCD_DISP_V))
     {
         return -1;
     }
     p->lcd_disp_dir = dir;
+    return 0;
+}
+
+int bGUISetFontDevice(uint32_t dev_no)
+{
+#if GUI_FONT == 3
+    bGUI_XBF_FontDevice = dev_no;
+#else
+    (void)dev_no;
+#endif
     return 0;
 }
 
