@@ -71,6 +71,7 @@ typedef bStatReturn_t (*pStatFunc_t)(bStatParam_t param, uint8_t prev_stat, uint
 
 typedef struct
 {
+    uint8_t     stat;       //当前状态
     uint8_t     next_stat;  //下一级状态
     uint8_t     prev_stat;  //上一级状态
     pStatFunc_t f;          //执行函数
@@ -79,13 +80,13 @@ typedef struct
 
 typedef struct bUtilStat
 {
-    bStatList_t      *plist;
-    uint8_t           list_num;
-    uint8_t           stat;
-    uint8_t           prev_stat;
-    uint32_t          count;
-    uint32_t          tick;
-    struct bUtilStat *next;
+    const bStatList_t *plist;
+    uint8_t            list_num;
+    uint8_t            stat;
+    uint8_t            prev_stat;
+    uint32_t           count;
+    uint32_t           tick;
+    struct bUtilStat  *next;
 } bUtilStat_t;
 
 typedef bUtilStat_t bUtilStatInstance_t;

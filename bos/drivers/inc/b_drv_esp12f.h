@@ -72,7 +72,7 @@ typedef bDriverInterface_t bESP12F_Driver_t;
 #define ESP_CMD_RETRY (2)
 
 #define ESP_CMD_RESULT_NULL (0)
-#define EPS_CMD_RESULT_OK (1)
+#define ESP_CMD_RESULT_OK (1)
 #define ESP_CMD_RESULT_ERR (2)
 /**
  * \}

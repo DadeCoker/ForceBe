@@ -309,7 +309,7 @@ static void _bEspAtCb(uint8_t id, uint8_t result)
             {
                 if (bEspOptInfo.plist[bEspOptInfo.index] == OPT_NULL)
                 {
-                    _bEspCmdFinished(EPS_CMD_RESULT_OK);
+                    _bEspCmdFinished(ESP_CMD_RESULT_OK);
                 }
             }
             retry = 0;

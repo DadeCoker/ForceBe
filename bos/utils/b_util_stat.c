@@ -31,6 +31,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "utils/inc/b_util_stat.h"
+
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
 
@@ -71,10 +72,10 @@ static void _bUtilStatPolling()
 {
     bStatReturn_t        retval = RETVAL_NULL;
     bUtilStatInstance_t *p      = pStatHead;
-    bStatList_t         *pstat  = NULL;
+    const bStatList_t   *pstat  = NULL;
     while (p != NULL)
     {
-        if(p->stat >= p->list_num)
+        if (p->stat >= p->list_num)
         {
             p = p->next;
             continue;
@@ -108,7 +109,7 @@ static void _bUtilStatPolling()
                 pstat->f(PARAM_EXIT, p->prev_stat, p->count);
             }
             p->prev_stat = p->stat;
-            if(retval == RETVAL_NEXT)
+            if (retval == RETVAL_NEXT)
             {
                 p->stat = pstat->next_stat;
             }
