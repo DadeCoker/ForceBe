@@ -37,6 +37,7 @@ extern "C" {
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
+#include <stddef.h>
 #if _HEAP_ENABLE
 /**
  * \addtogroup BABYOS
@@ -109,7 +110,7 @@ extern "C" {
  * \defgroup HEAP_Exported_Functions
  * \{
  */
-void *bMalloc(uint32_t xWantedSize);
+void *bMalloc(size_t xWantedSize);
 void  bFree(void *pv);
 /**
  * \}

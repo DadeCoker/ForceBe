@@ -108,6 +108,16 @@ typedef void (*ansi_fun_t)(ansi_st *);
 #define NR_ANSI_HIDE_COURSER "\033[?25l"
 #define NR_ANSI_SHOW_COURSER "\033[?25h"
 
+#if defined(__GNUC__)
+#define NR_ANSI_SET_FONT(cmd) "null"
+#define NR_ANSI_CLR_R_NCHAR(cmd) "null"
+#define NR_ANSI_CLR_R_MV_L_NCHAR(cmd) "null"
+
+/** move course code */
+#define NR_ANSI_MV_L_N(n) "null"
+#define NR_ANSI_MV_R_N(n) "null"
+
+#else
 #define NR_ANSI_SET_FONT(cmd) ((const char *)"\033["##cmd##"I")
 #define NR_ANSI_CLR_R_NCHAR(cmd) ((const char *)"\033["## #cmd##"X")
 #define NR_ANSI_CLR_R_MV_L_NCHAR(cmd) ((const char *)"\033["## #cmd##"P")
@@ -115,6 +125,7 @@ typedef void (*ansi_fun_t)(ansi_st *);
 /** move course code */
 #define NR_ANSI_MV_L_N(n) ((const char *)"\033["## #n##"D")
 #define NR_ANSI_MV_R_N(n) ((const char *)"\033["## #n##"C")
+#endif
 
 #define NR_ANSI_NORMAL "0"
 #define NR_ANSI_SONG "1"
