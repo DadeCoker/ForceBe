@@ -36,14 +36,16 @@ $(SOURCE_ROOT)/bos/thirdparty/flexiblebutton/*.c \
 $(SOURCE_ROOT)/bos/thirdparty/littlefs/*.c \
 $(SOURCE_ROOT)/bos/thirdparty/nr_micro_shell/src/*.c \
 $(SOURCE_ROOT)/bos/drivers/sfud/*.c \
-$(SOURCE_ROOT)/bos/thirdparty/ugui/*.c 
+$(SOURCE_ROOT)/bos/thirdparty/ugui/*.c \
+$(SOURCE_ROOT)/bos/thirdparty/coremark/*.c \
+$(SOURCE_ROOT)/bos/thirdparty/cjson/*.c  
 
 BOS_DRV_SOURCE_DIR = \
 $(SOURCE_ROOT)/bos/drivers/b_drv_testflash.c
 
 EXAMPLE_SOURCE_DIR = \
 $(SOURCE_ROOT)/test/*.c \
-$(SOURCE_ROOT)/test/kv/*.c
+./*.c
 
 
 C_SOURCES =  $(wildcard $(BOS_SOURCE_DIR) $(BOS_DRV_SOURCE_DIR) $(EXAMPLE_SOURCE_DIR))
@@ -94,7 +96,7 @@ C_INCLUDES =  \
 -I$(SOURCE_ROOT)/bos \
 -I$(SOURCE_ROOT)/test/ \
 -I../ \
--I$(SOURCE_ROOT)/test/kv/_config/ \
+-I./_config/ \
 
 # compile gcc flags
 ASFLAGS = $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
@@ -151,7 +153,13 @@ $(BUILD_DIR):
 #######################################
 clean:
 	-rm -fR $(BUILD_DIR)
-  
+
+#######################################
+# menuconfig
+#######################################
+menuconfig:
+	cd _config ; ./b_config.sh
+
 #######################################
 # dependencies
 #######################################
