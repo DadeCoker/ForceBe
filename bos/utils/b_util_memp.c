@@ -48,11 +48,16 @@
  * \defgroup MEMP_Private_TypesDefinitions
  * \{
  */
-typedef struct
+#pragma pack(1)
+typedef struct head
 {
-    uint16_t index;
-    uint16_t maxlen;
-} bMempUnitInfo_t;
+    uint32_t     status : 8;
+    uint32_t     size : 24;
+    uint32_t     address;
+    struct head *next;
+    struct head *prev;
+} bMempUnitHead_t;
+#pragma pack()
 
 /**
  * \}
@@ -63,7 +68,9 @@ typedef struct
  * \{
  */
 #define MEMP_SIZE (((MEMP_MAX_SIZE) >> 2) << 2)
-#define MEMP_UNIT_NUM ((MEMP_SIZE) / (MEMP_BLOCK_SIZE))
+
+#define MEMP_UNIT_USED (0xAA)
+#define MEMP_UNIT_FREE (0x55)
 
 #if defined(__CC_ARM)
 __attribute__((aligned(4))) static uint8_t bMempBuf[MEMP_SIZE];
@@ -91,10 +98,7 @@ __attribute__((aligned(4))) static uint8_t bMempBuf[MEMP_SIZE];
  * \defgroup MEMP_Private_Variables
  * \{
  */
-static bMempUnitInfo_t    bMempUnitInfo = {0, MEMP_UNIT_NUM};
-static uint16_t           bMempUnit[MEMP_UNIT_NUM];
-static uint8_t            bMempInitFlag = 0;
-static bMempMonitorInfo_t bMempMonitorInfo;
+static uint8_t bMempInitFlag = 0;
 /**
  * \}
  */
@@ -113,99 +117,95 @@ static bMempMonitorInfo_t bMempMonitorInfo;
  * \{
  */
 
-static void _bMempMonitor()
+static void *_bMempAlloc(uint32_t size)
 {
-    uint16_t num = 0, i = 0;
-    for (i = 0; i < MEMP_UNIT_NUM; i++)
+    bMempUnitHead_t *phead      = (bMempUnitHead_t *)bMempBuf;
+    void            *pret       = NULL;
+    uint32_t         real_size  = size + sizeof(bMempUnitHead_t);
+    bMempUnitHead_t *p_new_head = NULL;
+    while (phead)
     {
-        if (bMempUnit[i] == 0)
+        if (phead->status == MEMP_UNIT_USED)
         {
-            num += 1;
-        }
-    }
-    if (num < bMempMonitorInfo.unused_unit)
-    {
-        bMempMonitorInfo.unused_unit = num;
-    }
-}
-
-static void _bMempUpdateInfo()
-{
-    int      i         = 0;
-    uint16_t max_len   = bMempUnitInfo.maxlen;
-    uint16_t max_index = bMempUnitInfo.index;
-    uint16_t count = 0, index = 0;
-
-    for (i = 0; i < MEMP_UNIT_NUM; i++)
-    {
-        if (bMempUnit[i] == 0)
-        {
-            if (count == 0)
-            {
-                index = i;
-            }
-            count++;
+            phead = phead->next;
         }
         else
         {
-            if (count > max_len)
+            if (phead->size == size)
             {
-                max_len   = count;
-                max_index = index;
+                phead->status = MEMP_UNIT_USED;
+                pret          = (void *)(phead->address);
             }
-            count = 0;
-        }
-    }
-    if (count > max_len)
-    {
-        max_len   = count;
-        max_index = index;
-    }
-    bMempUnitInfo.maxlen = max_len;
-    bMempUnitInfo.index  = max_index;
-}
+            else if (phead->size < real_size)
+            {
+                phead = phead->next;
+            }
+            else
+            {
+                phead->status = MEMP_UNIT_USED;
+                pret          = (void *)(phead->address);
 
-static int _bMempAlloc(uint16_t num)
-{
-    int retval = -1, i = 0;
-    if (num > bMempUnitInfo.maxlen)
-    {
-        _bMempUpdateInfo();
-    }
-    if (num <= bMempUnitInfo.maxlen)
-    {
-        for (i = 0; i < num; i++)
+                // create a new unit
+                p_new_head          = (bMempUnitHead_t *)(phead->address + size);
+                p_new_head->status  = MEMP_UNIT_FREE;
+                p_new_head->size    = phead->size - size - sizeof(bMempUnitHead_t);
+                p_new_head->address = ((uint32_t)p_new_head) + sizeof(bMempUnitHead_t);
+                p_new_head->next    = phead->next;
+                p_new_head->prev    = phead;
+                if (phead->next != NULL)
+                {
+                    phead->next->prev = p_new_head;
+                }
+                phead->size = size;
+                phead->next = p_new_head;
+            }
+        }
+        if (pret != NULL)
         {
-            bMempUnit[i + bMempUnitInfo.index] = bMempUnitInfo.index + 1;
+            break;
         }
-        retval = bMempUnitInfo.index;
-        bMempUnitInfo.maxlen -= num;
-        bMempUnitInfo.index += num;
     }
-    return retval;
+    return pret;
 }
 
-static void _bMempFree(uint32_t index)
+static void _bMempFree(uint32_t addr)
 {
-    uint16_t id = 0, i;
-    if (index >= MEMP_UNIT_NUM)
+    bMempUnitHead_t *phead = (bMempUnitHead_t *)(addr - sizeof(bMempUnitHead_t));
+    if (phead->status != MEMP_UNIT_USED || phead->address != addr)
     {
         return;
     }
-    id = bMempUnit[index];
-    if (id == 0)
+    phead->status = MEMP_UNIT_FREE;
+    while (phead->prev != NULL && phead->prev->status == MEMP_UNIT_FREE)
     {
-        return;
+        phead = phead->prev;
     }
-    for (i = 0; i < MEMP_UNIT_NUM; i++)
+    while (phead->next != NULL && phead->next->status == MEMP_UNIT_FREE)
     {
-        if (bMempUnit[i] == id)
+        phead->size += phead->next->size + sizeof(bMempUnitHead_t);
+        phead->next = phead->next->next;
+        if (phead->next != NULL)
         {
-            bMempUnit[i] = 0;
-            memset(&bMempBuf[i * MEMP_BLOCK_SIZE], 0, MEMP_BLOCK_SIZE);
+            phead->next->prev = phead;
         }
     }
 }
+
+static uint32_t _bGetFreeSize()
+{
+    bMempUnitHead_t *phead = (bMempUnitHead_t *)bMempBuf;
+    uint32_t         ret   = 0;
+    while (phead)
+    {
+        if (phead->status == MEMP_UNIT_FREE)
+        {
+            ret += phead->size;
+        }
+        phead = phead->next;
+    }
+    return ret;
+}
+
 /**
  * \}
  */
@@ -216,161 +216,42 @@ static void _bMempFree(uint32_t index)
  */
 void *bMalloc(uint32_t size)
 {
-    int valid_index = -1;
-    if (size > MEMP_SIZE || size == 0)
+    int              valid_index = -1;
+    bMempUnitHead_t *phead       = (bMempUnitHead_t *)bMempBuf;
+    if (size == 0)
     {
         return NULL;
     }
     if (bMempInitFlag == 0)
     {
         memset(bMempBuf, 0, sizeof(bMempBuf));
-        memset(bMempUnit, 0, sizeof(bMempUnit));
-
-        bMempUnitInfo.index          = 0;
-        bMempUnitInfo.maxlen         = MEMP_UNIT_NUM;
-        bMempMonitorInfo.unused_unit = MEMP_UNIT_NUM;
-        bMempInitFlag                = 1;
+        phead->status  = MEMP_UNIT_FREE;
+        phead->address = ((uint32_t)phead) + sizeof(bMempUnitHead_t);
+        phead->size    = MEMP_SIZE - sizeof(bMempUnitHead_t);
+        phead->next    = NULL;
+        phead->prev    = NULL;
+        bMempInitFlag  = 1;
     }
-    valid_index = _bMempAlloc((size + MEMP_BLOCK_SIZE - 1) / (MEMP_BLOCK_SIZE));
-    if (valid_index < 0)
-    {
-        return NULL;
-    }
-#if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
-    _bMempMonitor();
-#endif
-    return ((void *)(&bMempBuf[valid_index * MEMP_BLOCK_SIZE]));
+    return _bMempAlloc(size);
 }
 
 void bFree(void *paddr)
 {
-    uint32_t index = 0;
     if (paddr == NULL || bMempInitFlag == 0)
     {
         return;
     }
-    index = ((uint32_t)paddr - (uint32_t)(&bMempBuf[0])) / MEMP_BLOCK_SIZE;
-    _bMempFree(index);
+    _bMempFree((uint32_t)paddr);
 }
 
-#if (defined(_MEMP_MONITOR_ENABLE) && (_MEMP_MONITOR_ENABLE == 1))
-void bMempGetMonitorInfo(bMempMonitorInfo_t *pinfo)
+uint32_t bGetFreeSize()
 {
-    if (pinfo == NULL)
-    {
-        return;
-    }
-    pinfo->unused_unit = bMempMonitorInfo.unused_unit;
-}
-#endif
-
-int bMempListInit(bMempList_t *phead)
-{
-    if (phead == NULL)
-    {
-        return -1;
-    }
-    phead->p          = NULL;
-    phead->total_size = 0;
-    phead->size       = 0;
-    phead->next       = phead;
-    phead->prev       = phead;
-    return 0;
+    return _bGetFreeSize();
 }
 
-int bMempListAdd(bMempList_t *phead, uint8_t *p, uint32_t len)
+__WEAKDEF void bMallocFailedHook()
 {
-    void        *ptmp  = NULL;
-    bMempList_t *pnode = NULL;
-    if (phead == NULL || p == NULL || len == 0)
-    {
-        return -1;
-    }
-    ptmp = bMalloc(len);
-    if (ptmp == NULL)
-    {
-        return -2;
-    }
-    memcpy(ptmp, p, len);
-    if (phead->p != NULL)
-    {
-        pnode = (bMempList_t *)bMalloc(sizeof(bMempList_t));
-        if (pnode == NULL)
-        {
-            bFree(ptmp);
-            return -2;
-        }
-        pnode->next       = phead;
-        pnode->prev       = phead->prev;
-        phead->prev->next = pnode;
-        phead->prev       = pnode;
-        pnode->size       = len;
-        pnode->total_size = 0;
-        pnode->p          = ptmp;
-    }
-    else
-    {
-        phead->p    = ptmp;
-        phead->size = len;
-    }
-    phead->total_size += len;
-    return 0;
-}
-
-uint8_t *bMempList2Array(const bMempList_t *phead)
-{
-    uint8_t           *p     = NULL;
-    const bMempList_t *ptmp  = phead;
-    uint32_t           index = 0;
-    if (phead == NULL)
-    {
-        return NULL;
-    }
-    if (phead->total_size == 0)
-    {
-        return NULL;
-    }
-    p = bMalloc(phead->total_size);
-    if (p == NULL)
-    {
-        return NULL;
-    }
-    memcpy(p + index, phead->p, phead->size);
-    index += phead->size;
-    while (ptmp->next != phead)
-    {
-        ptmp = ptmp->next;
-        memcpy(&p[index], ptmp->p, ptmp->size);
-        index += ptmp->size;
-    }
-    return p;
-}
-
-int bMempListFree(bMempList_t *phead)
-{
-    bMempList_t *ptmp = phead;
-    if (phead == NULL)
-    {
-        return -1;
-    }
-
-    if (phead->p != NULL)
-    {
-        bFree(phead->p);
-        phead->p          = NULL;
-        phead->size       = 0;
-        phead->total_size = 0;
-    }
-
-    while (phead->next != phead)
-    {
-        ptmp        = phead->next;
-        phead->next = ptmp->next;
-        bFree(ptmp->p);
-        bFree(ptmp);
-    }
-    phead->prev = phead;
-    return 0;
+    ;
 }
 
 /**

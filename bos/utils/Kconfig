@@ -29,18 +29,9 @@ config _MEMP_ENABLE
     bool "MemoryPool Enable/Disable"
     default n
 
-config MEMP_BLOCK_SIZE
-    int "MemoryPool Block Size (B)"
-    default 32
-    depends on _MEMP_ENABLE
-
 config MEMP_MAX_SIZE
-    int "MemoryPool Max Size (B)"
+    int "Memory Max Size (B)"
     default 1024
-    depends on _MEMP_ENABLE
-config _MEMP_MONITOR_ENABLE
-    bool "MemoryPool Monitor Enable/Disable"
-    default y
     depends on _MEMP_ENABLE
 
 config _AT_ENABLE
