@@ -35,7 +35,6 @@
 #include "b_section.h"
 #include "hal/inc/b_hal.h"
 
-
 #if _PWM_ENABLE
 /**
  * \addtogroup BABYOS
@@ -130,17 +129,19 @@ static void _bSoftPwmCore()
     bSoftPwmStruct_t *ptmp = pSoftPwm;
     while (ptmp)
     {
-        if (bHalGetSysTick() - ptmp->tick <= MS2TICKS(ptmp->ccr))
+        if (ptmp->flag == 0)
         {
-            ptmp->handler1();
-        }
-        else if (bHalGetSysTick() - ptmp->tick <= MS2TICKS(ptmp->period))
-        {
-            ptmp->handler2();
+            if (bHalGetSysTick() - ptmp->tick >= MS2TICKS(ptmp->ccr))
+            {
+                ptmp->handler(PWM_HANDLER_CCR);
+                ptmp->flag = 1;
+            }
         }
 
         if (bHalGetSysTick() - ptmp->tick >= MS2TICKS(ptmp->period))
         {
+            ptmp->handler(PWM_HANDLER_PERIOD);
+            ptmp->flag = 0;
             if (ptmp->repeat)
             {
                 if (ptmp->repeat > 1)
@@ -173,9 +174,9 @@ BOS_REG_POLLING_FUNC(_bSoftPwmCore);
  * \{
  */
 
-int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler1, pPwmHandler handler2)
+int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler)
 {
-    if (pPwmInstance == NULL || handler1 == NULL || handler2 == NULL)
+    if (pPwmInstance == NULL || handler == NULL)
     {
         return -1;
     }
@@ -189,9 +190,9 @@ int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler1, pPwmHa
         pPwmInstance->next = pSoftPwm->next;
         pSoftPwm->next     = pPwmInstance;
     }
-    pPwmInstance->handler1 = handler1;
-    pPwmInstance->handler2 = handler2;
-    pPwmInstance->tick     = bHalGetSysTick();
+    pPwmInstance->handler = handler;
+    pPwmInstance->tick    = bHalGetSysTick();
+    pPwmInstance->flag    = 0;
     return 0;
 }
 

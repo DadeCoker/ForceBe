@@ -62,16 +62,16 @@ extern "C" {
  * \{
  */
 
-typedef void (*pPwmHandler)(void);
+typedef void (*pPwmHandler)(uint8_t type);
 
 typedef struct bSoftPwmStruct
 {
-    uint8_t                  repeat;		//0 一直重复			
-    uint32_t                 tick;
-    uint32_t                 period;
-	uint32_t                 ccr;
-    pPwmHandler            	handler1;
-	pPwmHandler            	handler2;
+    uint32_t               repeat;
+    uint32_t               tick;
+    uint32_t               period;
+    uint32_t               ccr;
+    pPwmHandler            handler;
+    uint32_t               flag;
     struct bSoftPwmStruct *next;
 } bSoftPwmStruct_t;
 
@@ -86,8 +86,11 @@ typedef bSoftPwmStruct_t bSoftPwmInstance_t;
  * \{
  */
 
+#define PWM_HANDLER_CCR (0)
+#define PWM_HANDLER_PERIOD (1)
+
 #define bPWM_INSTANCE(name, _period, _ccr, _repeat) \
-    bSoftPwmInstance_t name = {.period = _period,.ccr = _ccr, .repeat = _repeat};
+    bSoftPwmInstance_t name = {.period = _period, .ccr = _ccr, .repeat = _repeat};
 
 /**
  * \}
@@ -98,7 +101,7 @@ typedef bSoftPwmStruct_t bSoftPwmInstance_t;
  * \{
  */
 ///< pPWMInstance \ref bPWM_INSTANCE
-int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler1, pPwmHandler handler2);
+int bSoftPwmStart(bSoftPwmInstance_t *pPwmInstance, pPwmHandler handler);
 int bSoftPwmStop(bSoftPwmInstance_t *pPwmInstance);
 int bSoftPwmReset(bSoftPwmInstance_t *pPwmInstance);
 int bSoftPwmSetPeriod(bSoftPwmInstance_t *pPwmInstance, uint32_t ms);
