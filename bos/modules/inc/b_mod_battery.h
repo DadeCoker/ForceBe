@@ -6,19 +6,19 @@
  * \author     Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,30 +32,28 @@
 #define __B_MOD_BATTERY_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
-
 /*Includes ----------------------------------------------*/
-#include "b_config.h"   
+#include "b_config.h"
 #if _BATTERY_ENABLE
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup BATTERY
  * \{
  */
 
-
-/** 
+/**
  * \defgroup BATTERY_Exported_TypesDefinitions
  * \{
  */
@@ -63,42 +61,41 @@ typedef uint16_t (*pBatteryGetmV_t)(void);
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup BATTERY_Exported_Defines
  * \{
  */
 
-/** 
+/**
  * \defgroup BATTERY_STATUS_Defines
  * \{
  */
 
-#define BATTERY_STA_NORMAL             0   
-#define BATTERY_STA_LOW                1
+#define BATTERY_STA_NORMAL 0
+#define BATTERY_STA_LOW 1
 
 /**
  * \}
  */
 
-
 /**
  * \}
  */
-    
-/** 
+
+/**
  * \defgroup BATTERY_Exported_Functions
  * \{
  */
- 
-int bBatteryInit(pBatteryGetmV_t f);
-uint8_t bBatGetStatus(void);
+
+int      bBatteryInit(pBatteryGetmV_t f);
+uint8_t  bBatGetStatus(void);
 uint16_t bBatGetVoltageValue(void);
 
 /**
  * \}
  */
- 
+
 /**
  * \}
  */
@@ -114,10 +111,8 @@ uint16_t bBatGetVoltageValue(void);
 #endif
 
 #ifdef __cplusplus
-	}
+}
 #endif
 
-#endif  
+#endif
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-
-

@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,106 +28,106 @@
  * SOFTWARE.
  *******************************************************************************
  */
-  
-/*Includes ----------------------------------------------*/ 
-#include "b_mod_battery.h" 
+
+/*Includes ----------------------------------------------*/
+#include "b_mod_battery.h"
+
 #include "b_utils.h"
 #if _BATTERY_ENABLE
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup BATTERY
  * \{
  */
 
-
-/** 
+/**
  * \defgroup BATTERY_Private_TypesDefinitions
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup BATTERY_Private_Defines
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup BATTERY_Private_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup BATTERY_Private_Variables
- * \{
- */
-static uint8_t bBatteryStatus = BATTERY_STA_LOW;
-static uint16_t bBatteryVoltage = 0;
-static pBatteryGetmV_t bpBatteryGetmV = NULL; 
 
 /**
  * \}
  */
-   
-/** 
- * \defgroup BATTERY_Private_FunctionPrototypes
+
+/**
+ * \defgroup BATTERY_Private_Defines
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
+ * \defgroup BATTERY_Private_Macros
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup BATTERY_Private_Variables
+ * \{
+ */
+static uint8_t         bBatteryStatus  = BATTERY_STA_LOW;
+static uint16_t        bBatteryVoltage = 0;
+static pBatteryGetmV_t bpBatteryGetmV  = NULL;
+
+/**
+ * \}
+ */
+
+/**
+ * \defgroup BATTERY_Private_FunctionPrototypes
+ * \{
+ */
+
+/**
+ * \}
+ */
+
+/**
  * \defgroup BATTERY_Private_Functions
  * \{
  */
 static void _bBatteryCalculate()
 {
-    uint32_t mv = 0;
-    uint16_t min_tmp = 0xffff, max_tmp = 0, tmp = 0, i;
+    uint32_t        mv      = 0;
+    uint16_t        min_tmp = 0xffff, max_tmp = 0, tmp = 0, i;
     static uint32_t tick = (uint32_t)(0 - MS2TICKS(_BATTERY_D_CYCLE));
-    if(bUtilGetTick() - tick >= MS2TICKS(_BATTERY_D_CYCLE))
+    if (bUtilGetTick() - tick >= MS2TICKS(_BATTERY_D_CYCLE))
     {
         tick = bUtilGetTick();
-        for(i = 0;i < 5;i++)
+        for (i = 0; i < 5; i++)
         {
-            if(bpBatteryGetmV)
+            if (bpBatteryGetmV)
             {
                 tmp = bpBatteryGetmV();
             }
             mv += tmp;
-            if(tmp > max_tmp)
+            if (tmp > max_tmp)
             {
                 max_tmp = tmp;
             }
-            if(tmp < min_tmp)
+            if (tmp < min_tmp)
             {
                 min_tmp = tmp;
             }
         }
         tmp = (mv - min_tmp - max_tmp) / 3;
 
-        if(tmp >= _BATTERY_THRESHOLD)
+        if (tmp >= _BATTERY_THRESHOLD)
         {
             bBatteryStatus = BATTERY_STA_NORMAL;
         }
@@ -137,15 +137,15 @@ static void _bBatteryCalculate()
         }
         bBatteryVoltage = tmp;
     }
-} 
+}
 
 BOS_REG_POLLING_FUNC(_bBatteryCalculate);
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup BATTERY_Exported_Functions
  * \{
  */
@@ -155,23 +155,19 @@ int bBatteryInit(pBatteryGetmV_t f)
     return 0;
 }
 
-
-
-
 /**
- * \brief Get Status 
+ * \brief Get Status
  * \retval Battery Status
  *          \arg \ref bBAT_STA_NORMAL
- *          \arg \ref bBAT_STA_LOW 
+ *          \arg \ref bBAT_STA_LOW
  */
 uint8_t bBatGetStatus()
 {
     return bBatteryStatus;
 }
 
-
 /**
- * \brief Get Voltage 
+ * \brief Get Voltage
  * \retval Battery voltage value (mv)
  */
 uint16_t bBatGetVoltageValue()
@@ -179,13 +175,6 @@ uint16_t bBatGetVoltageValue()
     return bBatteryVoltage;
 }
 
-
-
-/**
- * \}
- */
-
-
 /**
  * \}
  */
@@ -194,6 +183,9 @@ uint16_t bBatGetVoltageValue()
  * \}
  */
 
+/**
+ * \}
+ */
 
 /**
  * \}
@@ -201,4 +193,3 @@ uint16_t bBatGetVoltageValue()
 #endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-

@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2019 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,27 +28,27 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
 #include "b_device.h"
+
 #include <string.h>
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup CORE
  * \{
  */
 
-/** 
+/**
  * \addtogroup DEVICE
  * \{
  */
 
-
-/** 
+/**
  * \defgroup DEVICE_Private_TypesDefinitions
  * \{
  */
@@ -56,76 +56,74 @@
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DEVICE_Private_Defines
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DEVICE_Private_Macros
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DEVICE_Private_Variables
  * \{
  */
- 
-static bDriverInterface_t   bNullDriver;  
 
-static bDriverInterface_t* bDriverTable[bDEV_MAX_NUM] = {
-    #define B_DEVICE_REG(dev, driver, desc)    &driver,
-    #include "b_device_list.h"
+static bDriverInterface_t bNullDriver;
+
+static bDriverInterface_t *bDriverTable[bDEV_MAX_NUM] = {
+#define B_DEVICE_REG(dev, driver, desc) &driver,
+#include "b_device_list.h"
 };
 
 static const char *bDeviceDescTable[bDEV_MAX_NUM] = {
-    #define B_DEVICE_REG(dev, driver, desc)    desc,
-    #include "b_device_list.h"
+#define B_DEVICE_REG(dev, driver, desc) desc,
+#include "b_device_list.h"
 };
 
 bSECTION_DEF_FLASH(driver_init, pbDriverInit_t);
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DEVICE_Private_FunctionPrototypes
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DEVICE_Private_Functions
  * \{
  */
 
-
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup DEVICE_Exported_Functions
  * \{
  */
 
-
 /**
  * \brief Device Initialize
  */
-int bDeviceInit()  
+int bDeviceInit()
 {
     memset(&bNullDriver, 0, sizeof(bNullDriver));
     bSECTION_FOR_EACH(driver_init, pbDriverInit_t, pdriver_init)
@@ -133,21 +131,18 @@ int bDeviceInit()
         (*pdriver_init)();
     }
     return 0;
-}  
-
-
-
+}
 
 int bDeviceOpen(uint8_t no)
 {
     int retval = 0;
-    if(no >= bDEV_MAX_NUM)
+    if (no >= bDEV_MAX_NUM)
     {
         return -1;
     }
-    if(bDriverTable[no]->status == 0)
+    if (bDriverTable[no]->status == 0)
     {
-        if(bDriverTable[no]->open != NULL)
+        if (bDriverTable[no]->open != NULL)
         {
             retval = bDriverTable[no]->open(bDriverTable[no]);
         }
@@ -160,17 +155,16 @@ int bDeviceOpen(uint8_t no)
     return retval;
 }
 
-
 int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len)
 {
     int retval = 0;
-    if(no >= bDEV_MAX_NUM || pdata == NULL)
+    if (no >= bDEV_MAX_NUM || pdata == NULL)
     {
         return -1;
     }
-    if(bDriverTable[no]->status == 0)
+    if (bDriverTable[no]->status == 0)
     {
-        if(bDriverTable[no]->read != NULL)
+        if (bDriverTable[no]->read != NULL)
         {
             retval = bDriverTable[no]->read(bDriverTable[no], offset, pdata, len);
         }
@@ -186,13 +180,13 @@ int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len)
 int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint16_t len)
 {
     int retval = 0;
-    if(no >= bDEV_MAX_NUM || pdata == NULL)
+    if (no >= bDEV_MAX_NUM || pdata == NULL)
     {
         return -1;
     }
-    if(bDriverTable[no]->status == 0)
+    if (bDriverTable[no]->status == 0)
     {
-        if(bDriverTable[no]->write != NULL)
+        if (bDriverTable[no]->write != NULL)
         {
             retval = bDriverTable[no]->write(bDriverTable[no], address, pdata, len);
         }
@@ -205,18 +199,16 @@ int bDeviceWrite(uint8_t no, uint32_t address, uint8_t *pdata, uint16_t len)
     return retval;
 }
 
-
-
 int bDeviceClose(uint8_t no)
 {
     int retval = 0;
-    if(no >= bDEV_MAX_NUM)
+    if (no >= bDEV_MAX_NUM)
     {
         return -1;
     }
-    if(bDriverTable[no]->status == 0)
+    if (bDriverTable[no]->status == 0)
     {
-        if(bDriverTable[no]->close != NULL)
+        if (bDriverTable[no]->close != NULL)
         {
             retval = bDriverTable[no]->close(bDriverTable[no]);
         }
@@ -229,17 +221,16 @@ int bDeviceClose(uint8_t no)
     return retval;
 }
 
-
 int bDeviceCtl(uint8_t no, uint8_t cmd, void *param)
 {
     int retval = 0;
-    if(no >= bDEV_MAX_NUM)
+    if (no >= bDEV_MAX_NUM)
     {
         return -1;
     }
-    if(bDriverTable[no]->status == 0)
+    if (bDriverTable[no]->status == 0)
     {
-        if(bDriverTable[no]->ctl != NULL)
+        if (bDriverTable[no]->ctl != NULL)
         {
             retval = bDriverTable[no]->ctl(bDriverTable[no], cmd, param);
         }
@@ -254,14 +245,13 @@ int bDeviceCtl(uint8_t no, uint8_t cmd, void *param)
 
 int bDeviceISNormal(uint8_t no)
 {
-    if(no >= bDEV_MAX_NUM)
+    if (no >= bDEV_MAX_NUM)
     {
         return -1;
     }
     b_log("%s :%d\r\n", bDeviceDescTable[no], bDriverTable[no]->status);
     return bDriverTable[no]->status;
 }
-
 
 /**
  * \}
@@ -276,5 +266,3 @@ int bDeviceISNormal(uint8_t no)
  */
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
-

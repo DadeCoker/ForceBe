@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2019 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,54 +28,54 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
 #include "b_core.h"
+
 #include "b_device.h"
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup CORE
  * \{
  */
 
-/** 
+/**
  * \addtogroup CORE
  * \{
  */
 
-/** 
+/**
  * \defgroup CORE_Private_TypesDefinitions
  * \{
  */
-   
+
 /**
  * \}
  */
 
-
-/** 
+/**
  * \defgroup CORE_Private_Defines
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup CORE_Private_Macros
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup CORE_Private_Variables
  * \{
  */
@@ -85,69 +85,67 @@ static bCoreFd_t bCoreFdTable[BCORE_FD_MAX];
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup CORE_Private_FunctionPrototypes
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup CORE_Private_Functions
  * \{
  */
 static int _bCoreCreateFd(uint8_t dev_no, uint8_t flag)
 {
-    int i = 0;
-    int fd = -1;
+    int            i    = 0;
+    int            fd   = -1;
     static uint8_t init = 0;
-    if(init == 0)
+    if (init == 0)
     {
         init = 1;
-        for(i = 0;i < BCORE_FD_MAX;i++)
+        for (i = 0; i < BCORE_FD_MAX; i++)
         {
             bCoreFdTable[i].status = BCORE_STA_NULL;
         }
     }
 
-    for(i = 0;i < BCORE_FD_MAX;i++)
+    for (i = 0; i < BCORE_FD_MAX; i++)
     {
-        if(bCoreFdTable[i].status == BCORE_STA_OPEN)
+        if (bCoreFdTable[i].status == BCORE_STA_OPEN)
         {
-            if(dev_no == bCoreFdTable[i].number)
+            if (dev_no == bCoreFdTable[i].number)
             {
                 return -1;
             }
         }
     }
 
-    
-    for(i = 0;i < BCORE_FD_MAX;i++)
+    for (i = 0; i < BCORE_FD_MAX; i++)
     {
-        if(bCoreFdTable[i].status == BCORE_STA_NULL)
+        if (bCoreFdTable[i].status == BCORE_STA_NULL)
         {
-            bCoreFdTable[i].flag = flag;
+            bCoreFdTable[i].flag   = flag;
             bCoreFdTable[i].number = dev_no;
             bCoreFdTable[i].status = BCORE_STA_OPEN;
-            bCoreFdTable[i].lseek = 0;
-            fd = i;
+            bCoreFdTable[i].lseek  = 0;
+            fd                     = i;
             break;
         }
     }
     return fd;
 }
 
-
 static int _bCoreDeleteFd(int fd)
 {
-    if(fd < 0)
+    if (fd < 0)
     {
         return -1;
     }
-    if(bCoreFdTable[fd].status == BCORE_STA_NULL)
+    if (bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
@@ -155,19 +153,17 @@ static int _bCoreDeleteFd(int fd)
     return 0;
 }
 
-
-
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup CORE_Exported_Functions
  * \{
  */
- 
+
 /**
- * \brief Open a device 
+ * \brief Open a device
  * \param dev_no Device Number
  * \param flag Open Flag
  *          \arg \ref BCORE_FLAG_R
@@ -180,61 +176,59 @@ static int _bCoreDeleteFd(int fd)
 int bOpen(uint8_t dev_no, uint8_t flag)
 {
     int fd = -1;
-    if(!IS_VALID_FLAG(flag))
-    {
-        return -1;
-    }   
-    fd = _bCoreCreateFd(dev_no, flag);
-    if(fd < 0)
+    if (!IS_VALID_FLAG(flag))
     {
         return -1;
     }
-    if(bDeviceOpen(dev_no) >= 0)
+    fd = _bCoreCreateFd(dev_no, flag);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    if (bDeviceOpen(dev_no) >= 0)
     {
         return fd;
     }
     _bCoreDeleteFd(fd);
     return -1;
-}    
-
+}
 
 int bRead(int fd, uint8_t *pdata, uint16_t len)
 {
     int retval;
-    if(fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
+    if (fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
     {
         return -1;
     }
-    
-    if(bCoreFdTable[fd].flag == BCORE_FLAG_W || bCoreFdTable[fd].status == BCORE_STA_NULL)
+
+    if (bCoreFdTable[fd].flag == BCORE_FLAG_W || bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
-    
+
     retval = bDeviceRead(bCoreFdTable[fd].number, bCoreFdTable[fd].lseek, pdata, len);
-    if(retval >= 0)
+    if (retval >= 0)
     {
         bCoreFdTable[fd].lseek += len;
     }
     return retval;
-} 
-
+}
 
 int bWrite(int fd, uint8_t *pdata, uint16_t len)
 {
     int retval;
-    if(fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
+    if (fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
     {
         return -1;
     }
 
-    if(bCoreFdTable[fd].flag == BCORE_FLAG_R || bCoreFdTable[fd].status == BCORE_STA_NULL)
+    if (bCoreFdTable[fd].flag == BCORE_FLAG_R || bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
-    
+
     retval = bDeviceWrite(bCoreFdTable[fd].number, bCoreFdTable[fd].lseek, pdata, len);
-    if(retval >= 0)
+    if (retval >= 0)
     {
         bCoreFdTable[fd].lseek += len;
     }
@@ -243,12 +237,12 @@ int bWrite(int fd, uint8_t *pdata, uint16_t len)
 
 int bLseek(int fd, uint32_t off)
 {
-    if(fd < 0 || fd >= BCORE_FD_MAX)
+    if (fd < 0 || fd >= BCORE_FD_MAX)
     {
         return -1;
     }
 
-    if(bCoreFdTable[fd].status == BCORE_STA_NULL)
+    if (bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
@@ -258,23 +252,21 @@ int bLseek(int fd, uint32_t off)
 
 int bCtl(int fd, uint8_t cmd, void *param)
 {
-    if(fd < 0 || fd >= BCORE_FD_MAX)
-    {
-        return -1;
-    }    
-    return bDeviceCtl(bCoreFdTable[fd].number, cmd, param); 
-}
-
-
-
-int bClose(int fd)
-{
-    if(fd < 0 || fd >= BCORE_FD_MAX)
+    if (fd < 0 || fd >= BCORE_FD_MAX)
     {
         return -1;
     }
-  
-    if(bCoreFdTable[fd].status == BCORE_STA_NULL)
+    return bDeviceCtl(bCoreFdTable[fd].number, cmd, param);
+}
+
+int bClose(int fd)
+{
+    if (fd < 0 || fd >= BCORE_FD_MAX)
+    {
+        return -1;
+    }
+
+    if (bCoreFdTable[fd].status == BCORE_STA_NULL)
     {
         return -1;
     }
@@ -282,13 +274,12 @@ int bClose(int fd)
     return _bCoreDeleteFd(fd);
 }
 
-
 int bCoreIsIdle()
 {
     int i;
-    for(i = 0;i < BCORE_FD_MAX;i++)
+    for (i = 0; i < BCORE_FD_MAX; i++)
     {
-        if(bCoreFdTable[i].status == BCORE_STA_OPEN)
+        if (bCoreFdTable[i].status == BCORE_STA_OPEN)
         {
             return -1;
         }
@@ -302,7 +293,7 @@ int bCoreIsIdle()
 
 /**
  * \}
- */ 
+ */
 
 /**
  * \}
@@ -313,7 +304,3 @@ int bCoreIsIdle()
  */
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
-
-
-

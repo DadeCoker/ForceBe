@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2019 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,32 +32,32 @@
 #define __B_DRIVER_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
+#include "b_drv_class_camera.h"
 #include "b_drv_class_flash.h"
+#include "b_drv_class_gsensor.h"
+#include "b_drv_class_io.h"
 #include "b_drv_class_lcd.h"
 #include "b_drv_class_touch.h"
-#include "b_drv_class_io.h"
-#include "b_drv_class_camera.h"
-#include "b_drv_class_gsensor.h"
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup CORE
  * \{
  */
 
-/** 
+/**
  * \addtogroup DRIVER
  * \{
  */
 
-/** 
+/**
  * \defgroup DRIVER_Exported_TypesDefinitions
  * \{
  */
@@ -73,76 +73,75 @@ typedef struct bDriverIf
     union
     {
         uint32_t v;
-        void *_p;
-    }_private;
-}bDriverInterface_t; 
+        void *   _p;
+    } _private;
+} bDriverInterface_t;
 
 typedef int (*pbDriverInit_t)(void);
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DRIVER_Exported_Defines
  * \{
  */
- 
-     
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DRIVER_Exported_Macros
  * \{
  */
-#define bDRIVER_REG_INIT(func)                   bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func))=func  
-#define bDRV_GET_HALIF(name, type, pdrv)         type *name = (type *)(pdrv->_hal_if)
+#define bDRIVER_REG_INIT(func) \
+    bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func)) = func
+#define bDRV_GET_HALIF(name, type, pdrv) type *name = (type *)(pdrv->_hal_if)
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup DRIVER_Exported_Variables
  * \{
  */
 //
 //                  Flash
 //
-extern bDriverInterface_t   bSPIFLASH_Driver[];
-extern bDriverInterface_t   bFM25CL_Driver[];
-extern bDriverInterface_t   b24CXX_Driver[];
-extern bDriverInterface_t   bSD_Driver;
+extern bDriverInterface_t bSPIFLASH_Driver[];
+extern bDriverInterface_t bFM25CL_Driver[];
+extern bDriverInterface_t b24CXX_Driver[];
+extern bDriverInterface_t bSD_Driver;
 
 //
 //                  LCD
 //
-extern bDriverInterface_t   bSSD1289_Driver;
-extern bDriverInterface_t   bILI9341_Driver;
-extern bDriverInterface_t   bILI9320_Driver;
-extern bDriverInterface_t   bOLED_Driver;
+extern bDriverInterface_t bSSD1289_Driver;
+extern bDriverInterface_t bILI9341_Driver;
+extern bDriverInterface_t bILI9320_Driver;
+extern bDriverInterface_t bOLED_Driver;
 
 //
 //                  TOUCH
 //
-extern bDriverInterface_t   bXPT2046_Driver;
+extern bDriverInterface_t bXPT2046_Driver;
 
 //
 //                  CAMERA
 //
-extern bDriverInterface_t   bOV5640_Driver;
+extern bDriverInterface_t bOV5640_Driver;
 
 //
 //                  IO
 //
-extern bDriverInterface_t   bPCF8574_Driver;
-
+extern bDriverInterface_t bPCF8574_Driver;
 
 //
 //                  G-Sensor
 //
-extern bDriverInterface_t   bLIS3DH_Driver;
+extern bDriverInterface_t bLIS3DH_Driver;
 
 /**
  * \}
@@ -150,7 +149,7 @@ extern bDriverInterface_t   bLIS3DH_Driver;
 
 /**
  * \}
- */ 
+ */
 
 /**
  * \}
@@ -161,11 +160,9 @@ extern bDriverInterface_t   bLIS3DH_Driver;
  */
 
 #ifdef __cplusplus
-	}
+}
 #endif
-
 
 #endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-

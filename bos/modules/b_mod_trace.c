@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO TRACE SHALL THE
@@ -28,27 +28,27 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
 #include "b_mod_trace.h"
 #if _CMBACKTRACE_ENABLE
 
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup TRACE
  * \{
  */
 
-/** 
+/**
  * \defgroup TRACE_Private_TypesDefinitions
  * \{
  */
@@ -56,24 +56,20 @@
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TRACE_Private_Defines
  * \{
  */
-#define _VERSION_S(n)   #n
-#define VERSION_S(n)    _VERSION_S(n) 
- 
-const char *pVersion[2] = 
-{
-    VERSION_S(HW_VERSION),
-    VERSION_S(FW_VERSION)
-};
+#define _VERSION_S(n) #n
+#define VERSION_S(n) _VERSION_S(n)
+
+const char *pVersion[2] = {VERSION_S(HW_VERSION), VERSION_S(FW_VERSION)};
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TRACE_Private_Macros
  * \{
  */
@@ -81,8 +77,8 @@ const char *pVersion[2] =
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TRACE_Private_Variables
  * \{
  */
@@ -90,17 +86,17 @@ const char *pVersion[2] =
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TRACE_Private_FunctionPrototypes
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TRACE_Private_Functions
  * \{
  */
@@ -108,8 +104,8 @@ const char *pVersion[2] =
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup TRACE_Exported_Functions
  * \{
  */
@@ -148,11 +144,9 @@ void bHardfaultCallback()
  * \}
  */
 
-
 /**
  * \}
  */
 #endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-

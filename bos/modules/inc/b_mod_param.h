@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO PARAM SHALL THE
@@ -32,61 +32,59 @@
 #define __B_MOD_PARAM_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _PARAM_ENABLE
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup PARAM
  * \{
  */
 
-/** 
+/**
  * \defgroup PARAM_Exported_TypesDefinitions
  * \{
  */
 typedef struct bParamStruct
 {
     uint8_t size;
-    char *name;
-    void *addr;
-}bParamStruct_t;
+    char *  name;
+    void *  addr;
+} bParamStruct_t;
 
-
-typedef bParamStruct_t       bParamInstance_t;
+typedef bParamStruct_t bParamInstance_t;
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup PARAM_Exported_Defines
  * \{
  */
 
-#define _PARAM2STR(n)       (#n)
+#define _PARAM2STR(n) (#n)
 
-#define bPARAM_REG_INSTANCE(param, param_size)       bSECTION_ITEM_REGISTER_FLASH(b_mod_param, bParamInstance_t, CONCAT_2(do_, param)) = {.size = param_size,\
-                                                                                            .name = _PARAM2STR(param),\
-                                                                                            .addr = &(param)};
+#define bPARAM_REG_INSTANCE(param, param_size)                                            \
+    bSECTION_ITEM_REGISTER_FLASH(b_mod_param, bParamInstance_t, CONCAT_2(do_, param)) = { \
+        .size = param_size, .name = _PARAM2STR(param), .addr = &(param)};
 
 /**
  * \}
  */
-   
-   
+
 /**
  * \}
  */
@@ -101,11 +99,9 @@ typedef bParamStruct_t       bParamInstance_t;
 #endif
 
 #ifdef __cplusplus
-	}
+}
 #endif
 
-#endif  
+#endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-
-

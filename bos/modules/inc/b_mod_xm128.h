@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,29 +32,29 @@
 #define __B_MOD_XM128_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"  
+#include "b_config.h"
 #if _XMODEM128_ENABLE
 
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup XMODEM128
  * \{
  */
 
-/** 
+/**
  * \defgroup XMODEM128_Exported_TypesDefinitions
  * \{
  */
@@ -66,46 +66,42 @@ typedef struct
     uint8_t xnumber;
     uint8_t dat[128];
     uint8_t check;
-}bXmodem128Struct_t;
+} bXmodem128Struct_t;
 
-
-typedef void (*pcb_t)(uint16_t number, uint8_t *pbuf); 
+typedef void (*pcb_t)(uint16_t number, uint8_t *pbuf);
 typedef void (*psend)(uint8_t cmd);
 
 typedef struct
 {
-    pcb_t cb;
-    psend send_f;
-    uint8_t statu;
-    uint8_t tt_count;
-    uint8_t next_number;
+    pcb_t    cb;
+    psend    send_f;
+    uint8_t  statu;
+    uint8_t  tt_count;
+    uint8_t  next_number;
     uint32_t frame_number;
     uint32_t tick;
-}bXmodem128Info_t;
-
-
+} bXmodem128Info_t;
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup XMODEM128_Exported_Defines
  * \{
  */
 
-#define XMODEM128_SOH   0x01
-#define XMODEM128_EOT   0x04
-#define XMODEM128_ACK   0x06
-#define XMODEM128_NAK   0x15
-#define XMODEM128_CAN   0x18
+#define XMODEM128_SOH 0x01
+#define XMODEM128_EOT 0x04
+#define XMODEM128_ACK 0x06
+#define XMODEM128_NAK 0x15
+#define XMODEM128_CAN 0x18
 
 /**
  * \}
  */
-   
-   
-/** 
+
+/**
  * \defgroup XMODEM128_Exported_Functions
  * \{
  */
@@ -118,10 +114,10 @@ int bXmodem128Stop(void);
 /**
  * \}
  */
- 
+
 /**
  * \}
- */ 
+ */
 
 /**
  * \}
@@ -134,10 +130,9 @@ int bXmodem128Stop(void);
 #endif
 
 #ifdef __cplusplus
-	}
+}
 #endif
- 
-#endif  
+
+#endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-

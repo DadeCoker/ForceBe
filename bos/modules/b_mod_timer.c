@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,90 +28,91 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
-#include "b_mod_timer.h"  
+#include "b_mod_timer.h"
+
 #include "b_utils.h"
 #if _TIMER_ENABLE
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup TIMER
  * \{
  */
 
-/** 
+/**
  * \defgroup TIMER_Private_TypesDefinitions
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TIMER_Private_Defines
  * \{
  */
-  
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TIMER_Private_Macros
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TIMER_Private_Variables
  * \{
  */
-static bSoftTimerInstance_t *pSoftTimer = NULL;   
+static bSoftTimerInstance_t *pSoftTimer = NULL;
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TIMER_Private_FunctionPrototypes
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup TIMER_Private_Functions
  * \{
  */
-static int _bSoftTimerDelete(bSoftTimerInstance_t *pTimerInstance)   
+static int _bSoftTimerDelete(bSoftTimerInstance_t *pTimerInstance)
 {
     bSoftTimerStruct_t *ptmp = pSoftTimer;
-    if(ptmp == NULL)
+    if (ptmp == NULL)
     {
         return -1;
     }
-    if(pSoftTimer == pTimerInstance)
+    if (pSoftTimer == pTimerInstance)
     {
         pSoftTimer = pSoftTimer->next;
         return 0;
     }
-    while(ptmp)
+    while (ptmp)
     {
-        if(ptmp->next == pTimerInstance)
+        if (ptmp->next == pTimerInstance)
         {
             ptmp->next = pTimerInstance->next;
             return 0;
@@ -124,12 +125,12 @@ static int _bSoftTimerDelete(bSoftTimerInstance_t *pTimerInstance)
 static void _bSoftTimerCore()
 {
     bSoftTimerStruct_t *ptmp = pSoftTimer;
-    while(ptmp)
+    while (ptmp)
     {
-        if(bUtilGetTick() - ptmp->tick >= MS2TICKS(ptmp->period))
+        if (bUtilGetTick() - ptmp->tick >= MS2TICKS(ptmp->period))
         {
             ptmp->handler();
-            if(ptmp->repeat)
+            if (ptmp->repeat)
             {
                 ptmp->tick = bUtilGetTick();
             }
@@ -147,38 +148,36 @@ BOS_REG_POLLING_FUNC(_bSoftTimerCore);
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup TIMER_Exported_Functions
  * \{
  */
- 
+
 int bSoftTimerStart(bSoftTimerInstance_t *pTimerInstance, pTimerHandler handler)
 {
-    if(pTimerInstance == NULL || handler == NULL)
+    if (pTimerInstance == NULL || handler == NULL)
     {
         return -1;
     }
-    if(pSoftTimer == NULL)
+    if (pSoftTimer == NULL)
     {
-        pSoftTimer = pTimerInstance;
+        pSoftTimer           = pTimerInstance;
         pTimerInstance->next = NULL;
     }
     else
     {
         pTimerInstance->next = pSoftTimer->next;
-        pSoftTimer->next = pTimerInstance;
+        pSoftTimer->next     = pTimerInstance;
     }
     pTimerInstance->handler = handler;
-    pTimerInstance->tick = bUtilGetTick();
+    pTimerInstance->tick    = bUtilGetTick();
     return 0;
 }
 
-
-
 int bSoftTimerStop(bSoftTimerInstance_t *pTimerInstance)
 {
-    if(pTimerInstance == NULL)
+    if (pTimerInstance == NULL)
     {
         return -1;
     }
@@ -186,10 +185,9 @@ int bSoftTimerStop(bSoftTimerInstance_t *pTimerInstance)
     return 0;
 }
 
-
 int bSoftTimerReset(bSoftTimerInstance_t *pTimerInstance)
 {
-    if(pTimerInstance == NULL)
+    if (pTimerInstance == NULL)
     {
         return -1;
     }
@@ -199,7 +197,7 @@ int bSoftTimerReset(bSoftTimerInstance_t *pTimerInstance)
 
 int bSoftTimerSetPeriod(bSoftTimerInstance_t *pTimerInstance, uint32_t ms)
 {
-    if(pTimerInstance == NULL)
+    if (pTimerInstance == NULL)
     {
         return -1;
     }
@@ -207,8 +205,6 @@ int bSoftTimerSetPeriod(bSoftTimerInstance_t *pTimerInstance, uint32_t ms)
     return 0;
 }
 
-
-
 /**
  * \}
  */
@@ -220,7 +216,6 @@ int bSoftTimerSetPeriod(bSoftTimerInstance_t *pTimerInstance, uint32_t ms)
 /**
  * \}
  */
-
 
 /**
  * \}
@@ -228,4 +223,3 @@ int bSoftTimerSetPeriod(bSoftTimerInstance_t *pTimerInstance, uint32_t ms)
 #endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-

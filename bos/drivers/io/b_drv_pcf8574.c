@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,30 +28,29 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
 #include "b_drv_pcf8574.h"
-/** 
+/**
  * \addtogroup B_DRIVER
  * \{
  */
 
-/** 
+/**
  * \addtogroup PCF8574
  * \{
  */
 
-/** 
+/**
  * \defgroup PCF8574_Private_TypesDefinitions
  * \{
  */
- 
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup PCF8574_Private_Defines
  * \{
  */
@@ -59,17 +58,17 @@
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup PCF8574_Private_Macros
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup PCF8574_Private_Variables
  * \{
  */
@@ -77,8 +76,8 @@ bPCF8574_Driver_t bPCF8574_Driver;
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup PCF8574_Private_FunctionPrototypes
  * \{
  */
@@ -86,25 +85,25 @@ bPCF8574_Driver_t bPCF8574_Driver;
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup PCF8574_Private_Functions
  * \{
- */	
+ */
 
-/************************************************************************************************************driver interface*******/
-
+/************************************************************************************************************driver
+ * interface*******/
 
 static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     uint8_t tmp;
-    if(off >= 8 || len != 1)
+    if (off >= 8 || len != 1)
     {
         return -1;
     }
-    
+
     tmp = bHalI2C_ReceiveByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR);
-    if(pbuf[0])
+    if (pbuf[0])
     {
         tmp |= 1 << off;
     }
@@ -116,16 +115,15 @@ static int _bPCF8574Write(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, 
     return len;
 }
 
-
 static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     uint8_t tmp;
-    if(off >= 8 || len != 1)
+    if (off >= 8 || len != 1)
     {
         return -1;
-    }  
+    }
     tmp = bHalI2C_ReceiveByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR);
-    if(tmp & (1 << off))
+    if (tmp & (1 << off))
     {
         pbuf[0] = 1;
     }
@@ -139,26 +137,23 @@ static int _bPCF8574Read(bPCF8574_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, u
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup PCF8574_Exported_Functions
  * \{
  */
 int bPCF8574_Init()
-{        
+{
     bPCF8574_Driver.status = 0;
-    bPCF8574_Driver.close = NULL;
-    bPCF8574_Driver.read = _bPCF8574Read;
-    bPCF8574_Driver.ctl = NULL;
-    bPCF8574_Driver.open = NULL;
-    bPCF8574_Driver.write = _bPCF8574Write;
+    bPCF8574_Driver.close  = NULL;
+    bPCF8574_Driver.read   = _bPCF8574Read;
+    bPCF8574_Driver.ctl    = NULL;
+    bPCF8574_Driver.open   = NULL;
+    bPCF8574_Driver.write  = _bPCF8574Write;
     return 0;
 }
 
-
 bDRIVER_REG_INIT(bPCF8574_Init);
-
-
 
 /**
  * \}
@@ -173,4 +168,3 @@ bDRIVER_REG_INIT(bPCF8574_Init);
  */
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-

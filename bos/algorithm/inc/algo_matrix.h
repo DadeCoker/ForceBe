@@ -1,13 +1,14 @@
 #ifndef __MATRIX_H__
 #define __MATRIX_H__
 
-typedef struct {
-  /* Dimensions */
-  int rows;
-  int cols;
+typedef struct
+{
+    /* Dimensions */
+    int rows;
+    int cols;
 
-  /* Contents of the matrix */
-  double** data;
+    /* Contents of the matrix */
+    double** data;
 } Matrix;
 
 /* Allocate memory for a new matrix.

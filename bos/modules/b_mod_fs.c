@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,80 +28,79 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+
 /*Includes ----------------------------------------------*/
-#include "b_mod_fs.h"  
+#include "b_mod_fs.h"
 #if _FS_ENABLE
 #include <stdio.h>
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup FS
  * \{
  */
 
-/** 
+/**
  * \defgroup FS_Private_TypesDefinitions
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup FS_Private_Defines
  * \{
  */
- 
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup FS_Private_Macros
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup FS_Private_Variables
  * \{
  */
-#if _FS_SELECT == 0 
-static FATFS    bFATFS_Table[E_DEV_NUMBER];
+#if _FS_SELECT == 0
+static FATFS bFATFS_Table[E_DEV_NUMBER];
 #endif
 
-
-#if _FS_SELECT == 1 
+#if _FS_SELECT == 1
 lfs_t bLittleFS;
 #endif
 
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup FS_Private_FunctionPrototypes
  * \{
  */
-   
+
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup FS_Private_Functions
  * \{
  */
@@ -109,18 +108,19 @@ lfs_t bLittleFS;
 #include "b_core.h"
 #include "b_device.h"
 
-static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size)
+static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off,
+                           void *buffer, lfs_size_t size)
 {
-    int fd = -1;
-    int retval = LFS_ERR_OK;
+    int      fd     = -1;
+    int      retval = LFS_ERR_OK;
     uint32_t e_size = 4096;
-    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-    if(fd >= 0)
+    fd              = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    if (fd >= 0)
     {
-        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+        if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
         {
             bLseek(fd, block * e_size + off);
-            bRead(fd, buffer, size);  
+            bRead(fd, buffer, size);
         }
         else
         {
@@ -135,19 +135,19 @@ static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_of
     return retval;
 }
 
-
-int _bFS_DeviceWrite(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size)
+int _bFS_DeviceWrite(const struct lfs_config *c, lfs_block_t block, lfs_off_t off,
+                     const void *buffer, lfs_size_t size)
 {
-    int fd = -1;
+    int      fd     = -1;
     uint32_t e_size = 4096;
-    int retval = LFS_ERR_OK;
-    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-    if(fd >= 0)
+    int      retval = LFS_ERR_OK;
+    fd              = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    if (fd >= 0)
     {
-        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+        if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
         {
             bLseek(fd, block * e_size + off);
-            bWrite(fd, (uint8_t *)buffer, size); 
+            bWrite(fd, (uint8_t *)buffer, size);
         }
         else
         {
@@ -162,20 +162,19 @@ int _bFS_DeviceWrite(const struct lfs_config *c, lfs_block_t block, lfs_off_t of
     return retval;
 }
 
-
 int _bFS_DeviceErase(const struct lfs_config *c, lfs_block_t block)
 {
-    int fd = -1;
-    int retval = LFS_ERR_OK;
-    uint32_t e_size = 4096;
+    int          fd     = -1;
+    int          retval = LFS_ERR_OK;
+    uint32_t     e_size = 4096;
     bCMD_Erase_t cmd;
     fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-    if(fd >= 0)
+    if (fd >= 0)
     {
-        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+        if (bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
         {
             cmd.addr = block * e_size;
-            cmd.num = 1;
+            cmd.num  = 1;
             bCtl(fd, bCMD_ERASE_SECTOR, &cmd);
         }
         else
@@ -200,32 +199,32 @@ int _bFS_DeviceSync(const struct lfs_config *c)
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \addtogroup FS_Exported_Functions
  * \{
  */
-#if _FS_SELECT == 0  
+#if _FS_SELECT == 0
 uint8_t bFileSystemWorkBuf[FF_MAX_SS];
-int bFS_Init()
+int     bFS_Init()
 {
     FRESULT result = FR_OK;
     uint8_t disk_str[8];
-    FATFS *fs;
-    DWORD fre_clust, fre_sect, tot_sect;
+    FATFS * fs;
+    DWORD   fre_clust, fre_sect, tot_sect;
 #if _SPIFLASH_ENABLE
     sprintf((char *)disk_str, "%d:", DEV_SPIFLASH);
     result = f_mount(&bFATFS_Table[E_DEV_SPIFLASH], (const char *)disk_str, 1);
-    if(result == FR_NO_FILESYSTEM)
+    if (result == FR_NO_FILESYSTEM)
     {
         b_log_w("no filesystem\r\n");
-        if(f_mkfs((const char *)disk_str, NULL, bFileSystemWorkBuf, FF_MAX_SS) != FR_OK)
+        if (f_mkfs((const char *)disk_str, NULL, bFileSystemWorkBuf, FF_MAX_SS) != FR_OK)
         {
             b_log_e("mkfs err..\r\n");
             return -1;
         }
     }
-    else if(result != FR_OK)
+    else if (result != FR_OK)
     {
         b_log_e("sd mount err..%d\r\n", result);
         return -1;
@@ -236,15 +235,14 @@ int bFS_Init()
     fre_sect = fre_clust * fs->csize;
 
     /* Print the free space (assuming 512 bytes/sector) */
-    b_log("%10lu KiB total drive space.\n%10lu KiB available.\n", tot_sect * 4, fre_sect * 4);    
-    
-    
+    b_log("%10lu KiB total drive space.\n%10lu KiB available.\n", tot_sect * 4, fre_sect * 4);
+
 #endif
-    
-#if _SD_ENABLE 
+
+#if _SD_ENABLE
     sprintf((char *)disk_str, "%d:", DEV_SDCARD);
     result = f_mount(&bFATFS_Table[E_DEV_SDCARD], (const char *)disk_str, 1);
-    if(result != FR_OK)
+    if (result != FR_OK)
     {
         b_log_e("sd mount err..%d\r\n", result);
         return -1;
@@ -254,11 +252,10 @@ int bFS_Init()
     fre_sect = fre_clust * fs->csize;
 
     /* Print the free space (assuming 512 bytes/sector) */
-    b_log("%10lu KiB total drive space.\n%10lu KiB available.\n", tot_sect / 2, fre_sect / 2);  
+    b_log("%10lu KiB total drive space.\n%10lu KiB available.\n", tot_sect / 2, fre_sect / 2);
 #endif
     return 0;
 }
-
 
 #if _FS_TEST_ENABLE
 FIL fil;
@@ -266,10 +263,10 @@ int bFS_Test()
 {
     // read current count
     uint32_t boot_count = 0;
-    UINT brw = 0;
-    FRESULT fr;     /* FatFs return code */
+    UINT     brw        = 0;
+    FRESULT  fr; /* FatFs return code */
     fr = f_open(&fil, "0:test.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
-    if(fr)
+    if (fr)
     {
         b_log_e("open %d\r\n", fr);
         f_close(&fil);
@@ -277,13 +274,13 @@ int bFS_Test()
     }
     f_lseek(&fil, 0);
     fr = f_read(&fil, &boot_count, sizeof(boot_count), &brw);
-    if(fr)
+    if (fr)
     {
         b_log_e("read %d\r\n", fr);
         f_close(&fil);
         return -1;
     }
-    if(brw != sizeof(boot_count))
+    if (brw != sizeof(boot_count))
     {
         b_log_e("read %d %d\r\n", brw, boot_count);
         boot_count = 0;
@@ -295,7 +292,7 @@ int bFS_Test()
     }
     f_lseek(&fil, 0);
     fr = f_write(&fil, &boot_count, sizeof(boot_count), &brw);
-    if(fr)
+    if (fr)
     {
         b_log_e("write %d\r\n", fr);
         f_close(&fil);
@@ -311,10 +308,7 @@ int bFS_Test()
 }
 #endif
 
-
-
 #endif
-
 
 #if (_FS_SELECT == 1)
 // configuration of the filesystem is provided by this struct
@@ -326,13 +320,13 @@ const struct lfs_config cfg = {
     .sync  = _bFS_DeviceSync,
 
     // block device configuration
-    .read_size = 16,
-    .prog_size = 16,
-    .block_size = 4096,
-    .block_count = _SPIFLASH_SIZE * 1024 * 1024 / 4096,
-    .cache_size = 16,
+    .read_size      = 16,
+    .prog_size      = 16,
+    .block_size     = 4096,
+    .block_count    = _SPIFLASH_SIZE * 1024 * 1024 / 4096,
+    .cache_size     = 16,
     .lookahead_size = 16,
-    .block_cycles = 500,
+    .block_cycles   = 500,
 };
 
 int bFS_Init()
@@ -342,7 +336,7 @@ int bFS_Init()
     b_log("mount:%d\r\n", err);
     // reformat if we can't mount the filesystem
     // this should only happen on the first boot
-    if (err) 
+    if (err)
     {
         lfs_format(&bLittleFS, &cfg);
         lfs_mount(&bLittleFS, &cfg);
@@ -352,10 +346,10 @@ int bFS_Init()
 
 #if _FS_TEST_ENABLE
 lfs_file_t file;
-int bFS_Test()
+int        bFS_Test()
 {
     // read current count
-    lfs_t *plsf = &bLittleFS;
+    lfs_t *  plsf       = &bLittleFS;
     uint32_t boot_count = 0;
     lfs_file_open(plsf, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
     lfs_file_read(plsf, &file, &boot_count, sizeof(boot_count));
@@ -384,16 +378,6 @@ int bFS_Test()
 
 #endif
 
-
-
-
-
-
-
-
-
-
-
 /**
  * \}
  */
@@ -405,7 +389,6 @@ int bFS_Test()
 /**
  * \}
  */
-
 
 /**
  * \}
@@ -413,4 +396,3 @@ int bFS_Test()
 #endif
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
-

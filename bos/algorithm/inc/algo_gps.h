@@ -13,6 +13,7 @@
 #define __ALGO_GPS_H__
 
 #include <stdio.h>
+
 #include "algo_kalman.h"
 
 /* Create a GPS filter that only tracks two dimensions of position and
@@ -26,12 +27,10 @@
 KalmanFilter alloc_filter_velocity2d(double noise);
 
 /* Set the seconds per timestep in the velocity2d model. */
-void set_seconds_per_timestep(KalmanFilter f,
-			      double seconds_per_timestep);
+void set_seconds_per_timestep(KalmanFilter f, double seconds_per_timestep);
 
 /* Update the velocity2d model with new gps data. */
-void update_velocity2d(KalmanFilter f, double lat, double lon,
-		       double seconds_since_last_update);
+void update_velocity2d(KalmanFilter f, double lat, double lon, double seconds_since_last_update);
 
 /* Read a lat,long pair from a file.
    Format is lat,long<ignored>
@@ -50,8 +49,7 @@ void get_velocity(KalmanFilter f, double* delta_lat, double* delta_lon);
 double get_bearing(KalmanFilter f);
 
 /* Convert a lat, long, delta lat, and delta long into mph.*/
-double calculate_mph(double lat, double lon,
-		     double delta_lat, double delta_lon);
+double calculate_mph(double lat, double lon, double delta_lat, double delta_lon);
 
 /* Extract speed in miles per hour from a velocity2d Kalman filter. */
 double get_mph(KalmanFilter f);

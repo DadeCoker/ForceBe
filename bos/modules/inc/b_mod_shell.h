@@ -6,19 +6,19 @@
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
- * 
+ *
  * Copyright (c) 2020 Bean
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO SHELL SHALL THE
@@ -32,60 +32,58 @@
 #define __B_MOD_SHELL_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
 #if _NR_MICRO_SHELL_ENABLE
 #include "nr_micro_shell.h"
-/** 
+/**
  * \addtogroup BABYOS
  * \{
  */
 
-/** 
+/**
  * \addtogroup MODULES
  * \{
  */
 
-/** 
+/**
  * \addtogroup SHELL
  * \{
  */
 
-/** 
+/**
  * \defgroup SHELL_Exported_TypesDefinitions
  * \{
  */
 
-
 /**
  * \}
  */
-   
-/** 
+
+/**
  * \defgroup SHELL_Exported_Defines
  * \{
  */
-#define bSHELL_REG_INSTANCE(cmd_name, cmd_handler)           bSECTION_ITEM_REGISTER_FLASH(b_mod_shell, static_cmd_st, CONCAT_2(do_, cmd_handler)) = \
-                                                                                                                    {.cmd = cmd_name, .fp = cmd_handler};      
+#define bSHELL_REG_INSTANCE(cmd_name, cmd_handler)                                           \
+    bSECTION_ITEM_REGISTER_FLASH(b_mod_shell, static_cmd_st, CONCAT_2(do_, cmd_handler)) = { \
+        .cmd = cmd_name, .fp = cmd_handler};
 /**
  * \}
  */
-   
-   
-/** 
+
+/**
  * \defgroup SHELL_Exported_Functions
  * \{
  */
-void bShellInit(void);                                                                                                                 
-int bShellParse(uint8_t *pbuf, uint16_t len);
+void bShellInit(void);
+int  bShellParse(uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */
- 
- 
+
 /**
  * \}
  */
@@ -100,11 +98,9 @@ int bShellParse(uint8_t *pbuf, uint16_t len);
 #endif
 
 #ifdef __cplusplus
-	}
+}
 #endif
 
-#endif  
+#endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
-
