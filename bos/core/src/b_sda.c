@@ -34,6 +34,7 @@
 #include "b_sda.h"
 #include "b_utc.h"
 #include "b_core.h"
+#include "b_device.h"
 #include <string.h>
 /** 
  * \addtogroup BABYOS
@@ -175,6 +176,10 @@ static int _bSDA_CalOffset(bSDA_Info_t *pinfo, uint32_t utc, uint32_t *poffset)
         {
             return -1;
         }
+		if(unit == pinfo->st.min_unit)
+		{
+			retval = retval / pinfo->st.min_number;
+		}
         offset += (uint32_t)retval * tmp[unit]; 
         unit--;
     }
@@ -249,7 +254,7 @@ int bSDA_Regist(bSDA_Struct_t st, uint8_t dev_no)
     
     if(st.total_unit == st.min_unit)
     {
-        pinfo->total_size = ((st.total_number + (pinfo->n_per_eu - 1)) / pinfo->n_per_eu) * st.ferase_size;
+        pinfo->total_size = st.total_number * st.ferase_size;
     }
     else if(st.total_unit > st.min_unit)
     {
@@ -322,13 +327,15 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
         return -1;
     }
     
-    bFlashEraseParam_t param;
-    param.address = address;
-    param.number = 1;
+	bCMD_Struct_t cmd_s;
+    cmd_s.type = bCMD_ERASE;
+	cmd_s.param.erase.addr = address;
+	cmd_s.param.erase.num = 1;
+	
     bLseek(d_fd, address);
     if(pinfo->st.total_unit == pinfo->st.min_unit)
     {
-        bCtl(d_fd, BFLASH_CMD_ERASE, &param);
+        bCtl(d_fd, bCMD_ERASE, &cmd_s);
         retval = bWrite(d_fd, pbuf, pinfo->st.min_size);
     }
     else 
@@ -336,7 +343,7 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
         if((address % (pinfo->st.ferase_size) == 0) || ((address + pinfo->st.min_size) / pinfo->st.ferase_size) != (address / pinfo->st.ferase_size) 
             || pinfo->e_flag == 1)
         {
-            bCtl(d_fd, BFLASH_CMD_ERASE, &param);
+            bCtl(d_fd, bCMD_ERASE, &cmd_s);
             pinfo->e_flag = 0;
         }
         retval = bWrite(d_fd, pbuf, pinfo->st.min_size);
@@ -347,37 +354,37 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
 
 
 /**
- * \brief 读取数据
- * \param no 序号，调用 \ref bCSD_Regist 获取的值
- * \param utc 数据对应的时间
- * \param pbuf 指向数据buffer的指针
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
+ * \brief Save data ClassA Read
+ * \param no Instance ID \ref bCSD_Regist
+ * \param utc Current time UTC_2000 (s)
+ * \param pbuf Pointer to data buffer
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
-int bCSD_Read(int no, uint32_t utc, uint8_t *pbuf)
+int bSDA_Read(int no, uint32_t utc, uint8_t *pbuf)
 {
     uint32_t address = 0;
     int retval = -1;
     
-    if(pbuf == NULL || no >= bCSDInfoIndex || no < 0)
+    if(pbuf == NULL || no >= bSDA_InfoIndex || no < 0)
     {
         return -1;
     }
     
-    bSDA_Info_t *pinfo = &bCSD_InfoTable[no];
-    if(_bCSD_CheckInfo(pinfo) < 0)
+    bSDA_Info_t *pinfo = &bSDA_InfoTable[no];
+    if(_bSDA_CheckInfo(pinfo) < 0)
     {
         return -1;
     }
     
-    if(_bCSD_CalAddress(pinfo, utc, &address) < 0)
+    if(_bSDA_CalAddress(pinfo, utc, &address) < 0)
     {
         return -1;
     }
     
     int d_fd = -1;
-    d_fd = bOpen(pinfo->dev_no, BFD_FLAG_R);
+    d_fd = bOpen(pinfo->dev_no, BCORE_FLAG_R);
     if(d_fd < 0)
     {
         return -1;
@@ -389,30 +396,29 @@ int bCSD_Read(int no, uint32_t utc, uint8_t *pbuf)
 }
 
 /**
- * \brief 通知模块时间有变动
- * \note 模块数据存取依赖于时间，因此时间变动后需要调用这个函数用来初始化新的存储区域
- * \param no 序号，调用 \ref bCSD_Regist 获取的值
- * \param o_utc 旧时间
- * \param n_utc 当前时间
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
+ * \brief Call this function after setting time
+ * \param no Instance ID \ref bCSD_Regist
+ * \param o_utc old UTC
+ * \param n_utc new UTC
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
-int bCSD_TimeChanged(int no, uint32_t o_utc, uint32_t n_utc)
+int bSDA_TimeChanged(int no, uint32_t o_utc, uint32_t n_utc)
 {
     uint32_t address_o, address_n;
     
-    if(no >= bCSDInfoIndex || no < 0)
+    if(no >= bSDA_InfoIndex || no < 0)
     {
         return -1;
     }
-    bSDA_Info_t *pinfo = &bCSD_InfoTable[no];
-    if(_bCSD_CalAddress(pinfo, o_utc, &address_o) < 0)
+    bSDA_Info_t *pinfo = &bSDA_InfoTable[no];
+    if(_bSDA_CalAddress(pinfo, o_utc, &address_o) < 0)
     {
         return -1;
     }
     
-    if(_bCSD_CalAddress(pinfo, n_utc, &address_n) < 0)
+    if(_bSDA_CalAddress(pinfo, n_utc, &address_n) < 0)
     {
         return -1;
     }
@@ -436,5 +442,6 @@ int bCSD_TimeChanged(int no, uint32_t o_utc, uint32_t n_utc)
  * \}
  */
 #endif
-/************************ (C) COPYRIGHT NOTRYNOHIGH *****END OF FILE****/
+
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/
 
