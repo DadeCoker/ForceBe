@@ -74,10 +74,7 @@
  * \{
  */
 
-static bCoreDevTable_t *pCoreDevTable = NULL;
-static uint8_t CoreDevNumber = 0; 
 static bCoreFd_t bCoreFdTable[BCORE_FD_MAX];
-
 
 /**
  * \}
@@ -164,27 +161,6 @@ static int _bCoreDeleteFd(int fd)
  */
  
 /**
- * \brief Register device table to Core 
- * \param pTable Pointer to device table \ref bCoreDevTable_t
- * \param number Device number
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
- */
-int bCoreRegist(bCoreDevTable_t *pTable, uint8_t number)
-{
-    if(pTable == NULL || number == 0)
-    {
-        return -1;
-    }
-    pCoreDevTable = pTable;
-    CoreDevNumber = number;
-    return 0;
-}
-
-
-
-/**
  * \brief Open a device 
  * \param dev_no Device Number
  * \param flag Open Flag
@@ -198,7 +174,7 @@ int bCoreRegist(bCoreDevTable_t *pTable, uint8_t number)
 int bOpen(uint8_t dev_no, uint8_t flag)
 {
     int fd = -1;
-    if(dev_no >= CoreDevNumber || pCoreDevTable == NULL || !IS_VALID_FLAG(flag))
+    if(!IS_VALID_FLAG(flag))
     {
         return -1;
     }   

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_sum.c
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,82 +28,22 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-
+#include "b_sum.h"  
+#if (_CHECK_ENABLE && _CHECK_XOR_SUM_ENABLE)
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup XOR_SUM
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
- * \{
- */
-
-typedef struct
-{
-    uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
-
-
-typedef struct
-{
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Defines
- * \{
- */
-
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
-
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
-
-#define BCORE_FD_MAX            10
-
-#ifndef NULL
-#define NULL    ((void *)0)
-#endif
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Macros
- * \{
- */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Variables
+ * \defgroup XOR_SUM_Private_TypesDefinitions
  * \{
  */
    
@@ -112,38 +52,102 @@ typedef struct
  */
    
 /** 
- * \defgroup CORE_Exported_Functions
+ * \defgroup XOR_SUM_Private_Defines
  * \{
  */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
-
-
+   
 /**
  * \}
  */
-
-
+   
+/** 
+ * \defgroup XOR_SUM_Private_Macros
+ * \{
+ */
+   
 /**
  * \}
  */
-
+   
+/** 
+ * \defgroup XOR_SUM_Private_Variables
+ * \{
+ */
+   
 /**
  * \}
  */
-
-#ifdef __cplusplus
-	}
-#endif
+   
+/** 
+ * \defgroup XOR_SUM_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup XOR_SUM_Private_Functions
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \addtogroup XOR_SUM_Exported_Functions
+ * \{
+ */
  
-#endif
 
+uint8_t bXOR(uint8_t *pbuf, uint8_t len)
+{
+    uint8_t tmp, i;
+    if(pbuf == NULL || len == 0)
+    {
+        return 0;
+    }
+    tmp = pbuf[0];
+    
+    for(i = 1;i < len;i++)
+    {
+        tmp ^= pbuf[i];
+    }
+    return tmp;
+} 
+
+
+uint8_t bSUM(uint8_t *pbuf, uint8_t len)
+{
+    uint8_t tmp, i;
+    if(pbuf == NULL || len == 0)
+    {
+        return 0;
+    }
+    tmp = pbuf[0];
+    
+    for(i = 1;i < len;i++)
+    {
+        tmp += pbuf[i];
+    }
+    return tmp;
+} 
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+
+/**
+ * \}
+ */
+#endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 

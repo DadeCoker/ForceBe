@@ -30,8 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
-#if (_CHECK_ENABLE && _CHECK_CRC32_ENABLE)
 #include "b_crc32.h"  
+#if (_CHECK_ENABLE && _CHECK_CRC32_ENABLE)
 /** 
  * \addtogroup BABYOS
  * \{

@@ -30,8 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
-#if (_SAVE_DATA_ENABLE && _SAVE_DATA_A_ENABLE)
 #include "b_sda.h"
+#if (_SAVE_DATA_ENABLE && _SAVE_DATA_A_ENABLE)
 #include "b_utc.h"
 #include "b_core.h"
 #include "b_device.h"
@@ -291,7 +291,7 @@ int bSDA_Regist(bSDA_Struct_t st, uint8_t dev_no)
 
 /**
  * \brief Save data ClassA Write
- * \param no Instance ID \ref bCSD_Regist
+ * \param no Instance ID \ref bSDA_Regist
  * \param utc Current time UTC_2000 (s)
  * \param pbuf Pointer to data buffer
  * \retval Result
@@ -321,7 +321,7 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
     }
 
     int d_fd = -1;
-    d_fd = bOpen(pinfo->dev_no, BFD_FLAG_RW);
+    d_fd = bOpen(pinfo->dev_no, BCORE_FLAG_RW);
     if(d_fd < 0)
     {
         return -1;
@@ -355,7 +355,7 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
 
 /**
  * \brief Save data ClassA Read
- * \param no Instance ID \ref bCSD_Regist
+ * \param no Instance ID \ref bSDA_Regist
  * \param utc Current time UTC_2000 (s)
  * \param pbuf Pointer to data buffer
  * \retval Result
@@ -397,7 +397,7 @@ int bSDA_Read(int no, uint32_t utc, uint8_t *pbuf)
 
 /**
  * \brief Call this function after setting time
- * \param no Instance ID \ref bCSD_Regist
+ * \param no Instance ID \ref bSDA_Regist
  * \param o_utc old UTC
  * \param n_utc new UTC
  * \retval Result

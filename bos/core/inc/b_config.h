@@ -46,6 +46,9 @@
 
 //<h> Compile Configuration
 
+//<o> Tick Frequncy HZ
+#define _TICK_FRQ_HZ          	    1000
+
 //<q> UTC2000 Enable/Disable
 #define _UTC2000_ENABLE           	1
 
@@ -65,6 +68,11 @@
 #define _ERROR_Q_LENGTH          	5
 //</e>
 
+//<e> Event Manage Enable/Disable
+#define _EVENT_MANAGE_ENABLE       	1
+//<o> Event Queue Length
+#define _EVENT_Q_LENGTH          	5
+//</e>
 
 //<e> Modbus Enable/Disable
 #define _MODBUS_ENABLE           	1
@@ -110,8 +118,17 @@
 
 //<e> Protocol Enable/Disable
 #define _PROTO_ENABLE         		1
-//<q> OTA Enable/Disable
+//<o> Protocol Instance Number
+#define _PROTO_I_NUMBER             1
+//<e> OTA Enable/Disable
 #define _PROTO_OTA_ENABLE         	1
+//<o> OTA Info Address
+#define _OTA_INFO_ADDRESS           0
+//<o> OTA Data Address
+#define _OTA_DATA_ADDRESS           0X1000
+//<o> OTA Buffer Size
+#define _OTA_BUFF_SIZE              150
+//</e>
 //</e>
 //</h>
 

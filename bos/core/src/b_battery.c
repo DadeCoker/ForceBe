@@ -30,8 +30,8 @@
  */
   
 /*Includes ----------------------------------------------*/ 
-#if _BATTERY_ENABLE
 #include "b_battery.h" 
+#if _BATTERY_ENABLE
 /** 
  * \addtogroup BABYOS
  * \{

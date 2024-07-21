@@ -67,6 +67,30 @@ typedef struct
 		bCMD_Erase_t erase;
 	}param;
 }bCMD_Struct_t;
+
+
+
+typedef struct
+{
+    int (*init)(void);
+    int (*open)(void);
+    int (*close)(void);
+    int (*ctl)(uint8_t cmd, void *param);
+    int (*write)(uint32_t addr, uint8_t *pbuf, uint16_t len);
+    int (*read)(uint32_t addr, uint8_t *pbuf, uint16_t len);
+}bDriverInterface_t; 
+
+typedef enum
+{
+    #define B_DEVICE_REG(dev, driver, description)    dev,
+    #include "b_device_list"
+    bDEV_MAX_NUM
+}bDeviceName_t;
+
+
+
+
+
 /**
  * \}
  */
@@ -75,6 +99,8 @@ typedef struct
  * \defgroup DEVICE_Exported_Defines
  * \{
  */
+
+#define BDEVICE_ERROR       1
 
 /** 
  * \defgroup DEVICE_CtlCMD_Defines

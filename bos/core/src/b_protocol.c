@@ -1,29 +1,47 @@
 /**
  *!
- * \file       bprotocol.c
- * \brief      Common protocol
- * \version    v0.0.1
- * \date       2019/05/08
- * \author     notrynohigh
- *Last modified by notrynohigh 2019/05/08
- *Copyright (c) 2019 by NOTRYNOHIGH. All Rights Reserved.
+ * \file        b_protocol.c
+ * \version     v0.0.1
+ * \date        2019/06/05
+ * \author      Bean(notrynohigh@outlook.com)
+ *******************************************************************************
+ * @attention
+ * 
+ * Copyright (c) 2019 Bean
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *******************************************************************************
  */
    
 /*Includes ----------------------------------------------*/
-#include "bprotocol.h"  
-#include "bcrc/bsum.h"
+#include "b_protocol.h"
+#if _PROTO_ENABLE
+#include "b_sum.h"
+#include "b_tx.h"
 #include <string.h>
-#include "bconfig.h"
-#include "btx/btx.h"
-
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup BOS_PROTOCOL
- * \brief 通用的通讯协议接口，通讯格式 |头|ID|长度|指令|数据|校验和|
+ * \addtogroup PROTOCOL
  * \{
  */
 
@@ -60,7 +78,7 @@
  * \{
  */
 
-static bProtocolInfo_t  bProtocolInfo[bCFG_PRO_I_NUM];
+static bProtocolInfo_t  bProtocolInfo[_PROTO_I_NUMBER];
 static uint8_t bProtocolInfoIndex = 0;
 /**
  * \}
@@ -91,15 +109,17 @@ static uint8_t bProtocolInfoIndex = 0;
  */
 
 /**
- * \brief 获取一个实体
- * \param id 通讯中ID字段
- * \param tx_no 通讯应用号
- * \param f 分发函数
- * \retval 应用序号
+ * \brief Create a protocol instance
+ * \param id system id
+ * \param tx_no TX instance ID
+ * \param f Dispatch Function \ref pdispatch
+ * \retval Instance ID
+ *          \arg >=0  valid
+ *          \arg -1   invalid
  */
 int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f)
 {
-    if(bProtocolInfoIndex >= bCFG_PRO_I_NUM || f == NULL)
+    if(bProtocolInfoIndex >= _PROTO_I_NUMBER || f == NULL)
     {
         return -1;
     }
@@ -110,14 +130,15 @@ int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f)
     return (bProtocolInfoIndex - 1);
 }
 
+
 /**
- * \brief 解析数据并调用分发函数
- * \param no 应用号
- * \param pbuf 接收到的数据buffer
- * \param len 接收到的数据长度
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
+ * \brief Check ID and call dispatch function
+ * \param no Protocol instance \ref bProtocolRegist
+ * \param pbuf Pointer to data buffer
+ * \param len Amount of data
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
 int bProtocolParseCmd(uint8_t no, uint8_t *pbuf, uint8_t len)
 {
@@ -134,6 +155,16 @@ int bProtocolParseCmd(uint8_t no, uint8_t *pbuf, uint8_t len)
     return bProtocolInfo[no].f(pbuf, len);
 }
 
+
+
+/**
+ * \brief Call this function after system ID is changed
+ * \param no Protocol instance \ref bProtocolRegist
+ * \param id System ID
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
 int bProtocolSetID(uint8_t no, uint32_t id)
 {
     if(no >= bProtocolInfoIndex)
@@ -147,15 +178,15 @@ int bProtocolSetID(uint8_t no, uint32_t id)
 
 
 /**
- * \brief 组包并发送的函数
- * \param no 应用号
- * \param cmd 指令号
- * \param psrc 数据源
- * \param pdes 数据目的地址
- * \param size 数据源数据的长度
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
+ * \brief pack and start a TX request
+ * \param no Protocol instance \ref bProtocolRegist
+ * \param cmd Protocol command
+ * \param psrc Pointer to payload
+ * \param pdes Pointer to data buffer
+ * \param size size of payload
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
 int bProtocolPack(uint8_t no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)
 {
@@ -181,18 +212,19 @@ int bProtocolPack(uint8_t no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t
     length = sizeof(bProtocolHead_t) + phead->len;
     *(pdes + length - 1) = bSUM(pdes, length - 1);
     
-    return bTXReq(bProtocolInfo[no].tx_no, pdes, length, BTX_REQ_1);
+    return bTX_Request(bProtocolInfo[no].tx_no, pdes, length, BTX_REQ_LEVEL1);
 }
 
+
 /**
- * \brief 拆包函数
- * \param pbuf 数据源
- * \param len 数据源数据的长度
- * \param pdata 数据起始地址
- * \param size 需要解析的数据的长度
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
+ * \brief Parse data
+ * \param pbuf Pointer to data buffer
+ * \param len Amount of data
+ * \param pdata Pointer to payload
+ * \param size size of payload
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
 int bProtocolUnpack(uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size)
 {
@@ -236,6 +268,7 @@ int bProtocolUnpack(uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size)
 /**
  * \}
  */
-  
-/************************ (C) COPYRIGHT NOTRYNOHIGH *****END OF FILE****/
+#endif
+
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

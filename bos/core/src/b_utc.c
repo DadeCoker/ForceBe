@@ -1,16 +1,37 @@
 /**
  *!
- * \file       butc.c
- * \brief      UTC2000
- * \version    v0.0.1
- * \date       2019/06/05
- * \author     notrynohigh
- *Last modified by notrynohigh 2019/06/05
- *Copyright (c) 2019 by NOTRYNOHIGH. All Rights Reserved.
+ * \file        b_utc.c
+ * \version     v0.0.1
+ * \date        2019/06/05
+ * \author      Bean(notrynohigh@outlook.com)
+ *******************************************************************************
+ * @attention
+ * 
+ * Copyright (c) 2019 Bean
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *******************************************************************************
  */
    
 /*Includes ----------------------------------------------*/
-#include "butc.h"   
+#include "b_utc.h"  
+#if _UTC2000_ENABLE 
 
 /** 
  * \addtogroup BABYOS
@@ -18,13 +39,12 @@
  */
 
 /** 
- * \addtogroup BOS_UTC
- * \brief UTC2000转换单元
+ * \addtogroup UTC
  * \{
  */
 
 /** 
- * \defgroup BUTC_Private_TypesDefinitions
+ * \defgroup UTC_Private_TypesDefinitions
  * \{
  */
    
@@ -33,7 +53,7 @@
  */
    
 /** 
- * \defgroup BUTC_Private_Defines
+ * \defgroup UTC_Private_Defines
  * \{
  */
    
@@ -42,7 +62,7 @@
  */
    
 /** 
- * \defgroup BUTC_Private_Macros
+ * \defgroup UTC_Private_Macros
  * \{
  */
    
@@ -51,7 +71,7 @@
  */
    
 /** 
- * \defgroup BUTC_Private_Variables
+ * \defgroup UTC_Private_Variables
  * \{
  */
    
@@ -60,7 +80,7 @@
  */
    
 /** 
- * \defgroup BUTC_Private_FunctionPrototypes
+ * \defgroup UTC_Private_FunctionPrototypes
  * \{
  */
    
@@ -69,7 +89,7 @@
  */
    
 /** 
- * \defgroup BUTC_Private_Functions
+ * \defgroup UTC_Private_Functions
  * \{
  */
 static uint8_t _bUTC_CalendarMonthDays( uint8_t lpyr, uint8_t month)
@@ -107,11 +127,12 @@ static uint8_t _bUTC_CalendarMonthDays( uint8_t lpyr, uint8_t month)
  */
    
 /** 
- * \addtogroup BUTC_Exported_Functions
+ * \addtogroup UTC_Exported_Functions
  * \{
  */
+ 
 /**
- * \brief UTC转时间 \ref bUTC_DateTime_t
+ * \brief UTC to date struct \ref bUTC_DateTime_t
  */
 void bUTC2Struct( bUTC_DateTime_t *tm, bUTC_t utc )
 {
@@ -140,7 +161,7 @@ void bUTC2Struct( bUTC_DateTime_t *tm, bUTC_t utc )
 }
 
 /**
- * \brief 时间转UTC
+ * \brief Calculate UTC
  */
 bUTC_t bStruct2UTC( bUTC_DateTime_t tm)
 {
@@ -182,6 +203,7 @@ bUTC_t bStruct2UTC( bUTC_DateTime_t tm)
 /**
  * \}
  */
-  
-/************************ (C) COPYRIGHT NOTRYNOHIGH *****END OF FILE****/
+#endif
+
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

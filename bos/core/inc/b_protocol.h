@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_protocol.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
+#ifndef __B_PROTOCOL_H__
+#define __B_PROTOCOL_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,113 +37,107 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
-
+#if _PROTO_ENABLE
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup PROTOCOL
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
+ * \defgroup PROTOCOL_Exported_TypesDefinitions
  * \{
  */
 
-typedef struct
-{
-    uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
+////|bProtocolHead_t | data | sum|
 
+#pragma pack(1) 
 
 typedef struct
 {
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
+    uint8_t head;
+    uint32_t device_id;
+    uint8_t len;
+    uint8_t cmd;
+}bProtocolHead_t;   
+
+#pragma pack()
+
+typedef int (*pdispatch)(uint8_t *pbuf, uint32_t len);
+
+typedef struct
+{
+    uint32_t id;
+    uint8_t tx_no;
+    pdispatch f;
+}bProtocolInfo_t;
+
 
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Defines
+ * \defgroup PROTOCOL_Exported_Defines
  * \{
  */
 
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
 
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
+#define PROTOCOL_HEAD       0xFE
 
-#define BCORE_FD_MAX            10
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup PROTOCOL_Exported_Macros
+ * \{
+ */
+      
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup PROTOCOL_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup PROTOCOL_Exported_Functions
+ * \{
+ */
+int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f);
+int bProtocolSetID(uint8_t no, uint32_t id);
+int bProtocolParseCmd(uint8_t no, uint8_t *pbuf, uint8_t len);
+int bProtocolPack(uint8_t no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size);
+int bProtocolUnpack(uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size);
+/**
+ * \}
+ */
+ 
+/**
+ * \}
+ */
 
-#ifndef NULL
-#define NULL    ((void *)0)
+/**
+ * \}
+ */
 #endif
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Macros
- * \{
- */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Functions
- * \{
- */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
-
-
-/**
- * \}
- */
-
-
-/**
- * \}
- */
-
-/**
- * \}
- */
 
 #ifdef __cplusplus
 	}
 #endif
- 
-#endif
 
+#endif  
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 

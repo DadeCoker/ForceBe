@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_event.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
+#ifndef __B_EVENT_H__
+#define __B_EVENT_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,112 +37,89 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
-
+#if _EVENT_MANAGE_ENABLE
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup EVENT
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
+ * \defgroup EVENT_Exported_TypesDefinitions
  * \{
  */
+typedef void (*pEventHandler_t)(void);  
 
 typedef struct
 {
-    uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
+    uint8_t enable;
+    volatile uint8_t trigger;
+    pEventHandler_t phandler;
+}bEventInfo_t;
 
-
-typedef struct
-{
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
 
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Defines
+ * \defgroup EVENT_Exported_Defines
  * \{
  */
 
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup EVENT_Exported_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup EVENT_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup EVENT_Exported_Functions
+ * \{
+ */
+int bEventIsIdle(void); 
+int bEventCore(void);  
+int bEventTrigger(uint8_t number);
+int bEventRegist(uint8_t number, pIntHandler_t phandler);
+/**
+ * \}
+ */
+ 
+ 
+/**
+ * \}
+ */
 
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
-
-#define BCORE_FD_MAX            10
-
-#ifndef NULL
-#define NULL    ((void *)0)
+/**
+ * \}
+ */
 #endif
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Macros
- * \{
- */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Functions
- * \{
- */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
-
-
-/**
- * \}
- */
-
-
-/**
- * \}
- */
-
-/**
- * \}
- */
 
 #ifdef __cplusplus
 	}
 #endif
- 
-#endif
 
+#endif  
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

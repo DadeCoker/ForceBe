@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_modbus.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
+#ifndef __B_MODBUS_H__
+#define __B_MODBUS_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,6 +37,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
+#if _MODBUS_ENABLE
 
 /** 
  * \addtogroup BABYOS
@@ -44,66 +45,71 @@
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup MODBUS
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
+ * \defgroup MODBUS_Exported_TypesDefinitions
  * \{
  */
 
+#pragma pack(1)
+ 
 typedef struct
+{
+    uint8_t addr;
+    uint8_t func;
+    uint16_t reg;       //Big endian
+    uint16_t num;       //Big endian
+    uint16_t crc;       //Little endian
+}bMB_RTUS_W_t;
+
+
+typedef struct
+{
+    uint8_t addr;
+    uint8_t func;
+    uint8_t len;
+    uint8_t buf[1];
+}bMB_RTUS_Ack_t;
+
+
+
+#pragma pack()
+ 
+typedef struct 
 {
     uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
-
-
-typedef struct
-{
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
-
+}bMB_Info_t;
+   
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Defines
+ * \defgroup MODBUS_Exported_Defines
  * \{
  */
-
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
-
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
-
-#define BCORE_FD_MAX            10
-
 #ifndef NULL
-#define NULL    ((void *)0)
+#define NULL ((void *)0)   
 #endif
+
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Macros
+ * \defgroup MODBUS_Exported_Macros
  * \{
  */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
+#define L2B_B2L_16b(n)  (((n) << 8) | (n >> 8))   
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Variables
+ * \defgroup MODBUS_Exported_Variables
  * \{
  */
    
@@ -112,38 +118,30 @@ typedef struct
  */
    
 /** 
- * \defgroup CORE_Exported_Functions
+ * \defgroup MODBUS_Exported_Functions
  * \{
  */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
-
+int bMB_Regist(uint8_t dev_no);
+int bMB_WriteCmd(uint8_t no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num);
+int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len);
+/**
+ * \}
+ */
+ 
+/**
+ * \}
+ */ 
 
 /**
  * \}
  */
-
-
-/**
- * \}
- */
-
-/**
- * \}
- */
+#endif
 
 #ifdef __cplusplus
 	}
 #endif
- 
-#endif
 
+#endif  
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 

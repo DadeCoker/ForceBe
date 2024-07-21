@@ -1,33 +1,51 @@
 /**
  *!
- * \file       bmb.c
- * \brief      Modbus RTU
- * \version    v0.0.1
- * \date       2019/07/02
- * \author     notrynohigh
- *Last modified by notrynohigh 2019/07/02
- *Copyright (c) 2019 by NOTRYNOHIGH. All Rights Reserved.
+ * \file        b_modbus.c
+ * \version     v0.0.1
+ * \date        2019/06/05
+ * \author      Bean(notrynohigh@outlook.com)
+ *******************************************************************************
+ * @attention
+ * 
+ * Copyright (c) 2019 Bean
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *******************************************************************************
  */
    
 /*Includes ----------------------------------------------*/
-#include "bmb.h" 
-#include "bconfig.h"
-#include "bfd/bfd.h"
-#include "bcore/bcore.h"
-#include "bdev/bccmodule/bccmodule.h"
+#include "b_modbus.h"
+#if _MODBUS_ENABLE
+#include "b_core.h"
+#include "b_device.h"
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup BOS_MB
- * \brief modbus rtu 格式发送解析
+ * \addtogroup MODBUS
  * \{
  */
 
 /** 
- * \defgroup MB_Private_TypesDefinitions
+ * \defgroup MODBUS_Private_TypesDefinitions
  * \{
  */
    
@@ -36,7 +54,7 @@
  */
    
 /** 
- * \defgroup MB_Private_Defines
+ * \defgroup MODBUS_Private_Defines
  * \{
  */
    
@@ -45,7 +63,7 @@
  */
    
 /** 
- * \defgroup MB_Private_Macros
+ * \defgroup MODBUS_Private_Macros
  * \{
  */
    
@@ -54,11 +72,11 @@
  */
    
 /** 
- * \defgroup MB_Private_Variables
+ * \defgroup MODBUS_Private_Variables
  * \{
  */
-static bMBInfo_t bMBInfo[bCFG_BMB_I_NUM];
-static uint32_t bMBInfoIndex = 0;   
+static bMB_Info_t bMB_InfoTable[_MODBUS_I_NUMBER];
+static uint32_t bMB_InfoIndex = 0;   
 
 
 static const uint8_t aucCRCHi[] = {
@@ -133,7 +151,7 @@ static uint16_t _bMBCRC16( uint8_t * pucFrame, uint16_t usLen )
  */
    
 /** 
- * \defgroup MB_Private_FunctionPrototypes
+ * \defgroup MODBUS_Private_FunctionPrototypes
  * \{
  */
    
@@ -142,7 +160,7 @@ static uint16_t _bMBCRC16( uint8_t * pucFrame, uint16_t usLen )
  */
    
 /** 
- * \defgroup MB_Private_Functions
+ * \defgroup MODBUS_Private_Functions
  * \{
  */
 static int _bMB_l2b_b2l_16(uint16_t *pdata)
@@ -163,22 +181,40 @@ static int _bMB_l2b_b2l_16(uint16_t *pdata)
  */
    
 /** 
- * \addtogroup MB_Exported_Functions
+ * \addtogroup MODBUS_Exported_Functions
  * \{
  */
-
+ 
+/**
+ * \brief Create a MB instance
+ * \param dev_no Device number
+ * \retval Instance ID
+ *          \arg >=0  valid
+ *          \arg -1   invalid
+ */
 int bMB_Regist(uint8_t dev_no)
 {
-    if(bMBInfoIndex >= bCFG_BMB_I_NUM)
+    if(bMB_InfoIndex >= _MODBUS_I_NUMBER)
     {
         return -1;    
     }
-    bMBInfo[bMBInfoIndex].dev_no = dev_no;
-    bMBInfoIndex += 1;
-    return (bMBInfoIndex - 1);
+    bMB_InfoTable[bMB_InfoIndex].dev_no = dev_no;
+    bMB_InfoIndex += 1;
+    return (bMB_InfoIndex - 1);
 }
 
 
+/**
+ * \brief Modbus send command
+ * \param no Instance ID \ref bMB_Regist
+ * \param addr Device address
+ * \param func Function code
+ * \param reg  Register address
+ * \param num  Register number
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
 int bMB_WriteCmd(uint8_t no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
 {
     bMB_RTUS_W_t wd;
@@ -199,20 +235,18 @@ int bMB_WriteCmd(uint8_t no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t 
     wd.crc = _bMBCRC16((uint8_t *)&wd, sizeof(bMB_RTUS_W_t) - sizeof(wd.crc));
     
     int fd = -1;
-    fd = bOpen(bMBInfo[no].dev_no, BFD_FLAG_RW);
+    fd = bOpen(bMB_InfoTable[no].dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
         return -1;
     }
-    bCtl(fd, BCCMODULE_CMD_485_W, NULL);
     retval = bWrite(fd, (uint8_t *)&wd, sizeof(bMB_RTUS_W_t));
-    bCtl(fd, BCCMODULE_CMD_485_R, NULL);
     bClose(retval);
     return retval;
 }
 
 
-int bMB_CheckReadCmdAck(uint8_t *psrc, uint16_t len)
+int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len)
 {
     if(psrc == NULL)
     {
@@ -248,6 +282,7 @@ int bMB_CheckReadCmdAck(uint8_t *psrc, uint16_t len)
 /**
  * \}
  */
+#endif
 
-/************************ (C) COPYRIGHT NOTRYNOHIGH *****END OF FILE****/
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

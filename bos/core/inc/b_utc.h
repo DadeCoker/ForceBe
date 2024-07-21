@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_utc.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,122 +28,105 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
+#ifndef __B_UTC_H__
+#define __B_UTC_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-
+#include "b_config.h"  
+#if _UTC2000_ENABLE
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup UTC
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
+ * \defgroup UTC_Exported_TypesDefinitions
  * \{
  */
-
 typedef struct
 {
-    uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
+    uint16_t year;
+    uint8_t  month;
+    uint8_t  day;
+    uint8_t  week;
+    uint8_t  hour;
+    uint8_t  minute;
+    uint8_t  second;
+}bUTC_DateTime_t; 
 
-
-typedef struct
-{
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
+typedef uint32_t    bUTC_t;
 
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Defines
+ * \defgroup UTC_Exported_Defines
  * \{
  */
+#define	YEAR_CHECK(yr)	(((yr % 400) == 0x0) || (((yr % 4) == 0) && ((yr % 100) != 0)))
 
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
+#define	YEAR_DAYS(yr)	(YEAR_CHECK(yr) ? 366 : 365)
+#define MAXCALCTICKS    ((uint16_t)(13105))
+#define	BEGYEAR	        2000                        // UTC started at 00:00:00 January 1, 2000
+#define	DAY             86400UL                     // 24 hours * 60 minutes * 60 seconds   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup UTC_Exported_Macros
+ * \{
+ */
+#define IS_TIME_VALID(n)        (n.year < 2999 && (n.month > 0 && n.month <= 12) && (n.day > 0 && n.day <= 31) && \
+                                        n.week <= 7 && n.hour <= 23 && n.minute <= 59 && n.second <= 59)   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup UTC_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup UTC_Exported_Functions
+ * \{
+ */
+void bUTC2Struct( bUTC_DateTime_t *tm, bUTC_t utc );
+bUTC_t bStruct2UTC( bUTC_DateTime_t tm);
+/**
+ * \}
+ */
 
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
+/**
+ * \}
+ */
 
-#define BCORE_FD_MAX            10
+/**
+ * \}
+ */
 
-#ifndef NULL
-#define NULL    ((void *)0)
 #endif
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Macros
- * \{
- */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Functions
- * \{
- */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
-
-
-/**
- * \}
- */
-
-
-/**
- * \}
- */
-
-/**
- * \}
- */
 
 #ifdef __cplusplus
 	}
 #endif
  
-#endif
-
+#endif  
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 

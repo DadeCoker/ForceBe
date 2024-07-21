@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_suart.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
+#ifndef __B_SUART_H__
+#define __B_SUART_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,101 +37,101 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"
-
+#include "b_device.h"
 /** 
- * \addtogroup BABYOS
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup SUART
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
+ * \defgroup SUART_Exported_TypesDefinitions
  * \{
  */
-
+ 
+typedef bDriverInterface_t   SUART_Driver_t;  
+ 
 typedef struct
 {
-    uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
-
-
-typedef struct
-{
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
-
+    volatile uint8_t byte;
+    volatile uint8_t status;
+    volatile uint8_t c_bits;
+    uint8_t buf[128];
+    volatile uint8_t count;
+    volatile uint8_t revf;
+    volatile uint8_t idle_count;
+    volatile uint8_t idle_flag;
+}S_RXInfo_t;   
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Defines
+ * \defgroup SUART_Exported_Defines
  * \{
  */
 
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
+#define S_TX_S_NULL             0
+#define S_TX_S_REQ              1
+#define S_TX_S_ING              2
+#define S_TX_S_STOP             3
+#define S_TX_S_WAIT             4
 
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
 
-#define BCORE_FD_MAX            10
+#define S_RX_S_NULL             0
+#define S_RX_S_START            1
+#define S_RX_S_ING              2
+#define S_RX_S_STOP             3
+#define S_RX_S_WAIT             4
+#define S_RX_S_IDLE             5
+
 
 #ifndef NULL
-#define NULL    ((void *)0)
+#define NULL ((void *)0)   
 #endif
+
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Macros
+ * \defgroup SUART_Exported_Macros
  * \{
  */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
+
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Variables
+ * \defgroup SUART_Exported_Variables
  * \{
  */
-   
+extern SUART_Driver_t SUART_Driver;   
 /**
  * \}
  */
    
 /** 
- * \defgroup CORE_Exported_Functions
+ * \defgroup SUART_Exported_Functions
  * \{
  */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
+void S_UartTxTimerHandler(void);
+void S_UartRXStart(void);
+void S_UartRxTimerHandler(void);
 
-
+int SUART_Init(void);
 /**
  * \}
  */
-
-
+ 
 /**
  * \}
- */
+ */ 
 
 /**
  * \}

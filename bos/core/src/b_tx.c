@@ -1,34 +1,52 @@
 /**
  *!
- * \file       btx.c
- * \brief      Transmit data
- * \version    v0.0.1
- * \date       2019/07/02
- * \author     notrynohigh
- *Last modified by notrynohigh 2019/07/02
- *Copyright (c) 2019 by NOTRYNOHIGH. All Rights Reserved.
+ * \file        b_tx.c
+ * \version     v0.0.1
+ * \date        2019/06/05
+ * \author      Bean(notrynohigh@outlook.com)
+ *******************************************************************************
+ * @attention
+ * 
+ * Copyright (c) 2019 Bean
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *******************************************************************************
  */
    
 /*Includes ----------------------------------------------*/
-#include "btx.h"
+#include "b_tx.h"  
+#if _TX_ENABLE
+#include "b_core.h"
+#include "b_hal.h"
 #include <string.h>
-#include "bconfig.h"
-#include "bcore/bcore.h"
-#include "bhal.h"
-
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup BOS_TX
- * \brief 发送数据单元
+ * \addtogroup TX
  * \{
  */
 
 /** 
- * \defgroup BTXRX_Private_TypesDefinitions
+ * \defgroup TX_Private_TypesDefinitions
  * \{
  */
    
@@ -37,7 +55,7 @@
  */
    
 /** 
- * \defgroup BTX_Private_Defines
+ * \defgroup TX_Private_Defines
  * \{
  */
    
@@ -46,7 +64,7 @@
  */
    
 /** 
- * \defgroup BTX_Private_Macros
+ * \defgroup TX_Private_Macros
  * \{
  */
    
@@ -55,17 +73,17 @@
  */
    
 /** 
- * \defgroup BTX_Private_Variables
+ * \defgroup TX_Private_Variables
  * \{
  */
-static bTX_Info_t bTX_InfoTable[bCFG_TX_I_NUM]; 
+static bTX_Info_t bTX_InfoTable[_TX_I_NUMBER]; 
 static uint8_t bTX_InfoIndex = 0;
 /**
  * \}
  */
    
 /** 
- * \defgroup BTX_Private_FunctionPrototypes
+ * \defgroup TX_Private_FunctionPrototypes
  * \{
  */
    
@@ -74,7 +92,7 @@ static uint8_t bTX_InfoIndex = 0;
  */
    
 /** 
- * \defgroup BTX_Private_Functions
+ * \defgroup TX_Private_Functions
  * \{
  */
    
@@ -83,21 +101,23 @@ static uint8_t bTX_InfoIndex = 0;
  */
    
 /** 
- * \addtogroup BTX_Exported_Functions
+ * \addtogroup TX_Exported_Functions
  * \{
  */
  
 /**
- * \brief 获取一个实体
- * \param pbuf 数据发送的缓存
- * \param size 缓存大小
- * \param td_mode 发送完成信号类型
- *          \arg \ref BTX_F_SYN 同步，发送后立即完成
- *          \arg \ref BTX_F_ASYN 异步，发送完后等待结束信号
- * \param dev_no 设备号
- * \retval 应用号
+ * \brief Create a TX instance
+ * \param pbuf Pointer to data buffer
+ * \param size Size of buffer
+ * \param td_mode 
+ *          \arg \ref BTX_F_SYN 
+ *          \arg \ref BTX_F_ASYN 
+ * \param dev_no Device Number
+ * \retval Instance ID
+ *          \arg >=0  valid
+ *          \arg -1   invalid
  */
-int bTXRegist(uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no)
+int bTX_Regist(uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no)
 {
     if(pbuf == NULL || bTX_InfoIndex >= bCFG_TX_I_NUM)
     {
@@ -119,13 +139,12 @@ int bTXRegist(uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no)
 
 
 /**
- * \brief 检测并调用发送
- * \note 放入while循环里调用
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
+ * \brief Transmit data
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
-int bTXCore()
+int bTX_Core()
 {
     int i = 0;
     int retval = -1;
@@ -133,7 +152,7 @@ int bTXCore()
     {
         if(bTX_InfoTable[i].state == BTX_REQ)
         {
-            bTX_InfoTable[i].fd = bOpen(bTX_InfoTable[i].dev_no, BFD_FLAG_RW);
+            bTX_InfoTable[i].fd = bOpen(bTX_InfoTable[i].dev_no, BCORE_FLAG_RW);
             if(bTX_InfoTable[i].fd < 0)
             {
                 b_log("tx open err\r\n");
@@ -167,7 +186,7 @@ int bTXCore()
         if(bTX_InfoTable[i].state == BTX_WAIT)
         {
             if(bTX_InfoTable[i].td_flag || 
-                (((bHalGetTick() - bTX_InfoTable[i].timeout) > 2000) && bTX_InfoTable[i].timeout_f == 1))
+                (((bHalGetTick() - bTX_InfoTable[i].timeout) > (2 * _TICK_FRQ_HZ)) && bTX_InfoTable[i].timeout_f == 1))
             {
                 bTX_InfoTable[i].timeout_f = 0;
                 bTX_InfoTable[i].td_flag = 0;
@@ -181,19 +200,8 @@ int bTXCore()
 }
 
 
-/**
- * \brief 请求发送数据
- * \param no 应用号
- * \param pbuf 数据存放区
- * \param size 需要发送数据的长度
- * \param flag 当前请求的等级
- *          \arg \ref BTX_REQ_0 普通等级，空闲时才能请求成功
- *          \arg \ref BTX_REQ_1 超高等级，立即插入等待发送
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
- */
-int bTXReq(int no, uint8_t *pbuf, uint16_t size, uint8_t flag)
+
+int bTX_Request(int no, uint8_t *pbuf, uint16_t size, uint8_t flag)
 {
 
     if(no < 0 || no >= bTX_InfoIndex || pbuf == NULL)
@@ -201,7 +209,7 @@ int bTXReq(int no, uint8_t *pbuf, uint16_t size, uint8_t flag)
         return -1;
     }
 
-    if(flag == BTX_REQ_0 && bTX_InfoTable[no].state != BTX_NULL)
+    if(flag == BTX_REQ_LEVEL0 && bTX_InfoTable[no].state != BTX_NULL)
     {
         return -1;
     }
@@ -227,14 +235,8 @@ int bTXReq(int no, uint8_t *pbuf, uint16_t size, uint8_t flag)
 
 
 
-/**
- * \brief 通知发送完成
- * \param no 应用号
- * \retval 返回值
- *          \arg 0 成功
- *          \arg -1 失败
- */
-int bTXCpl(int no)
+
+int bTX_CplCallback(int no)
 {
     if(no < 0 || no >= bTX_InfoIndex)
     {
@@ -260,6 +262,7 @@ int bTXCpl(int no)
 /**
  * \}
  */
-  
-/************************ (C) COPYRIGHT NOTRYNOHIGH *****END OF FILE****/
+#endif
+
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

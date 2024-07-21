@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_core.h
+ * \file        b_hal.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,82 +28,29 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_CORE_H__
-#define __B_CORE_H__ 
+#ifndef __B_HAL_H__
+#define __B_HAL_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
+#include "b_config.h" 
+#include "stm32f0xx_hal.h"
 
 /** 
- * \addtogroup BABYOS
+ * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \addtogroup HAL
  * \{
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
- * \{
- */
-
-typedef struct
-{
-    uint8_t dev_no;
-    uint8_t name[8];
-}bCoreDevTable_t;
-
-
-typedef struct
-{
-    uint8_t number;
-    uint8_t flag;
-    uint8_t status;
-    uint32_t lseek;
-}bCoreFd_t;
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Defines
- * \{
- */
-
-#define BCORE_FLAG_R            0
-#define BCORE_FLAG_W            1
-#define BCORE_FLAG_RW           2
-
-#define BCORE_STA_NULL          0
-#define BCORE_STA_OPEN          1
-
-#define BCORE_FD_MAX            10
-
-#ifndef NULL
-#define NULL    ((void *)0)
-#endif
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Macros
- * \{
- */
-#define IS_VALID_FLAG(n)        (n == BCORE_FLAG_R || n == BCORE_FLAG_W || n == BCORE_FLAG_RW) 
-/**
- * \}
- */
-   
-/** 
- * \defgroup CORE_Exported_Variables
+ * \defgroup HAL_Exported_TypesDefinitions
  * \{
  */
    
@@ -112,22 +59,76 @@ typedef struct
  */
    
 /** 
- * \defgroup CORE_Exported_Functions
+ * \defgroup HAL_Exported_Defines
  * \{
  */
-int bCoreIsIdle(void); 
-int bOpen(uint8_t dev_no, uint8_t flag);
-int bRead(int fd, uint8_t *pdata, uint16_t len);
-int bWrite(int fd, uint8_t *pdata, uint16_t len);
-int bCtl(int fd, uint8_t cmd, void *param);
-int bLseek(int fd, uint32_t off);
-int bClose(int fd);
+#define FLS_PSIZE                   2048UL
+
+#define LORA_POWERON()              HAL_GPIO_WritePin(LORA_ONOFF_GPIO_Port, LORA_ONOFF_Pin, GPIO_PIN_SET)
+#define LORA_RESET()                HAL_GPIO_WritePin(LORA_RESET_GPIO_Port, LORA_RESET_Pin, GPIO_PIN_RESET)
+#define LORA_SET()                  HAL_GPIO_WritePin(LORA_RESET_GPIO_Port, LORA_RESET_Pin, GPIO_PIN_SET)
+#define LORA_SLEEP()                //HAL_GPIO_WritePin(LORA_SLEEP_GPIO_Port, LORA_SLEEP_Pin, GPIO_PIN_RESET)
+#define LORA_WAKEUP()               HAL_GPIO_WritePin(LORA_SLEEP_GPIO_Port, LORA_SLEEP_Pin, GPIO_PIN_SET)
+
+#define S_TX_PIN_SET()              HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET)
+#define S_TX_PIN_RESET()            HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_RESET)
+#define S_RX_PIN_READ()             HAL_GPIO_ReadPin(SUART_RX_GPIO_Port, SUART_RX_Pin)
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Exported_Macros
+ * \{
+ */
+
+
+#if _DEBUG_ENABLE
+
+#define b_log(...)       printf(__VA_ARGS__)
+
+#else
+
+#define b_log(...)
+
+#endif    
 
 
 /**
  * \}
  */
+   
+/** 
+ * \defgroup HAL_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Exported_Functions
+ * \{
+ */
+void bHalEnterCritical(void); 
+void bHalExitCritical(void);
+void bHalDelayMS(uint16_t xms);
+void bHalDelayUS(uint16_t xus);  
+uint32_t bHalGetTick(void);
+void bHalChipProtect(void);
 
+int bHAL_SPI_Transmit_SX(uint8_t *pbuf, uint16_t len);
+int bHAL_SPI_Receive_SX(uint8_t *pbuf, uint16_t len);
+
+void bHalGetSTM32MCUID(uint32_t id[3]);
+void bHalFeedWTD(void);
+int bHalFlashWrite(uint32_t address, uint8_t *pbuf, uint16_t len);
+int bHalErasePage(uint32_t addr);
+/**
+ * \}
+ */
 
 /**
  * \}
