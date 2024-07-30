@@ -76,7 +76,7 @@
  * \{
  */
 static uint16_t bLowThreshold = _BATTERY_THRESHOLD;  
-static uint8_t bBatteryStatus = bBAT_STA_NORMAL;
+static uint8_t bBatteryStatus = BATTERY_STA_NORMAL;
 /**
  * \}
  */

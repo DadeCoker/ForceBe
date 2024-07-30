@@ -30,8 +30,9 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_device.h"
 #include "b_driver.h"
+#include "b_device.h"
+#include <string.h>
 /** 
  * \addtogroup BABYOS
  * \{
@@ -76,19 +77,19 @@
  */
 
 static bDriverInterface_t* bDriverTable[bDEV_MAX_NUM] = {
-    #define #define B_DEVICE_REG(dev, driver, description)    &driver,
-    #include "b_device_list"
+    #define B_DEVICE_REG(dev, driver, desc)    &driver,
+    #include "b_device_list.h"
 };
 
 static const char *bDeviceDescTable[bDEV_MAX_NUM] = {
-    #define #define B_DEVICE_REG(dev, driver, description)    description,
-    #include "b_device_list"
+    #define B_DEVICE_REG(dev, driver, desc)    desc,
+    #include "b_device_list.h"
 };
 
 
 static uint8_t bDeviceStatusTable[bDEV_MAX_NUM];
 
-
+ 
 
 /**
  * \}
@@ -160,7 +161,7 @@ int bDeviceOpen(uint8_t no)
     {
         return -1;
     }
-    if(bDeviceStatusTable[no].status == 0)
+    if(bDeviceStatusTable[no] == 0)
     {
         if(bDriverTable[no]->open == NULL)
         {
@@ -178,7 +179,7 @@ int bDeviceRead(int no, uint32_t address, uint8_t *pdata, uint16_t len)
     {
         return -1;
     }
-    if(bDeviceStatusTable[no].status == 0)
+    if(bDeviceStatusTable[no] == 0)
     {
         if(bDriverTable[no]->read == NULL)
         {
@@ -195,7 +196,7 @@ int bDeviceWrite(int no, uint32_t address, uint8_t *pdata, uint16_t len)
     {
         return -1;
     }
-    if(bDeviceStatusTable[no].status == 0)
+    if(bDeviceStatusTable[no] == 0)
     {
         if(bDriverTable[no]->write== NULL)
         {
@@ -214,7 +215,7 @@ int bDeviceClose(int no)
     {
         return -1;
     }
-    if(bDeviceStatusTable[no].status == 0)
+    if(bDeviceStatusTable[no] == 0)
     {
         if(bDriverTable[no]->close == NULL)
         {
@@ -232,7 +233,7 @@ int bDeviceCtl(int no, uint8_t cmd, void *param)
     {
         return -1;
     }
-    if(bDeviceStatusTable[no].status == 0)
+    if(bDeviceStatusTable[no] == 0)
     {
         if(bDriverTable[no]->ctl== NULL)
         {
@@ -258,7 +259,6 @@ int bDeviceCtl(int no, uint8_t cmd, void *param)
 /**
  * \}
  */
-#endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

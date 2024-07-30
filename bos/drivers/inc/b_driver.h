@@ -29,15 +29,15 @@
  *******************************************************************************
  */
 #ifndef __B_DRIVER_H__
-#ifndef __B_DRIVER_H__
+#define __B_DRIVER_H__
 
 
 
 
 
 
-#include "inc/b_suart.h"
-#include "inc/b_w25x.h"
+#include "b_suart.h"
+#include "b_w25x.h"
 
 
 

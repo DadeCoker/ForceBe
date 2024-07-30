@@ -80,10 +80,15 @@ typedef struct
     int (*read)(uint32_t addr, uint8_t *pbuf, uint16_t len);
 }bDriverInterface_t; 
 
+
+#define B_DEVICE_REG(dev, driver, desc)
+#include "b_device_list.h"
+
+
 typedef enum
 {
-    #define B_DEVICE_REG(dev, driver, description)    dev,
-    #include "b_device_list"
+    #define B_DEVICE_REG(dev, driver, desc)    dev,
+    #include "b_device_list.h"
     bDEV_MAX_NUM
 }bDeviceName_t;
 
@@ -143,7 +148,12 @@ typedef enum
  * \defgroup DEVICE_Exported_Functions
  * \{
  */
- 
+int bDeviceInit(void);
+int bDeviceOpen(uint8_t no);
+int bDeviceRead(int no, uint32_t address, uint8_t *pdata, uint16_t len);
+int bDeviceWrite(int no, uint32_t address, uint8_t *pdata, uint16_t len);
+int bDeviceClose(int no);
+int bDeviceCtl(int no, uint8_t cmd, void *param);
 /**
  * \}
  */

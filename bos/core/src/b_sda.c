@@ -282,10 +282,10 @@ int bSDA_Regist(bSDA_Struct_t st, uint8_t dev_no)
     pinfo->data_address = st.fbase_address + st.ferase_size;
     pinfo->dev_no = dev_no;
     pinfo->e_flag = 1;
-    memcpy(&(pinfo->st), &st, sizeof(bCSD_Struct_t));
+    memcpy(&(pinfo->st), &st, sizeof(bSDA_Struct_t));
     b_log("peu:%d\tunn:%d\tba:%d\tts:%d\r\n", pinfo->n_per_eu, pinfo->un_number, pinfo->base_address, pinfo->total_size);
-    bCSDInfoIndex += 1;
-    return (bCSDInfoIndex - 1);
+    bSDA_InfoIndex += 1;
+    return (bSDA_InfoIndex - 1);
 }
 
 

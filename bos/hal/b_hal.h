@@ -37,7 +37,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-#include "stm32f0xx_hal.h"
+#include "stm32f1xx_hal.h"
 
 /** 
  * \addtogroup B_HAL

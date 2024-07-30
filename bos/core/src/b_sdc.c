@@ -208,7 +208,7 @@ int bSDC_Write(int no, uint8_t *pbuf)
     addr = bSDC_InfoTable[no].index * (bSDC_InfoTable[no].st.usize + 1) + bSDC_InfoTable[no].st.address;
 
     int d_fd = -1;
-    d_fd = bOpen(bSDC_InfoTable[no].dev_no, BFD_FLAG_RW);
+    d_fd = bOpen(bSDC_InfoTable[no].dev_no, BCORE_FLAG_RW);
     if(d_fd < 0)
     {
         return -1;

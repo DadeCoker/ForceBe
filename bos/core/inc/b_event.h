@@ -100,7 +100,7 @@ typedef struct
 int bEventIsIdle(void); 
 int bEventCore(void);  
 int bEventTrigger(uint8_t number);
-int bEventRegist(uint8_t number, pIntHandler_t phandler);
+int bEventRegist(uint8_t number, pEventHandler_t phandler);
 /**
  * \}
  */

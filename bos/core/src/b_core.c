@@ -124,7 +124,7 @@ static int _bCoreCreateFd(uint8_t dev_no, uint8_t flag)
         if(bCoreFdTable[i].status == BCORE_STA_NULL)
         {
             bCoreFdTable[i].flag = flag;
-            bCoreFdTable[i].number = no;
+            bCoreFdTable[i].number = dev_no;
             bCoreFdTable[i].status = BCORE_STA_OPEN;
             bCoreFdTable[i].lseek = 0;
             fd = i;
@@ -194,6 +194,7 @@ int bOpen(uint8_t dev_no, uint8_t flag)
 
 int bRead(int fd, uint8_t *pdata, uint16_t len)
 {
+    int retval;
     if(fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
     {
         return -1;
@@ -204,7 +205,7 @@ int bRead(int fd, uint8_t *pdata, uint16_t len)
         return -1;
     }
     
-    retval = bDeviceRead(bCoreFdTable[fd].number, bCoreFdTable[fd].lseek, len);
+    retval = bDeviceRead(bCoreFdTable[fd].number, bCoreFdTable[fd].lseek, pdata, len);
     if(retval >= 0)
     {
         bCoreFdTable[fd].lseek += len;
@@ -215,6 +216,7 @@ int bRead(int fd, uint8_t *pdata, uint16_t len)
 
 int bWrite(int fd, uint8_t *pdata, uint16_t len)
 {
+    int retval;
     if(fd < 0 || fd >= BCORE_FD_MAX || pdata == NULL)
     {
         return -1;
@@ -277,6 +279,7 @@ int bClose(int fd)
 
 int bCoreIsIdle()
 {
+    int i;
     for(i = 0;i < BCORE_FD_MAX;i++)
     {
         if(bCoreFdTable[i].status == BCORE_STA_OPEN)

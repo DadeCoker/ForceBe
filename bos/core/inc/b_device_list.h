@@ -34,11 +34,11 @@
 /**
            for example !
 
-/////B_DEVICE_REG(dev, driver_interface, description);           
+/////B_DEVICE_REG(dev, driver_interface, desc);           
  */
 
-B_DEVICE_REG(W25Q64, W26X_Driver, "flash");
-B_DEVICE_REG(LIS3DH, LIS3DH_Driver, "gsensor");
+B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
+B_DEVICE_REG(SUART, SUART_Driver, "suart")
 
 
 
@@ -52,4 +52,5 @@ B_DEVICE_REG(LIS3DH, LIS3DH_Driver, "gsensor");
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 
 
- 
+
+

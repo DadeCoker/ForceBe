@@ -98,7 +98,7 @@ static uint32_t bSDB_InfoIndex = 0;
  * \defgroup SDB_Private_Functions
  * \{
  */
-static _bSDB_CalSUM(uint8_t *pbuf, uint8_t len)
+static uint8_t _bSDB_CalSUM(uint8_t *pbuf, uint8_t len)
 {
     uint8_t tmp, i;
     tmp = pbuf[0];

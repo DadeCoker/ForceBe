@@ -119,7 +119,7 @@ static uint8_t bTX_InfoIndex = 0;
  */
 int bTX_Regist(uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no)
 {
-    if(pbuf == NULL || bTX_InfoIndex >= bCFG_TX_I_NUM)
+    if(pbuf == NULL || bTX_InfoIndex >= _TX_I_NUMBER)
     {
         return -1;
     }
