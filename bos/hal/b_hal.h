@@ -64,11 +64,8 @@
  */
 #define FLS_PSIZE                   2048UL
 
-#define LORA_POWERON()              HAL_GPIO_WritePin(LORA_ONOFF_GPIO_Port, LORA_ONOFF_Pin, GPIO_PIN_SET)
-#define LORA_RESET()                HAL_GPIO_WritePin(LORA_RESET_GPIO_Port, LORA_RESET_Pin, GPIO_PIN_RESET)
-#define LORA_SET()                  HAL_GPIO_WritePin(LORA_RESET_GPIO_Port, LORA_RESET_Pin, GPIO_PIN_SET)
-#define LORA_SLEEP()                //HAL_GPIO_WritePin(LORA_SLEEP_GPIO_Port, LORA_SLEEP_Pin, GPIO_PIN_RESET)
-#define LORA_WAKEUP()               HAL_GPIO_WritePin(LORA_SLEEP_GPIO_Port, LORA_SLEEP_Pin, GPIO_PIN_SET)
+#define FLASH_CS_RESET()            HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET)
+#define FLASH_CS_SET()              HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET)
 
 #define S_TX_PIN_SET()              HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET)
 #define S_TX_PIN_RESET()            HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_RESET)
@@ -118,10 +115,6 @@ void bHalDelayMS(uint16_t xms);
 void bHalDelayUS(uint16_t xus);  
 uint32_t bHalGetTick(void);
 void bHalChipProtect(void);
-
-int bHAL_SPI_Transmit_SX(uint8_t *pbuf, uint16_t len);
-int bHAL_SPI_Receive_SX(uint8_t *pbuf, uint16_t len);
-
 void bHalGetSTM32MCUID(uint32_t id[3]);
 void bHalFeedWTD(void);
 int bHalFlashWrite(uint32_t address, uint8_t *pbuf, uint16_t len);

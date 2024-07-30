@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal</IncludePath>
+              <IncludePath>../Core/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;   ../Drivers/CMSIS/Include;   ..\bos\core\inc\;   ..\bos\drivers\inc\;   ..\bos\hal</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -435,6 +435,11 @@
               <FileName>stm32f1xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f1xx_hal_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c</FilePath>
             </File>
             <File>
               <FileName>stm32f1xx_hal.c</FileName>
@@ -570,6 +575,31 @@
               <FileName>b_utc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_utc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>b_suart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_suart.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_w25x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_w25x.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Hal</GroupName>
+          <Files>
+            <File>
+              <FileName>b_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\b_hal.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -49,6 +49,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define SUART_TX_Pin GPIO_PIN_1
+#define SUART_TX_GPIO_Port GPIOA
+#define SUART_RX_Pin GPIO_PIN_2
+#define SUART_RX_GPIO_Port GPIOA
 #define W25X_CS_Pin GPIO_PIN_12
 #define W25X_CS_GPIO_Port GPIOB
 

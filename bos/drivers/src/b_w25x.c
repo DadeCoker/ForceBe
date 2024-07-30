@@ -107,7 +107,7 @@ static uint32_t bW25X_UserCount = 0;
  * \defgroup W25X_Private_FunctionPrototypes
  * \{
  */
-extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi2;
 /**
  * \}
  */
@@ -119,7 +119,7 @@ extern SPI_HandleTypeDef hspi1;
 static uint8_t _bW25X_SPI_RW(uint8_t dat)
 {
 	uint8_t retval;
-	HAL_SPI_TransmitReceive(&hspi1, &dat, &retval, 1, 0xfff);
+	HAL_SPI_TransmitReceive(&hspi2, &dat, &retval, 1, 0xfff);
     return retval;
 }
 
@@ -361,19 +361,14 @@ static int _bW25X_Ctl(uint8_t cmd, void * param)
     int retval = -1;
     switch(cmd)
     {
-        case BFLASH_CMD_ERASE:
+        case bCMD_ERASE:
             {
                 if(param == NULL)
                 {
                     return -1;
                 }
-                bFlashEraseParam_t *p = (bFlashEraseParam_t *)param;
-                retval = _bW25X_Erase(p->address, p->number);
-            }
-            break;
-        case BFLASH_CMD_FLUSH:
-            {
-                retval = 0;
+                bCMD_Struct_t *p = (bCMD_Struct_t *)param;
+                retval = _bW25X_Erase(p->param.erase.addr, p->param.erase.num);
             }
             break;
         default:

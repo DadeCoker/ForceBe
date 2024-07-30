@@ -290,6 +290,14 @@ int bCoreIsIdle()
     return 0;
 }
 
+int bInit()
+{
+    b_log("device number:%d\r\n", bDEV_MAX_NUM);
+    return bDeviceInit();
+}
+
+
+
 /**
  * \}
  */

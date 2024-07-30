@@ -115,7 +115,7 @@ typedef struct
  * \defgroup CORE_Exported_Functions
  * \{
  */
-int bCoreIsIdle(void); 
+int bInit(void);
 int bOpen(uint8_t dev_no, uint8_t flag);
 int bRead(int fd, uint8_t *pdata, uint16_t len);
 int bWrite(int fd, uint8_t *pdata, uint16_t len);
@@ -123,7 +123,7 @@ int bCtl(int fd, uint8_t cmd, void *param);
 int bLseek(int fd, uint32_t off);
 int bClose(int fd);
 
-
+int bCoreIsIdle(void); 
 /**
  * \}
  */

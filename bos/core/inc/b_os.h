@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_device_list.h
+ * \file        b_os.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,29 +28,31 @@
  * SOFTWARE.
  *******************************************************************************
  */
+#ifndef __B_OS_H__
+#define __B_OS_H__
 
 
 
-/**
-           for example !
+#include "b_battery.h"
+#include "b_core.h"
+#include "b_crc32.h"
+#include "b_device.h"
+#include "b_error.h"
+#include "b_event.h"
+#include "b_modbus.h"
+#include "b_ota.h"
+#include "b_protocol.h"
+#include "b_sda.h"
+#include "b_sdb.h"
+#include "b_sdc.h"
+#include "b_sum.h"
+#include "b_tx.h"
+#include "b_utc.h"
 
-/////B_DEVICE_REG(dev, driver_interface, desc);           
- */
-
-B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
-B_DEVICE_REG(SUART, SUART_Driver, "suart")
 
 
 
-
-
-
-#undef B_DEVICE_REG
-
-
+#endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
-
-
 

@@ -30,7 +30,7 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "bhal.h"   
+#include "b_hal.h"   
 
 /** 
  * \addtogroup B_HAL
@@ -75,12 +75,6 @@
  */
 extern UART_HandleTypeDef huart1;
 #define DEBUG_UART_HANDL    huart1
-//extern SPI_HandleTypeDef hspi1;
-
-//#define BHAL_SX_SPI             hspi1         
-
-
-#define STM32F0_UID_ADDR            0x1FFFF7ACUL
 #define STM32F1_UID_ADDR            0x1FFFF7E8UL
 
 /**
@@ -117,32 +111,6 @@ int fputc(int c, FILE *p)
     return c;
 }
 
-#ifdef BHAL_SX_SPI
-int bHAL_SPI_Transmit_SX(uint8_t *pbuf, uint16_t len)
-{
-    HAL_SPI_Transmit(&BHAL_SX_SPI, pbuf, len, 0xfff);
-    return 0;
-}
-
-
-int bHAL_SPI_Receive_SX(uint8_t *pbuf, uint16_t len)
-{
-    HAL_SPI_Receive(&BHAL_SX_SPI, pbuf, len, 0xfff);
-    return 0;
-}
-#else
-int bHAL_SPI_Transmit_SX(uint8_t *pbuf, uint16_t len)
-{
-    return 0;
-}
-
-
-int bHAL_SPI_Receive_SX(uint8_t *pbuf, uint16_t len)
-{
-    return 0;
-}
-#endif
-///<<< enter/exit critical
 
 void bHalEnterCritical()
 {
@@ -195,9 +163,7 @@ void bHalChipProtect()
 
 void bHalFeedWTD()
 {
-#if _WDG_ENABLE
-    HAL_IWDG_Refresh(&hiwdg);
-#endif 
+    //HAL_IWDG_Refresh(&hiwdg);
 }
 
 
@@ -235,8 +201,6 @@ int bHalErasePage(uint32_t addr)
     EraseInit.NbPages = 1;
     EraseInit.PageAddress = addr;
     EraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-    
-    
     HAL_FLASH_Unlock();
     HAL_FLASHEx_Erase(&EraseInit, &errcode);
     HAL_FLASH_Lock();
