@@ -1,0 +1,28 @@
+\hypertarget{group___u_t_c___exported___macros}{}\section{U\+T\+C\+\_\+\+Exported\+\_\+\+Macros}
+\label{group___u_t_c___exported___macros}\index{U\+T\+C\+\_\+\+Exported\+\_\+\+Macros@{U\+T\+C\+\_\+\+Exported\+\_\+\+Macros}}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group___u_t_c___exported___macros_ga07d42172ec0864e60d1db8db4549abc5}{I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID}}(n)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{group___u_t_c___exported___macros_ga07d42172ec0864e60d1db8db4549abc5}\label{group___u_t_c___exported___macros_ga07d42172ec0864e60d1db8db4549abc5}} 
+\index{U\+T\+C\+\_\+\+Exported\+\_\+\+Macros@{U\+T\+C\+\_\+\+Exported\+\_\+\+Macros}!I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID@{I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID}}
+\index{I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID@{I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID}!U\+T\+C\+\_\+\+Exported\+\_\+\+Macros@{U\+T\+C\+\_\+\+Exported\+\_\+\+Macros}}
+\subsubsection{\texorpdfstring{I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID}{IS\_TIME\_VALID}}
+{\footnotesize\ttfamily \#define I\+S\+\_\+\+T\+I\+M\+E\+\_\+\+V\+A\+L\+ID(\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+(n.year < 2999 && (n.month > 0 && n.month <= 12) && (n.day > 0 && n.day <= 31) && \(\backslash\)
+                                        n.week <= 7 && n.hour <= 23 && n.minute <= 59 && n.second <= 59)
+\end{DoxyCode}
+
+
+Definition at line 90 of file b\+\_\+utc.\+h.
+

@@ -1,0 +1,100 @@
+\hypertarget{structb_driver_interface__t}{}\section{b\+Driver\+Interface\+\_\+t Struct Reference}
+\label{structb_driver_interface__t}\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+
+
+{\ttfamily \#include $<$b\+\_\+device.\+h$>$}
+
+\subsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+int($\ast$ \mbox{\hyperlink{structb_driver_interface__t_a857eaefcde68aba9fe0d2170a660fdfb}{init}} )(void)
+\item 
+int($\ast$ \mbox{\hyperlink{structb_driver_interface__t_a87e704566d0a15f1aabbbfb208438c81}{open}} )(void)
+\item 
+int($\ast$ \mbox{\hyperlink{structb_driver_interface__t_a533fda1241149e9fe787957492b2b1fc}{close}} )(void)
+\item 
+int($\ast$ \mbox{\hyperlink{structb_driver_interface__t_a92bf484ff16ad77727b6afe688c7e98e}{ctl}} )(uint8\+\_\+t cmd, void $\ast$param)
+\item 
+int($\ast$ \mbox{\hyperlink{structb_driver_interface__t_af67fbf8f75e899efac0872e7469a33c2}{write}} )(uint32\+\_\+t addr, uint8\+\_\+t $\ast$pbuf, uint16\+\_\+t len)
+\item 
+int($\ast$ \mbox{\hyperlink{structb_driver_interface__t_a671c1e21440d7a8a58f1e244a4880d6f}{read}} )(uint32\+\_\+t addr, uint8\+\_\+t $\ast$pbuf, uint16\+\_\+t len)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 73 of file b\+\_\+device.\+h.
+
+
+
+\subsection{Field Documentation}
+\mbox{\Hypertarget{structb_driver_interface__t_a533fda1241149e9fe787957492b2b1fc}\label{structb_driver_interface__t_a533fda1241149e9fe787957492b2b1fc}} 
+\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}!close@{close}}
+\index{close@{close}!b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+\subsubsection{\texorpdfstring{close}{close}}
+{\footnotesize\ttfamily int($\ast$ close) (void)}
+
+
+
+Definition at line 77 of file b\+\_\+device.\+h.
+
+
+
+Referenced by S\+U\+A\+R\+T\+\_\+\+Init().
+
+\mbox{\Hypertarget{structb_driver_interface__t_a92bf484ff16ad77727b6afe688c7e98e}\label{structb_driver_interface__t_a92bf484ff16ad77727b6afe688c7e98e}} 
+\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}!ctl@{ctl}}
+\index{ctl@{ctl}!b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+\subsubsection{\texorpdfstring{ctl}{ctl}}
+{\footnotesize\ttfamily int($\ast$ ctl) (uint8\+\_\+t cmd, void $\ast$param)}
+
+
+
+Definition at line 78 of file b\+\_\+device.\+h.
+
+\mbox{\Hypertarget{structb_driver_interface__t_a857eaefcde68aba9fe0d2170a660fdfb}\label{structb_driver_interface__t_a857eaefcde68aba9fe0d2170a660fdfb}} 
+\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}!init@{init}}
+\index{init@{init}!b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+\subsubsection{\texorpdfstring{init}{init}}
+{\footnotesize\ttfamily int($\ast$ init) (void)}
+
+
+
+Definition at line 75 of file b\+\_\+device.\+h.
+
+\mbox{\Hypertarget{structb_driver_interface__t_a87e704566d0a15f1aabbbfb208438c81}\label{structb_driver_interface__t_a87e704566d0a15f1aabbbfb208438c81}} 
+\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}!open@{open}}
+\index{open@{open}!b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+\subsubsection{\texorpdfstring{open}{open}}
+{\footnotesize\ttfamily int($\ast$ open) (void)}
+
+
+
+Definition at line 76 of file b\+\_\+device.\+h.
+
+\mbox{\Hypertarget{structb_driver_interface__t_a671c1e21440d7a8a58f1e244a4880d6f}\label{structb_driver_interface__t_a671c1e21440d7a8a58f1e244a4880d6f}} 
+\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}!read@{read}}
+\index{read@{read}!b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+\subsubsection{\texorpdfstring{read}{read}}
+{\footnotesize\ttfamily int($\ast$ read) (uint32\+\_\+t addr, uint8\+\_\+t $\ast$pbuf, uint16\+\_\+t len)}
+
+
+
+Definition at line 80 of file b\+\_\+device.\+h.
+
+\mbox{\Hypertarget{structb_driver_interface__t_af67fbf8f75e899efac0872e7469a33c2}\label{structb_driver_interface__t_af67fbf8f75e899efac0872e7469a33c2}} 
+\index{b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}!write@{write}}
+\index{write@{write}!b\+Driver\+Interface\+\_\+t@{b\+Driver\+Interface\+\_\+t}}
+\subsubsection{\texorpdfstring{write}{write}}
+{\footnotesize\ttfamily int($\ast$ write) (uint32\+\_\+t addr, uint8\+\_\+t $\ast$pbuf, uint16\+\_\+t len)}
+
+
+
+Definition at line 79 of file b\+\_\+device.\+h.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{b__device_8h}{b\+\_\+device.\+h}}\end{DoxyCompactItemize}

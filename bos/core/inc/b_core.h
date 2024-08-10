@@ -49,7 +49,7 @@
  */
 
 /** 
- * \defgroup CORE_Exported_TypesDefBCOREions
+ * \defgroup CORE_Exported_TypesDefinitions
  * \{
  */
 

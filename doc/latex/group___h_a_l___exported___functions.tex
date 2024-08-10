@@ -1,0 +1,159 @@
+\hypertarget{group___h_a_l___exported___functions}{}\section{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}
+\label{group___h_a_l___exported___functions}\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{group___h_a_l___exported___functions_gaf709c07e26adbffa5d9984b2cec63c69}{fputc}} (int c, F\+I\+LE $\ast$p)
+\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_gac4b3d313f1c9c001234743725e491b9a}{b\+Hal\+Enter\+Critical}} ()
+\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_ga9b005cf96b043e836780e1cc1b9254fc}{b\+Hal\+Exit\+Critical}} ()
+\begin{DoxyCompactList}\small\item\em $<$$<$ delay \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_ga12c2eefdfcc84de397bba9c9f95882a5}{b\+Hal\+Delay\+MS}} (uint16\+\_\+t xms)
+\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_ga252916ffe00f5745ac44905b50a3f412}{b\+Hal\+Delay\+US}} (uint16\+\_\+t xus)
+\item 
+uint32\+\_\+t \mbox{\hyperlink{group___h_a_l___exported___functions_gac8e750b2b439b1cc756a4076503738e4}{b\+Hal\+Get\+Tick}} ()
+\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_ga6bb2b0cf5092883eb8c51f9b8d4a5c78}{b\+Hal\+Chip\+Protect}} ()
+\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_ga6f935a31e0b1cdb5905b565a5d3bb72f}{b\+Hal\+Feed\+W\+TD}} ()
+\item 
+void \mbox{\hyperlink{group___h_a_l___exported___functions_gab4fede695cd2bf0ead21a2cc4ac02aaa}{b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID}} (uint32\+\_\+t id\mbox{[}3\mbox{]})
+\item 
+int \mbox{\hyperlink{group___h_a_l___exported___functions_ga19179b3668da8153a34f5c57a43cef0b}{b\+Hal\+Flash\+Write}} (uint32\+\_\+t address, uint8\+\_\+t $\ast$pbuf, uint16\+\_\+t len)
+\item 
+int \mbox{\hyperlink{group___h_a_l___exported___functions_ga9bbf639675e6f6028a969874d60acac3}{b\+Hal\+Erase\+Page}} (uint32\+\_\+t addr)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga6bb2b0cf5092883eb8c51f9b8d4a5c78}\label{group___h_a_l___exported___functions_ga6bb2b0cf5092883eb8c51f9b8d4a5c78}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Chip\+Protect@{b\+Hal\+Chip\+Protect}}
+\index{b\+Hal\+Chip\+Protect@{b\+Hal\+Chip\+Protect}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Chip\+Protect()}{bHalChipProtect()}}
+{\footnotesize\ttfamily void b\+Hal\+Chip\+Protect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 145 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga12c2eefdfcc84de397bba9c9f95882a5}\label{group___h_a_l___exported___functions_ga12c2eefdfcc84de397bba9c9f95882a5}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Delay\+MS@{b\+Hal\+Delay\+MS}}
+\index{b\+Hal\+Delay\+MS@{b\+Hal\+Delay\+MS}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Delay\+M\+S()}{bHalDelayMS()}}
+{\footnotesize\ttfamily void b\+Hal\+Delay\+MS (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{xms }\end{DoxyParamCaption})}
+
+
+
+Definition at line 127 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga252916ffe00f5745ac44905b50a3f412}\label{group___h_a_l___exported___functions_ga252916ffe00f5745ac44905b50a3f412}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Delay\+US@{b\+Hal\+Delay\+US}}
+\index{b\+Hal\+Delay\+US@{b\+Hal\+Delay\+US}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Delay\+U\+S()}{bHalDelayUS()}}
+{\footnotesize\ttfamily void b\+Hal\+Delay\+US (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{xus }\end{DoxyParamCaption})}
+
+
+
+Definition at line 132 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_gac4b3d313f1c9c001234743725e491b9a}\label{group___h_a_l___exported___functions_gac4b3d313f1c9c001234743725e491b9a}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Enter\+Critical@{b\+Hal\+Enter\+Critical}}
+\index{b\+Hal\+Enter\+Critical@{b\+Hal\+Enter\+Critical}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Enter\+Critical()}{bHalEnterCritical()}}
+{\footnotesize\ttfamily void b\+Hal\+Enter\+Critical (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 115 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga9bbf639675e6f6028a969874d60acac3}\label{group___h_a_l___exported___functions_ga9bbf639675e6f6028a969874d60acac3}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Erase\+Page@{b\+Hal\+Erase\+Page}}
+\index{b\+Hal\+Erase\+Page@{b\+Hal\+Erase\+Page}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Erase\+Page()}{bHalErasePage()}}
+{\footnotesize\ttfamily int b\+Hal\+Erase\+Page (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{addr }\end{DoxyParamCaption})}
+
+
+
+Definition at line 197 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga9b005cf96b043e836780e1cc1b9254fc}\label{group___h_a_l___exported___functions_ga9b005cf96b043e836780e1cc1b9254fc}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Exit\+Critical@{b\+Hal\+Exit\+Critical}}
+\index{b\+Hal\+Exit\+Critical@{b\+Hal\+Exit\+Critical}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Exit\+Critical()}{bHalExitCritical()}}
+{\footnotesize\ttfamily void b\+Hal\+Exit\+Critical (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+$<$$<$ delay 
+
+
+
+Definition at line 120 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga6f935a31e0b1cdb5905b565a5d3bb72f}\label{group___h_a_l___exported___functions_ga6f935a31e0b1cdb5905b565a5d3bb72f}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Feed\+W\+TD@{b\+Hal\+Feed\+W\+TD}}
+\index{b\+Hal\+Feed\+W\+TD@{b\+Hal\+Feed\+W\+TD}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Feed\+W\+T\+D()}{bHalFeedWTD()}}
+{\footnotesize\ttfamily void b\+Hal\+Feed\+W\+TD (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 164 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_ga19179b3668da8153a34f5c57a43cef0b}\label{group___h_a_l___exported___functions_ga19179b3668da8153a34f5c57a43cef0b}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Flash\+Write@{b\+Hal\+Flash\+Write}}
+\index{b\+Hal\+Flash\+Write@{b\+Hal\+Flash\+Write}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Flash\+Write()}{bHalFlashWrite()}}
+{\footnotesize\ttfamily int b\+Hal\+Flash\+Write (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{address,  }\item[{uint8\+\_\+t $\ast$}]{pbuf,  }\item[{uint16\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+
+
+Definition at line 179 of file b\+\_\+hal.\+c.
+
+
+
+References N\+U\+LL.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_gab4fede695cd2bf0ead21a2cc4ac02aaa}\label{group___h_a_l___exported___functions_gab4fede695cd2bf0ead21a2cc4ac02aaa}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID@{b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID}}
+\index{b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID@{b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+I\+D()}{bHalGetSTM32MCUID()}}
+{\footnotesize\ttfamily void b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{id\mbox{[}3\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Definition at line 170 of file b\+\_\+hal.\+c.
+
+
+
+References S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_gac8e750b2b439b1cc756a4076503738e4}\label{group___h_a_l___exported___functions_gac8e750b2b439b1cc756a4076503738e4}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!b\+Hal\+Get\+Tick@{b\+Hal\+Get\+Tick}}
+\index{b\+Hal\+Get\+Tick@{b\+Hal\+Get\+Tick}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Hal\+Get\+Tick()}{bHalGetTick()}}
+{\footnotesize\ttfamily uint32\+\_\+t b\+Hal\+Get\+Tick (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 140 of file b\+\_\+hal.\+c.
+
+\mbox{\Hypertarget{group___h_a_l___exported___functions_gaf709c07e26adbffa5d9984b2cec63c69}\label{group___h_a_l___exported___functions_gaf709c07e26adbffa5d9984b2cec63c69}} 
+\index{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}!fputc@{fputc}}
+\index{fputc@{fputc}!H\+A\+L\+\_\+\+Exported\+\_\+\+Functions@{H\+A\+L\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{fputc()}{fputc()}}
+{\footnotesize\ttfamily int fputc (\begin{DoxyParamCaption}\item[{int}]{c,  }\item[{F\+I\+LE $\ast$}]{p }\end{DoxyParamCaption})}
+
+
+
+Definition at line 107 of file b\+\_\+hal.\+c.
+
+
+
+References D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL.
+

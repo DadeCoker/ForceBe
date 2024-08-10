@@ -43,14 +43,15 @@
  */
 
 /** 
- * \defgroup CORE_Private_TypesDefBCOREions
+ * \defgroup CORE_Private_TypesDefinitions
  * \{
  */
    
 /**
  * \}
  */
-   
+
+
 /** 
  * \defgroup CORE_Private_Defines
  * \{
@@ -304,7 +305,7 @@ int bInit()
 
 /**
  * \}
- */
+ */ 
 
 /**
  * \}

@@ -1,0 +1,124 @@
+\hypertarget{group___d_e_v_i_c_e___exported___functions}{}\section{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}
+\label{group___d_e_v_i_c_e___exported___functions}\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{group___d_e_v_i_c_e___exported___functions_ga404e753d491d3b3e4c6fba215d191fa7}{b\+Device\+Init}} ()
+\begin{DoxyCompactList}\small\item\em Device Initialize. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group___d_e_v_i_c_e___exported___functions_gac022bd943e28b18b2dce587207c25788}{b\+Device\+Open}} (uint8\+\_\+t no)
+\item 
+int \mbox{\hyperlink{group___d_e_v_i_c_e___exported___functions_ga580d17c32a7382f586cc11ba84160e09}{b\+Device\+Read}} (int no, uint32\+\_\+t address, uint8\+\_\+t $\ast$pdata, uint16\+\_\+t len)
+\item 
+int \mbox{\hyperlink{group___d_e_v_i_c_e___exported___functions_ga7b100bfb070e715961c0bfe2da20d6be}{b\+Device\+Write}} (int no, uint32\+\_\+t address, uint8\+\_\+t $\ast$pdata, uint16\+\_\+t len)
+\item 
+int \mbox{\hyperlink{group___d_e_v_i_c_e___exported___functions_gaf8441490c33a1dfa5e56b510d332df29}{b\+Device\+Close}} (int no)
+\item 
+int \mbox{\hyperlink{group___d_e_v_i_c_e___exported___functions_gac8137793df6d7d8399128f4997cb0914}{b\+Device\+Ctl}} (int no, uint8\+\_\+t cmd, void $\ast$param)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{group___d_e_v_i_c_e___exported___functions_gaf8441490c33a1dfa5e56b510d332df29}\label{group___d_e_v_i_c_e___exported___functions_gaf8441490c33a1dfa5e56b510d332df29}} 
+\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}!b\+Device\+Close@{b\+Device\+Close}}
+\index{b\+Device\+Close@{b\+Device\+Close}!D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Device\+Close()}{bDeviceClose()}}
+{\footnotesize\ttfamily int b\+Device\+Close (\begin{DoxyParamCaption}\item[{int}]{no }\end{DoxyParamCaption})}
+
+
+
+Definition at line 212 of file b\+\_\+device.\+c.
+
+
+
+References b\+D\+E\+V\+\_\+\+M\+A\+X\+\_\+\+N\+UM.
+
+\mbox{\Hypertarget{group___d_e_v_i_c_e___exported___functions_gac8137793df6d7d8399128f4997cb0914}\label{group___d_e_v_i_c_e___exported___functions_gac8137793df6d7d8399128f4997cb0914}} 
+\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}!b\+Device\+Ctl@{b\+Device\+Ctl}}
+\index{b\+Device\+Ctl@{b\+Device\+Ctl}!D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Device\+Ctl()}{bDeviceCtl()}}
+{\footnotesize\ttfamily int b\+Device\+Ctl (\begin{DoxyParamCaption}\item[{int}]{no,  }\item[{uint8\+\_\+t}]{cmd,  }\item[{void $\ast$}]{param }\end{DoxyParamCaption})}
+
+
+
+Definition at line 230 of file b\+\_\+device.\+c.
+
+
+
+References b\+D\+E\+V\+\_\+\+M\+A\+X\+\_\+\+N\+UM.
+
+
+
+Referenced by b\+Ctl().
+
+\mbox{\Hypertarget{group___d_e_v_i_c_e___exported___functions_ga404e753d491d3b3e4c6fba215d191fa7}\label{group___d_e_v_i_c_e___exported___functions_ga404e753d491d3b3e4c6fba215d191fa7}} 
+\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}!b\+Device\+Init@{b\+Device\+Init}}
+\index{b\+Device\+Init@{b\+Device\+Init}!D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Device\+Init()}{bDeviceInit()}}
+{\footnotesize\ttfamily int b\+Device\+Init (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Device Initialize. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em Number} & of abnormal device \\
+\hline
+\end{DoxyRetVals}
+
+
+Definition at line 127 of file b\+\_\+device.\+c.
+
+
+
+References b\+D\+E\+V\+\_\+\+M\+A\+X\+\_\+\+N\+UM.
+
+
+
+Referenced by b\+Init().
+
+\mbox{\Hypertarget{group___d_e_v_i_c_e___exported___functions_gac022bd943e28b18b2dce587207c25788}\label{group___d_e_v_i_c_e___exported___functions_gac022bd943e28b18b2dce587207c25788}} 
+\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}!b\+Device\+Open@{b\+Device\+Open}}
+\index{b\+Device\+Open@{b\+Device\+Open}!D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Device\+Open()}{bDeviceOpen()}}
+{\footnotesize\ttfamily int b\+Device\+Open (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{no }\end{DoxyParamCaption})}
+
+
+
+Definition at line 158 of file b\+\_\+device.\+c.
+
+
+
+References b\+D\+E\+V\+\_\+\+M\+A\+X\+\_\+\+N\+UM.
+
+\mbox{\Hypertarget{group___d_e_v_i_c_e___exported___functions_ga580d17c32a7382f586cc11ba84160e09}\label{group___d_e_v_i_c_e___exported___functions_ga580d17c32a7382f586cc11ba84160e09}} 
+\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}!b\+Device\+Read@{b\+Device\+Read}}
+\index{b\+Device\+Read@{b\+Device\+Read}!D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Device\+Read()}{bDeviceRead()}}
+{\footnotesize\ttfamily int b\+Device\+Read (\begin{DoxyParamCaption}\item[{int}]{no,  }\item[{uint32\+\_\+t}]{address,  }\item[{uint8\+\_\+t $\ast$}]{pdata,  }\item[{uint16\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+
+
+Definition at line 176 of file b\+\_\+device.\+c.
+
+
+
+References b\+D\+E\+V\+\_\+\+M\+A\+X\+\_\+\+N\+UM, and N\+U\+LL.
+
+\mbox{\Hypertarget{group___d_e_v_i_c_e___exported___functions_ga7b100bfb070e715961c0bfe2da20d6be}\label{group___d_e_v_i_c_e___exported___functions_ga7b100bfb070e715961c0bfe2da20d6be}} 
+\index{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}!b\+Device\+Write@{b\+Device\+Write}}
+\index{b\+Device\+Write@{b\+Device\+Write}!D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions@{D\+E\+V\+I\+C\+E\+\_\+\+Exported\+\_\+\+Functions}}
+\subsubsection{\texorpdfstring{b\+Device\+Write()}{bDeviceWrite()}}
+{\footnotesize\ttfamily int b\+Device\+Write (\begin{DoxyParamCaption}\item[{int}]{no,  }\item[{uint32\+\_\+t}]{address,  }\item[{uint8\+\_\+t $\ast$}]{pdata,  }\item[{uint16\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+
+
+Definition at line 193 of file b\+\_\+device.\+c.
+
+
+
+References b\+D\+E\+V\+\_\+\+M\+A\+X\+\_\+\+N\+UM, and N\+U\+LL.
+
