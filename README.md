@@ -1,6 +1,6 @@
 # BabyOS
 
-![baby_boy_93.528712871287px_1234786_easyicon.net](G:\babyos\BabyOS\doc\html\baby_boy_93.528712871287px_1234786_easyicon.net.png)
+![logo](https://github.com/notrynohigh/BabyOS/raw/master/doc/2.png)
 
 ​        为小型项目而生，一个如孩童般需要集体喂养的弱操作系统。为什么称它为弱操作系统，因为相比已有的嵌入式操作系统，这个显得比较弱鸡。这里姑且称之为操作系统吧，其本质是一份代码集中营。
 
@@ -85,7 +85,7 @@
 
 ​        对于b_config.h进行配置，根据自己的需要选择功能模块。
 
-![QQ截图20191203224955](G:\1\QQ截图20191203224955.png)
+![opt](https://github.com/notrynohigh/BabyOS/raw/master/doc/1.png)
 
 ##   3、列出需要使用的设备
 
