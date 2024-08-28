@@ -129,6 +129,7 @@ int bSDB_Read(int no, uint8_t *pbuf);
 # 喂养
 
 ​       之所以称其为需要喂养的弱操作系统，因为驱动和功能模块都需要一点点加入进去，加入的越多，后续开发起来就越快。
+更多使用介绍请移步wiki https://github.com/notrynohigh/BabyOS/wiki
 
 
 
