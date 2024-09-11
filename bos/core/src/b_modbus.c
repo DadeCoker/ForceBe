@@ -215,10 +215,15 @@ int bMB_Regist(uint8_t dev_no)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bMB_WriteCmd(uint8_t no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
+int bMB_WriteCmd(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
 {
     bMB_RTUS_W_t wd;
     int retval = -1;
+    if(no < 0 || no >= bMB_InfoIndex)
+    {
+        return -1;
+    }
+    
     if(_bMB_l2b_b2l_16(&reg) < 0)
     {
         return -1;

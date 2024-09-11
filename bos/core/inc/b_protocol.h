@@ -116,9 +116,9 @@ typedef struct
  * \{
  */
 int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f);
-int bProtocolSetID(uint8_t no, uint32_t id);
-int bProtocolParseCmd(uint8_t no, uint8_t *pbuf, uint8_t len);
-int bProtocolPack(uint8_t no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size);
+int bProtocolSetID(int no, uint32_t id);
+int bProtocolParseCmd(int no, uint8_t *pbuf, uint8_t len);
+int bProtocolPack(int no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size);
 int bProtocolUnpack(uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size);
 /**
  * \}

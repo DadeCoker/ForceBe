@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_modbus.h
+ * \file        b_fifo.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,16 +28,16 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_MODBUS_H__
-#define __B_MODBUS_H__
+#ifndef __B_FIFO_H__
+#define __B_FIFO_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#if _MODBUS_ENABLE
+#include "b_config.h"  
+#if _FIFO_ENABLE
 
 /** 
  * \addtogroup BABYOS
@@ -45,71 +45,37 @@
  */
 
 /** 
- * \addtogroup MODBUS
+ * \addtogroup FIFO
  * \{
  */
 
 /** 
- * \defgroup MODBUS_Exported_TypesDefinitions
+ * \defgroup FIFO_Exported_TypesDefinitions
  * \{
  */
-
-#pragma pack(1)
- 
 typedef struct
 {
-    uint8_t addr;
-    uint8_t func;
-    uint16_t reg;       //Big endian
-    uint16_t num;       //Big endian
-    uint16_t crc;       //Little endian
-}bMB_RTUS_W_t;
-
-
-typedef struct
-{
-    uint8_t addr;
-    uint8_t func;
-    uint8_t len;
-    uint8_t buf[1];
-}bMB_RTUS_Ack_t;
-
-
-
-#pragma pack()
- 
-typedef struct 
-{
-    uint8_t dev_no;
-}bMB_Info_t;
-   
+    uint8_t *pbuf;
+    uint16_t size;
+    volatile uint16_t r_index;
+    volatile uint16_t w_index;
+}bFIFO_Info_t;
 /**
  * \}
  */
    
 /** 
- * \defgroup MODBUS_Exported_Defines
+ * \defgroup FIFO_Exported_Defines
  * \{
  */
-#ifndef NULL
-#define NULL ((void *)0)   
-#endif
+
 
 /**
  * \}
  */
    
 /** 
- * \defgroup MODBUS_Exported_Macros
- * \{
- */
-#define L2B_B2L_16b(n)  (((n) << 8) | (n >> 8))   
-/**
- * \}
- */
-   
-/** 
- * \defgroup MODBUS_Exported_Variables
+ * \defgroup FIFO_Exported_Macros
  * \{
  */
    
@@ -118,12 +84,23 @@ typedef struct
  */
    
 /** 
- * \defgroup MODBUS_Exported_Functions
+ * \defgroup FIFO_Exported_Variables
  * \{
  */
-int bMB_Regist(uint8_t dev_no);
-int bMB_WriteCmd(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num);
-int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len);
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FIFO_Exported_Functions
+ * \{
+ */
+int bFIFO_Regist(uint8_t *pbuf, uint16_t size);
+int bFIFO_Length(int no, uint16_t *plen);
+int bFIFO_Flush(int no);
+int bFIFO_Write(int no, uint8_t *pbuf, uint16_t size);
+int bFIFO_Read(int no, uint8_t *pbuf, uint16_t size);
 /**
  * \}
  */
@@ -135,12 +112,13 @@ int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len);
 /**
  * \}
  */
+
 #endif
 
 #ifdef __cplusplus
 	}
 #endif
-
+ 
 #endif  
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

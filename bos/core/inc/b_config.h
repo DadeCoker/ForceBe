@@ -130,6 +130,15 @@
 #define _OTA_BUFF_SIZE              150
 //</e>
 //</e>
+
+//<e> FIFO Enable/Disable
+#define _FIFO_ENABLE             	1
+//<o> FIFO Instance Number
+#define _FIFO_I_NUMBER              1
+//</e>
+
+
+
 //</h>
 
 

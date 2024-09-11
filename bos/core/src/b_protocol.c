@@ -140,10 +140,10 @@ int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolParseCmd(uint8_t no, uint8_t *pbuf, uint8_t len)
+int bProtocolParseCmd(int no, uint8_t *pbuf, uint8_t len)
 {
     bProtocolHead_t *phead = (bProtocolHead_t *)pbuf;
-    if(pbuf == NULL || len < (sizeof(bProtocolHead_t) + 1) || no >= bProtocolInfoIndex)
+    if(pbuf == NULL || len < (sizeof(bProtocolHead_t) + 1) || no >= bProtocolInfoIndex || no < 0)
     {
         return -1;
     }
@@ -165,9 +165,9 @@ int bProtocolParseCmd(uint8_t no, uint8_t *pbuf, uint8_t len)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolSetID(uint8_t no, uint32_t id)
+int bProtocolSetID(int no, uint32_t id)
 {
-    if(no >= bProtocolInfoIndex)
+    if(no >= bProtocolInfoIndex || no < 0)
     {
         return -1;
     }
@@ -188,12 +188,12 @@ int bProtocolSetID(uint8_t no, uint32_t id)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolPack(uint8_t no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)
+int bProtocolPack(int no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)
 {
     uint8_t length = 0;
     bProtocolHead_t *phead;
     
-    if((psrc == NULL && size > 0) || pdes == NULL || no >= bProtocolInfoIndex)
+    if((psrc == NULL && size > 0) || pdes == NULL || no >= bProtocolInfoIndex || no < 0)
     {
         return -1;
     }
