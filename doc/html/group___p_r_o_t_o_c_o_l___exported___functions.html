@@ -51,19 +51,19 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:ga042c82b5764c60b4078866635c8e8c7b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga042c82b5764c60b4078866635c8e8c7b">bProtocolRegist</a> (uint32_t id, uint8_t tx_no, <a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#ga385520b45d23dc3a4dde23de92b85c75">pdispatch</a> f)</td></tr>
 <tr class="separator:ga042c82b5764c60b4078866635c8e8c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad6c6f38682c0c8cbb0ee45157b4f0490"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gad6c6f38682c0c8cbb0ee45157b4f0490">bProtocolSetID</a> (uint8_t no, uint32_t id)</td></tr>
-<tr class="separator:gad6c6f38682c0c8cbb0ee45157b4f0490"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf49260c718f607cd54064c27a7980d66"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gaf49260c718f607cd54064c27a7980d66">bProtocolParseCmd</a> (uint8_t no, uint8_t *pbuf, uint8_t len)</td></tr>
-<tr class="separator:gaf49260c718f607cd54064c27a7980d66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaad449710b7f804997e815402951fa0de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gaad449710b7f804997e815402951fa0de">bProtocolPack</a> (uint8_t no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)</td></tr>
-<tr class="separator:gaad449710b7f804997e815402951fa0de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadcb3551dcf55a58973810c4f348ffb0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gadcb3551dcf55a58973810c4f348ffb0d">bProtocolSetID</a> (int no, uint32_t id)</td></tr>
+<tr class="separator:gadcb3551dcf55a58973810c4f348ffb0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga201cb6ee4bc47d6551d221c631490300"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga201cb6ee4bc47d6551d221c631490300">bProtocolParseCmd</a> (int no, uint8_t *pbuf, uint8_t len)</td></tr>
+<tr class="separator:ga201cb6ee4bc47d6551d221c631490300"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga52abd16bc752d1f1eb42ac3b0677d60a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga52abd16bc752d1f1eb42ac3b0677d60a">bProtocolPack</a> (int no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)</td></tr>
+<tr class="separator:ga52abd16bc752d1f1eb42ac3b0677d60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa2f6a6a163f48963d802b9f6964f348c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gaa2f6a6a163f48963d802b9f6964f348c">bProtocolUnpack</a> (uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size)</td></tr>
 <tr class="separator:gaa2f6a6a163f48963d802b9f6964f348c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gaad449710b7f804997e815402951fa0de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaad449710b7f804997e815402951fa0de">&#9670;&nbsp;</a></span>bProtocolPack()</h2>
+<a id="ga52abd16bc752d1f1eb42ac3b0677d60a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga52abd16bc752d1f1eb42ac3b0677d60a">&#9670;&nbsp;</a></span>bProtocolPack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -71,7 +71,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int bProtocolPack </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>no</em>, </td>
         </tr>
         <tr>
@@ -108,8 +108,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gaf49260c718f607cd54064c27a7980d66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf49260c718f607cd54064c27a7980d66">&#9670;&nbsp;</a></span>bProtocolParseCmd()</h2>
+<a id="ga201cb6ee4bc47d6551d221c631490300"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga201cb6ee4bc47d6551d221c631490300">&#9670;&nbsp;</a></span>bProtocolParseCmd()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -117,7 +117,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int bProtocolParseCmd </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>no</em>, </td>
         </tr>
         <tr>
@@ -176,8 +176,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gad6c6f38682c0c8cbb0ee45157b4f0490"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad6c6f38682c0c8cbb0ee45157b4f0490">&#9670;&nbsp;</a></span>bProtocolSetID()</h2>
+<a id="gadcb3551dcf55a58973810c4f348ffb0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadcb3551dcf55a58973810c4f348ffb0d">&#9670;&nbsp;</a></span>bProtocolSetID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +185,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int bProtocolSetID </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>no</em>, </td>
         </tr>
         <tr>

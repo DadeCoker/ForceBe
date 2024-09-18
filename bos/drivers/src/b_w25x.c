@@ -32,6 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_w25x.h"
 #include "b_hal.h"
+#include "b_utils.h"
 #include <string.h>
 
 /** 

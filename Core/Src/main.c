@@ -43,6 +43,7 @@
 /* USER CODE BEGIN Includes */
 #include "b_os.h"
 #include "b_hal.h"
+#include "b_utils.h"
 #include <string.h>
 /* USER CODE END Includes */
 

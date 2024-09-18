@@ -5,8 +5,6 @@
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{group___h_a_l___exported___defines_ga9c64654d333d0c63a47d4610be2509e0}{F\+L\+S\+\_\+\+P\+S\+I\+ZE}}~2048\+UL
-\item 
 \#define \mbox{\hyperlink{group___h_a_l___exported___defines_ga3df8c78e1d68d69f629630fb6095cec1}{F\+L\+A\+S\+H\+\_\+\+C\+S\+\_\+\+R\+E\+S\+ET}}()~H\+A\+L\+\_\+\+G\+P\+I\+O\+\_\+\+Write\+Pin(W25\+X\+\_\+\+C\+S\+\_\+\+G\+P\+I\+O\+\_\+\+Port, W25\+X\+\_\+\+C\+S\+\_\+\+Pin, G\+P\+I\+O\+\_\+\+P\+I\+N\+\_\+\+R\+E\+S\+ET)
 \item 
 \#define \mbox{\hyperlink{group___h_a_l___exported___defines_gadc9743a09abcf9e1d203bdd5081db24a}{F\+L\+A\+S\+H\+\_\+\+C\+S\+\_\+\+S\+ET}}()~H\+A\+L\+\_\+\+G\+P\+I\+O\+\_\+\+Write\+Pin(W25\+X\+\_\+\+C\+S\+\_\+\+G\+P\+I\+O\+\_\+\+Port, W25\+X\+\_\+\+C\+S\+\_\+\+Pin, G\+P\+I\+O\+\_\+\+P\+I\+N\+\_\+\+S\+ET)
@@ -16,8 +14,6 @@
 \#define \mbox{\hyperlink{group___h_a_l___exported___defines_gadd41bc5ddcf6f842928efc4f0d944a57}{S\+\_\+\+T\+X\+\_\+\+P\+I\+N\+\_\+\+R\+E\+S\+ET}}()~H\+A\+L\+\_\+\+G\+P\+I\+O\+\_\+\+Write\+Pin(S\+U\+A\+R\+T\+\_\+\+T\+X\+\_\+\+G\+P\+I\+O\+\_\+\+Port, S\+U\+A\+R\+T\+\_\+\+T\+X\+\_\+\+Pin, G\+P\+I\+O\+\_\+\+P\+I\+N\+\_\+\+R\+E\+S\+ET)
 \item 
 \#define \mbox{\hyperlink{group___h_a_l___exported___defines_gac1fbe03efbe22feb97f198a4dd8b1237}{S\+\_\+\+R\+X\+\_\+\+P\+I\+N\+\_\+\+R\+E\+AD}}()~H\+A\+L\+\_\+\+G\+P\+I\+O\+\_\+\+Read\+Pin(S\+U\+A\+R\+T\+\_\+\+R\+X\+\_\+\+G\+P\+I\+O\+\_\+\+Port, S\+U\+A\+R\+T\+\_\+\+R\+X\+\_\+\+Pin)
-\item 
-\#define \mbox{\hyperlink{group___h_a_l___exported___macros_gafc78b16ad8aebf30b9cabfc278cfb32a}{b\+\_\+log}}(...)
 \end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -25,23 +21,9 @@
 void \mbox{\hyperlink{group___h_a_l___exported___functions_gac4b3d313f1c9c001234743725e491b9a}{b\+Hal\+Enter\+Critical}} ()
 \item 
 void \mbox{\hyperlink{group___h_a_l___exported___functions_ga9b005cf96b043e836780e1cc1b9254fc}{b\+Hal\+Exit\+Critical}} ()
-\begin{DoxyCompactList}\small\item\em $<$$<$ delay \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{group___h_a_l___exported___functions_ga12c2eefdfcc84de397bba9c9f95882a5}{b\+Hal\+Delay\+MS}} (uint16\+\_\+t xms)
 \item 
-void \mbox{\hyperlink{group___h_a_l___exported___functions_ga252916ffe00f5745ac44905b50a3f412}{b\+Hal\+Delay\+US}} (uint16\+\_\+t xus)
-\item 
-uint32\+\_\+t \mbox{\hyperlink{group___h_a_l___exported___functions_gac8e750b2b439b1cc756a4076503738e4}{b\+Hal\+Get\+Tick}} ()
-\item 
-void \mbox{\hyperlink{group___h_a_l___exported___functions_ga6bb2b0cf5092883eb8c51f9b8d4a5c78}{b\+Hal\+Chip\+Protect}} ()
-\item 
-void \mbox{\hyperlink{group___h_a_l___exported___functions_gab4fede695cd2bf0ead21a2cc4ac02aaa}{b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+ID}} (uint32\+\_\+t id\mbox{[}3\mbox{]})
-\item 
-void \mbox{\hyperlink{group___h_a_l___exported___functions_ga6f935a31e0b1cdb5905b565a5d3bb72f}{b\+Hal\+Feed\+W\+TD}} ()
-\item 
-int \mbox{\hyperlink{group___h_a_l___exported___functions_ga19179b3668da8153a34f5c57a43cef0b}{b\+Hal\+Flash\+Write}} (uint32\+\_\+t address, uint8\+\_\+t $\ast$pbuf, uint16\+\_\+t len)
-\item 
-int \mbox{\hyperlink{group___h_a_l___exported___functions_ga9bbf639675e6f6028a969874d60acac3}{b\+Hal\+Erase\+Page}} (uint32\+\_\+t addr)
-\end{DoxyCompactItemize}
+void \mbox{\hyperlink{group___h_a_l___exported___functions_ga1e845f28a0763b4046d1c7cdcf227e52}{b\+Hal\+Inc\+Sys\+Tick}} ()
+\begin{DoxyCompactList}\small\item\em Call this function \+\_\+\+T\+I\+C\+K\+\_\+\+F\+R\+Q\+\_\+\+HZ times per second \mbox{\hyperlink{b__config_8h_ae2076738df8e2eff78366a0187291367}{\+\_\+\+T\+I\+C\+K\+\_\+\+F\+R\+Q\+\_\+\+HZ}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}

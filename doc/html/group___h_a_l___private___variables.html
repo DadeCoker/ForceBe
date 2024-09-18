@@ -41,64 +41,39 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">HAL_Private_Variables<div class="ingroups"><a class="el" href="group___b___h_a_l.html">B_HAL</a> &raquo; <a class="el" href="group___h_a_l.html">HAL</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ga6c05368ce95479087a767000d0825b24"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___private___variables.html#ga6c05368ce95479087a767000d0825b24">DEBUG_UART_HANDL</a>&#160;&#160;&#160;<a class="el" href="group___h_a_l___private___variables.html#ga2cf715bef37f7e8ef385a30974a5f0d5">huart1</a></td></tr>
-<tr class="separator:ga6c05368ce95479087a767000d0825b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaadb0ad79eab01ba522b7d081c138760b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___private___variables.html#gaadb0ad79eab01ba522b7d081c138760b">STM32F1_UID_ADDR</a>&#160;&#160;&#160;0x1FFFF7E8UL</td></tr>
-<tr class="separator:gaadb0ad79eab01ba522b7d081c138760b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ga2cf715bef37f7e8ef385a30974a5f0d5"><td class="memItemLeft" align="right" valign="top">UART_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___private___variables.html#ga2cf715bef37f7e8ef385a30974a5f0d5">huart1</a></td></tr>
 <tr class="separator:ga2cf715bef37f7e8ef385a30974a5f0d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf4192a6f2331016cae3bcd9e5f2c7e20"><td class="memItemLeft" align="right" valign="top">volatile uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___private___variables.html#gaf4192a6f2331016cae3bcd9e5f2c7e20">bSysTick</a> = 0</td></tr>
+<tr class="separator:gaf4192a6f2331016cae3bcd9e5f2c7e20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ga6c05368ce95479087a767000d0825b24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6c05368ce95479087a767000d0825b24">&#9670;&nbsp;</a></span>DEBUG_UART_HANDL</h2>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="gaf4192a6f2331016cae3bcd9e5f2c7e20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf4192a6f2331016cae3bcd9e5f2c7e20">&#9670;&nbsp;</a></span>bSysTick</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define DEBUG_UART_HANDL&#160;&#160;&#160;<a class="el" href="group___h_a_l___private___variables.html#ga2cf715bef37f7e8ef385a30974a5f0d5">huart1</a></td>
+          <td class="memname">volatile uint32_t bSysTick = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="b__hal_8c_source.html#l00077">77</a> of file <a class="el" href="b__hal_8c_source.html">b_hal.c</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="b__hal_8c_source.html#l00107">fputc()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="b__utils_8c_source.html#l00106">bHalDelayMS()</a>, <a class="el" href="b__utils_8c_source.html#l00125">bHalGetTick()</a>, and <a class="el" href="b__hal_8c_source.html#l00128">bHalIncSysTick()</a>.</p>
 
 </div>
 </div>
-<a id="gaadb0ad79eab01ba522b7d081c138760b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaadb0ad79eab01ba522b7d081c138760b">&#9670;&nbsp;</a></span>STM32F1_UID_ADDR</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define STM32F1_UID_ADDR&#160;&#160;&#160;0x1FFFF7E8UL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="b__hal_8c_source.html#l00078">78</a> of file <a class="el" href="b__hal_8c_source.html">b_hal.c</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="b__hal_8c_source.html#l00170">bHalGetSTM32MCUID()</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
 <a id="ga2cf715bef37f7e8ef385a30974a5f0d5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga2cf715bef37f7e8ef385a30974a5f0d5">&#9670;&nbsp;</a></span>huart1</h2>
 
@@ -110,6 +85,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="reference">Referenced by <a class="el" href="b__hal_8c_source.html#l00106">fputc()</a>.</p>
 
 </div>
 </div>

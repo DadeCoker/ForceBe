@@ -137,7 +137,13 @@
 #define _FIFO_I_NUMBER              1
 //</e>
 
-
+//<e> AT Enable/Disable
+#define _AT_ENABLE             	    1
+//<o> AT Instance Number
+#define _AT_I_NUMBER                1
+//<o> AT TX Buffer Length
+#define _AT_BUF_LEN                 128
+//</e>
 
 //</h>
 

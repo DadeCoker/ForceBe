@@ -74,8 +74,7 @@
  * \{
  */
 extern UART_HandleTypeDef huart1;
-#define DEBUG_UART_HANDL    huart1
-#define STM32F1_UID_ADDR            0x1FFFF7E8UL
+volatile uint32_t bSysTick = 0;
 
 /**
  * \}
@@ -107,7 +106,7 @@ extern UART_HandleTypeDef huart1;
 int fputc(int c, FILE *p)
 {
     uint8_t ch = (uint8_t)(c & 0xff);
-    HAL_UART_Transmit(&DEBUG_UART_HANDL, &ch, 1, 0xff);
+    HAL_UART_Transmit(&huart1, &ch, 1, 0xff);    
     return c;
 }
 
@@ -123,89 +122,14 @@ void bHalExitCritical()
 }
 
 
-///<<< delay
-void bHalDelayMS(uint16_t xms)
+/**
+ * \brief Call this function _TICK_FRQ_HZ times per second \ref _TICK_FRQ_HZ
+ */
+void bHalIncSysTick()
 {
-    HAL_Delay(xms);
+    bSysTick += 1;
 }
 
-void bHalDelayUS(uint16_t xus)
-{
-    while(xus--)
-    {
-        __nop();
-    }
-}
-
-uint32_t bHalGetTick()
-{
-    return HAL_GetTick();
-}
-
-void bHalChipProtect()
-{
-    FLASH_OBProgramInitTypeDef OBInit;
-    __HAL_FLASH_PREFETCH_BUFFER_DISABLE();
-    HAL_FLASHEx_OBGetConfig(&OBInit);
-    if(OBInit.RDPLevel == OB_RDP_LEVEL_0)
-    {
-        OBInit.OptionType = OPTIONBYTE_RDP;
-        OBInit.RDPLevel = OB_RDP_LEVEL_1;
-            
-        HAL_FLASH_Unlock();
-        HAL_FLASH_OB_Unlock();
-        HAL_FLASHEx_OBProgram(&OBInit);
-        HAL_FLASH_OB_Lock();
-        HAL_FLASH_Lock();
-    }
-    __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
-}
-
-void bHalFeedWTD()
-{
-    //HAL_IWDG_Refresh(&hiwdg);
-}
-
-
-void bHalGetSTM32MCUID(uint32_t id[3])
-{
-    id[0] = *(volatile uint32_t*)(STM32F1_UID_ADDR);
-    id[1] = *(volatile uint32_t*)(STM32F1_UID_ADDR + 4);
-    id[2] = *(volatile uint32_t*)(STM32F1_UID_ADDR + 8);
-}
-
-
-
-int bHalFlashWrite(uint32_t address, uint8_t *pbuf, uint16_t len)
-{
-    uint16_t i = 0;
-    uint16_t *pdata = (uint16_t *)pbuf;
-    if(pbuf == NULL)
-    {
-        return -1;
-    }
-    HAL_FLASH_Unlock();
-    for(i = 0;i < len / 2;i++)
-    {
-            HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, address, pdata[i]);
-            address += 2;
-    }    
-    HAL_FLASH_Lock();
-    return 0;
-}
-
-int bHalErasePage(uint32_t addr)
-{
-    FLASH_EraseInitTypeDef EraseInit;
-    uint32_t errcode;
-    EraseInit.NbPages = 1;
-    EraseInit.PageAddress = addr;
-    EraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-    HAL_FLASH_Unlock();
-    HAL_FLASHEx_Erase(&EraseInit, &errcode);
-    HAL_FLASH_Lock();
-    return 0;
-}
 
 /**
  * \}

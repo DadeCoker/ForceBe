@@ -33,7 +33,7 @@
 #include "b_tx.h"  
 #if _TX_ENABLE
 #include "b_core.h"
-#include "b_hal.h"
+#include "b_utils.h"
 #include <string.h>
 /** 
  * \addtogroup BABYOS

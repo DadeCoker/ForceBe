@@ -62,8 +62,6 @@
  * \defgroup HAL_Exported_Defines
  * \{
  */
-#define FLS_PSIZE                   2048UL
-
 #define FLASH_CS_RESET()            HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET)
 #define FLASH_CS_SET()              HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET)
 
@@ -79,17 +77,6 @@
  * \defgroup HAL_Exported_Macros
  * \{
  */
-
-
-#if _DEBUG_ENABLE
-
-#define b_log(...)       printf(__VA_ARGS__)
-
-#else
-
-#define b_log(...)
-
-#endif    
 
 
 /**
@@ -111,14 +98,7 @@
  */
 void bHalEnterCritical(void); 
 void bHalExitCritical(void);
-void bHalDelayMS(uint16_t xms);
-void bHalDelayUS(uint16_t xus);  
-uint32_t bHalGetTick(void);
-void bHalChipProtect(void);
-void bHalGetSTM32MCUID(uint32_t id[3]);
-void bHalFeedWTD(void);
-int bHalFlashWrite(uint32_t address, uint8_t *pbuf, uint16_t len);
-int bHalErasePage(uint32_t addr);
+void bHalIncSysTick(void);
 /**
  * \}
  */

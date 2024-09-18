@@ -581,6 +581,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_fifo.c</FilePath>
             </File>
+            <File>
+              <FileName>b_at.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_at.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -605,6 +610,11 @@
               <FileName>b_hal.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\b_hal.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\b_utils.c</FilePath>
             </File>
           </Files>
         </Group>

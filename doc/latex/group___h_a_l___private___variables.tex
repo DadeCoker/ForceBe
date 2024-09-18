@@ -1,28 +1,23 @@
 \hypertarget{group___h_a_l___private___variables}{}\section{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}
 \label{group___h_a_l___private___variables}\index{H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}}
-\subsection*{Macros}
-\begin{DoxyCompactItemize}
-\item 
-\#define \mbox{\hyperlink{group___h_a_l___private___variables_ga6c05368ce95479087a767000d0825b24}{D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL}}~\mbox{\hyperlink{group___h_a_l___private___variables_ga2cf715bef37f7e8ef385a30974a5f0d5}{huart1}}
-\item 
-\#define \mbox{\hyperlink{group___h_a_l___private___variables_gaadb0ad79eab01ba522b7d081c138760b}{S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR}}~0x1\+F\+F\+F\+F7\+E8\+UL
-\end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 U\+A\+R\+T\+\_\+\+Handle\+Type\+Def \mbox{\hyperlink{group___h_a_l___private___variables_ga2cf715bef37f7e8ef385a30974a5f0d5}{huart1}}
+\item 
+volatile uint32\+\_\+t \mbox{\hyperlink{group___h_a_l___private___variables_gaf4192a6f2331016cae3bcd9e5f2c7e20}{b\+Sys\+Tick}} = 0
 \end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
 
 
-\subsection{Macro Definition Documentation}
-\mbox{\Hypertarget{group___h_a_l___private___variables_ga6c05368ce95479087a767000d0825b24}\label{group___h_a_l___private___variables_ga6c05368ce95479087a767000d0825b24}} 
-\index{H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}!D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL@{D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL}}
-\index{D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL@{D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL}!H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}}
-\subsubsection{\texorpdfstring{D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL}{DEBUG\_UART\_HANDL}}
-{\footnotesize\ttfamily \#define D\+E\+B\+U\+G\+\_\+\+U\+A\+R\+T\+\_\+\+H\+A\+N\+DL~\mbox{\hyperlink{group___h_a_l___private___variables_ga2cf715bef37f7e8ef385a30974a5f0d5}{huart1}}}
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{group___h_a_l___private___variables_gaf4192a6f2331016cae3bcd9e5f2c7e20}\label{group___h_a_l___private___variables_gaf4192a6f2331016cae3bcd9e5f2c7e20}} 
+\index{H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}!b\+Sys\+Tick@{b\+Sys\+Tick}}
+\index{b\+Sys\+Tick@{b\+Sys\+Tick}!H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}}
+\subsubsection{\texorpdfstring{b\+Sys\+Tick}{bSysTick}}
+{\footnotesize\ttfamily volatile uint32\+\_\+t b\+Sys\+Tick = 0}
 
 
 
@@ -30,28 +25,15 @@ Definition at line 77 of file b\+\_\+hal.\+c.
 
 
 
-Referenced by fputc().
+Referenced by b\+Hal\+Delay\+M\+S(), b\+Hal\+Get\+Tick(), and b\+Hal\+Inc\+Sys\+Tick().
 
-\mbox{\Hypertarget{group___h_a_l___private___variables_gaadb0ad79eab01ba522b7d081c138760b}\label{group___h_a_l___private___variables_gaadb0ad79eab01ba522b7d081c138760b}} 
-\index{H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}!S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR@{S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR}}
-\index{S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR@{S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR}!H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}}
-\subsubsection{\texorpdfstring{S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR}{STM32F1\_UID\_ADDR}}
-{\footnotesize\ttfamily \#define S\+T\+M32\+F1\+\_\+\+U\+I\+D\+\_\+\+A\+D\+DR~0x1\+F\+F\+F\+F7\+E8\+UL}
-
-
-
-Definition at line 78 of file b\+\_\+hal.\+c.
-
-
-
-Referenced by b\+Hal\+Get\+S\+T\+M32\+M\+C\+U\+I\+D().
-
-
-
-\subsection{Variable Documentation}
 \mbox{\Hypertarget{group___h_a_l___private___variables_ga2cf715bef37f7e8ef385a30974a5f0d5}\label{group___h_a_l___private___variables_ga2cf715bef37f7e8ef385a30974a5f0d5}} 
 \index{H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}!huart1@{huart1}}
 \index{huart1@{huart1}!H\+A\+L\+\_\+\+Private\+\_\+\+Variables@{H\+A\+L\+\_\+\+Private\+\_\+\+Variables}}
 \subsubsection{\texorpdfstring{huart1}{huart1}}
 {\footnotesize\ttfamily U\+A\+R\+T\+\_\+\+Handle\+Type\+Def huart1}
+
+
+
+Referenced by fputc().
 

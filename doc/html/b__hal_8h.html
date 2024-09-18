@@ -58,8 +58,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga9c64654d333d0c63a47d4610be2509e0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___defines.html#ga9c64654d333d0c63a47d4610be2509e0">FLS_PSIZE</a>&#160;&#160;&#160;2048UL</td></tr>
-<tr class="separator:ga9c64654d333d0c63a47d4610be2509e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3df8c78e1d68d69f629630fb6095cec1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___defines.html#ga3df8c78e1d68d69f629630fb6095cec1">FLASH_CS_RESET</a>()&#160;&#160;&#160;HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET)</td></tr>
 <tr class="separator:ga3df8c78e1d68d69f629630fb6095cec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadc9743a09abcf9e1d203bdd5081db24a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___defines.html#gadc9743a09abcf9e1d203bdd5081db24a">FLASH_CS_SET</a>()&#160;&#160;&#160;HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET)</td></tr>
@@ -70,32 +68,16 @@ Macros</h2></td></tr>
 <tr class="separator:gadd41bc5ddcf6f842928efc4f0d944a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac1fbe03efbe22feb97f198a4dd8b1237"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___defines.html#gac1fbe03efbe22feb97f198a4dd8b1237">S_RX_PIN_READ</a>()&#160;&#160;&#160;HAL_GPIO_ReadPin(SUART_RX_GPIO_Port, SUART_RX_Pin)</td></tr>
 <tr class="separator:gac1fbe03efbe22feb97f198a4dd8b1237"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafc78b16ad8aebf30b9cabfc278cfb32a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___macros.html#gafc78b16ad8aebf30b9cabfc278cfb32a">b_log</a>(...)</td></tr>
-<tr class="separator:gafc78b16ad8aebf30b9cabfc278cfb32a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gac4b3d313f1c9c001234743725e491b9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#gac4b3d313f1c9c001234743725e491b9a">bHalEnterCritical</a> ()</td></tr>
 <tr class="separator:gac4b3d313f1c9c001234743725e491b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9b005cf96b043e836780e1cc1b9254fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga9b005cf96b043e836780e1cc1b9254fc">bHalExitCritical</a> ()</td></tr>
-<tr class="memdesc:ga9b005cf96b043e836780e1cc1b9254fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt;&lt; delay  <a href="group___h_a_l___exported___functions.html#ga9b005cf96b043e836780e1cc1b9254fc">More...</a><br /></td></tr>
 <tr class="separator:ga9b005cf96b043e836780e1cc1b9254fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga12c2eefdfcc84de397bba9c9f95882a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga12c2eefdfcc84de397bba9c9f95882a5">bHalDelayMS</a> (uint16_t xms)</td></tr>
-<tr class="separator:ga12c2eefdfcc84de397bba9c9f95882a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga252916ffe00f5745ac44905b50a3f412"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga252916ffe00f5745ac44905b50a3f412">bHalDelayUS</a> (uint16_t xus)</td></tr>
-<tr class="separator:ga252916ffe00f5745ac44905b50a3f412"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac8e750b2b439b1cc756a4076503738e4"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#gac8e750b2b439b1cc756a4076503738e4">bHalGetTick</a> ()</td></tr>
-<tr class="separator:gac8e750b2b439b1cc756a4076503738e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6bb2b0cf5092883eb8c51f9b8d4a5c78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga6bb2b0cf5092883eb8c51f9b8d4a5c78">bHalChipProtect</a> ()</td></tr>
-<tr class="separator:ga6bb2b0cf5092883eb8c51f9b8d4a5c78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab4fede695cd2bf0ead21a2cc4ac02aaa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#gab4fede695cd2bf0ead21a2cc4ac02aaa">bHalGetSTM32MCUID</a> (uint32_t id[3])</td></tr>
-<tr class="separator:gab4fede695cd2bf0ead21a2cc4ac02aaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6f935a31e0b1cdb5905b565a5d3bb72f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga6f935a31e0b1cdb5905b565a5d3bb72f">bHalFeedWTD</a> ()</td></tr>
-<tr class="separator:ga6f935a31e0b1cdb5905b565a5d3bb72f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga19179b3668da8153a34f5c57a43cef0b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga19179b3668da8153a34f5c57a43cef0b">bHalFlashWrite</a> (uint32_t address, uint8_t *pbuf, uint16_t len)</td></tr>
-<tr class="separator:ga19179b3668da8153a34f5c57a43cef0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9bbf639675e6f6028a969874d60acac3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga9bbf639675e6f6028a969874d60acac3">bHalErasePage</a> (uint32_t addr)</td></tr>
-<tr class="separator:ga9bbf639675e6f6028a969874d60acac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1e845f28a0763b4046d1c7cdcf227e52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___h_a_l___exported___functions.html#ga1e845f28a0763b4046d1c7cdcf227e52">bHalIncSysTick</a> ()</td></tr>
+<tr class="memdesc:ga1e845f28a0763b4046d1c7cdcf227e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call this function _TICK_FRQ_HZ times per second <a class="el" href="b__config_8h.html#ae2076738df8e2eff78366a0187291367">_TICK_FRQ_HZ</a>.  <a href="group___h_a_l___exported___functions.html#ga1e845f28a0763b4046d1c7cdcf227e52">More...</a><br /></td></tr>
+<tr class="separator:ga1e845f28a0763b4046d1c7cdcf227e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>!</p>
