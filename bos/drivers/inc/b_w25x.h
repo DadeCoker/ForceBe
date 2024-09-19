@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_suart.h
+ * \file        b_w25x.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)

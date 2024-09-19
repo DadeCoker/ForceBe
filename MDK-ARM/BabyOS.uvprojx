@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;   ../Drivers/CMSIS/Include;   ..\bos\core\inc\;   ..\bos\drivers\inc\;   ..\bos\hal</IncludePath>
+              <IncludePath>../Core/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;    ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;    ../Drivers/CMSIS/Include;    ..\bos\core\inc\;    ..\bos\drivers\inc\;    ..\bos\hal</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -600,6 +600,11 @@
               <FileName>b_w25x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\drivers\src\b_w25x.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_f8l10d.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_f8l10d.c</FilePath>
             </File>
           </Files>
         </Group>

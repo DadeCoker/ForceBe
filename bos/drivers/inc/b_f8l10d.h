@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_device_list.h
+ * \file        b_f8l10d.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,30 +28,93 @@
  * SOFTWARE.
  *******************************************************************************
  */
+#ifndef __B_F8L10D_H__
+#define __B_F8L10D_H__
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+/*Includes ----------------------------------------------*/
+#include "b_config.h" 
+#include "b_device.h"
+/** 
+ * \addtogroup B_DRIVER
+ * \{
+ */
+
+/** 
+ * \addtogroup F8L10D
+ * \{
+ */
+
+/** 
+ * \defgroup F8L10D_Exported_TypesDefinitions
+ * \{
+ */
+typedef bDriverInterface_t bF8L10D_Driver_t;  
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Defines
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Macros
+ * \{
+ */
 
 
 
 /**
-           for example !
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Variables
+ * \{
+ */
+extern bF8L10D_Driver_t bF8L10D_Driver;   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Functions
+ * \{
+ */
+int bF8L10D_Init(void);
+void bF8L10D_UartIdle(void);
+/**
+ * \}
+ */
+ 
 
-/////B_DEVICE_REG(dev, driver_interface, desc);           
+/**
+ * \}
  */
 
-B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
-B_DEVICE_REG(SUART, SUART_Driver, "flash")
-B_DEVICE_REG(F8L10D, bF8L10D_Driver, "lora")
+/**
+ * \}
+ */
 
-
-
-
-
-
-#undef B_DEVICE_REG
-
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif
 
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 
 
 
