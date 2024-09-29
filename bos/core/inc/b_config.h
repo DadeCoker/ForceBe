@@ -52,6 +52,9 @@
 //<q> UTC2000 Enable/Disable
 #define _UTC2000_ENABLE           	1
 
+//<q> Lunar Enable/Disable
+#define _LUNAR_ENABLE           	1
+
 //<q> Debug Enable/Disable
 #define _DEBUG_ENABLE           	1
 

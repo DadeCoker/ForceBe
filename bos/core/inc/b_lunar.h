@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_fifo.h
+ * \file        b_lunnar.h
  * \version     v0.0.1
- * \date        2019/12/23
+ * \date        2019/12/31
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_FIFO_H__
-#define __B_FIFO_H__
+#ifndef __B_LUNAR_H__
+#define __B_LUNAR_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,7 +37,7 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"  
-#if _FIFO_ENABLE
+#if _LUNAR_ENABLE
 
 /** 
  * \addtogroup BABYOS
@@ -45,27 +45,28 @@
  */
 
 /** 
- * \addtogroup FIFO
+ * \addtogroup LUNAR
  * \{
  */
 
 /** 
- * \defgroup FIFO_Exported_TypesDefinitions
+ * \defgroup LUNAR_Exported_TypesDefinitions
  * \{
  */
+
 typedef struct
 {
-    uint8_t *pbuf;
-    uint16_t size;
-    volatile uint16_t r_index;
-    volatile uint16_t w_index;
-}bFIFO_Info_t;
+    uint16_t year;
+    uint8_t month;
+    uint8_t day;
+}bLunarInfo_t;
+
 /**
  * \}
  */
    
 /** 
- * \defgroup FIFO_Exported_Defines
+ * \defgroup LUNAR_Exported_Defines
  * \{
  */
 
@@ -75,7 +76,7 @@ typedef struct
  */
    
 /** 
- * \defgroup FIFO_Exported_Macros
+ * \defgroup LUNAR_Exported_Macros
  * \{
  */
    
@@ -84,7 +85,7 @@ typedef struct
  */
    
 /** 
- * \defgroup FIFO_Exported_Variables
+ * \defgroup LUNAR_Exported_Variables
  * \{
  */
    
@@ -93,14 +94,10 @@ typedef struct
  */
    
 /** 
- * \defgroup FIFO_Exported_Functions
+ * \defgroup LUNAR_Exported_Functions
  * \{
  */
-int bFIFO_Regist(uint8_t *pbuf, uint16_t size);
-int bFIFO_Length(int no, uint16_t *plen);
-int bFIFO_Flush(int no);
-int bFIFO_Write(int no, uint8_t *pbuf, uint16_t size);
-int bFIFO_Read(int no, uint8_t *pbuf, uint16_t size);
+int bSolar2Lunar(uint16_t syear, uint8_t smonth, uint8_t sday, bLunarInfo_t *plunar);
 /**
  * \}
  */

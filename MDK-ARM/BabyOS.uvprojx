@@ -586,6 +586,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_at.c</FilePath>
             </File>
+            <File>
+              <FileName>b_lunar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_lunar.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
