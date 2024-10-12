@@ -151,6 +151,58 @@
 //</h>
 
 
+//<h> Third Party Configuration
+
+//<e> NR Micro Shell Enable/Disable
+#define _NR_MICRO_SHELL_ENABLE              1
+
+//<s> The user's name
+#define NR_SHELL_USER_NAME                 "nr@bos:"
+
+//<o> ANSI command line buffer size
+#define NR_ANSI_LINE_SIZE                   100
+
+#define NR_SHELL_CMD_LINE_MAX_LENGTH        NR_ANSI_LINE_SIZE
+
+//<o> Maximum username length
+#define NR_SHELL_USER_NAME_MAX_LENGTH       30
+
+//<o> Maximum command name length
+#define NR_SHELL_CMD_NAME_MAX_LENGTH        10
+
+//<o> Maximum number of parameters in a command
+#define NR_SHELL_CMD_PARAS_MAX_NUM          10
+
+//<o> History commands
+//<0-3>
+#define NR_SHELL_MAX_CMD_HISTORY_NUM        3
+
+//<o> History command cache length
+#define NR_SHELL_CMD_HISTORY_BUF_LENGTH     253
+
+
+//<o> End of line
+//<0=> \n
+//<1=> \r
+//<2=> \r\n
+#define NR_SHELL_END_OF_LINE                0
+
+//<q> Support all ANSI codes enable/disable
+#define NR_SHLL_FULL_ANSI                   1
+
+//<q> Show logo enable/disable
+#define NR_SHELL_SHOW_LOG                   1
+
+
+#if _DEBUG_ENABLE
+#define shell_printf(fmt, args...)          printf(fmt, ##args);
+#define ansi_show_char(x)                   putchar(x)
+#endif
+//</e>
+
+//</h>
+
+
 
 #if _DEBUG_ENABLE
 #include <stdio.h>

@@ -1,13 +1,15 @@
 /**
- *!
- * \file        b_os.h
- * \version     v0.0.1
- * \date        2019/06/05
- * \author      Bean(notrynohigh@outlook.com)
- *******************************************************************************
+ * @file      nr_micro_shell_config.h
+ * @author    Ji Youzhou
+ * @version   V0.1
+ * @date      28 Oct 2019
+ * @brief     [brief]
+ * *****************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * MIT License
+ * 
+ * Copyright (C) 2019 Ji Youzhou
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,34 +28,24 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *******************************************************************************
  */
-#ifndef __B_OS_H__
-#define __B_OS_H__
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __nr_micro_shell_config_h
+#define __nr_micro_shell_config_h
 
-
-#include "b_battery.h"
-#include "b_core.h"
-#include "b_crc32.h"
-#include "b_device.h"
-#include "b_error.h"
-#include "b_event.h"
-#include "b_modbus.h"
-#include "b_ota.h"
-#include "b_protocol.h"
-#include "b_sda.h"
-#include "b_sdb.h"
-#include "b_sdc.h"
-#include "b_sum.h"
-#include "b_tx.h"
-#include "b_utc.h"
-#include "b_fifo.h"
-#include "b_at.h"
-#include "b_shell.h"
-
-
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/* Includes ------------------------------------------------------------------*/
+#include "b_config.h"
 
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+/******************* (C) COPYRIGHT 2019 Ji Youzhou *****END OF FILE*****************/

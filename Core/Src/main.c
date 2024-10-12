@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2019 STMicroelectronics
+  * COPYRIGHT(c) 2020 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -58,7 +58,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+uint8_t uart1_rdata;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -76,7 +76,14 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart == &huart1)
+    {
+        bShellParse(&uart1_rdata, 1);
+        HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -120,6 +127,8 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bInit();
+  bShellStart();
+  HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
   int fd;
   uint32_t tick;
   fd = bOpen(SUART, BCORE_FLAG_RW);
@@ -133,6 +142,7 @@ int main(void)
               bWrite(fd, (uint8_t *)"hello world\r\n", strlen("hello world\r\n"));
           }
       }
+      
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

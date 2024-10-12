@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;    ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;    ../Drivers/CMSIS/Include;    ..\bos\core\inc\;    ..\bos\drivers\inc\;    ..\bos\hal</IncludePath>
+              <IncludePath>../Core/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Drivers/CMSIS/Include; ..\bos\core\inc\; ..\bos\drivers\inc\; ..\bos\hal; ..\bos\core\thirdparty\nr_micro_shell\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -591,6 +591,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_lunar.c</FilePath>
             </File>
+            <File>
+              <FileName>b_shell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_shell.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -625,6 +630,26 @@
               <FileName>b_utils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\b_utils.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/nr_micro_shell</GroupName>
+          <Files>
+            <File>
+              <FileName>ansi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\ansi.c</FilePath>
+            </File>
+            <File>
+              <FileName>ansi_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\ansi_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>nr_micro_shell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\nr_micro_shell.c</FilePath>
             </File>
           </Files>
         </Group>

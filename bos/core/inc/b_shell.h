@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_os.h
+ * \file        b_shell.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/01/02
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,39 +21,97 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO SHELL SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_OS_H__
-#define __B_OS_H__
+#ifndef __B_SHELL_H__
+#define __B_SHELL_H__
 
-
-
-#include "b_battery.h"
-#include "b_core.h"
-#include "b_crc32.h"
-#include "b_device.h"
-#include "b_error.h"
-#include "b_event.h"
-#include "b_modbus.h"
-#include "b_ota.h"
-#include "b_protocol.h"
-#include "b_sda.h"
-#include "b_sdb.h"
-#include "b_sdc.h"
-#include "b_sum.h"
-#include "b_tx.h"
-#include "b_utc.h"
-#include "b_fifo.h"
-#include "b_at.h"
-#include "b_shell.h"
-
-
+#ifdef __cplusplus
+ extern "C" {
 #endif
 
+/*Includes ----------------------------------------------*/
+#include "b_config.h"
+#if _NR_MICRO_SHELL_ENABLE
+#include "nr_micro_shell.h"
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+/** 
+ * \addtogroup SHELL
+ * \{
+ */
+
+/** 
+ * \defgroup SHELL_Exported_TypesDefinitions
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SHELL_Exported_Defines
+ * \{
+ */
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SHELL_Exported_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SHELL_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SHELL_Exported_Functions
+ * \{
+ */
+int bShellStart(void);
+int bShellParse(uint8_t *pbuf, uint16_t len);
+/**
+ * \}
+ */
+ 
+ 
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+#endif
+
+#ifdef __cplusplus
+	}
+#endif
+
+#endif  
+
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
 
