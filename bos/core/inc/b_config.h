@@ -185,7 +185,7 @@
 //<0=> \n
 //<1=> \r
 //<2=> \r\n
-#define NR_SHELL_END_OF_LINE                0
+#define NR_SHELL_END_OF_LINE                1
 
 //<q> Support all ANSI codes enable/disable
 #define NR_SHLL_FULL_ANSI                   1
@@ -193,10 +193,19 @@
 //<q> Show logo enable/disable
 #define NR_SHELL_SHOW_LOG                   1
 
+//<q> Echo enable/disable
+#define NR_SHELL_ECHO_ENABLE                1
+
 
 #if _DEBUG_ENABLE
 #define shell_printf(fmt, args...)          printf(fmt, ##args);
+
+#if NR_SHELL_ECHO_ENABLE
 #define ansi_show_char(x)                   putchar(x)
+#else
+#define ansi_show_char(x)
+#endif
+
 #endif
 //</e>
 

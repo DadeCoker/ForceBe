@@ -22,6 +22,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#aaf415274583a1814b29fe6021b78c741"><param name="Name" value="_LUNAR_ENABLE"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a8875f9cf80bc105f1a874f42634b25e0"><param name="Name" value="_MODBUS_ENABLE"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#acd9980136a3d83c88c8d99eb9e3a7f98"><param name="Name" value="_MODBUS_I_NUMBER"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a3da8251ad4eedfb035bbc68e3693b9f5"><param name="Name" value="_NR_MICRO_SHELL_ENABLE"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a771e0a2ceaed0caf6945c2774e68324a"><param name="Name" value="_OTA_BUFF_SIZE"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a604fe19d1e5f2abd33133514ef989b97"><param name="Name" value="_OTA_DATA_ADDRESS"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a1cbb3ed275fc66461780371333cddefd"><param name="Name" value="_OTA_INFO_ADDRESS"></OBJECT>
@@ -50,6 +51,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_s_d_b___info__t.html#ac0d31ca829f934cccd89f8054e02773e"><param name="Name" value="bSDB_Info_t"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_s_d_c___struct__t.html#ac0d31ca829f934cccd89f8054e02773e"><param name="Name" value="bSDC_Struct_t"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a0baa3176be97eaf6fbd2303b3bc26ab4"><param name="Name" value="ansi_show_char"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___a_t.html"><param name="Name" value="AT"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___a_t___exported___defines.html"><param name="Name" value="AT_Exported_Defines"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___a_t___exported___functions.html"><param name="Name" value="AT_Exported_Functions"></OBJECT>
@@ -96,6 +98,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#aaf415274583a1814b29fe6021b78c741"><param name="Name" value="_LUNAR_ENABLE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a8875f9cf80bc105f1a874f42634b25e0"><param name="Name" value="_MODBUS_ENABLE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#acd9980136a3d83c88c8d99eb9e3a7f98"><param name="Name" value="_MODBUS_I_NUMBER"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a3da8251ad4eedfb035bbc68e3693b9f5"><param name="Name" value="_NR_MICRO_SHELL_ENABLE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a771e0a2ceaed0caf6945c2774e68324a"><param name="Name" value="_OTA_BUFF_SIZE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a604fe19d1e5f2abd33133514ef989b97"><param name="Name" value="_OTA_DATA_ADDRESS"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a1cbb3ed275fc66461780371333cddefd"><param name="Name" value="_OTA_INFO_ADDRESS"></OBJECT>
@@ -113,8 +116,22 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a38ee0e2594d87e1eed24d42c5f256517"><param name="Name" value="_TX_ENABLE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#adb5f40d9dc01ec2aaf42a92550d3a940"><param name="Name" value="_TX_I_NUMBER"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#ae89563dd419af650c252f218ebf30d5d"><param name="Name" value="_UTC2000_ENABLE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a0baa3176be97eaf6fbd2303b3bc26ab4"><param name="Name" value="ansi_show_char"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#afc78b16ad8aebf30b9cabfc278cfb32a"><param name="Name" value="b_log"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a3235aba23425aca082e65688bbccde6b"><param name="Name" value="NR_ANSI_LINE_SIZE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#aea839fea82ad3920f2ef6344a69c1100"><param name="Name" value="NR_SHELL_CMD_HISTORY_BUF_LENGTH"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a12a949a5e3a3ec4e1f1b22b7257b6b3a"><param name="Name" value="NR_SHELL_CMD_LINE_MAX_LENGTH"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a55b463e2075ad1dc30af23dd58707d70"><param name="Name" value="NR_SHELL_CMD_NAME_MAX_LENGTH"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a5d457810d99389bd614826fd161260c9"><param name="Name" value="NR_SHELL_CMD_PARAS_MAX_NUM"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a72ae5d54b3f8034cf8cacce91b2c8323"><param name="Name" value="NR_SHELL_ECHO_ENABLE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a80c1d8b1386eb6f52d3a880379ed8f99"><param name="Name" value="NR_SHELL_END_OF_LINE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a4406ad528b59bba6b4c067416390eeec"><param name="Name" value="NR_SHELL_MAX_CMD_HISTORY_NUM"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#ae069bece45e3eb51b4b71dcea477f448"><param name="Name" value="NR_SHELL_SHOW_LOG"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a48f46913c4521113108888079816390f"><param name="Name" value="NR_SHELL_USER_NAME"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a7efc2f50030d1356d8fa1bc3358e5bcd"><param name="Name" value="NR_SHELL_USER_NAME_MAX_LENGTH"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#aa1a35ab562d6b8c2a26ae186884835a2"><param name="Name" value="NR_SHLL_FULL_ANSI"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4"><param name="Name" value="NULL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a93526fb3cc79d3ba8c97e7ea6154a439"><param name="Name" value="shell_printf"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__core_8c.html"><param name="Name" value="b_core.c"></OBJECT>
   <UL>
@@ -294,6 +311,11 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__sdc_8h.html#gacb6dee14791b72cc5e127da8a5437319"><param name="Name" value="bSDC_Read"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__sdc_8h.html#ga5ab5e9e0cf765d3be871c622e77dc5b2"><param name="Name" value="bSDC_Regist"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__sdc_8h.html#gadc0cbe401ec70e25ec4c21ff98d0c940"><param name="Name" value="bSDC_Write"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__shell_8h.html"><param name="Name" value="b_shell.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__shell_8h.html#ga78d554e88a85a49891ec7b2688a1883a"><param name="Name" value="bShellParse"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="b__shell_8h.html#ga0f12cb556471a8fcdeb7b4bceb7cda0a"><param name="Name" value="bShellStart"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__suart_8c.html"><param name="Name" value="b_suart.c"></OBJECT>
   <UL>
@@ -775,6 +797,8 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_s_d_c___struct__t.html#a546dee965d95ce52190c06bfb12a5d85"><param name="Name" value="usize"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_d_c___exported___functions.html#gadc0cbe401ec70e25ec4c21ff98d0c940"><param name="Name" value="bSDC_Write"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___functions.html#ga78d554e88a85a49891ec7b2688a1883a"><param name="Name" value="bShellParse"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___functions.html#ga0f12cb556471a8fcdeb7b4bceb7cda0a"><param name="Name" value="bShellStart"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___l_u_n_a_r___exported___functions.html#ga2e56b0cadb491906cddfebe953e796a9"><param name="Name" value="bSolar2Lunar"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___u_t_c___exported___functions.html#ga70f006eef06ad96e0ba21165ae71d3a4"><param name="Name" value="bStruct2UTC"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___x_o_r___s_u_m___exported___functions.html#ga2a8d353f13d1a561f2aa9d5a3242f736"><param name="Name" value="bSUM"></OBJECT>
@@ -1038,6 +1062,18 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_s_d_a___info__t.html#aead7729865941bd802dfe73093bc4f0a"><param name="Name" value="n_per_eu"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_core_dev_table__t.html#abfa8a0ef7b1321866a7c4099554fdfb0"><param name="Name" value="name"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a3235aba23425aca082e65688bbccde6b"><param name="Name" value="NR_ANSI_LINE_SIZE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#aea839fea82ad3920f2ef6344a69c1100"><param name="Name" value="NR_SHELL_CMD_HISTORY_BUF_LENGTH"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a12a949a5e3a3ec4e1f1b22b7257b6b3a"><param name="Name" value="NR_SHELL_CMD_LINE_MAX_LENGTH"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a55b463e2075ad1dc30af23dd58707d70"><param name="Name" value="NR_SHELL_CMD_NAME_MAX_LENGTH"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a5d457810d99389bd614826fd161260c9"><param name="Name" value="NR_SHELL_CMD_PARAS_MAX_NUM"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a72ae5d54b3f8034cf8cacce91b2c8323"><param name="Name" value="NR_SHELL_ECHO_ENABLE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a80c1d8b1386eb6f52d3a880379ed8f99"><param name="Name" value="NR_SHELL_END_OF_LINE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a4406ad528b59bba6b4c067416390eeec"><param name="Name" value="NR_SHELL_MAX_CMD_HISTORY_NUM"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#ae069bece45e3eb51b4b71dcea477f448"><param name="Name" value="NR_SHELL_SHOW_LOG"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a48f46913c4521113108888079816390f"><param name="Name" value="NR_SHELL_USER_NAME"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a7efc2f50030d1356d8fa1bc3358e5bcd"><param name="Name" value="NR_SHELL_USER_NAME_MAX_LENGTH"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#aa1a35ab562d6b8c2a26ae186884835a2"><param name="Name" value="NR_SHLL_FULL_ANSI"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4"><param name="Name" value="NULL"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4"><param name="Name" value="b_config.h"></OBJECT>
@@ -1142,6 +1178,13 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_d_c___exported___types_definitions.html"><param name="Name" value="SDC_Exported_TypesDefinitions"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_d_c___exported___variables.html"><param name="Name" value="SDC_Exported_Variables"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_u_t_c___date_time__t.html#a8459fc4e94de7eefc74991e41779c8fc"><param name="Name" value="second"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l.html"><param name="Name" value="SHELL"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___defines.html"><param name="Name" value="SHELL_Exported_Defines"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___functions.html"><param name="Name" value="SHELL_Exported_Functions"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___macros.html"><param name="Name" value="SHELL_Exported_Macros"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___types_definitions.html"><param name="Name" value="SHELL_Exported_TypesDefinitions"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="group___s_h_e_l_l___exported___variables.html"><param name="Name" value="SHELL_Exported_Variables"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="b__config_8h.html#a93526fb3cc79d3ba8c97e7ea6154a439"><param name="Name" value="shell_printf"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_f_i_f_o___info__t.html#aaba88b24a21a6c70c895c0d55f4a69a0"><param name="Name" value="size"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structb_f_i_f_o___info__t.html#aaba88b24a21a6c70c895c0d55f4a69a0"><param name="Name" value="bFIFO_Info_t"></OBJECT>
