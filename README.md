@@ -111,3 +111,14 @@ int bSDB_Read(int no, uint8_t *pbuf);
 notrynohigh@outlook.com
 
 ![qqg](https://github.com/notrynohigh/BabyOS/raw/master/doc/qqg.png)
+
+
+
+## 更新记录
+
+| 日期                  | 新增项                                | 备注           |
+| --------------------- | ------------------------------------- | -------------- |
+| 2019.12.04~2020.01.02 | 3项功能模块：FIFO、AT、Nr_micro_shell | 操作详情见wiki |
+|                       |                                       |                |
+|                       |                                       |                |
+
