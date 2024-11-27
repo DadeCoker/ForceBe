@@ -51,7 +51,7 @@
 #include "b_fifo.h"
 #include "b_at.h"
 #include "b_shell.h"
-
+#include "b_kv.h"
 
 #endif
 

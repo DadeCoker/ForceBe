@@ -129,20 +129,32 @@ int main(void)
   bInit();
   bShellStart();
   HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
-  int fd;
-  uint32_t tick;
-  fd = bOpen(SUART, BCORE_FLAG_RW);
+
+  if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096))
+  {
+    b_log("bKV_Init ok...\r\n");
+  }
+  uint8_t buf[128];
+  
+  b_log("save ip, name\r\n");
+  bKV_Set((uint8_t *)"ip", (uint8_t *)"192.168.1.155", sizeof("192.168.1.155"));
+  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", sizeof("BabyOS"));
+  
+  b_log("read ip, name...\r\n");
+  bKV_Get((uint8_t *)"ip", buf);
+  b_log("ip: %s\r\n", buf);
+  
+  bKV_Get((uint8_t *)"name", buf);
+  b_log("name %s\r\n", buf); 
+
+  b_log("change name...\r\n");
+  bKV_Set((uint8_t *)"name", (uint8_t *)"abcdefghijklmnopqrstuvwxy123456789", sizeof("abcdefghijklmnopqrstuvwxy123456789"));
+  bKV_Get((uint8_t *)"name", buf);
+  b_log("new name: %s\r\n", buf);  
+  
   while (1)
   {
-      if(fd >= 0)
-      {
-          if(bHalGetTick() - tick > (5 * _TICK_FRQ_HZ))
-          {
-              tick = bHalGetTick();
-              bWrite(fd, (uint8_t *)"hello world\r\n", strlen("hello world\r\n"));
-          }
-      }
-      
+        
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

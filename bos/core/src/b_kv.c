@@ -222,22 +222,30 @@ static int _bKV_UpdateIndexTable(uint8_t t, uint16_t end_index)
     {
         bLseek(fd, bKV_Info.t_address[t] + i * sizeof(bKV_Index_t));
         bRead(fd, (uint8_t *)&tmp, sizeof(bKV_Index_t));
+        
         for(j = 0;j < _KV_PAIR_NUMBER;j++)
         {
-            if(bKV_IndexTable[j].id == 0 && bKV_IndexTable[j].address == 0 && bKV_IndexTable[j].len == 0)
-            {
-                memcpy(&bKV_IndexTable[j], &tmp, sizeof(bKV_Index_t));
-                break;
-            }
-            else if(bKV_IndexTable[j].id == tmp.id)
+            if(bKV_IndexTable[j].id == tmp.id)
             {
                 break;
             }
         }
         if(j >= _KV_PAIR_NUMBER)
         {
-            break;
+            for(j = 0;j < _KV_PAIR_NUMBER;j++)
+            {
+                if(bKV_IndexTable[j].id == 0 && bKV_IndexTable[j].address == 0 && bKV_IndexTable[j].len == 0)
+                {
+                    memcpy(&bKV_IndexTable[j], &tmp, sizeof(bKV_Index_t));
+                    break;
+                }
+            }
+            if(j >= _KV_PAIR_NUMBER)
+            {
+                break;
+            }
         }
+        
     }
     bClose(fd);
     return 0;
@@ -361,16 +369,20 @@ static int _bKV_SwitchSector()
             
             len = bKV_IndexTable[i].len;
             addr = bKV_IndexTable[i].address;
-            while(len)
+            for(;;)
             {
                 bLseek(fd, addr);
                 r_len = (len > 32) ? 32 : len;
                 bRead(fd, buf, r_len);
-                len -= r_len;
+                len = len - r_len;
                 addr += r_len;
                 bLseek(fd, dd_address);
                 bWrite(fd, buf, r_len);
                 dd_address += r_len;
+                if(len == 0)
+                {
+                    break;
+                }
             }
         }
     }
@@ -406,8 +418,8 @@ static int _bKV_Set(uint32_t id, uint8_t *pbuf, uint16_t len)
         if(bKV_IndexTable[i].id == id)
         {
             bLseek(fd, bKV_Info.tc_address);
-            retval = bWrite(fd, (uint8_t *)&bKV_IndexTable[i], sizeof(bKV_Info_t));
-            bKV_Info.tc_address += sizeof(bKV_Info_t);
+            retval = bWrite(fd, (uint8_t *)&bKV_IndexTable[i], sizeof(bKV_Index_t));
+            bKV_Info.tc_address += sizeof(bKV_Index_t);
             if(retval >= 0)
             {
                 bLseek(fd, bKV_Info.dc_address);

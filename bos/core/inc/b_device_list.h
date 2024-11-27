@@ -39,7 +39,7 @@
 
 B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 B_DEVICE_REG(SUART, SUART_Driver, "flash")
-B_DEVICE_REG(F8L10D, bF8L10D_Driver, "lora")
+//B_DEVICE_REG(F8L10D, bF8L10D_Driver, "lora")
 
 
 
