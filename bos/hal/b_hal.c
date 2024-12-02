@@ -131,6 +131,13 @@ void bHalIncSysTick()
 }
 
 
+void bHalInit()
+{
+    ;// Add code ...gpio init or some other functions
+}
+
+
+
 /**
  * \}
  */

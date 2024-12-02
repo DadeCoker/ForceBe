@@ -126,10 +126,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  bInit();
-  bShellStart();
+  /****************************Init*******************************/
+  bHalInit();                                   //bHAL Init
+  bInit();                                      //BabyOS Init
+  /**************************Test shell***************************/
+  bShellStart();                                //Shell Start
   HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
 
+  /**************************Test bKV*****************************/
   if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096))
   {
     b_log("bKV_Init ok...\r\n");
@@ -151,7 +155,7 @@ int main(void)
   bKV_Set((uint8_t *)"name", (uint8_t *)"abcdefghijklmnopqrstuvwxy123456789", sizeof("abcdefghijklmnopqrstuvwxy123456789"));
   bKV_Get((uint8_t *)"name", buf);
   b_log("new name: %s\r\n", buf);  
-  
+  /**********************************************************************************/
   while (1)
   {
         

@@ -99,6 +99,7 @@
 void bHalEnterCritical(void); 
 void bHalExitCritical(void);
 void bHalIncSysTick(void);
+void bHalInit(void);
 /**
  * \}
  */
