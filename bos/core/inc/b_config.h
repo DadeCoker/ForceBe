@@ -156,6 +156,9 @@
 #define _AT_BUF_LEN                 128
 //</e>
 
+//<q> XMODEM128 Enable/Disable
+#define _XMODEM128_ENABLE           1
+
 //</h>
 
 

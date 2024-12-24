@@ -602,6 +602,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_kv.c</FilePath>
             </File>
+            <File>
+              <FileName>b_xm128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_xm128.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
