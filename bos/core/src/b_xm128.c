@@ -122,6 +122,28 @@ int bXmodem128Init(pcb_t fcb, psend fs)
     return 0;
 }
 
+int bXmodem128Start()
+{
+    if(pSendByte == NULL)
+    {
+        return -1;
+    }
+    pSendByte(XMODEM128_NAK);
+    return 0;
+}
+
+int bXmodem128Stop()
+{
+    if(pSendByte == NULL)
+    {
+        return -1;
+    }    
+    pSendByte(XMODEM128_CAN);
+    return 0; 
+}
+
+
+
 int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
 {
     uint8_t check;
