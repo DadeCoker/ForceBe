@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;  ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;  ../Drivers/CMSIS/Include;  ..\bos\core\inc\;  ..\bos\drivers\inc\;  ..\bos\hal;  ..\bos\core\thirdparty\nr_micro_shell\inc</IncludePath>
+              <IncludePath>../Core/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;    ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;    ../Drivers/CMSIS/Include;    ..\bos\core\inc\;    ..\bos\drivers\inc\;    ..\bos\hal;    ..\bos\core\thirdparty\nr_micro_shell\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -626,6 +626,11 @@
               <FileName>b_f8l10d.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\drivers\src\b_f8l10d.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_xpt2046.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_xpt2046.c</FilePath>
             </File>
           </Files>
         </Group>

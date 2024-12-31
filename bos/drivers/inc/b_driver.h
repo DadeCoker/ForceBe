@@ -39,7 +39,7 @@
 #include "b_suart.h"
 #include "b_w25x.h"
 #include "b_f8l10d.h"
-
+#include "b_xpt2046.h"
 
 
 

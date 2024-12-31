@@ -55,6 +55,8 @@
 #define SUART_RX_GPIO_Port GPIOA
 #define W25X_CS_Pin GPIO_PIN_12
 #define W25X_CS_GPIO_Port GPIOB
+#define TP_CS_Pin GPIO_PIN_9
+#define TP_CS_GPIO_Port GPIOC
 
 /* ########################## Assert Selection ############################## */
 /**

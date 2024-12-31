@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_hal.h
+ * \file        b_xpt2046.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/02/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_H__
-#define __B_HAL_H__
+#ifndef __B_XPT2046_H__
+#define __B_XPT2046_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,47 +37,29 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-#include "stm32f1xx_hal.h"
-
+#include "b_device.h"
 /** 
- * \addtogroup B_HAL
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup HAL
+ * \addtogroup XPT2046
  * \{
  */
 
 /** 
- * \defgroup HAL_Exported_TypesDefinitions
+ * \defgroup XPT2046_Exported_TypesDefinitions
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Exported_Defines
- * \{
- */
-#define FLASH_CS_RESET()            HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET)
-#define FLASH_CS_SET()              HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET)
-
-#define S_TX_PIN_SET()              HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET)
-#define S_TX_PIN_RESET()            HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_RESET)
-#define S_RX_PIN_READ()             HAL_GPIO_ReadPin(SUART_RX_GPIO_Port, SUART_RX_Pin)
-
-#define TP_CS_RESET()               HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_RESET)
-#define TP_CS_SET()                 HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_SET)
+typedef bDriverInterface_t bXPT2046_Driver_t;  
 
 /**
  * \}
  */
    
 /** 
- * \defgroup HAL_Exported_Macros
+ * \defgroup XPT2046_Exported_Defines
  * \{
  */
 
@@ -87,25 +69,35 @@
  */
    
 /** 
- * \defgroup HAL_Exported_Variables
+ * \defgroup XPT2046_Exported_Macros
  * \{
  */
-   
+
+
+
 /**
  * \}
  */
    
 /** 
- * \defgroup HAL_Exported_Functions
+ * \defgroup XPT2046_Exported_Variables
  * \{
  */
-void bHalEnterCritical(void); 
-void bHalExitCritical(void);
-void bHalIncSysTick(void);
-void bHalInit(void);
+extern bXPT2046_Driver_t bXPT2046_Driver;   
 /**
  * \}
  */
+   
+/** 
+ * \defgroup XPT2046_Exported_Functions
+ * \{
+ */
+int bXPT2046_Init(void);
+
+/**
+ * \}
+ */
+ 
 
 /**
  * \}
@@ -123,5 +115,6 @@ void bHalInit(void);
 
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
 
 
