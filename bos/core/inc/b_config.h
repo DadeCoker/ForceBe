@@ -48,50 +48,52 @@
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
-
+#define MS2TICKS(m)                 (m * _TICK_FRQ_HZ / 1000)
 //<q> UTC2000 Enable/Disable
-#define _UTC2000_ENABLE           	1
+#define _UTC2000_ENABLE           	0
 
 //<q> Lunar Enable/Disable
-#define _LUNAR_ENABLE           	1
+#define _LUNAR_ENABLE           	0
 
 //<q> Debug Enable/Disable
 #define _DEBUG_ENABLE           	1
 
 //<e> Battery Enable/Disable
-#define _BATTERY_ENABLE           	1
+#define _BATTERY_ENABLE           	0
 //<o> Battery Threshold (mv)
 #define _BATTERY_THRESHOLD      	3350
+//<o> Battery Detection Cycle (ms)
+#define _BATTERY_D_CYCLE            (1000 * 60)
 //</e>
 
 
 //<e> Error Manage Enable/Disable
-#define _ERROR_MANAGE_ENABLE       	1
+#define _ERROR_MANAGE_ENABLE       	0
 //<o> Error Queue Length
 #define _ERROR_Q_LENGTH          	5
 //</e>
 
 //<e> Event Manage Enable/Disable
-#define _EVENT_MANAGE_ENABLE       	1
+#define _EVENT_MANAGE_ENABLE       	0
 //<o> Event Queue Length
 #define _EVENT_Q_LENGTH          	5
 //</e>
 
 //<e> Modbus Enable/Disable
-#define _MODBUS_ENABLE           	1
+#define _MODBUS_ENABLE           	0
 //<o> Modbus Instance Number
 #define _MODBUS_I_NUMBER          	1
 //</e>
 
 //<e> Transmit Enable/Disable
-#define _TX_ENABLE           		1
+#define _TX_ENABLE           		0
 //<o> TX Instance Number
 #define _TX_I_NUMBER          	    1
 //</e>
 
 
 //<e> Check Enable/Disable
-#define _CHECK_ENABLE             	1
+#define _CHECK_ENABLE             	0
 //<q> CRC32
 #define _CHECK_CRC32_ENABLE         1
 //<q> XOR SUM
@@ -100,7 +102,7 @@
 
 
 //<e> Save Data Enable/Disable
-#define _SAVE_DATA_ENABLE         	1
+#define _SAVE_DATA_ENABLE         	0
 
 //<e> Save Data ClassA
 #define _SAVE_DATA_A_ENABLE         1
@@ -128,7 +130,7 @@
 
 
 //<e> Protocol Enable/Disable
-#define _PROTO_ENABLE         		1
+#define _PROTO_ENABLE         		0
 //<o> Protocol Instance Number
 #define _PROTO_I_NUMBER             1
 //<e> OTA Enable/Disable
@@ -143,7 +145,7 @@
 //</e>
 
 //<e> FIFO Enable/Disable
-#define _FIFO_ENABLE             	1
+#define _FIFO_ENABLE             	0
 //<o> FIFO Instance Number
 #define _FIFO_I_NUMBER              1
 //</e>
@@ -157,7 +159,7 @@
 //</e>
 
 //<q> XMODEM128 Enable/Disable
-#define _XMODEM128_ENABLE           1
+#define _XMODEM128_ENABLE           0
 
 //</h>
 

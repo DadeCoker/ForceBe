@@ -1,13 +1,13 @@
 /**
  *!
  * \file        b_error.c
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.1.1
+ * \date        2020/02/11
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -76,8 +76,8 @@
 static bErrorInfo_t bErrorRecordL0[_ERROR_Q_LENGTH];   
 static bErrorInfo_t bErrorRecordL1[_ERROR_Q_LENGTH];
 
-static bErrorInfo_t *pErrorInfo = NULL;
 static uint32_t bErrorTick = 0;
+static pecb bFcb = NULL; 
 /**
  * \}
  */
@@ -104,12 +104,24 @@ static uint32_t bErrorTick = 0;
  * \addtogroup ERROR_Exported_Functions
  * \{
  */
- 
+
+int bErrorInit(pecb cb)
+{
+    if(cb == NULL)
+    {
+        return -1;
+    }
+    bFcb = cb;
+    return 0;
+}
+
+
+
 /**
  * \brief Register an error
  * \param err Error number
  * \param utc Current time    
- * \param interval interval time
+ * \param interval interval time (s)
  * \param level 
  *          \arg \ref BERROR_LEVEL_0
  *          \arg \ref BERROR_LEVEL_1
@@ -186,27 +198,25 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
 
 /**
  * \brief Find out an error that should be handled
- * \param pinfo Pointer to bErrorInfo_t *
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bErrorCore(bErrorInfo_t **pinfo)
+int bErrorCore()
 {
     uint32_t i = 0;
     uint32_t tick = 0;
-    if(pinfo == NULL)
-    {
-        return -1;
-    }
+
     bErrorTick++;
     for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
         if(bErrorRecordL0[i].err != INVALID_ERR && bErrorRecordL0[i].s_tick == 0)
         {
-            *pinfo = &bErrorRecordL0[i];
-            pErrorInfo = NULL;
             bErrorRecordL0[i].s_tick = bErrorTick;
+            if(bFcb != NULL)
+            {
+                bFcb(&bErrorRecordL0[i]);
+            }
             return 0;
         }
     }
@@ -219,9 +229,11 @@ int bErrorCore(bErrorInfo_t **pinfo)
             if(bErrorRecordL1[i].s_tick == 0
                 || (tick > bErrorRecordL1[i].d_tick))
             {
-                *pinfo = &bErrorRecordL1[i];
-                pErrorInfo = &bErrorRecordL1[i];
                 bErrorRecordL1[i].s_tick = bErrorTick;
+                if(bFcb != NULL)
+                {
+                    bFcb(&bErrorRecordL1[i]);
+                }
                 return 0;
             }
         }
@@ -231,25 +243,19 @@ int bErrorCore(bErrorInfo_t **pinfo)
 
 /**
  * \brief Delete a LEVEL1 ERROR in bErrorRecordL1
- * \param perr Pointer to bErrorInfo_t,Receive the error info that will be deleted.
+ * \param perr Pointer to bErrorInfo_t
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
 int bErrorClear(bErrorInfo_t *perr)
 {
-    if(pErrorInfo != NULL)
+    if(perr == NULL)
     {
-		if(perr != NULL)
-		{
-			perr->err = pErrorInfo->err;
-			perr->utc = pErrorInfo->utc;
-		}
-        pErrorInfo->err = INVALID_ERR;
-        pErrorInfo = NULL;
-        return 0;
+        return -1;
     }
-    return -1;
+    perr->err = INVALID_ERR;
+    return 0;
 }
 
 

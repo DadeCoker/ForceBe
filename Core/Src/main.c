@@ -42,8 +42,6 @@
 
 /* USER CODE BEGIN Includes */
 #include "b_os.h"
-#include "b_hal.h"
-#include "b_utils.h"
 #include <string.h>
 /* USER CODE END Includes */
 
@@ -130,7 +128,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   /****************************Init*******************************/
-  bHalInit();                                   //bHAL Init
   bInit();                                      //BabyOS Init
   /**************************Test shell***************************/
   bShellStart();                                //Shell Start
@@ -161,7 +158,7 @@ int main(void)
   /**********************************************************************************/
   while (1)
   {
-        
+      bExec();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

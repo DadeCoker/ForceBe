@@ -31,8 +31,11 @@
 #ifndef __B_OS_H__
 #define __B_OS_H__
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
-
+/*Includes ----------------------------------------------*/
 #include "b_battery.h"
 #include "b_core.h"
 #include "b_crc32.h"
@@ -52,10 +55,44 @@
 #include "b_at.h"
 #include "b_shell.h"
 #include "b_kv.h"
-#include "b_xm128.h"
+#include "b_xm128.h" 
 
+#include "b_hal.h"
+#include "b_utils.h"
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+/** 
+ * \addtogroup BOS
+ * \{
+ */
+
+
+/** 
+ * \defgroup BOS_Exported_Functions
+ * \{
+ */
+int bInit(void);
+int bExec(void);
+/**
+ * \}
+ */
+ 
+/**
+ * \}
+ */ 
+
+/**
+ * \}
+ */
+ 
+#ifdef __cplusplus
+	}
+#endif 
 
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 

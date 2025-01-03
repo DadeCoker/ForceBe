@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_error.h
+ * \file        b_os.c
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/02/11
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,106 +28,149 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_ERROR_H__
-#define __B_ERROR_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#if _ERROR_MANAGE_ENABLE
+#include "b_os.h"
+
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup ERROR
+ * \addtogroup BOS
  * \{
+ */
+
+/** 
+ * \defgroup BOS_Private_TypesDefinitions
+ * \{
+ */
+   
+/**
+ * \}
  */
 
 
 /** 
- * \defgroup ERROR_Exported_TypesDefinitions
+ * \defgroup BOS_Private_Defines
  * \{
  */
-typedef struct
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup BOS_Private_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup BOS_Private_Variables
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup BOS_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup BOS_Private_Functions
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \addtogroup BOS_Exported_Functions
+ * \{
+ */
+
+/**
+ * \brief Init 
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bInit()
 {
-    uint8_t err;
-    uint32_t utc;
-    uint32_t s_tick;
-    uint32_t d_tick;
-}bErrorInfo_t;    
-
-typedef void (*pecb)(bErrorInfo_t *);
+    bHalInit();
+    b_log("device number:%d\r\n", bDEV_MAX_NUM);
+    return bDeviceInit();
+}
 
 /**
- * \}
+ * \brief  Call this function inside the while(1)
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
-   
-/** 
- * \defgroup ERROR_Exported_Defines
- * \{
- */
-#define INVALID_ERR             ((uint8_t)0)
-
-
-#define BERROR_LEVEL_0          0X00
-#define BERROR_LEVEL_1          0X01
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup ERROR_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup ERROR_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup ERROR_Exported_Functions
- * \{
- */
-int bErrorInit(pecb cb);
-int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level);
-int bErrorCore(void);
-int bErrorClear(bErrorInfo_t *perr);
-/**
- * \}
- */
- 
- 
-/**
- * \}
- */
-
-/**
- * \}
- */
- 
-#endif
-
-#ifdef __cplusplus
-	}
-#endif
-
+int bExec()
+{
+#if _BATTERY_ENABLE
+    static uint32_t b_tick = 0;
+    if(bHalGetTick() - b_tick > (MS2TICKS(_BATTERY_D_CYCLE)))
+    {
+        b_tick = bHalGetTick();
+        bBatteryCore();
+    }
 #endif  
 
+#if _ERROR_MANAGE_ENABLE
+    static uint32_t e_tick = 0;
+    if(bHalGetTick() - e_tick > (MS2TICKS(1000)))
+    {
+        e_tick = bHalGetTick();
+        bErrorCore();
+    }
+#endif
+    
+#if _EVENT_MANAGE_ENABLE
+    bEventCore();
+#endif    
+    
+#if _TX_ENABLE
+    bTX_Core();
+#endif
+    
+    
+    return 0;
+}
+
+
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */ 
+
+/**
+ * \}
+ */
+  
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
+
 
 

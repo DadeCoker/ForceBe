@@ -115,7 +115,7 @@ typedef struct
  * \defgroup CORE_Exported_Functions
  * \{
  */
-int bInit(void);
+
 int bOpen(uint8_t dev_no, uint8_t flag);
 int bRead(int fd, uint8_t *pdata, uint16_t len);
 int bWrite(int fd, uint8_t *pdata, uint16_t len);
