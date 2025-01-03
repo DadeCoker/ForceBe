@@ -32,6 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_xm128.h"  
 #if _XMODEM128_ENABLE
+#include "b_utils.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -55,7 +56,10 @@
  * \defgroup XMODEM128_Private_Defines
  * \{
  */
- 
+#define XM_S_NULL           0
+#define XM_S_WAIT_START     1
+#define XM_S_WAIT_DATA      2
+
 /**
  * \}
  */
@@ -76,6 +80,10 @@
 
 static pcb_t pCallback = NULL;
 static psend pSendByte = NULL;
+
+static uint8_t Xmodem128Stat = XM_S_NULL;
+static uint32_t XmTick = 0;
+
 /**
  * \}
  */
@@ -119,8 +127,10 @@ int bXmodem128Init(pcb_t fcb, psend fs)
     }
     pCallback = fcb;
     pSendByte = fs;
+    Xmodem128Stat = XM_S_NULL;
     return 0;
 }
+
 
 int bXmodem128Start()
 {
@@ -129,6 +139,8 @@ int bXmodem128Start()
         return -1;
     }
     pSendByte(XMODEM128_NAK);
+    XmTick = bHalGetTick();
+    Xmodem128Stat = XM_S_WAIT_START;
     return 0;
 }
 
@@ -139,6 +151,7 @@ int bXmodem128Stop()
         return -1;
     }    
     pSendByte(XMODEM128_CAN);
+    Xmodem128Stat = XM_S_NULL;
     return 0; 
 }
 
@@ -149,14 +162,17 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
     uint8_t check;
     static uint8_t num = 0;
     bXmodem128Info_t *pxm = (bXmodem128Info_t *)pbuf;
-    if(pbuf == NULL || pCallback == NULL || pSendByte == NULL)
+    if(pbuf == NULL || pCallback == NULL || pSendByte == NULL || Xmodem128Stat == XM_S_NULL)
     {
         return -1;
     }
+    XmTick = bHalGetTick();
+    
     if(len == 1 && *pbuf == XMODEM128_EOT)
     {
         pCallback(0, NULL);
         pSendByte(XMODEM128_ACK);
+        Xmodem128Stat = XM_S_NULL;
         return 0;
     }
     
@@ -179,6 +195,7 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
     if(pxm->number == 0x1 && num != 0x1)
     {
         num = 1;
+        Xmodem128Stat = XM_S_WAIT_DATA;
     }
     
     if(num == pxm->number)
@@ -190,7 +207,9 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
     }
     else
     {
+        pCallback(0, NULL);
         pSendByte(XMODEM128_CAN);
+        Xmodem128Stat = XM_S_NULL;
         return -1;
     }
 
@@ -198,6 +217,35 @@ xm_error:
     pSendByte(XMODEM128_NAK);
     return -1;
 }
+
+void bXmodem128Timeout()
+{
+    static uint8_t s_count = 0;
+    if(Xmodem128Stat == XM_S_NULL)
+    {
+        return;
+    }
+    if(bHalGetTick() - XmTick > MS2TICKS(3000))
+    {
+        XmTick = bHalGetTick();
+        if(Xmodem128Stat == XM_S_WAIT_START && s_count < 3)
+        {
+            bXmodem128Start();
+            s_count += 1;
+        }
+        else
+        {
+            if(pCallback != NULL)
+            {
+                pCallback(0, NULL);
+            }
+            s_count = 0;
+            Xmodem128Stat = XM_S_NULL;
+        }
+    }
+}
+
+
 
 /**
  * \}

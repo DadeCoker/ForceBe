@@ -56,7 +56,7 @@
 #define _LUNAR_ENABLE           	0
 
 //<q> Debug Enable/Disable
-#define _DEBUG_ENABLE           	1
+#define _DEBUG_ENABLE           	0
 
 //<e> Battery Enable/Disable
 #define _BATTERY_ENABLE           	0
@@ -123,7 +123,7 @@
 
 
 //<e> KV Enable/Disable
-#define _KV_ENABLE             	    1
+#define _KV_ENABLE             	    0
 //<o> Key/Value Pair Max Number
 #define _KV_PAIR_NUMBER             32
 //</e>
@@ -159,7 +159,7 @@
 //</e>
 
 //<q> XMODEM128 Enable/Disable
-#define _XMODEM128_ENABLE           0
+#define _XMODEM128_ENABLE           1
 
 //</h>
 
@@ -167,7 +167,7 @@
 //<h> Third Party Configuration
 
 //<e> NR Micro Shell Enable/Disable
-#define _NR_MICRO_SHELL_ENABLE              1
+#define _NR_MICRO_SHELL_ENABLE              0
 
 //<s> The user's name
 #define NR_SHELL_USER_NAME                 "nr@bos:"

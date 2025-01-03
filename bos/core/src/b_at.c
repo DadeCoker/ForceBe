@@ -34,6 +34,7 @@
 #include "b_utils.h"
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 #if _AT_ENABLE
 /** 
  * \addtogroup BABYOS

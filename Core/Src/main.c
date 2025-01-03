@@ -53,6 +53,7 @@ TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
@@ -76,14 +77,83 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//{
+//    if(huart == &huart1)
+//    {
+//        bShellParse(&uart1_rdata, 1);
+//        HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
+//    }
+//}
+
+/*******************for xmodem****************************/
+
+int X_fd = -1;
+
+void UartSendByte(uint8_t b)
 {
-    if(huart == &huart1)
+    HAL_UART_Transmit(&huart1, &b, 1, 0xff);
+}
+
+void XmodemCB(uint8_t num, uint8_t *pbuf)
+{
+    bCMD_Struct_t cmd;
+    if(pbuf == NULL)
     {
-        bShellParse(&uart1_rdata, 1);
-        HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
+        bClose(X_fd);
+        return;
+    }
+    if(num == 1)
+    {
+        cmd.type = bCMD_ERASE;
+        cmd.param.erase.addr = 0;
+        cmd.param.erase.num = 1;
+        
+        bCtl(X_fd, bCMD_ERASE, &cmd);
+        bLseek(X_fd, 0);
+    }
+    bWrite(X_fd, pbuf, 128);
+}
+
+
+uint8_t buf[256];
+
+void Uart1IdleHandler()
+{
+    uint16_t count = 0;
+    if(__HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_IDLE))
+    {
+        __HAL_UART_CLEAR_IDLEFLAG(&huart1);
+        count = 256 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
+        HAL_UART_DMAStop(&huart1);
+        bXmodem128Parse(buf, count);
+        HAL_UART_Receive_DMA(&huart1, buf, 256);
     }
 }
+
+
+void ReadandCheck()
+{
+    int fd = -1;
+    int i = 0;
+    fd = bOpen(W25QXX, BCORE_FLAG_RW);
+    if(fd == -1)
+    {
+        return;
+    }
+    bLseek(fd, 0);
+    for(i = 0;i < 10;i++)
+    {
+        bRead(fd, buf, 128);
+        HAL_UART_Transmit(&huart1, buf, 128, 0xfff);
+    }
+    bClose(fd);  
+}
+
+
+/******************************************************/
+
+
 /* USER CODE END 0 */
 
 /**
@@ -127,34 +197,49 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_UART_Receive_DMA(&huart1, buf, 256);
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+ 
   /****************************Init*******************************/
   bInit();                                      //BabyOS Init
   /**************************Test shell***************************/
-  bShellStart();                                //Shell Start
-  HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
+//  bShellStart();                                //Shell Start
+//  HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
 
   /**************************Test bKV*****************************/
-  if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096))
-  {
-    b_log("bKV_Init ok...\r\n");
-  }
-  uint8_t buf[128];
-  
-  b_log("save ip, name\r\n");
-  bKV_Set((uint8_t *)"ip", (uint8_t *)"192.168.1.155", sizeof("192.168.1.155"));
-  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", sizeof("BabyOS"));
-  
-  b_log("read ip, name...\r\n");
-  bKV_Get((uint8_t *)"ip", buf);
-  b_log("ip: %s\r\n", buf);
-  
-  bKV_Get((uint8_t *)"name", buf);
-  b_log("name %s\r\n", buf); 
+//  if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096))
+//  {
+//    b_log("bKV_Init ok...\r\n");
+//  }
+//  uint8_t buf[128];
+//  
+//  b_log("save ip, name\r\n");
+//  bKV_Set((uint8_t *)"ip", (uint8_t *)"192.168.1.155", sizeof("192.168.1.155"));
+//  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", sizeof("BabyOS"));
+//  
+//  b_log("read ip, name...\r\n");
+//  bKV_Get((uint8_t *)"ip", buf);
+//  b_log("ip: %s\r\n", buf);
+//  
+//  bKV_Get((uint8_t *)"name", buf);
+//  b_log("name %s\r\n", buf); 
 
-  b_log("change name...\r\n");
-  bKV_Set((uint8_t *)"name", (uint8_t *)"abcdefghijklmnopqrstuvwxy123456789", sizeof("abcdefghijklmnopqrstuvwxy123456789"));
-  bKV_Get((uint8_t *)"name", buf);
-  b_log("new name: %s\r\n", buf);  
+//  b_log("change name...\r\n");
+//  bKV_Set((uint8_t *)"name", (uint8_t *)"abcdefghijklmnopqrstuvwxy123456789", sizeof("abcdefghijklmnopqrstuvwxy123456789"));
+//  bKV_Get((uint8_t *)"name", buf);
+//  b_log("new name: %s\r\n", buf);  
+  /**********************************************************************************/
+  /**************************Test Xmodem********************************************/
+#if 1 
+  bXmodem128Init(XmodemCB, UartSendByte);
+  X_fd = bOpen(W25QXX, BCORE_FLAG_RW);
+  if(X_fd >= 0)
+  {
+    bXmodem128Start();
+  }
+#else
+  ReadandCheck();
+#endif
   /**********************************************************************************/
   while (1)
   {
@@ -338,6 +423,9 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
   /* DMA1_Channel6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel6_IRQn);

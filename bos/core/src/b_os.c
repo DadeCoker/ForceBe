@@ -150,7 +150,10 @@ int bExec()
 #if _TX_ENABLE
     bTX_Core();
 #endif
-    
+
+#if _XMODEM128_ENABLE
+    bXmodem128Timeout();
+#endif
     
     return 0;
 }

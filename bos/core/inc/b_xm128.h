@@ -113,6 +113,7 @@ int bXmodem128Init(pcb_t fcb, psend fs);
 int bXmodem128Parse(uint8_t *pbuf, uint8_t len);
 int bXmodem128Start(void);
 int bXmodem128Stop(void);
+void bXmodem128Timeout(void);
 /**
  * \}
  */
