@@ -161,6 +161,9 @@
 //<q> XMODEM128 Enable/Disable
 #define _XMODEM128_ENABLE           1
 
+//<q> YMODEM Enable/Disable
+#define _YMODEM_ENABLE              1
+
 //</h>
 
 

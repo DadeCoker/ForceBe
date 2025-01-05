@@ -86,9 +86,13 @@ static void MX_SPI3_Init(void);
 //    }
 //}
 
-/*******************for xmodem****************************/
+/*******************for xmodem ymodem****************************/
+
+#define TEST_XMODEM     1
+
 
 int X_fd = -1;
+uint8_t f_f = 0;
 
 void UartSendByte(uint8_t b)
 {
@@ -98,16 +102,20 @@ void UartSendByte(uint8_t b)
 void XmodemCB(uint8_t num, uint8_t *pbuf)
 {
     bCMD_Struct_t cmd;
+    static uint8_t f = 0;
     if(pbuf == NULL)
     {
+        f = 0;
+        f_f = 1;
         bClose(X_fd);
         return;
     }
-    if(num == 1)
+    if(f == 0)
     {
+        f = 1;
         cmd.type = bCMD_ERASE;
         cmd.param.erase.addr = 0;
-        cmd.param.erase.num = 1;
+        cmd.param.erase.num = 5;
         
         bCtl(X_fd, bCMD_ERASE, &cmd);
         bLseek(X_fd, 0);
@@ -115,8 +123,36 @@ void XmodemCB(uint8_t num, uint8_t *pbuf)
     bWrite(X_fd, pbuf, 128);
 }
 
+void YmodemCB(uint8_t t, uint8_t num, uint8_t *pbuf, uint16_t len)
+{
+    bCMD_Struct_t cmd;
+    static uint8_t f = 0;
+    if(pbuf == NULL)
+    {
+        f = 0;
+        f_f = 1;
+        bClose(X_fd);
+        return;
+    }
+    if(f == 0)
+    {
+        f = 1;
+        cmd.type = bCMD_ERASE;
+        cmd.param.erase.addr = 0;
+        cmd.param.erase.num = 5;
+        
+        bCtl(X_fd, bCMD_ERASE, &cmd);
+        bLseek(X_fd, 0);
+    }
+    if(t == YMODEM_FILEDATA)
+    {
+        bWrite(X_fd, pbuf, len);
+    }
+}
 
-uint8_t buf[256];
+
+
+uint8_t buf[1052];
 
 void Uart1IdleHandler()
 {
@@ -124,10 +160,14 @@ void Uart1IdleHandler()
     if(__HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_IDLE))
     {
         __HAL_UART_CLEAR_IDLEFLAG(&huart1);
-        count = 256 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
+        count = 1052 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
         HAL_UART_DMAStop(&huart1);
+#if TEST_XMODEM
         bXmodem128Parse(buf, count);
-        HAL_UART_Receive_DMA(&huart1, buf, 256);
+#else        
+        bYmodemParse(buf, count);
+#endif
+        HAL_UART_Receive_DMA(&huart1, buf, 1052);
     }
 }
 
@@ -197,7 +237,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_UART_Receive_DMA(&huart1, buf, 256);
+  HAL_UART_Receive_DMA(&huart1, buf, 1052);
   __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
  
   /****************************Init*******************************/
@@ -230,20 +270,38 @@ int main(void)
 //  b_log("new name: %s\r\n", buf);  
   /**********************************************************************************/
   /**************************Test Xmodem********************************************/
-#if 1 
+#if TEST_XMODEM
   bXmodem128Init(XmodemCB, UartSendByte);
   X_fd = bOpen(W25QXX, BCORE_FLAG_RW);
   if(X_fd >= 0)
   {
     bXmodem128Start();
+    f_f = 0;
   }
 #else
-  ReadandCheck();
-#endif
   /**********************************************************************************/
+  
+  /**************************Test Ymodem********************************************/
+  bYmodemInit(YmodemCB, UartSendByte);
+  X_fd = bOpen(W25QXX, BCORE_FLAG_RW);
+  if(X_fd >= 0)
+  {
+    bYmodemStart();
+    f_f = 0;
+  }
+#endif
+  /**********************************************************************************/  
+  
   while (1)
   {
       bExec();
+      
+      if(f_f)
+      {
+        ReadandCheck();
+        f_f = 0;
+      }
+      
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

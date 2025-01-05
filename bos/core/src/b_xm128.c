@@ -109,7 +109,32 @@ static uint8_t _bXmodem128CalCheck(uint8_t *pbuf, uint8_t len)
         tmp += *pbuf++;
     }
     return tmp;
-}    
+}   
+
+static int _bXmodem128ISValid(uint8_t *pbuf, uint8_t len)
+{
+    bXmodem128Info_t *ptmp = (bXmodem128Info_t *)pbuf;
+    uint8_t check;
+    if(pbuf == NULL || len != sizeof(bXmodem128Info_t))
+    {
+        return -1;
+    }
+    
+    if(ptmp->soh != XMODEM128_SOH || (ptmp->number + ptmp->xnumber) != 0xff)
+    {
+        return -1;
+    }
+    
+    check = _bXmodem128CalCheck(pbuf, len - 1);
+    if(check != ptmp->check)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+
+
 /**
  * \}
  */
@@ -168,54 +193,48 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
     }
     XmTick = bHalGetTick();
     
-    if(len == 1 && *pbuf == XMODEM128_EOT)
+    if(Xmodem128Stat == XM_S_WAIT_START)
     {
-        pCallback(0, NULL);
-        pSendByte(XMODEM128_ACK);
-        Xmodem128Stat = XM_S_NULL;
-        return 0;
+        if(_bXmodem128ISValid(pbuf, len) == 0)
+        {
+            if(pxm->number == 1)
+            {
+                Xmodem128Stat = XM_S_WAIT_DATA;
+                num = 1;
+            }
+        }
     }
     
-    if(len != sizeof(bXmodem128Info_t))
+    if(Xmodem128Stat == XM_S_WAIT_DATA)
     {
-        goto xm_error;
+        if(_bXmodem128ISValid(pbuf, len) == 0)
+        {
+            if(pxm->number == num)
+            {
+                pCallback(num, pxm->dat);
+                pSendByte(XMODEM128_ACK);
+                num += 1;
+            }
+            else
+            {
+                pCallback(0, NULL);
+                pSendByte(XMODEM128_CAN);
+                Xmodem128Stat = XM_S_NULL;
+                return -1;
+            }
+        }
+        else if(len == 1 && *pbuf == XMODEM128_EOT)
+        {
+            pCallback(num, NULL);
+            pSendByte(XMODEM128_ACK);
+            Xmodem128Stat = XM_S_NULL;
+        }
+        else
+        {
+            pSendByte(XMODEM128_NAK);
+        }
     }
-    
-    if(pxm->soh != XMODEM128_SOH || (pxm->number + pxm->xnumber) != 0xff)
-    {
-        goto xm_error;
-    }
-
-    check = _bXmodem128CalCheck(pbuf, len - 1);
-    if(check != pxm->check)
-    {
-        goto xm_error;
-    }
-    
-    if(pxm->number == 0x1 && num != 0x1)
-    {
-        num = 1;
-        Xmodem128Stat = XM_S_WAIT_DATA;
-    }
-    
-    if(num == pxm->number)
-    {
-        pCallback(num, pxm->dat);
-        pSendByte(XMODEM128_ACK);
-        num += 1;
-        return 0;
-    }
-    else
-    {
-        pCallback(0, NULL);
-        pSendByte(XMODEM128_CAN);
-        Xmodem128Stat = XM_S_NULL;
-        return -1;
-    }
-
-xm_error:
-    pSendByte(XMODEM128_NAK);
-    return -1;
+    return 0;
 }
 
 void bXmodem128Timeout()

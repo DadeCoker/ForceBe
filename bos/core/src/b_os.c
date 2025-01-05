@@ -154,7 +154,11 @@ int bExec()
 #if _XMODEM128_ENABLE
     bXmodem128Timeout();
 #endif
-    
+
+#if _YMODEM_ENABLE
+    bYmodemTimeout();
+#endif
+
     return 0;
 }
 
