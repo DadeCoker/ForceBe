@@ -1,36 +1,6 @@
 \hypertarget{b__protocol_8h}{}\section{b\+\_\+protocol.\+h File Reference}
 \label{b__protocol_8h}\index{b\+\_\+protocol.\+h@{b\+\_\+protocol.\+h}}
 {\ttfamily \#include \char`\"{}b\+\_\+config.\+h\char`\"{}}\newline
-\subsection*{Data Structures}
-\begin{DoxyCompactItemize}
-\item 
-struct \mbox{\hyperlink{structb_protocol_head__t}{b\+Protocol\+Head\+\_\+t}}
-\item 
-struct \mbox{\hyperlink{structb_protocol_info__t}{b\+Protocol\+Info\+\_\+t}}
-\end{DoxyCompactItemize}
-\subsection*{Macros}
-\begin{DoxyCompactItemize}
-\item 
-\#define \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___defines_ga683ebecc04749cb0016ec5ad14a2d4f2}{P\+R\+O\+T\+O\+C\+O\+L\+\_\+\+H\+E\+AD}}~0x\+FE
-\end{DoxyCompactItemize}
-\subsection*{Typedefs}
-\begin{DoxyCompactItemize}
-\item 
-typedef int($\ast$ \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___types_definitions_ga385520b45d23dc3a4dde23de92b85c75}{pdispatch}}) (uint8\+\_\+t $\ast$pbuf, uint32\+\_\+t len)
-\end{DoxyCompactItemize}
-\subsection*{Functions}
-\begin{DoxyCompactItemize}
-\item 
-int \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___functions_ga042c82b5764c60b4078866635c8e8c7b}{b\+Protocol\+Regist}} (uint32\+\_\+t id, uint8\+\_\+t tx\+\_\+no, \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___types_definitions_ga385520b45d23dc3a4dde23de92b85c75}{pdispatch}} f)
-\item 
-int \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___functions_gadcb3551dcf55a58973810c4f348ffb0d}{b\+Protocol\+Set\+ID}} (int no, uint32\+\_\+t id)
-\item 
-int \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___functions_ga201cb6ee4bc47d6551d221c631490300}{b\+Protocol\+Parse\+Cmd}} (int no, uint8\+\_\+t $\ast$pbuf, uint8\+\_\+t len)
-\item 
-int \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___functions_ga52abd16bc752d1f1eb42ac3b0677d60a}{b\+Protocol\+Pack}} (int no, uint8\+\_\+t cmd, uint8\+\_\+t $\ast$psrc, uint8\+\_\+t $\ast$pdes, uint8\+\_\+t size)
-\item 
-int \mbox{\hyperlink{group___p_r_o_t_o_c_o_l___exported___functions_gaa2f6a6a163f48963d802b9f6964f348c}{b\+Protocol\+Unpack}} (uint8\+\_\+t $\ast$pbuf, uint8\+\_\+t len, uint8\+\_\+t $\ast$$\ast$pdata, uint8\+\_\+t size)
-\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}

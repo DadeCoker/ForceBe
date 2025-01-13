@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V0.0.2</span>
+   &#160;<span id="projectnumber">V1.0.0</span>
    </div>
   </td>
  </tr>
@@ -51,6 +51,9 @@ $(function() {
 </li>
 <li>_AT_I_NUMBER
 : <a class="el" href="b__config_8h.html#a83175ff5c4339a2dadc9bb732ed0ab82">b_config.h</a>
+</li>
+<li>_BATTERY_D_CYCLE
+: <a class="el" href="b__config_8h.html#a820b2107e2a1c902047d627e200049f1">b_config.h</a>
 </li>
 <li>_BATTERY_ENABLE
 : <a class="el" href="b__config_8h.html#afcde49f0fc1efbd5b1522c2e2e155adc">b_config.h</a>
@@ -157,13 +160,16 @@ $(function() {
 <li>_UTC2000_ENABLE
 : <a class="el" href="b__config_8h.html#ae89563dd419af650c252f218ebf30d5d">b_config.h</a>
 </li>
+<li>_XMODEM128_ENABLE
+: <a class="el" href="b__config_8h.html#a8acdb35586a4e1f1d148687cb3189c66">b_config.h</a>
+</li>
+<li>_YMODEM_ENABLE
+: <a class="el" href="b__config_8h.html#a11ad894e421e6bc37f658674e8c1015f">b_config.h</a>
+</li>
 </ul>
 
 
 <h3><a id="index_a"></a>- a -</h3><ul>
-<li>ansi_show_char
-: <a class="el" href="b__config_8h.html#a0baa3176be97eaf6fbd2303b3bc26ab4">b_config.h</a>
-</li>
 <li>AT_STA_NULL
 : <a class="el" href="group___a_t___exported___defines.html#ga6ae6690bcb77eea3c4dc5eab165e64ed">b_at.h</a>
 </li>
@@ -180,12 +186,6 @@ $(function() {
 </li>
 <li>b_log
 : <a class="el" href="b__config_8h.html#afc78b16ad8aebf30b9cabfc278cfb32a">b_config.h</a>
-</li>
-<li>BATTERY_STA_LOW
-: <a class="el" href="group___b_a_t_t_e_r_y___s_t_a_t_u_s___defines.html#ga984c68fb8733b4a753b2fe2ae4b9f10d">b_battery.h</a>
-</li>
-<li>BATTERY_STA_NORMAL
-: <a class="el" href="group___b_a_t_t_e_r_y___s_t_a_t_u_s___defines.html#ga03d651a203a20187c5d327cca50069c5">b_battery.h</a>
 </li>
 <li>bCMD_ERASE
 : <a class="el" href="group___d_e_v_i_c_e___ctl_c_m_d___defines.html#ga96464751587c9b064a2c7cee9881402a">b_device.h</a>
@@ -211,90 +211,6 @@ $(function() {
 <li>BDEVICE_ERROR
 : <a class="el" href="group___d_e_v_i_c_e___exported___defines.html#ga04dfad1d8e6733a6441d2a2741e4b274">b_device.h</a>
 </li>
-<li>BEGYEAR
-: <a class="el" href="group___u_t_c___exported___defines.html#ga3ea29a9c2112db5d290632f4f2a721de">b_utc.h</a>
-</li>
-<li>BERROR_LEVEL_0
-: <a class="el" href="group___e_r_r_o_r___exported___defines.html#ga46b2946579baf1320639e033bca23205">b_error.h</a>
-</li>
-<li>BERROR_LEVEL_1
-: <a class="el" href="group___e_r_r_o_r___exported___defines.html#ga4a2ebb84ec4be3f3eccea4fba43f9e79">b_error.h</a>
-</li>
-<li>bKV_BUSY
-: <a class="el" href="group___k_v___exported___defines.html#ga663b3efa83f9243ace5105a1c124319b">b_kv.h</a>
-</li>
-<li>bKV_ERROR
-: <a class="el" href="group___k_v___exported___defines.html#ga7a4becc6356e8e8ff1cb311551d5c132">b_kv.h</a>
-</li>
-<li>bKV_IDLE
-: <a class="el" href="group___k_v___exported___defines.html#gad35428baad0145338fac35174a24cfd9">b_kv.h</a>
-</li>
-<li>bKV_SECTOR_ALL
-: <a class="el" href="group___k_v___exported___defines.html#gaa90ff7ecee803e335df09c3cd4944e0d">b_kv.h</a>
-</li>
-<li>bKV_SECTOR_D1
-: <a class="el" href="group___k_v___exported___defines.html#gaa67df877802f002bc2f3e7806415b0ee">b_kv.h</a>
-</li>
-<li>bKV_SECTOR_D2
-: <a class="el" href="group___k_v___exported___defines.html#ga1dfd30143d7630349b1268ac41cda9e7">b_kv.h</a>
-</li>
-<li>bKV_SECTOR_T1
-: <a class="el" href="group___k_v___exported___defines.html#ga9b8339a656229abce501856a1acc4992">b_kv.h</a>
-</li>
-<li>bKV_SECTOR_T2
-: <a class="el" href="group___k_v___exported___defines.html#gaf444d6a88d8d3a7f6a36f22e10defe4b">b_kv.h</a>
-</li>
-<li>BOTA_CMD_FW_ACK
-: <a class="el" href="group___o_t_a___exported___defines.html#ga890423ccabd280c499bc2bb8f9b7e80e">b_ota.h</a>
-</li>
-<li>BOTA_CMD_FW_DATA
-: <a class="el" href="group___o_t_a___exported___defines.html#gac3d822fe5ca5a0a9c76ac0ac4caaebf1">b_ota.h</a>
-</li>
-<li>BOTA_CMD_FW_START
-: <a class="el" href="group___o_t_a___exported___defines.html#ga4535ce4bb09ae7816d8e78d56511291a">b_ota.h</a>
-</li>
-<li>BOTA_S_ING
-: <a class="el" href="group___o_t_a___exported___defines.html#gad572630a2854c436a18db032de30e377">b_ota.h</a>
-</li>
-<li>BOTA_S_NULL
-: <a class="el" href="group___o_t_a___exported___defines.html#ga827a638010a299cf6392334b10f4ad19">b_ota.h</a>
-</li>
-<li>BOTA_SECTOR_SIZE
-: <a class="el" href="group___o_t_a___exported___defines.html#gade40ce38a70a0aa2b0b287a9c25f679b">b_ota.h</a>
-</li>
-<li>bSDB_HEAD
-: <a class="el" href="group___s_d_b___exported___defines.html#ga0bc56614d05360d0bb719e399dd6557f">b_sdb.h</a>
-</li>
-<li>bSDC_HEAD
-: <a class="el" href="group___s_d_c___exported___defines.html#gac12486eb190a47a4bec21b0af828b3f9">b_sdc.h</a>
-</li>
-<li>BTX_END
-: <a class="el" href="group___t_x___exported___defines.html#gaa20024793ebb81a526e081ddcfb09338">b_tx.h</a>
-</li>
-<li>BTX_F_ASYN
-: <a class="el" href="group___t_x___exported___defines.html#gaf57491ba86ae4fd5dbb9319ddb64534a">b_tx.h</a>
-</li>
-<li>BTX_F_SYN
-: <a class="el" href="group___t_x___exported___defines.html#ga69f593320cb6fabe15d8c542beb20cc5">b_tx.h</a>
-</li>
-<li>BTX_NULL
-: <a class="el" href="group___t_x___exported___defines.html#ga7aa1906cd89f143a8b84a94aee6c6a01">b_tx.h</a>
-</li>
-<li>BTX_REQ
-: <a class="el" href="group___t_x___exported___defines.html#ga044d6a85f234b1b943377d2fad6b9b01">b_tx.h</a>
-</li>
-<li>BTX_REQ_LEVEL0
-: <a class="el" href="group___t_x___exported___defines.html#ga9018973ca6a9c00ae2b4c36addb27a15">b_tx.h</a>
-</li>
-<li>BTX_REQ_LEVEL1
-: <a class="el" href="group___t_x___exported___defines.html#ga6d352ee8cc1803708ed984fad29f4fd1">b_tx.h</a>
-</li>
-<li>BTX_TXING
-: <a class="el" href="group___t_x___exported___defines.html#ga343b082979787f1f513ba177b55974ff">b_tx.h</a>
-</li>
-<li>BTX_WAIT
-: <a class="el" href="group___t_x___exported___defines.html#ga3f44a6868b98c1fe819e71490efac07c">b_tx.h</a>
-</li>
 <li>bW25X_ID_IS_VALID
 : <a class="el" href="group___w25_x___exported___macros.html#ga05debc44fe5eab12190f9cd6983ff8b4">b_w25x.h</a>
 </li>
@@ -302,9 +218,6 @@ $(function() {
 
 
 <h3><a id="index_d"></a>- d -</h3><ul>
-<li>DAY
-: <a class="el" href="group___u_t_c___exported___defines.html#ga509a01c55cbe47386fe24602b7c7fda1">b_utc.h</a>
-</li>
 <li>DUMMY_BYTE
 : <a class="el" href="group___w25_x___exported___defines.html#gadc81a065700d3af56b6fb631585e3641">b_w25x.h</a>
 </li>
@@ -322,31 +235,15 @@ $(function() {
 
 
 <h3><a id="index_i"></a>- i -</h3><ul>
-<li>INVALID_ERR
-: <a class="el" href="group___e_r_r_o_r___exported___defines.html#ga8d49c7318410d3a95e377134e1111737">b_error.h</a>
-</li>
-<li>IS_TIME_VALID
-: <a class="el" href="group___u_t_c___exported___macros.html#ga07d42172ec0864e60d1db8db4549abc5">b_utc.h</a>
-</li>
-<li>IS_UNIT_VALID
-: <a class="el" href="group___s_d_a___exported___macros.html#ga3e1042c585d3b9145f6b7e4c59797e5a">b_sda.h</a>
-</li>
 <li>IS_VALID_FLAG
 : <a class="el" href="group___c_o_r_e___exported___macros.html#gac13b338bc1723e394a7d9743e31d23ea">b_core.h</a>
 </li>
 </ul>
 
 
-<h3><a id="index_l"></a>- l -</h3><ul>
-<li>L2B_B2L_16b
-: <a class="el" href="group___m_o_d_b_u_s___exported___macros.html#ga390c9dfff738dfbd93ec65a676ec76e5">b_modbus.h</a>
-</li>
-</ul>
-
-
 <h3><a id="index_m"></a>- m -</h3><ul>
-<li>MAXCALCTICKS
-: <a class="el" href="group___u_t_c___exported___defines.html#gad3eedff3dce59330c0b2e7f15187901c">b_utc.h</a>
+<li>MS2TICKS
+: <a class="el" href="b__config_8h.html#a2a5407e0aa9657e56f1d69fb83413899">b_config.h</a>
 </li>
 </ul>
 
@@ -395,13 +292,6 @@ $(function() {
 </ul>
 
 
-<h3><a id="index_p"></a>- p -</h3><ul>
-<li>PROTOCOL_HEAD
-: <a class="el" href="group___p_r_o_t_o_c_o_l___exported___defines.html#ga683ebecc04749cb0016ec5ad14a2d4f2">b_protocol.h</a>
-</li>
-</ul>
-
-
 <h3><a id="index_s"></a>- s -</h3><ul>
 <li>S_RX_PIN_READ
 : <a class="el" href="group___h_a_l___exported___defines.html#gac1fbe03efbe22feb97f198a4dd8b1237">b_hal.h</a>
@@ -445,33 +335,15 @@ $(function() {
 <li>S_TX_S_WAIT
 : <a class="el" href="group___s_u_a_r_t___exported___defines.html#ga42963e98a09cb8072a06f39b32f79a4d">b_suart.h</a>
 </li>
-<li>shell_printf
-: <a class="el" href="b__config_8h.html#a93526fb3cc79d3ba8c97e7ea6154a439">b_config.h</a>
-</li>
 </ul>
 
 
-<h3><a id="index_u"></a>- u -</h3><ul>
-<li>UNIT_DAY
-: <a class="el" href="group___s_d_a___exported___defines.html#ga34ef9d077cc547e8924ee1757f6af738">b_sda.h</a>
+<h3><a id="index_t"></a>- t -</h3><ul>
+<li>TP_CS_RESET
+: <a class="el" href="group___h_a_l___exported___defines.html#gab8f742cb77b6722531d6e265043768ee">b_hal.h</a>
 </li>
-<li>UNIT_HOUR
-: <a class="el" href="group___s_d_a___exported___defines.html#gaddaea55490fd45135a79081c00a90540">b_sda.h</a>
-</li>
-<li>UNIT_MINUTE
-: <a class="el" href="group___s_d_a___exported___defines.html#ga1b18e73a9b9253beff7c7b7a5460748a">b_sda.h</a>
-</li>
-<li>UNIT_MONTH
-: <a class="el" href="group___s_d_a___exported___defines.html#gae7400b9936841b02bf73f866568303b5">b_sda.h</a>
-</li>
-<li>UNIT_NUMBER
-: <a class="el" href="group___s_d_a___exported___defines.html#gaafb734a19a4b8eb8798af220955907ce">b_sda.h</a>
-</li>
-<li>UNIT_SECOND
-: <a class="el" href="group___s_d_a___exported___defines.html#ga05055f3cee948d8763312327597b6213">b_sda.h</a>
-</li>
-<li>UNIT_YEAR
-: <a class="el" href="group___s_d_a___exported___defines.html#ga0da03f97aca2c96380d00500a0d2887c">b_sda.h</a>
+<li>TP_CS_SET
+: <a class="el" href="group___h_a_l___exported___defines.html#gaba8a54cd6e309557b45081d3fc38b141">b_hal.h</a>
 </li>
 </ul>
 
@@ -582,12 +454,61 @@ $(function() {
 </ul>
 
 
-<h3><a id="index_y"></a>- y -</h3><ul>
-<li>YEAR_CHECK
-: <a class="el" href="group___u_t_c___exported___defines.html#ga2706620e1bea7ddb1daf12f68f797912">b_utc.h</a>
+<h3><a id="index_x"></a>- x -</h3><ul>
+<li>XMODEM128_ACK
+: <a class="el" href="group___x_m_o_d_e_m128___exported___defines.html#ga91186b9eed76278e60d5e89afe433170">b_xm128.h</a>
 </li>
-<li>YEAR_DAYS
-: <a class="el" href="group___u_t_c___exported___defines.html#gab977d5f6948f6ceb1089db428ce032b3">b_utc.h</a>
+<li>XMODEM128_CAN
+: <a class="el" href="group___x_m_o_d_e_m128___exported___defines.html#gacad3b5a81a9ab07952ae6352f4c1f5e8">b_xm128.h</a>
+</li>
+<li>XMODEM128_EOT
+: <a class="el" href="group___x_m_o_d_e_m128___exported___defines.html#ga58c8c951dd64e2ac3c55e9349161e83f">b_xm128.h</a>
+</li>
+<li>XMODEM128_NAK
+: <a class="el" href="group___x_m_o_d_e_m128___exported___defines.html#gae9837d569d0f7301f6127cbd40565109">b_xm128.h</a>
+</li>
+<li>XMODEM128_SOH
+: <a class="el" href="group___x_m_o_d_e_m128___exported___defines.html#gae18ee26e2806d368ce3917495a1eea35">b_xm128.h</a>
+</li>
+<li>XPT2046_I
+: <a class="el" href="group___x_p_t2046___private___defines.html#ga69b10e1767179197068d54509be8d24a">b_xpt2046.c</a>
+</li>
+<li>XPT2046_X
+: <a class="el" href="group___x_p_t2046___private___defines.html#ga50464f62d694f608197be7b2c62926df">b_xpt2046.c</a>
+</li>
+<li>XPT2046_Y
+: <a class="el" href="group___x_p_t2046___private___defines.html#ga79b991e9cfafa846ebb27f6c00a3f09a">b_xpt2046.c</a>
+</li>
+</ul>
+
+
+<h3><a id="index_y"></a>- y -</h3><ul>
+<li>YMODEM_ACK
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga21dc6d57d20876824cacb17e0557afaa">b_ymodem.h</a>
+</li>
+<li>YMODEM_C
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga50e74d6ae11e478269546267299d0c38">b_ymodem.h</a>
+</li>
+<li>YMODEM_CAN
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#gac68fa72e4aba50a90e6f144ee191506d">b_ymodem.h</a>
+</li>
+<li>YMODEM_EOT
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga04afd425b4fd8aaf0295d2a5da136b48">b_ymodem.h</a>
+</li>
+<li>YMODEM_FILEDATA
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga2d5546aa52186a0da1d4ab08bac82343">b_ymodem.h</a>
+</li>
+<li>YMODEM_FILENAME
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga31ac0630de7a3813426ffddc375eea83">b_ymodem.h</a>
+</li>
+<li>YMODEM_NAK
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga914e00758ffecbdc9a0a7b7c390ee68a">b_ymodem.h</a>
+</li>
+<li>YMODEM_SOH
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga5414d3902197595ea48ec719124a020a">b_ymodem.h</a>
+</li>
+<li>YMODEM_STX
+: <a class="el" href="group___y_m_o_d_e_m___exported___defines.html#ga46cda4642619d191b299108adb82f790">b_ymodem.h</a>
 </li>
 </ul>
 </div><!-- contents -->

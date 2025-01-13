@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V0.0.2</span>
+   &#160;<span id="projectnumber">V1.0.0</span>
    </div>
   </td>
  </tr>
@@ -44,10 +44,6 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">b_kv.h File Reference</div>  </div>
 </div><!--header-->
@@ -55,44 +51,6 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="b__config_8h_source.html">b_config.h</a>&quot;</code><br />
 </div>
 <p><a href="b__kv_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_k_v___index__t.html">bKV_Index_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_k_v___info__t.html">bKV_Info_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:gad35428baad0145338fac35174a24cfd9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#gad35428baad0145338fac35174a24cfd9">bKV_IDLE</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:gad35428baad0145338fac35174a24cfd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga663b3efa83f9243ace5105a1c124319b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#ga663b3efa83f9243ace5105a1c124319b">bKV_BUSY</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:ga663b3efa83f9243ace5105a1c124319b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7a4becc6356e8e8ff1cb311551d5c132"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#ga7a4becc6356e8e8ff1cb311551d5c132">bKV_ERROR</a>&#160;&#160;&#160;2</td></tr>
-<tr class="separator:ga7a4becc6356e8e8ff1cb311551d5c132"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9b8339a656229abce501856a1acc4992"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#ga9b8339a656229abce501856a1acc4992">bKV_SECTOR_T1</a>&#160;&#160;&#160;0X01</td></tr>
-<tr class="separator:ga9b8339a656229abce501856a1acc4992"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf444d6a88d8d3a7f6a36f22e10defe4b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#gaf444d6a88d8d3a7f6a36f22e10defe4b">bKV_SECTOR_T2</a>&#160;&#160;&#160;0X02</td></tr>
-<tr class="separator:gaf444d6a88d8d3a7f6a36f22e10defe4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa67df877802f002bc2f3e7806415b0ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#gaa67df877802f002bc2f3e7806415b0ee">bKV_SECTOR_D1</a>&#160;&#160;&#160;0X04</td></tr>
-<tr class="separator:gaa67df877802f002bc2f3e7806415b0ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1dfd30143d7630349b1268ac41cda9e7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#ga1dfd30143d7630349b1268ac41cda9e7">bKV_SECTOR_D2</a>&#160;&#160;&#160;0X08</td></tr>
-<tr class="separator:ga1dfd30143d7630349b1268ac41cda9e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa90ff7ecee803e335df09c3cd4944e0d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___defines.html#gaa90ff7ecee803e335df09c3cd4944e0d">bKV_SECTOR_ALL</a>&#160;&#160;&#160;0X0F</td></tr>
-<tr class="separator:gaa90ff7ecee803e335df09c3cd4944e0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:ga6bc0d26dee41f9b4c623ba06c4d85125"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___functions.html#ga6bc0d26dee41f9b4c623ba06c4d85125">bKV_Init</a> (int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)</td></tr>
-<tr class="separator:ga6bc0d26dee41f9b4c623ba06c4d85125"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf484831f5c49d524f6bcdaf91dd3af4c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___functions.html#gaf484831f5c49d524f6bcdaf91dd3af4c">bKV_Set</a> (uint8_t *key, uint8_t *pvalue, uint16_t len)</td></tr>
-<tr class="separator:gaf484831f5c49d524f6bcdaf91dd3af4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga861289304680d05e55bccecd7d25d86d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___functions.html#ga861289304680d05e55bccecd7d25d86d">bKV_Get</a> (uint8_t *key, uint8_t *pvalue)</td></tr>
-<tr class="separator:ga861289304680d05e55bccecd7d25d86d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacddcf86cd22518488e048afe3e31a9fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___k_v___exported___functions.html#gacddcf86cd22518488e048afe3e31a9fa">bKV_Delete</a> (uint8_t *key)</td></tr>
-<tr class="separator:gacddcf86cd22518488e048afe3e31a9fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>!</p>
 <dl class="section version"><dt>Version</dt><dd>v0.0.1 </dd></dl>

@@ -70,33 +70,67 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 B_DEVICE_REG(SUART, SUART_Driver, "suart")
 ```
 
-###   4、使用设备
+###   4、使用范例
 
 ​    
 
 ```c
-bInit();    //初始化，外设的初始化会在此处调用
-//下面举例使用设备
-int fd;
-fd = bOpen(SUART, BCORE_FLAG_RW);    //其中SUART是在b_device_list.h中添加的设备
-if(fd >= 0)
+#include "b_os.h"    //头文件
+//b_config.h配置文件中使能KV存储
+int main()
 {
-     bWrite(fd, (uint8_t *)"hello world\r\n", strlen("hello world\r\n")); //发送字符串
-     bClose(fd);
+    uint8_t buf[128];
+    //......     
+    bInit();    //初始化，外设的初始化会在此处调用
+    
+    //下面举例使用：W25QXX和KV存储功能模块,其中W25QXX已经添加到b_device_list.h
+    if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096)) //初始化KV存储，指定存储设备W25QXX
+    {
+        b_log("bKV_Init ok...\r\n");
+    }
+    //存储键值对（可用于存储系统配置信息）
+    b_log("save ip, name\r\n");
+    bKV_Set((uint8_t *)"ip", (uint8_t *)"192.168.1.155", sizeof("192.168.1.155"));
+    bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", sizeof("BabyOS"));
+    //获取值
+    b_log("read ip, name...\r\n");
+    bKV_Get((uint8_t *)"ip", buf);
+    b_log("ip: %s\r\n", buf);
+    bKV_Get((uint8_t *)"name", buf);
+    b_log("name %s\r\n", buf); 
+    //修改键值对的值
+    b_log("change name...\r\n");
+    bKV_Set((uint8_t *)"name", (uint8_t *)"abcde", sizeof("abcde"));
+    //重新获取值
+    bKV_Get((uint8_t *)"name", buf);
+    b_log("new name: %s\r\n", buf); 
+    //......
+    while(1)
+    {
+        //.....
+        bExec();      //循环调用此函数
+        //.....
+    }
 }
+
+
 ```
 
-   如果一个设备被打开正在使用，那么无法再次被打开。
 
-###   5、使用功能模块
 
 ```c
-int sdb_no;
-sdb_no = bSDB_Regist(0, 1, W25QXX);//创建B类数据存储实例，指定设备W25QXX，获的功能模块实例IDsdb_no
-//sdb_no大于等于0则有效
-int bSDB_Write(int no, uint8_t *pbuf);
-int bSDB_Read(int no, uint8_t *pbuf);
-//读写函数传入实例ID sdb_no
+//举例使用W25QXX读取数据，从0地址读取128个字节数据至buf
+{
+    int fd = -1;
+    fd = bOpen(W25QXX, BCORE_FLAG_RW);
+    if(fd == -1)
+    {
+        return;
+    }
+    bLseek(fd, 0);
+    bRead(fd, buf, 128);
+    bClose(fd); 
+}
 ```
 
 
@@ -116,9 +150,9 @@ notrynohigh@outlook.com
 
 ## 更新记录
 
-| 日期                  | 新增项                                                | 备注                                                         |
-| --------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |
-| 2019.12.04~2020.01.02 | 4项功能模块：FIFO、AT、Nr_micro_shell、Lunar calendar | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019_12_04~2020_01_02%E6%9B%B4%E6%96%B0%E9%83%A8%E5%88%86%E8%AF%B4%E6%98%8E) |
-| 2020.01.02~2020.01.31 | 1项功能模块：KV存储                                   | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B41%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
-|                       |                                                       |                                                              |
+| 日期    | 新增项                                             | 备注                                                         |
+| ------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019_12_04~2020_01_02%E6%9B%B4%E6%96%B0%E9%83%A8%E5%88%86%E8%AF%B4%E6%98%8E) |
+| 2020.01 | 功能模块：KV存储                                   | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B41%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
+| 2020.02 | 功能模块：Xmodem128, Ymodem 驱动：xpt2046          | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B42%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 

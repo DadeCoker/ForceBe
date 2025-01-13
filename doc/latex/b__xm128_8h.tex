@@ -1,0 +1,65 @@
+\hypertarget{b__xm128_8h}{}\section{b\+\_\+xm128.\+h File Reference}
+\label{b__xm128_8h}\index{b\+\_\+xm128.\+h@{b\+\_\+xm128.\+h}}
+{\ttfamily \#include \char`\"{}b\+\_\+config.\+h\char`\"{}}\newline
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structb_xmodem128_info__t}{b\+Xmodem128\+Info\+\_\+t}}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___defines_gae18ee26e2806d368ce3917495a1eea35}{X\+M\+O\+D\+E\+M128\+\_\+\+S\+OH}}~0x01
+\item 
+\#define \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___defines_ga58c8c951dd64e2ac3c55e9349161e83f}{X\+M\+O\+D\+E\+M128\+\_\+\+E\+OT}}~0x04
+\item 
+\#define \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___defines_ga91186b9eed76278e60d5e89afe433170}{X\+M\+O\+D\+E\+M128\+\_\+\+A\+CK}}~0x06
+\item 
+\#define \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___defines_gae9837d569d0f7301f6127cbd40565109}{X\+M\+O\+D\+E\+M128\+\_\+\+N\+AK}}~0x15
+\item 
+\#define \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___defines_gacad3b5a81a9ab07952ae6352f4c1f5e8}{X\+M\+O\+D\+E\+M128\+\_\+\+C\+AN}}~0x18
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef void($\ast$ \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___types_definitions_ga1189ecafb71f5108788e9d2e7ac5e7f3}{pcb\+\_\+t}}) (uint8\+\_\+t number, uint8\+\_\+t $\ast$pbuf)
+\item 
+typedef void($\ast$ \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___types_definitions_gad6ebbc53d3047463033cb2b686f40d66}{psend}}) (uint8\+\_\+t cmd)
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___functions_ga75c122d0178d1616612a6d8e053ab3f4}{b\+Xmodem128\+Init}} (\mbox{\hyperlink{group___x_m_o_d_e_m128___exported___types_definitions_ga1189ecafb71f5108788e9d2e7ac5e7f3}{pcb\+\_\+t}} fcb, \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___types_definitions_gad6ebbc53d3047463033cb2b686f40d66}{psend}} fs)
+\item 
+int \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___functions_ga22d59aa816e006be041442488ea8539c}{b\+Xmodem128\+Parse}} (uint8\+\_\+t $\ast$pbuf, uint8\+\_\+t len)
+\item 
+int \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___functions_ga2999eae8ddb0eead2907b9e031e8f0cd}{b\+Xmodem128\+Start}} (void)
+\item 
+int \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___functions_ga09d8f1bd999f46b6c639fca0b651c08d}{b\+Xmodem128\+Stop}} (void)
+\item 
+void \mbox{\hyperlink{group___x_m_o_d_e_m128___exported___functions_gac0d4745672830bff370171057109399d}{b\+Xmodem128\+Timeout}} (void)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+!
+
+\begin{DoxyVersion}{Version}
+v0.\+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020/02/03 
+\end{DoxyDate}
+\begin{DoxyAuthor}{Author}
+Bean(\href{mailto:notrynohigh@outlook.com}{\tt notrynohigh@outlook.\+com})
+\end{DoxyAuthor}
+\begin{DoxyAttention}{Attention}
+
+\end{DoxyAttention}
+Copyright (c) 2020 Bean
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \char`\"{}\+Software\char`\"{}), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions\+:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+T\+HE S\+O\+F\+T\+W\+A\+RE IS P\+R\+O\+V\+I\+D\+ED \char`\"{}\+A\+S I\+S\char`\"{}, W\+I\+T\+H\+O\+UT W\+A\+R\+R\+A\+N\+TY OF A\+NY K\+I\+ND, E\+X\+P\+R\+E\+SS OR I\+M\+P\+L\+I\+ED, I\+N\+C\+L\+U\+D\+I\+NG B\+UT N\+OT L\+I\+M\+I\+T\+ED TO T\+HE W\+A\+R\+R\+A\+N\+T\+I\+ES OF M\+E\+R\+C\+H\+A\+N\+T\+A\+B\+I\+L\+I\+TY, F\+I\+T\+N\+E\+SS F\+OR A P\+A\+R\+T\+I\+C\+U\+L\+AR P\+U\+R\+P\+O\+SE A\+ND N\+O\+N\+I\+N\+F\+R\+I\+N\+G\+E\+M\+E\+NT. IN NO E\+V\+E\+NT S\+H\+A\+LL T\+HE A\+U\+T\+H\+O\+RS OR C\+O\+P\+Y\+R\+I\+G\+HT H\+O\+L\+D\+E\+RS BE L\+I\+A\+B\+LE F\+OR A\+NY C\+L\+A\+IM, D\+A\+M\+A\+G\+ES OR O\+T\+H\+ER L\+I\+A\+B\+I\+L\+I\+TY, W\+H\+E\+T\+H\+ER IN AN A\+C\+T\+I\+ON OF C\+O\+N\+T\+R\+A\+CT, T\+O\+RT OR O\+T\+H\+E\+R\+W\+I\+SE, A\+R\+I\+S\+I\+NG F\+R\+OM, O\+UT OF OR IN C\+O\+N\+N\+E\+C\+T\+I\+ON W\+I\+TH T\+HE S\+O\+F\+T\+W\+A\+RE OR T\+HE U\+SE OR O\+T\+H\+ER D\+E\+A\+L\+I\+N\+GS IN T\+HE S\+O\+F\+T\+W\+A\+RE. 

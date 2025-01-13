@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V0.0.2</span>
+   &#160;<span id="projectnumber">V1.0.0</span>
    </div>
   </td>
  </tr>
@@ -44,10 +44,6 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">b_ota.h File Reference</div>  </div>
 </div><!--header-->
@@ -55,40 +51,6 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="b__config_8h_source.html">b_config.h</a>&quot;</code><br />
 </div>
 <p><a href="b__ota_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_o_t_a___f_w_info__t.html">bOTA_FWInfo_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_o_t_a___f_w_data__t.html">bOTA_FWData_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_o_t_a___f_w_a_c_k__t.html">bOTA_FWACK_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_o_t_a___ctl__t.html">bOTA_Ctl_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ga4535ce4bb09ae7816d8e78d56511291a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___defines.html#ga4535ce4bb09ae7816d8e78d56511291a">BOTA_CMD_FW_START</a>&#160;&#160;&#160;0XE2</td></tr>
-<tr class="separator:ga4535ce4bb09ae7816d8e78d56511291a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac3d822fe5ca5a0a9c76ac0ac4caaebf1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___defines.html#gac3d822fe5ca5a0a9c76ac0ac4caaebf1">BOTA_CMD_FW_DATA</a>&#160;&#160;&#160;0XE3</td></tr>
-<tr class="separator:gac3d822fe5ca5a0a9c76ac0ac4caaebf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga890423ccabd280c499bc2bb8f9b7e80e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___defines.html#ga890423ccabd280c499bc2bb8f9b7e80e">BOTA_CMD_FW_ACK</a>&#160;&#160;&#160;0XE4</td></tr>
-<tr class="separator:ga890423ccabd280c499bc2bb8f9b7e80e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga827a638010a299cf6392334b10f4ad19"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___defines.html#ga827a638010a299cf6392334b10f4ad19">BOTA_S_NULL</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:ga827a638010a299cf6392334b10f4ad19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad572630a2854c436a18db032de30e377"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___defines.html#gad572630a2854c436a18db032de30e377">BOTA_S_ING</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:gad572630a2854c436a18db032de30e377"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gade40ce38a70a0aa2b0b287a9c25f679b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___defines.html#gade40ce38a70a0aa2b0b287a9c25f679b">BOTA_SECTOR_SIZE</a>&#160;&#160;&#160;0X1000</td></tr>
-<tr class="separator:gade40ce38a70a0aa2b0b287a9c25f679b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:ga53bdf541bdf76ac8ee66d2070a6f5ddd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___functions.html#ga53bdf541bdf76ac8ee66d2070a6f5ddd">bOTA_Init</a> (uint8_t dev_no, uint8_t pro_no)</td></tr>
-<tr class="separator:ga53bdf541bdf76ac8ee66d2070a6f5ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad41cc6e45b993447b7066ba67882a10b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___o_t_a___exported___functions.html#gad41cc6e45b993447b7066ba67882a10b">bOTA_Parse</a> (uint8_t *pbuf, uint16_t len)</td></tr>
-<tr class="separator:gad41cc6e45b993447b7066ba67882a10b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>!</p>
 <dl class="section version"><dt>Version</dt><dd>v0.0.1 </dd></dl>

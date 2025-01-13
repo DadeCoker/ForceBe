@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V0.0.2</span>
+   &#160;<span id="projectnumber">V1.0.0</span>
    </div>
   </td>
  </tr>
@@ -51,7 +51,6 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &lt;stdio.h&gt;</code><br />
 </div>
 <p><a href="b__config_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -61,39 +60,43 @@ Macros</h2></td></tr>
 <tr class="separator:a070d2ce7b6bb7e5c05602aa8c308d0c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2076738df8e2eff78366a0187291367"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae2076738df8e2eff78366a0187291367">_TICK_FRQ_HZ</a>&#160;&#160;&#160;1000</td></tr>
 <tr class="separator:ae2076738df8e2eff78366a0187291367"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae89563dd419af650c252f218ebf30d5d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae89563dd419af650c252f218ebf30d5d">_UTC2000_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a2a5407e0aa9657e56f1d69fb83413899"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a2a5407e0aa9657e56f1d69fb83413899">MS2TICKS</a>(m)&#160;&#160;&#160;(m * <a class="el" href="b__config_8h.html#ae2076738df8e2eff78366a0187291367">_TICK_FRQ_HZ</a> / 1000)</td></tr>
+<tr class="separator:a2a5407e0aa9657e56f1d69fb83413899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae89563dd419af650c252f218ebf30d5d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae89563dd419af650c252f218ebf30d5d">_UTC2000_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:ae89563dd419af650c252f218ebf30d5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf415274583a1814b29fe6021b78c741"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#aaf415274583a1814b29fe6021b78c741">_LUNAR_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:aaf415274583a1814b29fe6021b78c741"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#aaf415274583a1814b29fe6021b78c741">_LUNAR_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:aaf415274583a1814b29fe6021b78c741"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f5a8aacf184c0d04446e5e77983f62c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a9f5a8aacf184c0d04446e5e77983f62c">_DEBUG_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a9f5a8aacf184c0d04446e5e77983f62c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a9f5a8aacf184c0d04446e5e77983f62c">_DEBUG_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a9f5a8aacf184c0d04446e5e77983f62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcde49f0fc1efbd5b1522c2e2e155adc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#afcde49f0fc1efbd5b1522c2e2e155adc">_BATTERY_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:afcde49f0fc1efbd5b1522c2e2e155adc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#afcde49f0fc1efbd5b1522c2e2e155adc">_BATTERY_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:afcde49f0fc1efbd5b1522c2e2e155adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae018f757646b2c4cd0e8e4e4b9129e9e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae018f757646b2c4cd0e8e4e4b9129e9e">_BATTERY_THRESHOLD</a>&#160;&#160;&#160;3350</td></tr>
 <tr class="separator:ae018f757646b2c4cd0e8e4e4b9129e9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8b565d65499259e66245d0dc07fbddb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae8b565d65499259e66245d0dc07fbddb">_ERROR_MANAGE_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a820b2107e2a1c902047d627e200049f1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a820b2107e2a1c902047d627e200049f1">_BATTERY_D_CYCLE</a>&#160;&#160;&#160;(1000 * 60)</td></tr>
+<tr class="separator:a820b2107e2a1c902047d627e200049f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8b565d65499259e66245d0dc07fbddb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae8b565d65499259e66245d0dc07fbddb">_ERROR_MANAGE_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:ae8b565d65499259e66245d0dc07fbddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93f819a9ff4f207f0133d0aa22ef2eff"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a93f819a9ff4f207f0133d0aa22ef2eff">_ERROR_Q_LENGTH</a>&#160;&#160;&#160;5</td></tr>
 <tr class="separator:a93f819a9ff4f207f0133d0aa22ef2eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a378a323b6ca803d5d4c6ec9db756ef6f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a378a323b6ca803d5d4c6ec9db756ef6f">_EVENT_MANAGE_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a378a323b6ca803d5d4c6ec9db756ef6f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a378a323b6ca803d5d4c6ec9db756ef6f">_EVENT_MANAGE_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a378a323b6ca803d5d4c6ec9db756ef6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee99f6c42f36c6d31a29c27dbce7093d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#aee99f6c42f36c6d31a29c27dbce7093d">_EVENT_Q_LENGTH</a>&#160;&#160;&#160;5</td></tr>
 <tr class="separator:aee99f6c42f36c6d31a29c27dbce7093d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8875f9cf80bc105f1a874f42634b25e0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a8875f9cf80bc105f1a874f42634b25e0">_MODBUS_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a8875f9cf80bc105f1a874f42634b25e0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a8875f9cf80bc105f1a874f42634b25e0">_MODBUS_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a8875f9cf80bc105f1a874f42634b25e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd9980136a3d83c88c8d99eb9e3a7f98"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#acd9980136a3d83c88c8d99eb9e3a7f98">_MODBUS_I_NUMBER</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:acd9980136a3d83c88c8d99eb9e3a7f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38ee0e2594d87e1eed24d42c5f256517"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a38ee0e2594d87e1eed24d42c5f256517">_TX_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a38ee0e2594d87e1eed24d42c5f256517"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a38ee0e2594d87e1eed24d42c5f256517">_TX_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a38ee0e2594d87e1eed24d42c5f256517"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb5f40d9dc01ec2aaf42a92550d3a940"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#adb5f40d9dc01ec2aaf42a92550d3a940">_TX_I_NUMBER</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:adb5f40d9dc01ec2aaf42a92550d3a940"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a923194e2932b5349d25b960d7a85d728"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a923194e2932b5349d25b960d7a85d728">_CHECK_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a923194e2932b5349d25b960d7a85d728"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a923194e2932b5349d25b960d7a85d728">_CHECK_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a923194e2932b5349d25b960d7a85d728"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae33c36f555478d19b228b595617be489"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ae33c36f555478d19b228b595617be489">_CHECK_CRC32_ENABLE</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:ae33c36f555478d19b228b595617be489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af99371fc96318102cc44006fbf44da84"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#af99371fc96318102cc44006fbf44da84">_CHECK_XOR_SUM_ENABLE</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:af99371fc96318102cc44006fbf44da84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6162fa65ad7bb6c13a70287990cfbe36"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a6162fa65ad7bb6c13a70287990cfbe36">_SAVE_DATA_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a6162fa65ad7bb6c13a70287990cfbe36"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a6162fa65ad7bb6c13a70287990cfbe36">_SAVE_DATA_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a6162fa65ad7bb6c13a70287990cfbe36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d39b9e9c932bd6cc68343756b5f37de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a3d39b9e9c932bd6cc68343756b5f37de">_SAVE_DATA_A_ENABLE</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:a3d39b9e9c932bd6cc68343756b5f37de"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -107,11 +110,11 @@ Macros</h2></td></tr>
 <tr class="separator:a445280f1b59df647aeda64f17740f52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7d47fe375f0a0a48531317a108da28a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#ab7d47fe375f0a0a48531317a108da28a">_SAVE_DATA_C_I_NUMBER</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:ab7d47fe375f0a0a48531317a108da28a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95ed59b1027d445352898ff2ac77cd22"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a95ed59b1027d445352898ff2ac77cd22">_KV_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a95ed59b1027d445352898ff2ac77cd22"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a95ed59b1027d445352898ff2ac77cd22">_KV_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a95ed59b1027d445352898ff2ac77cd22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac620f18ef5cda6f3be38431e42fec82"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#aac620f18ef5cda6f3be38431e42fec82">_KV_PAIR_NUMBER</a>&#160;&#160;&#160;32</td></tr>
 <tr class="separator:aac620f18ef5cda6f3be38431e42fec82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f44ad27fd0799cf243898f8fca4162f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a8f44ad27fd0799cf243898f8fca4162f">_PROTO_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a8f44ad27fd0799cf243898f8fca4162f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a8f44ad27fd0799cf243898f8fca4162f">_PROTO_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a8f44ad27fd0799cf243898f8fca4162f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c7457486b3e4f532ba0741abfeaf7bb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a3c7457486b3e4f532ba0741abfeaf7bb">_PROTO_I_NUMBER</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:a3c7457486b3e4f532ba0741abfeaf7bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -123,7 +126,7 @@ Macros</h2></td></tr>
 <tr class="separator:a604fe19d1e5f2abd33133514ef989b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a771e0a2ceaed0caf6945c2774e68324a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a771e0a2ceaed0caf6945c2774e68324a">_OTA_BUFF_SIZE</a>&#160;&#160;&#160;150</td></tr>
 <tr class="separator:a771e0a2ceaed0caf6945c2774e68324a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a8bd75256e0dde4edce48f3c5376bb1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a2a8bd75256e0dde4edce48f3c5376bb1">_FIFO_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a2a8bd75256e0dde4edce48f3c5376bb1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a2a8bd75256e0dde4edce48f3c5376bb1">_FIFO_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a2a8bd75256e0dde4edce48f3c5376bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d5ab7c2e0032fdee7cfb23784d13895"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a9d5ab7c2e0032fdee7cfb23784d13895">_FIFO_I_NUMBER</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:a9d5ab7c2e0032fdee7cfb23784d13895"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,7 +136,11 @@ Macros</h2></td></tr>
 <tr class="separator:a83175ff5c4339a2dadc9bb732ed0ab82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a017d1f392b7b6a5ccc145cda5724cf83"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a017d1f392b7b6a5ccc145cda5724cf83">_AT_BUF_LEN</a>&#160;&#160;&#160;128</td></tr>
 <tr class="separator:a017d1f392b7b6a5ccc145cda5724cf83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3da8251ad4eedfb035bbc68e3693b9f5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a3da8251ad4eedfb035bbc68e3693b9f5">_NR_MICRO_SHELL_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:a8acdb35586a4e1f1d148687cb3189c66"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a8acdb35586a4e1f1d148687cb3189c66">_XMODEM128_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a8acdb35586a4e1f1d148687cb3189c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11ad894e421e6bc37f658674e8c1015f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a11ad894e421e6bc37f658674e8c1015f">_YMODEM_ENABLE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a11ad894e421e6bc37f658674e8c1015f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3da8251ad4eedfb035bbc68e3693b9f5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a3da8251ad4eedfb035bbc68e3693b9f5">_NR_MICRO_SHELL_ENABLE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a3da8251ad4eedfb035bbc68e3693b9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48f46913c4521113108888079816390f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a48f46913c4521113108888079816390f">NR_SHELL_USER_NAME</a>&#160;&#160;&#160;&quot;nr@bos:&quot;</td></tr>
 <tr class="separator:a48f46913c4521113108888079816390f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,11 +166,7 @@ Macros</h2></td></tr>
 <tr class="separator:ae069bece45e3eb51b4b71dcea477f448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72ae5d54b3f8034cf8cacce91b2c8323"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a72ae5d54b3f8034cf8cacce91b2c8323">NR_SHELL_ECHO_ENABLE</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:a72ae5d54b3f8034cf8cacce91b2c8323"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93526fb3cc79d3ba8c97e7ea6154a439"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a93526fb3cc79d3ba8c97e7ea6154a439">shell_printf</a>(fmt,  args...)&#160;&#160;&#160;printf(fmt, ##args);</td></tr>
-<tr class="separator:a93526fb3cc79d3ba8c97e7ea6154a439"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0baa3176be97eaf6fbd2303b3bc26ab4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#a0baa3176be97eaf6fbd2303b3bc26ab4">ansi_show_char</a>(x)&#160;&#160;&#160;putchar(x)</td></tr>
-<tr class="separator:a0baa3176be97eaf6fbd2303b3bc26ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc78b16ad8aebf30b9cabfc278cfb32a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#afc78b16ad8aebf30b9cabfc278cfb32a">b_log</a>(...)&#160;&#160;&#160;printf(__VA_ARGS__)</td></tr>
+<tr class="memitem:afc78b16ad8aebf30b9cabfc278cfb32a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="b__config_8h.html#afc78b16ad8aebf30b9cabfc278cfb32a">b_log</a>(...)</td></tr>
 <tr class="separator:afc78b16ad8aebf30b9cabfc278cfb32a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -191,7 +194,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00156">156</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00158">158</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +210,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00152">152</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00154">154</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -223,7 +226,25 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00154">154</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00156">156</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+
+</div>
+</div>
+<a id="a820b2107e2a1c902047d627e200049f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a820b2107e2a1c902047d627e200049f1">&#9670;&nbsp;</a></span>_BATTERY_D_CYCLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _BATTERY_D_CYCLE&#160;&#160;&#160;(1000 * 60)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00066">66</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="b__os_8c_source.html#l00126">bExec()</a>.</p>
 
 </div>
 </div>
@@ -234,7 +255,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _BATTERY_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _BATTERY_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -271,7 +292,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00096">96</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00098">98</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -282,12 +303,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _CHECK_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _CHECK_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00094">94</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00096">96</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -303,7 +324,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00098">98</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00100">100</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -314,7 +335,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _DEBUG_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _DEBUG_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -330,12 +351,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _ERROR_MANAGE_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _ERROR_MANAGE_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00069">69</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00071">71</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -351,7 +372,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00071">71</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00073">73</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -362,12 +383,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _EVENT_MANAGE_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _EVENT_MANAGE_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00075">75</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00077">77</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -383,7 +404,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00077">77</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00079">79</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -394,12 +415,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _FIFO_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _FIFO_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00146">146</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00148">148</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -415,7 +436,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00148">148</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00150">150</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -426,12 +447,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _KV_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _KV_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00124">124</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00126">126</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -447,7 +468,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00126">126</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00128">128</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -458,7 +479,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _LUNAR_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _LUNAR_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -474,12 +495,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _MODBUS_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _MODBUS_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00081">81</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00083">83</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -495,7 +516,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00083">83</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00085">85</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -506,12 +527,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _NR_MICRO_SHELL_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _NR_MICRO_SHELL_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00165">165</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00173">173</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -527,7 +548,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00141">141</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00143">143</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -543,7 +564,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00139">139</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00141">141</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -559,7 +580,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00137">137</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00139">139</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -570,12 +591,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _PROTO_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _PROTO_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00131">131</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00133">133</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -591,7 +612,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00133">133</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00135">135</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -607,7 +628,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00135">135</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00137">137</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -623,7 +644,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00106">106</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00108">108</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -639,7 +660,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00108">108</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00110">110</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -655,7 +676,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00111">111</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00113">113</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -671,7 +692,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00113">113</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00115">115</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -687,7 +708,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00116">116</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00118">118</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -703,7 +724,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00118">118</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00120">120</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -714,12 +735,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _SAVE_DATA_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _SAVE_DATA_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00103">103</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00105">105</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -748,12 +769,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _TX_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _TX_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00087">87</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00089">89</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -769,7 +790,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00089">89</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00091">91</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -780,7 +801,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _UTC2000_ENABLE&#160;&#160;&#160;1</td>
+          <td class="memname">#define _UTC2000_ENABLE&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -789,23 +810,35 @@ Macros</h2></td></tr>
 
 </div>
 </div>
-<a id="a0baa3176be97eaf6fbd2303b3bc26ab4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0baa3176be97eaf6fbd2303b3bc26ab4">&#9670;&nbsp;</a></span>ansi_show_char</h2>
+<a id="a8acdb35586a4e1f1d148687cb3189c66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8acdb35586a4e1f1d148687cb3189c66">&#9670;&nbsp;</a></span>_XMODEM128_ENABLE</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ansi_show_char</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;putchar(x)</td>
+          <td class="memname">#define _XMODEM128_ENABLE&#160;&#160;&#160;1</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00212">212</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00162">162</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+
+</div>
+</div>
+<a id="a11ad894e421e6bc37f658674e8c1015f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11ad894e421e6bc37f658674e8c1015f">&#9670;&nbsp;</a></span>_YMODEM_ENABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _YMODEM_ENABLE&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00165">165</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -820,14 +853,36 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;printf(__VA_ARGS__)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00226">226</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00238">238</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="b__core_8c_source.html#l00294">bInit()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="b__os_8c_source.html#l00113">bInit()</a>.</p>
+
+</div>
+</div>
+<a id="a2a5407e0aa9657e56f1d69fb83413899"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a5407e0aa9657e56f1d69fb83413899">&#9670;&nbsp;</a></span>MS2TICKS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MS2TICKS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">m</td><td>)</td>
+          <td>&#160;&#160;&#160;(m * <a class="el" href="b__config_8h.html#ae2076738df8e2eff78366a0187291367">_TICK_FRQ_HZ</a> / 1000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00051">51</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="b__os_8c_source.html#l00126">bExec()</a>.</p>
 
 </div>
 </div>
@@ -843,7 +898,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00171">171</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00179">179</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -859,7 +914,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00189">189</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00197">197</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -875,7 +930,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00173">173</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00181">181</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -891,7 +946,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00179">179</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00187">187</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -907,7 +962,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00182">182</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00190">190</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -923,7 +978,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00205">205</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00213">213</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -939,7 +994,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00196">196</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00204">204</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -955,7 +1010,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00186">186</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00194">194</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -971,7 +1026,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00202">202</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00210">210</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -987,7 +1042,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00168">168</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00176">176</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -1003,7 +1058,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00176">176</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00184">184</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -1019,7 +1074,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00199">199</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00207">207</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
@@ -1038,36 +1093,6 @@ Macros</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00042">42</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="b__device_8c_source.html#l00176">bDeviceRead()</a>, <a class="el" href="b__device_8c_source.html#l00193">bDeviceWrite()</a>, <a class="el" href="b__core_8c_source.html#l00196">bRead()</a>, and <a class="el" href="b__core_8c_source.html#l00218">bWrite()</a>.</p>
-
-</div>
-</div>
-<a id="a93526fb3cc79d3ba8c97e7ea6154a439"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93526fb3cc79d3ba8c97e7ea6154a439">&#9670;&nbsp;</a></span>shell_printf</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define shell_printf</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">fmt, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">args...&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;printf(fmt, ##args);</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="b__config_8h_source.html#l00209">209</a> of file <a class="el" href="b__config_8h_source.html">b_config.h</a>.</p>
 
 </div>
 </div>
