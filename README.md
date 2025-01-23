@@ -154,7 +154,7 @@ notrynohigh@outlook.com
 
 | 日期    | 新增项                                             | 备注                                                         |
 | ------- | -------------------------------------------------- | ------------------------------------------------------------ |
-| 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019_12_04~2020_01_02%E6%9B%B4%E6%96%B0%E9%83%A8%E5%88%86%E8%AF%B4%E6%98%8E) |
+| 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019%E5%B9%B412%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 | 2020.01 | 功能模块：KV存储                                   | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B41%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 | 2020.02 | 功能模块：Xmodem128, Ymodem 驱动：xpt2046          | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B42%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 
