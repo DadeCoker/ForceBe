@@ -225,6 +225,14 @@
 #endif
 //</e>
 
+//<e> FlexibleButton Enable/Disable
+#define _FLEXIBLEBUTTON_ENABLE              1
+
+//<o> How often flex_button_scan () is called
+#define FLEX_BTN_SCAN_FREQ_HZ               50 
+
+//</e>
+
 //</h>
 
 

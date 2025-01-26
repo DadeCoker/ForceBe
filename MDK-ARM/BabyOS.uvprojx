@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;      ../Drivers/STM32F1xx_HAL_Driver/Inc;      ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;      ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;      ../Drivers/CMSIS/Include;      ..\bos\core\inc\;      ..\bos\drivers\inc\;      ..\bos\hal;      ..\bos\core\thirdparty\nr_micro_shell\inc</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal;..\bos\core\thirdparty\nr_micro_shell\inc;..\bos\core\thirdparty\FlexibleButton</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -667,6 +667,11 @@
                 </FileArmAds>
               </FileOption>
             </File>
+            <File>
+              <FileName>b_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -726,6 +731,21 @@
               <FileName>nr_micro_shell.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\nr_micro_shell.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/FlexibleButton</GroupName>
+          <Files>
+            <File>
+              <FileName>flexible_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\thirdparty\FlexibleButton\flexible_button.c</FilePath>
+            </File>
+            <File>
+              <FileName>flexible_button.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\bos\core\thirdparty\FlexibleButton\flexible_button.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -184,7 +184,6 @@ int bXmodem128Stop()
 
 int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
 {
-    uint8_t check;
     static uint8_t num = 0;
     bXmodem128Info_t *pxm = (bXmodem128Info_t *)pbuf;
     if(pbuf == NULL || pCallback == NULL || pSendByte == NULL || Xmodem128Stat == XM_S_NULL)
