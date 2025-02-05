@@ -75,6 +75,8 @@
  * \defgroup DEVICE_Private_Variables
  * \{
  */
+ 
+static bDriverInterface_t   bNullDriver;  
 
 static bDriverInterface_t* bDriverTable[bDEV_MAX_NUM] = {
     #define B_DEVICE_REG(dev, driver, desc)    &driver,

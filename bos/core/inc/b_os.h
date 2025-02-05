@@ -57,6 +57,7 @@
 #include "b_kv.h"
 #include "b_xm128.h" 
 #include "b_ymodem.h" 
+#include "b_button.h"
 
 #include "b_hal.h"
 #include "b_utils.h"

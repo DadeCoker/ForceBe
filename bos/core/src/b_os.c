@@ -142,14 +142,6 @@ int bExec()
         bErrorCore();
     }
 #endif
-    
-#if _EVENT_MANAGE_ENABLE
-    bEventCore();
-#endif    
-    
-#if _TX_ENABLE
-    bTX_Core();
-#endif
 
 #if _XMODEM128_ENABLE
     bXmodem128Timeout();
@@ -159,6 +151,23 @@ int bExec()
     bYmodemTimeout();
 #endif
 
+#if _FLEXIBLEBUTTON_ENABLE
+    static uint32_t fb_tick = 0;
+    if(bHalGetTick() - fb_tick >= (_TICK_FRQ_HZ / FLEX_BTN_SCAN_FREQ_HZ))
+    {
+        fb_tick = bHalGetTick();
+        flex_button_scan();
+    }
+#endif
+
+
+#if _EVENT_MANAGE_ENABLE
+    bEventCore();
+#endif    
+    
+#if _TX_ENABLE
+    bTX_Core();
+#endif
     return 0;
 }
 

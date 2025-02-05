@@ -42,7 +42,6 @@
 
 /* USER CODE BEGIN Includes */
 #include "b_os.h"
-#include <string.h>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -58,7 +57,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-uint8_t uart1_rdata;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,122 +76,6 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-//{
-//    if(huart == &huart1)
-//    {
-//        bShellParse(&uart1_rdata, 1);
-//        HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
-//    }
-//}
-
-/*******************for xmodem ymodem****************************/
-
-#define TEST_XMODEM     1
-
-
-int X_fd = -1;
-uint8_t f_f = 0;
-
-void UartSendByte(uint8_t b)
-{
-    HAL_UART_Transmit(&huart1, &b, 1, 0xff);
-}
-
-void XmodemCB(uint8_t num, uint8_t *pbuf)
-{
-    bCMD_Struct_t cmd;
-    static uint8_t f = 0;
-    if(pbuf == NULL)
-    {
-        f = 0;
-        f_f = 1;
-        bClose(X_fd);
-        return;
-    }
-    if(f == 0)
-    {
-        f = 1;
-        cmd.type = bCMD_ERASE;
-        cmd.param.erase.addr = 0;
-        cmd.param.erase.num = 5;
-        
-        bCtl(X_fd, bCMD_ERASE, &cmd);
-        bLseek(X_fd, 0);
-    }
-    bWrite(X_fd, pbuf, 128);
-}
-
-void YmodemCB(uint8_t t, uint8_t num, uint8_t *pbuf, uint16_t len)
-{
-    bCMD_Struct_t cmd;
-    static uint8_t f = 0;
-    if(pbuf == NULL)
-    {
-        f = 0;
-        f_f = 1;
-        bClose(X_fd);
-        return;
-    }
-    if(f == 0)
-    {
-        f = 1;
-        cmd.type = bCMD_ERASE;
-        cmd.param.erase.addr = 0;
-        cmd.param.erase.num = 5;
-        
-        bCtl(X_fd, bCMD_ERASE, &cmd);
-        bLseek(X_fd, 0);
-    }
-    if(t == YMODEM_FILEDATA)
-    {
-        bWrite(X_fd, pbuf, len);
-    }
-}
-
-
-
-uint8_t buf[1052];
-
-void Uart1IdleHandler()
-{
-    uint16_t count = 0;
-    if(__HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_IDLE))
-    {
-        __HAL_UART_CLEAR_IDLEFLAG(&huart1);
-        count = 1052 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
-        HAL_UART_DMAStop(&huart1);
-#if TEST_XMODEM
-        bXmodem128Parse(buf, count);
-#else        
-        bYmodemParse(buf, count);
-#endif
-        HAL_UART_Receive_DMA(&huart1, buf, 1052);
-    }
-}
-
-
-void ReadandCheck()
-{
-    int fd = -1;
-    int i = 0;
-    fd = bOpen(W25QXX, BCORE_FLAG_RW);
-    if(fd == -1)
-    {
-        return;
-    }
-    bLseek(fd, 0);
-    for(i = 0;i < 10;i++)
-    {
-        bRead(fd, buf, 128);
-        HAL_UART_Transmit(&huart1, buf, 128, 0xfff);
-    }
-    bClose(fd);  
-}
-
-
-/******************************************************/
-
 
 /* USER CODE END 0 */
 
@@ -232,76 +115,18 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim6);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_UART_Receive_DMA(&huart1, buf, 1052);
-  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
  
   /****************************Init*******************************/
   bInit();                                      //BabyOS Init
-  /**************************Test shell***************************/
-//  bShellStart();                                //Shell Start
-//  HAL_UART_Receive_IT(&huart1, &uart1_rdata, 1);
-
-  /**************************Test bKV*****************************/
-//  if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096))
-//  {
-//    b_log("bKV_Init ok...\r\n");
-//  }
-//  uint8_t buf[128];
-//  
-//  b_log("save ip, name\r\n");
-//  bKV_Set((uint8_t *)"ip", (uint8_t *)"192.168.1.155", sizeof("192.168.1.155"));
-//  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", sizeof("BabyOS"));
-//  
-//  b_log("read ip, name...\r\n");
-//  bKV_Get((uint8_t *)"ip", buf);
-//  b_log("ip: %s\r\n", buf);
-//  
-//  bKV_Get((uint8_t *)"name", buf);
-//  b_log("name %s\r\n", buf); 
-
-//  b_log("change name...\r\n");
-//  bKV_Set((uint8_t *)"name", (uint8_t *)"abcdefghijklmnopqrstuvwxy123456789", sizeof("abcdefghijklmnopqrstuvwxy123456789"));
-//  bKV_Get((uint8_t *)"name", buf);
-//  b_log("new name: %s\r\n", buf);  
-  /**********************************************************************************/
-  /**************************Test Xmodem********************************************/
-#if TEST_XMODEM
-  bXmodem128Init(XmodemCB, UartSendByte);
-  X_fd = bOpen(W25QXX, BCORE_FLAG_RW);
-  if(X_fd >= 0)
-  {
-    bXmodem128Start();
-    f_f = 0;
-  }
-#else
-  /**********************************************************************************/
-  
-  /**************************Test Ymodem********************************************/
-  bYmodemInit(YmodemCB, UartSendByte);
-  X_fd = bOpen(W25QXX, BCORE_FLAG_RW);
-  if(X_fd >= 0)
-  {
-    bYmodemStart();
-    f_f = 0;
-  }
-#endif
-  /**********************************************************************************/  
-  
+  bButtonInit();
   while (1)
   {
       bExec();
-      
-      if(f_f)
-      {
-        ReadandCheck();
-        f_f = 0;
-      }
-      
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -547,17 +372,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-extern void S_UartRxTimerHandler(void);
-extern void S_UartTxTimerHandler(void);
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if(htim == &htim6)
-    {
-        S_UartRxTimerHandler();
-        S_UartTxTimerHandler();
-    }
-    
-}
+
 /* USER CODE END 4 */
 
 /**

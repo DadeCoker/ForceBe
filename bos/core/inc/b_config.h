@@ -56,7 +56,7 @@
 #define _LUNAR_ENABLE           	0
 
 //<q> Debug Enable/Disable
-#define _DEBUG_ENABLE           	0
+#define _DEBUG_ENABLE           	1
 
 //<e> Battery Enable/Disable
 #define _BATTERY_ENABLE           	0
@@ -151,7 +151,7 @@
 //</e>
 
 //<e> AT Enable/Disable
-#define _AT_ENABLE             	    1
+#define _AT_ENABLE             	    0
 //<o> AT Instance Number
 #define _AT_I_NUMBER                1
 //<o> AT TX Buffer Length
@@ -159,10 +159,10 @@
 //</e>
 
 //<q> XMODEM128 Enable/Disable
-#define _XMODEM128_ENABLE           1
+#define _XMODEM128_ENABLE           0
 
 //<q> YMODEM Enable/Disable
-#define _YMODEM_ENABLE              1
+#define _YMODEM_ENABLE              0
 
 //</h>
 

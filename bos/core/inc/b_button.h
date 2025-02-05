@@ -53,7 +53,14 @@
  * \defgroup BUTTON_Exported_TypesDefinitions
  * \{
  */
-
+typedef enum
+{
+    USER_BUTTON_1,
+    USER_BUTTON_2,
+    USER_BUTTON_3,
+    USER_BUTTON_WAKEUP,
+    USER_BUTTON_MAX
+}bBUTTON_ID_t;  
 
 /**
  * \}
@@ -92,7 +99,9 @@
  * \{
  */
 int bButtonInit(void);
+
 void bButtonCallback(void *p);
+uint8_t bButtonRead(void *p);
 /**
  * \}
  */

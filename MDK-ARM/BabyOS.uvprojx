@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -676,28 +677,6 @@
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
-          <Files>
-            <File>
-              <FileName>b_suart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_suart.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_w25x.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_w25x.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_f8l10d.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_f8l10d.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_xpt2046.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_xpt2046.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal</GroupName>
