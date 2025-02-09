@@ -133,18 +133,43 @@ int main()
 }
 ```
 
+更多使用介绍： 
 
-更多使用介绍： https://github.com/notrynohigh/BabyOS/wiki
+<https://gitee.com/notrynohigh/BabyOS/wikis>
+
+https://github.com/notrynohigh/BabyOS/wiki
 
 
 
 ## Baby如何成长
 
-​        之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
+​        之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。
 
-​        如果您觉得这套开源代码有意义，请给个Star表示支持，谢谢！
+​       希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
 
-notrynohigh@outlook.com
+​       码云：<https://gitee.com/notrynohigh/BabyOS>
+
+​       github：<https://github.com/notrynohigh/BabyOS>
+
+
+
+# 友情项目
+
+​	BabyOS包含了第三方开源代码，这部分代码都是MCU项目中比较实用的。
+
+​        b_shell 功能模块基于开源项目nr_micro_shell，<https://gitee.com/nrush/nr_micro_shell>，感谢作者Nrush
+
+​        b_button 功能模块基于开源项目FlexibleButton，<https://github.com/murphyzhao/FlexibleButton>，感谢作者Murphy
+
+
+
+**如果您觉得这套开源代码有意义，请给个Star表示支持，谢谢！**
+
+
+
+管理员邮箱：notrynohigh@outlook.com
+
+开发小组群：
 
 ![qqg](https://github.com/notrynohigh/BabyOS/raw/master/doc/qqg.png)
 
@@ -152,9 +177,9 @@ notrynohigh@outlook.com
 
 ## 更新记录
 
-| 日期    | 新增项                                             | 备注                                                         |
-| ------- | -------------------------------------------------- | ------------------------------------------------------------ |
-| 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019%E5%B9%B412%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
-| 2020.01 | 功能模块：KV存储                                   | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B41%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
-| 2020.02 | 功能模块：Xmodem128, Ymodem 驱动：xpt2046          | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B42%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
+| 日期    | 新增项                                                    | 备注                                                         |
+| ------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar        | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019%E5%B9%B412%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
+| 2020.01 | 功能模块：KV存储                                          | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B41%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
+| 2020.02 | 功能模块：Xmodem128, Ymodem, FlexibleButton 驱动：xpt2046 | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B42%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 
