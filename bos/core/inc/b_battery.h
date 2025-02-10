@@ -106,6 +106,7 @@
 int bBatteryGetmV(uint16_t *pval);
 int bBatteryCore(void);
 uint8_t bBatGetStatus(void);
+uint16_t bBatGetVoltageValue(void);
 /**
  * \}
  */

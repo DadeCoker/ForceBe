@@ -77,6 +77,7 @@
  */
 static uint16_t bLowThreshold = _BATTERY_THRESHOLD;  
 static uint8_t bBatteryStatus = BATTERY_STA_NORMAL;
+static uint16_t bBatteryVoltage = 0;
 /**
  * \}
  */
@@ -132,20 +133,37 @@ __weak int bBatteryGetmV(uint16_t *pmV)
  */
 int bBatteryCore()
 {
-    uint16_t mV = 0;
-    if(bBatteryGetmV(&mV) == 0)
+    uint32_t mv = 0;
+    uint16_t min_tmp = 0xffff, max_tmp = 0, tmp, i;
+    
+    for(i = 0;i < 5;i++)
     {
-        if(mV >= bLowThreshold)
+        if(bBatteryGetmV(&tmp) < 0)
         {
-            bBatteryStatus = BATTERY_STA_NORMAL;
+            return -1;
         }
-        else
+        mv += tmp;
+        if(tmp > max_tmp)
         {
-            bBatteryStatus = BATTERY_STA_LOW;
+            max_tmp = tmp;
         }
-        return 0;
+        if(tmp < min_tmp)
+        {
+            min_tmp = tmp;
+        }
     }
-    return -1;
+    tmp = (mv - min_tmp - max_tmp) / 3;
+
+    if(tmp >= bLowThreshold)
+    {
+        bBatteryStatus = BATTERY_STA_NORMAL;
+    }
+    else
+    {
+        bBatteryStatus = BATTERY_STA_LOW;
+    }
+    bBatteryVoltage = tmp;
+    return 0;
 }
 
 
@@ -159,6 +177,18 @@ uint8_t bBatGetStatus()
 {
     return bBatteryStatus;
 }
+
+
+/**
+ * \brief Get Voltage 
+ * \retval Battery voltage value (mv)
+ */
+uint16_t bBatGetVoltageValue()
+{
+    return bBatteryVoltage;
+}
+
+
 
 /**
  * \}
