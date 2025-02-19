@@ -126,7 +126,7 @@ int bInit()
 int bExec()
 {
 #if _BATTERY_ENABLE
-    static uint32_t b_tick = 0;
+    static uint32_t b_tick = 0xffffffff - MS2TICKS(_BATTERY_D_CYCLE);
     if(bHalGetTick() - b_tick > (MS2TICKS(_BATTERY_D_CYCLE)))
     {
         b_tick = bHalGetTick();
