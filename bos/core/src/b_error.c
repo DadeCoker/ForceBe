@@ -1,8 +1,8 @@
 /**
  *!
  * \file        b_error.c
- * \version     v0.1.1
- * \date        2020/02/11
+ * \version     v1.0.1
+ * \date        2020/02/24
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -133,7 +133,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
 {
     static uint8_t einit = 0;
     static uint8_t index = 0;
-    uint32_t i = 0;
+    uint32_t i = 0, valid_index = _ERROR_Q_LENGTH;
     uint32_t tick = 0;
     if(einit == 0)
     {
@@ -156,16 +156,18 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
                 {
                     bErrorRecordL0[i].s_tick = 0;
                     bErrorRecordL0[i].utc = utc;
+                    break;
                 }
-                return 0;
             }
         }
-        
-        bErrorRecordL0[index].err = err;
-		bErrorRecordL0[index].utc = utc;
-        bErrorRecordL0[index].d_tick = interval;
-        bErrorRecordL0[index].s_tick = 0;
-        index = (index + 1) % _ERROR_Q_LENGTH;
+        if(i >= _ERROR_Q_LENGTH)
+        {
+            bErrorRecordL0[index].err = err;
+            bErrorRecordL0[index].utc = utc;
+            bErrorRecordL0[index].d_tick = interval;
+            bErrorRecordL0[index].s_tick = 0;
+            index = (index + 1) % _ERROR_Q_LENGTH;
+        }
     }
     else if(level == BERROR_LEVEL_1)
     {
@@ -173,19 +175,25 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
         {
             if(bErrorRecordL1[i].err == err)
             {
-                return 0;
+                break;
+            }
+            else if(bErrorRecordL1[i].err == INVALID_ERR)
+            {
+                valid_index = i;
             }
         }
-        
-        for(i = 0;i < _ERROR_Q_LENGTH;i++)
+        if(i >= _ERROR_Q_LENGTH)
         {
-            if(bErrorRecordL1[i].err == INVALID_ERR)
+            if(valid_index < _ERROR_Q_LENGTH)
             {
-                bErrorRecordL1[i].err = err;
-                bErrorRecordL1[i].d_tick = interval;
-                bErrorRecordL1[i].s_tick = 0;
-				bErrorRecordL1[i].utc = utc;
-                break;
+                bErrorRecordL1[valid_index].err = err;
+                bErrorRecordL1[valid_index].d_tick = interval;
+                bErrorRecordL1[valid_index].s_tick = 0;
+                bErrorRecordL1[valid_index].utc = utc;
+            }
+            else
+            {
+                return -1;
             }
         }
     }
@@ -217,12 +225,8 @@ int bErrorCore()
             {
                 bFcb(&bErrorRecordL0[i]);
             }
-            return 0;
         }
-    }
-    
-    for(i = 0;i < _ERROR_Q_LENGTH;i++)
-    {
+        
         if(bErrorRecordL1[i].err != INVALID_ERR)
         {
             tick = bErrorTick - bErrorRecordL1[i].s_tick;
@@ -234,27 +238,38 @@ int bErrorCore()
                 {
                     bFcb(&bErrorRecordL1[i]);
                 }
-                return 0;
             }
-        }
-    }   
-    return -1;
+        } 
+    } 
+    return 0;
 }
 
 /**
- * \brief Delete a LEVEL1 ERROR in bErrorRecordL1
- * \param perr Pointer to bErrorInfo_t
+ * \brief Remove error from queue
+ * \param e_no Error number
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bErrorClear(bErrorInfo_t *perr)
+int bErrorClear(uint8_t e_no)
 {
-    if(perr == NULL)
+    int i;
+    if(e_no == INVALID_ERR)
     {
         return -1;
     }
-    perr->err = INVALID_ERR;
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
+    {
+        if(bErrorRecordL0[i].err == e_no)
+        {
+            bErrorRecordL0[i].err = INVALID_ERR;
+        }
+        
+        if(bErrorRecordL1[i].err == e_no)
+        {
+            bErrorRecordL1[i].err = INVALID_ERR;
+        } 
+    }
     return 0;
 }
 

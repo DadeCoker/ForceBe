@@ -89,6 +89,11 @@
 #define _TX_ENABLE           		0
 //<o> TX Instance Number
 #define _TX_I_NUMBER          	    1
+//<e> Protocol Enable/Disable
+#define _PROTO_ENABLE         		0
+//<o> Protocol Instance Number
+#define _PROTO_I_NUMBER             1
+//</e>
 //</e>
 
 
@@ -128,21 +133,6 @@
 #define _KV_PAIR_NUMBER             32
 //</e>
 
-
-//<e> Protocol Enable/Disable
-#define _PROTO_ENABLE         		0
-//<o> Protocol Instance Number
-#define _PROTO_I_NUMBER             1
-//<e> OTA Enable/Disable
-#define _PROTO_OTA_ENABLE         	1
-//<o> OTA Info Address
-#define _OTA_INFO_ADDRESS           0
-//<o> OTA Data Address
-#define _OTA_DATA_ADDRESS           0X1000
-//<o> OTA Buffer Size
-#define _OTA_BUFF_SIZE              150
-//</e>
-//</e>
 
 //<e> FIFO Enable/Disable
 #define _FIFO_ENABLE             	0

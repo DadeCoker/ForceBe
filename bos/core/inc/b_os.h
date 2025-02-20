@@ -43,7 +43,6 @@
 #include "b_error.h"
 #include "b_event.h"
 #include "b_modbus.h"
-#include "b_ota.h"
 #include "b_protocol.h"
 #include "b_sda.h"
 #include "b_sdb.h"

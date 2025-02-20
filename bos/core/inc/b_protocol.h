@@ -67,7 +67,7 @@ typedef struct
 
 #pragma pack()
 
-typedef int (*pdispatch)(uint8_t *pbuf, uint32_t len);
+typedef int (*pdispatch)(uint8_t cmd, uint8_t *param, uint8_t param_len);
 
 typedef struct
 {
@@ -117,9 +117,8 @@ typedef struct
  */
 int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f);
 int bProtocolSetID(int no, uint32_t id);
-int bProtocolParseCmd(int no, uint8_t *pbuf, uint8_t len);
-int bProtocolPack(int no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size);
-int bProtocolUnpack(uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size);
+int bProtocolParse(int no, uint8_t *pbuf, uint8_t len);
+int bProtocolSend(int no, uint8_t cmd, uint8_t *param, uint8_t param_size);
 /**
  * \}
  */

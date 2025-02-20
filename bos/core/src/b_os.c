@@ -65,7 +65,12 @@
  * \defgroup BOS_Private_Macros
  * \{
  */
-   
+extern int bErrorCore(void);
+extern int bBatteryCore(void);
+extern void bXmodem128Timeout(void);
+extern void bYmodemTimeout(void);
+extern int bEventCore(void);
+extern int bTX_Core(void);
 /**
  * \}
  */

@@ -130,7 +130,8 @@ int bAT_Regist(pAT_TX ptx)
 /**
  * \brief Transmit the AT command and wait for a response
  * \param no AT instance id \ref bAT_Regist
- * \param pe_resp pointer to a struct that indicate timeout and receive response data
+ * \param pe_resp pointer to a struct that indicate timeout and received data
+ *           it can be NULL, if u dont care the data in the response
  * \param pcmd AT command
  * \retval Result
  *          \arg 0  OK
@@ -156,18 +157,26 @@ int bAT_Write(int no, bAT_ExpectedResp_t *pe_resp, const char *pcmd, ...)
     bAT_Info[no].r_flag = 0;
     bAT_Info[no].r_len = 0;
     bAT_Info[no].AT_TXFunc(bAT_Info[no].buf, str_len);
-    bAT_Info[no].stat = AT_STA_WAIT;
-    while(bAT_Info[no].r_flag == 0)
+    
+    if(pe_resp == NULL)
     {
-        if((bHalGetTick() - bAT_Info[no].ctick) > pe_resp->timeout)
-        {
-            bAT_Info[no].stat = AT_STA_NULL;
-            return -1;
-        }
+        bAT_Info[no].stat = AT_STA_NULL;
     }
-    pe_resp->pResp = bAT_Info[no].buf;
-    pe_resp->len = bAT_Info[no].r_len;
-    bAT_Info[no].stat = AT_STA_NULL;
+    else
+    {
+        bAT_Info[no].stat = AT_STA_WAIT;
+        while(bAT_Info[no].r_flag == 0)
+        {
+            if((bHalGetTick() - bAT_Info[no].ctick) > pe_resp->timeout)
+            {
+                bAT_Info[no].stat = AT_STA_NULL;
+                return -1;
+            }
+        }
+        pe_resp->pResp = bAT_Info[no].buf;
+        pe_resp->len = bAT_Info[no].r_len;
+        bAT_Info[no].stat = AT_STA_NULL;
+    }
     return 0;
 }
 

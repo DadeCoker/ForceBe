@@ -111,7 +111,6 @@ typedef struct
  * \defgroup TX_Exported_Functions
  * \{
  */
-int bTX_Core(void);
 int bTX_CplCallback(int no);
 int bTX_Regist(uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no); 
 int bTX_Request(int no, uint8_t *pbuf, uint16_t size, uint8_t flag);

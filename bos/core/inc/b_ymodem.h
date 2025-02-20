@@ -132,7 +132,6 @@ int bYmodemInit(pymcb_t fcb, pymsend fs);
 int bYmodemParse(uint8_t *pbuf, uint16_t len);
 int bYmodemStart(void);
 int bYmodemStop(void);
-void bYmodemTimeout(void);
 /**
  * \}
  */

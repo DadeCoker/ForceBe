@@ -97,7 +97,16 @@ static uint8_t bProtocolInfoIndex = 0;
  * \defgroup PROTOCOL_Private_Functions
  * \{
  */
-
+static uint8_t _bProtocolCalCheck(uint8_t *pbuf, uint8_t len)
+{
+    uint8_t tmp, i;
+    tmp = pbuf[0];
+    for(i = 1;i < len;i++)
+    {
+        tmp += pbuf[i];
+    }
+    return tmp;
+} 
 
 /**
  * \}
@@ -140,9 +149,11 @@ int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolParseCmd(int no, uint8_t *pbuf, uint8_t len)
+int bProtocolParse(int no, uint8_t *pbuf, uint8_t len)
 {
     bProtocolHead_t *phead = (bProtocolHead_t *)pbuf;
+    uint8_t length;
+    uint8_t crc;
     if(pbuf == NULL || len < (sizeof(bProtocolHead_t) + 1) || no >= bProtocolInfoIndex || no < 0)
     {
         return -1;
@@ -152,7 +163,20 @@ int bProtocolParseCmd(int no, uint8_t *pbuf, uint8_t len)
     {
         return -1;
     }
-    return bProtocolInfo[no].f(pbuf, len);
+    
+    length = phead->len + sizeof(bProtocolHead_t);
+    if(length > len)
+    {
+        return -1;
+    }  
+    crc = _bProtocolCalCheck(pbuf, length - 1);
+    if(crc != pbuf[length - 1])
+    {
+        b_log("crc error!%d %d", crc, pbuf[length - 1]);
+        return -1;
+    }
+    
+    return bProtocolInfo[no].f(phead->cmd, &pbuf[sizeof(bProtocolHead_t)], phead->len - 1);
 }
 
 
@@ -181,80 +205,34 @@ int bProtocolSetID(int no, uint32_t id)
  * \brief pack and start a TX request
  * \param no Protocol instance \ref bProtocolRegist
  * \param cmd Protocol command
- * \param psrc Pointer to payload
- * \param pdes Pointer to data buffer
- * \param size size of payload
+ * \param param Pointer to the command param
+ * \param param_size size of the param
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolPack(int no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)
+int bProtocolSend(int no, uint8_t cmd, uint8_t *param, uint8_t param_size)
 {
     uint8_t length = 0;
     bProtocolHead_t *phead;
-    
-    if((psrc == NULL && size > 0) || pdes == NULL || no >= bProtocolInfoIndex || no < 0)
+    uint8_t tmp_buf[262];
+    if((param == NULL && param_size > 0) || no >= bProtocolInfoIndex || no < 0)
     {
         return -1;
     }
-    
-    phead = (bProtocolHead_t *)pdes;
+    phead = (bProtocolHead_t *)tmp_buf;
     phead->head = PROTOCOL_HEAD;
     phead->device_id = bProtocolInfo[no].id;
     phead->cmd = cmd;
-    phead->len = 1 + size;
+    phead->len = 1 + param_size;
     
-    if(psrc != NULL)
-    {
-        memcpy(pdes + sizeof(bProtocolHead_t), psrc, size);
-    }
+    memcpy(&tmp_buf[sizeof(bProtocolHead_t)], param, param_size);
     
     length = sizeof(bProtocolHead_t) + phead->len;
-    *(pdes + length - 1) = bSUM(pdes, length - 1);
     
-    return bTX_Request(bProtocolInfo[no].tx_no, pdes, length, BTX_REQ_LEVEL1);
-}
-
-
-/**
- * \brief Parse data
- * \param pbuf Pointer to data buffer
- * \param len Amount of data
- * \param pdata Pointer to payload
- * \param size size of payload
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
- */
-int bProtocolUnpack(uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size)
-{
-    if(pbuf == NULL)
-    {
-        return -1;
-    }
+    tmp_buf[length - 1] = _bProtocolCalCheck(tmp_buf, length - 1);
     
-    bProtocolHead_t *phead = (bProtocolHead_t *)pbuf;
-    uint8_t length = phead->len + sizeof(bProtocolHead_t);
-    if(phead->len != (size + 1) || length > len)
-    {
-        return -1;
-    }  
-    uint8_t crc = bSUM(pbuf, length - 1);
-    if(crc != pbuf[length - 1])
-    {
-        b_log("crc error!%d %d", crc, pbuf[length - 1]);
-        return -1;
-    }
-    if(pdata == NULL && size > 0)
-    {
-        return -1;
-    }
-    
-    if(pdata != NULL)
-    {
-        *pdata = &pbuf[sizeof(bProtocolHead_t)];
-    }
-    return 0;
+    return bTX_Request(bProtocolInfo[no].tx_no, tmp_buf, length, BTX_REQ_LEVEL1);
 }
 
 /**

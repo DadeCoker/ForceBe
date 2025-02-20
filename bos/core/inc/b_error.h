@@ -1,8 +1,8 @@
 /**
  *!
  * \file        b_error.h
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v1.0.1
+ * \date        2020/02/24
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -105,8 +105,7 @@ typedef void (*pecb)(bErrorInfo_t *);
  */
 int bErrorInit(pecb cb);
 int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level);
-int bErrorCore(void);
-int bErrorClear(bErrorInfo_t *perr);
+int bErrorClear(uint8_t e_no);
 /**
  * \}
  */
