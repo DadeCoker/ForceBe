@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V0.0.2</span>
+   &#160;<span id="projectnumber">V1.1.0</span>
    </div>
   </td>
  </tr>
@@ -49,73 +49,25 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga042c82b5764c60b4078866635c8e8c7b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga042c82b5764c60b4078866635c8e8c7b">bProtocolRegist</a> (uint32_t id, uint8_t tx_no, <a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#ga385520b45d23dc3a4dde23de92b85c75">pdispatch</a> f)</td></tr>
+<tr class="memitem:ga042c82b5764c60b4078866635c8e8c7b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga042c82b5764c60b4078866635c8e8c7b">bProtocolRegist</a> (uint32_t id, uint8_t tx_no, <a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#gad7aec36b9dbeafe443d1168d94320056">pdispatch</a> f)</td></tr>
 <tr class="separator:ga042c82b5764c60b4078866635c8e8c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadcb3551dcf55a58973810c4f348ffb0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gadcb3551dcf55a58973810c4f348ffb0d">bProtocolSetID</a> (int no, uint32_t id)</td></tr>
 <tr class="separator:gadcb3551dcf55a58973810c4f348ffb0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga201cb6ee4bc47d6551d221c631490300"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga201cb6ee4bc47d6551d221c631490300">bProtocolParseCmd</a> (int no, uint8_t *pbuf, uint8_t len)</td></tr>
-<tr class="separator:ga201cb6ee4bc47d6551d221c631490300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga52abd16bc752d1f1eb42ac3b0677d60a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga52abd16bc752d1f1eb42ac3b0677d60a">bProtocolPack</a> (int no, uint8_t cmd, uint8_t *psrc, uint8_t *pdes, uint8_t size)</td></tr>
-<tr class="separator:ga52abd16bc752d1f1eb42ac3b0677d60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa2f6a6a163f48963d802b9f6964f348c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gaa2f6a6a163f48963d802b9f6964f348c">bProtocolUnpack</a> (uint8_t *pbuf, uint8_t len, uint8_t **pdata, uint8_t size)</td></tr>
-<tr class="separator:gaa2f6a6a163f48963d802b9f6964f348c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab2aeea9cc3522c03adc155f6650fcb11"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gab2aeea9cc3522c03adc155f6650fcb11">bProtocolParse</a> (int no, uint8_t *pbuf, uint8_t len)</td></tr>
+<tr class="separator:gab2aeea9cc3522c03adc155f6650fcb11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4786ed1344ef06ab3c892d1bc72a1658"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga4786ed1344ef06ab3c892d1bc72a1658">bProtocolSend</a> (int no, uint8_t cmd, uint8_t *param, uint8_t param_size)</td></tr>
+<tr class="separator:ga4786ed1344ef06ab3c892d1bc72a1658"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga52abd16bc752d1f1eb42ac3b0677d60a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga52abd16bc752d1f1eb42ac3b0677d60a">&#9670;&nbsp;</a></span>bProtocolPack()</h2>
+<a id="gab2aeea9cc3522c03adc155f6650fcb11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab2aeea9cc3522c03adc155f6650fcb11">&#9670;&nbsp;</a></span>bProtocolParse()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int bProtocolPack </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>no</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>cmd</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>psrc</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>pdes</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ga201cb6ee4bc47d6551d221c631490300"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga201cb6ee4bc47d6551d221c631490300">&#9670;&nbsp;</a></span>bProtocolParseCmd()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int bProtocolParseCmd </td>
+          <td class="memname">int bProtocolParse </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>no</em>, </td>
@@ -163,8 +115,48 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#ga385520b45d23dc3a4dde23de92b85c75">pdispatch</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#gad7aec36b9dbeafe443d1168d94320056">pdispatch</a>&#160;</td>
           <td class="paramname"><em>f</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga4786ed1344ef06ab3c892d1bc72a1658"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4786ed1344ef06ab3c892d1bc72a1658">&#9670;&nbsp;</a></span>bProtocolSend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int bProtocolSend </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>no</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>cmd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>param</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>param_size</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -193,46 +185,6 @@ Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>id</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="gaa2f6a6a163f48963d802b9f6964f348c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaa2f6a6a163f48963d802b9f6964f348c">&#9670;&nbsp;</a></span>bProtocolUnpack()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int bProtocolUnpack </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>pbuf</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t **&#160;</td>
-          <td class="paramname"><em>pdata</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

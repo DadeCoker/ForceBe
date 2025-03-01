@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V1.0.0</span>
+   &#160;<span id="projectnumber">V1.1.0</span>
    </div>
   </td>
  </tr>
@@ -44,6 +44,11 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">b_protocol.h File Reference</div>  </div>
 </div><!--header-->
@@ -51,6 +56,35 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="b__config_8h_source.html">b_config.h</a>&quot;</code><br />
 </div>
 <p><a href="b__protocol_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_protocol_head__t.html">bProtocolHead_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_protocol_info__t.html">bProtocolInfo_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga683ebecc04749cb0016ec5ad14a2d4f2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___defines.html#ga683ebecc04749cb0016ec5ad14a2d4f2">PROTOCOL_HEAD</a>&#160;&#160;&#160;0xFE</td></tr>
+<tr class="separator:ga683ebecc04749cb0016ec5ad14a2d4f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:gad7aec36b9dbeafe443d1168d94320056"><td class="memItemLeft" align="right" valign="top">typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#gad7aec36b9dbeafe443d1168d94320056">pdispatch</a>) (uint8_t cmd, uint8_t *param, uint8_t param_len)</td></tr>
+<tr class="separator:gad7aec36b9dbeafe443d1168d94320056"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga042c82b5764c60b4078866635c8e8c7b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga042c82b5764c60b4078866635c8e8c7b">bProtocolRegist</a> (uint32_t id, uint8_t tx_no, <a class="el" href="group___p_r_o_t_o_c_o_l___exported___types_definitions.html#gad7aec36b9dbeafe443d1168d94320056">pdispatch</a> f)</td></tr>
+<tr class="separator:ga042c82b5764c60b4078866635c8e8c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadcb3551dcf55a58973810c4f348ffb0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gadcb3551dcf55a58973810c4f348ffb0d">bProtocolSetID</a> (int no, uint32_t id)</td></tr>
+<tr class="separator:gadcb3551dcf55a58973810c4f348ffb0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab2aeea9cc3522c03adc155f6650fcb11"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#gab2aeea9cc3522c03adc155f6650fcb11">bProtocolParse</a> (int no, uint8_t *pbuf, uint8_t len)</td></tr>
+<tr class="separator:gab2aeea9cc3522c03adc155f6650fcb11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4786ed1344ef06ab3c892d1bc72a1658"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___p_r_o_t_o_c_o_l___exported___functions.html#ga4786ed1344ef06ab3c892d1bc72a1658">bProtocolSend</a> (int no, uint8_t cmd, uint8_t *param, uint8_t param_size)</td></tr>
+<tr class="separator:ga4786ed1344ef06ab3c892d1bc72a1658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>!</p>
 <dl class="section version"><dt>Version</dt><dd>v0.0.1 </dd></dl>

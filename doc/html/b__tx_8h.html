@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V1.0.0</span>
+   &#160;<span id="projectnumber">V1.1.0</span>
    </div>
   </td>
  </tr>
@@ -44,6 +44,10 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">b_tx.h File Reference</div>  </div>
 </div><!--header-->
@@ -51,6 +55,42 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="b__config_8h_source.html">b_config.h</a>&quot;</code><br />
 </div>
 <p><a href="b__tx_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structb_t_x___info__t.html">bTX_Info_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga7aa1906cd89f143a8b84a94aee6c6a01"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga7aa1906cd89f143a8b84a94aee6c6a01">BTX_NULL</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:ga7aa1906cd89f143a8b84a94aee6c6a01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga044d6a85f234b1b943377d2fad6b9b01"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga044d6a85f234b1b943377d2fad6b9b01">BTX_REQ</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga044d6a85f234b1b943377d2fad6b9b01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga343b082979787f1f513ba177b55974ff"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga343b082979787f1f513ba177b55974ff">BTX_TXING</a>&#160;&#160;&#160;2</td></tr>
+<tr class="separator:ga343b082979787f1f513ba177b55974ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3f44a6868b98c1fe819e71490efac07c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga3f44a6868b98c1fe819e71490efac07c">BTX_WAIT</a>&#160;&#160;&#160;3</td></tr>
+<tr class="separator:ga3f44a6868b98c1fe819e71490efac07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa20024793ebb81a526e081ddcfb09338"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#gaa20024793ebb81a526e081ddcfb09338">BTX_END</a>&#160;&#160;&#160;4</td></tr>
+<tr class="separator:gaa20024793ebb81a526e081ddcfb09338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga69f593320cb6fabe15d8c542beb20cc5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga69f593320cb6fabe15d8c542beb20cc5">BTX_F_SYN</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:ga69f593320cb6fabe15d8c542beb20cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf57491ba86ae4fd5dbb9319ddb64534a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#gaf57491ba86ae4fd5dbb9319ddb64534a">BTX_F_ASYN</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:gaf57491ba86ae4fd5dbb9319ddb64534a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9018973ca6a9c00ae2b4c36addb27a15"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga9018973ca6a9c00ae2b4c36addb27a15">BTX_REQ_LEVEL0</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:ga9018973ca6a9c00ae2b4c36addb27a15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6d352ee8cc1803708ed984fad29f4fd1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___defines.html#ga6d352ee8cc1803708ed984fad29f4fd1">BTX_REQ_LEVEL1</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:ga6d352ee8cc1803708ed984fad29f4fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga2559a6f7eb2673174d7ca0676f1cc192"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___functions.html#ga2559a6f7eb2673174d7ca0676f1cc192">bTX_CplCallback</a> (int no)</td></tr>
+<tr class="separator:ga2559a6f7eb2673174d7ca0676f1cc192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga61ce9d9de75982f0d555892647510c8f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___functions.html#ga61ce9d9de75982f0d555892647510c8f">bTX_Regist</a> (uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no)</td></tr>
+<tr class="separator:ga61ce9d9de75982f0d555892647510c8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad2ecf5eb42e98c674c128c616fd0f8c4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___t_x___exported___functions.html#gad2ecf5eb42e98c674c128c616fd0f8c4">bTX_Request</a> (int no, uint8_t *pbuf, uint16_t size, uint8_t flag)</td></tr>
+<tr class="separator:gad2ecf5eb42e98c674c128c616fd0f8c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>!</p>
 <dl class="section version"><dt>Version</dt><dd>v0.0.1 </dd></dl>
