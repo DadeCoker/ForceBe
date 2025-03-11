@@ -267,7 +267,7 @@ int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len)
     uint16_t crc2 = ((uint16_t *)(psrc + sizeof(bMB_RTUS_Ack_t) - 1 + phead->len))[0];
     if(crc != crc2)
     {
-        b_log("crc error\r\n");
+        b_log_e("crc error\r\n");
         return -1;
     }
     return 0;

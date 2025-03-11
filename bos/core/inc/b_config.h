@@ -55,7 +55,11 @@
 //<q> Lunar Enable/Disable
 #define _LUNAR_ENABLE           	0
 
-//<q> Debug Enable/Disable
+//<o> Debug level
+//<0=> off
+//<1=> all
+//<2=> warn+error
+//<3=> error
 #define _DEBUG_ENABLE           	1
 
 //<e> Battery Enable/Disable
@@ -216,7 +220,7 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE              1
+#define _FLEXIBLEBUTTON_ENABLE              0
 
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
@@ -225,18 +229,14 @@
 
 //</h>
 
-
-
 #if _DEBUG_ENABLE
-#include <stdio.h>
-#define b_log(...)       printf(__VA_ARGS__)
-
+#include "b_log.h"
 #else
-
+#define b_log_i(...) 
+#define b_log_w(...) 
+#define b_log_e(...) 
 #define b_log(...)
-
-#endif  
-
+#endif
 
 #ifdef __cplusplus
 	}

@@ -667,6 +667,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_button.c</FilePath>
             </File>
+            <File>
+              <FileName>b_log.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_log.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

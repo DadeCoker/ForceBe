@@ -142,7 +142,7 @@ int bDeviceInit()
             if(bDriverTable[i]->init() < 0)
             {
                 bDeviceStatusTable[i] = BDEVICE_ERROR;
-                b_log("%s init error\r\n", bDeviceDescTable[i]);
+                b_log_e("%s init error\r\n", bDeviceDescTable[i]);
                 retval++;
             }
             else

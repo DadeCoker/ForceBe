@@ -275,7 +275,7 @@ int bSDA_Regist(bSDA_Struct_t st, uint8_t dev_no)
     pinfo->total_size += st.ferase_size;
     if(pinfo->total_size > st.fsize)
     {
-        printf("please rearrange total size %d-->%d\r\n", st.fsize, pinfo->total_size);
+        b_log_e("please rearrange total size %d-->%d\r\n", st.fsize, pinfo->total_size);
         return -1;
     }
     pinfo->base_address = st.fbase_address;

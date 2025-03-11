@@ -155,7 +155,7 @@ int bTX_Core()
             bTX_InfoTable[i].fd = bOpen(bTX_InfoTable[i].dev_no, BCORE_FLAG_RW);
             if(bTX_InfoTable[i].fd < 0)
             {
-                b_log("tx open err\r\n");
+                b_log_e("tx open err\r\n");
                 continue;
             }  
             bTX_InfoTable[i].td_flag = 0;
@@ -178,7 +178,7 @@ int bTX_Core()
             else
             {
                 bClose(bTX_InfoTable[i].fd);
-                b_log("tx write err\r\n");
+                b_log_e("tx write err\r\n");
                 continue;
             }
         }

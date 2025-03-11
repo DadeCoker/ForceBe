@@ -123,7 +123,12 @@ int main(void)
  
   /****************************Init*******************************/
   bInit();                                      //BabyOS Init
-  bButtonInit();
+  
+  b_log("b_log debug level:%d\r\n\r\n", _DEBUG_ENABLE);
+  b_log_i("b_log_i debug level:%d\r\n\r\n", _DEBUG_ENABLE);
+  b_log_w("b_log_w debug level:%d\r\n\r\n", _DEBUG_ENABLE);
+  b_log_e("b_log_e debug level:%d\r\n\r\n", _DEBUG_ENABLE);
+  
   while (1)
   {
       bExec();

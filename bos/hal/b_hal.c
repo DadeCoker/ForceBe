@@ -31,7 +31,7 @@
    
 /*Includes ----------------------------------------------*/
 #include "b_hal.h"   
-
+#include <string.h>
 /** 
  * \addtogroup B_HAL
  * \{
@@ -103,11 +103,9 @@ volatile uint32_t bSysTick = 0;
  * \{
  */
 
-int fputc(int c, FILE *p)
+void bLogOutput(void *p)
 {
-    uint8_t ch = (uint8_t)(c & 0xff);
-    HAL_UART_Transmit(&huart1, &ch, 1, 0xff);    
-    return c;
+    HAL_UART_Transmit(&huart1, p, strlen(p), 0xffff);    
 }
 
 

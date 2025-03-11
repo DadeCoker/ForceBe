@@ -95,7 +95,7 @@ static int _bKV_ISFirstTime()
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("_bKV_ISNew open dev error\r\n");
+        b_log_e("_bKV_ISNew open dev error\r\n");
         return -2;
     }
     bLseek(fd, bKV_Info.s_address);
@@ -110,7 +110,7 @@ static int _bKV_ISFirstTime()
     }
     else
     {
-        b_log("_bKV_ISNew read dev error\r\n");
+        b_log_e("_bKV_ISNew read dev error\r\n");
         return -2;
     }
     return 0;
@@ -128,7 +128,7 @@ static int _bKV_ClearSector(uint8_t t)
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("_bKV_ClearSector open dev error\r\n");
+        b_log_e("_bKV_ClearSector open dev error\r\n");
         return -1;
     }
     
@@ -179,7 +179,7 @@ static int _bKV_Locate(uint8_t t)
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("_bKV_LoadInfo open dev error\r\n");
+        b_log_e("_bKV_LoadInfo open dev error\r\n");
         return -1;
     }
     
@@ -214,7 +214,7 @@ static int _bKV_UpdateIndexTable(uint8_t t, uint16_t end_index)
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("_bKV_... open dev error\r\n");
+        b_log_e("_bKV_... open dev error\r\n");
         return -1;
     }
     
@@ -349,7 +349,7 @@ static int _bKV_SwitchSector()
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("... open dev error\r\n");
+        b_log_e("... open dev error\r\n");
         return -1;
     }
     for(i = 0;i < _KV_PAIR_NUMBER;i++)
@@ -409,7 +409,7 @@ static int _bKV_Set(uint32_t id, uint8_t *pbuf, uint16_t len)
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("... open dev error\r\n");
+        b_log_e("... open dev error\r\n");
         return -1;
     }
     
@@ -440,7 +440,7 @@ static int _bKV_Get(uint16_t index, uint8_t *pbuf)
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {
-        b_log("... open dev error\r\n");
+        b_log_e("... open dev error\r\n");
         return -1;
     }
     bLseek(fd, bKV_IndexTable[index].address);
@@ -483,12 +483,12 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
     int retval = 0;
     if(dev_no < 0)
     {
-        b_log("dev_no %d error\r\n", dev_no);
+        b_log_e("dev_no %d error\r\n", dev_no);
         return -1;
     }
     if(size < 3 * e_size)
     {
-        b_log("size too small, at least 4 times e_size\r\n");
+        b_log_e("size too small, at least 4 times e_size\r\n");
         return -1;
     }
     
@@ -523,7 +523,7 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
     {
         if(_bKV_LoadInfo() < 0)
         {
-            b_log("load info error...\r\n");
+            b_log_e("load info error...\r\n");
             bKV_Info.status = bKV_ERROR;
             return -1;
         }

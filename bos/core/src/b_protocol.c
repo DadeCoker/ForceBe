@@ -172,7 +172,7 @@ int bProtocolParse(int no, uint8_t *pbuf, uint8_t len)
     crc = _bProtocolCalCheck(pbuf, length - 1);
     if(crc != pbuf[length - 1])
     {
-        b_log("crc error!%d %d", crc, pbuf[length - 1]);
+        b_log_e("crc error!%d %d", crc, pbuf[length - 1]);
         return -1;
     }
     
