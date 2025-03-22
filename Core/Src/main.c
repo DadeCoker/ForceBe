@@ -76,6 +76,15 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+UG_WINDOW wnd;
+UG_OBJECT wmdObjTable[3];
+UG_BUTTON btn1;
+
+void _GUI_Callback( UG_MESSAGE* msg)
+{
+
+}
+
 
 /* USER CODE END 0 */
 
@@ -124,11 +133,13 @@ int main(void)
   /****************************Init*******************************/
   bInit();                                      //BabyOS Init
   
-  b_log("b_log debug level:%d\r\n\r\n", _DEBUG_ENABLE);
-  b_log_i("b_log_i debug level:%d\r\n\r\n", _DEBUG_ENABLE);
-  b_log_w("b_log_w debug level:%d\r\n\r\n", _DEBUG_ENABLE);
-  b_log_e("b_log_e debug level:%d\r\n\r\n", _DEBUG_ENABLE);
+  bGUI_Init(SSD1289, XPT2046);
   
+  UG_WindowCreate( &wnd, wmdObjTable, 3, _GUI_Callback);
+  UG_WindowSetTitleText(&wnd, "BabyOS");
+  UG_ButtonCreate( &wnd, &btn1, BTN_ID_0, 50, 50, 200, 200 );
+  UG_ButtonSetText(&wnd, BTN_ID_0, "UGUI");
+  UG_WindowShow(&wnd);
   while (1)
   {
       bExec();
@@ -334,15 +345,25 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, LCD_WR_Pin|LCD_RS_Pin|LCD_RD_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_SET);
@@ -360,12 +381,33 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SUART_RX_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : PE9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
   /*Configure GPIO pin : W25X_CS_Pin */
   GPIO_InitStruct.Pin = W25X_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(W25X_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LCD_WR_Pin LCD_RS_Pin LCD_RD_Pin */
+  GPIO_InitStruct.Pin = LCD_WR_Pin|LCD_RS_Pin|LCD_RD_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LCD_CS_Pin */
+  GPIO_InitStruct.Pin = LCD_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LCD_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : TP_CS_Pin */
   GPIO_InitStruct.Pin = TP_CS_Pin;

@@ -71,6 +71,7 @@ extern void bXmodem128Timeout(void);
 extern void bYmodemTimeout(void);
 extern int bEventCore(void);
 extern int bTX_Core(void);
+extern void bGUI_TouchExec(void);
 /**
  * \}
  */
@@ -117,6 +118,14 @@ extern int bTX_Core(void);
  */
 int bInit()
 {
+    b_log("______________________________________________\n\r");
+    b_log("    ____                         __       __  \n\r");
+    b_log("    /   )          /           /    )   /    \\\n\r");
+    b_log("---/__ /-----__---/__---------/----/----\\-----\n\r");
+    b_log("  /    )   /   ) /   ) /   / /    /      \\    \n\r");
+    b_log("_/____/___(___(_(___/_(___/_(____/___(____/___\n\r");
+    b_log("                         /                    \n\r");
+    b_log("                     (_ /                     \n\r");
     bHalInit();
     b_log("device number:%d\r\n", bDEV_MAX_NUM);
     return bDeviceInit();
@@ -173,6 +182,15 @@ int bExec()
 #if _TX_ENABLE
     bTX_Core();
 #endif
+#if _UGUI_ENABLE
+    static uint32_t g_tick = 0;
+    if(bHalGetTick() - g_tick > (MS2TICKS(10)))
+    {
+        g_tick = bHalGetTick();
+        bGUI_TouchExec();
+    }
+    UG_Update();
+#endif    
     return 0;
 }
 

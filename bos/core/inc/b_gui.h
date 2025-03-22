@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_hal.c
+ * \file        b_gui.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/02
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,137 +21,87 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO GUI SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-   
+#ifndef __B_GUI_H__
+#define __B_GUI_H__
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /*Includes ----------------------------------------------*/
-#include "b_hal.h"   
-#include <string.h>
+#include "b_config.h"
+#if _UGUI_ENABLE
+#include "UGUI.h"
 /** 
- * \addtogroup B_HAL
+ * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup HAL
+ * \addtogroup GUI
  * \{
  */
 
 /** 
- * \defgroup HAL_Private_TypesDefinitions
+ * \defgroup GUI_Exported_TypesDefinitions
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Defines
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Variables
- * \{
- */
-extern UART_HandleTypeDef huart1;
-volatile uint32_t bSysTick = 0;
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_FunctionPrototypes
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Functions
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \addtogroup HAL_Exported_Functions
- * \{
- */
-
-void bLogOutput(void *p)
+typedef struct
 {
-    HAL_UART_Transmit(&huart1, p, strlen(p), 0xffff);    
-}
+    int lcd_id;
+    int touch_id;
+}bGUI_Info_t;
 
-
-void bHalEnterCritical()
-{
-
-}    
-
-void bHalExitCritical()
-{
-
-}
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup GUI_Exported_Defines
+ * \{
+ */
 
 
 /**
- * \brief Call this function _TICK_FRQ_HZ times per second \ref _TICK_FRQ_HZ
+ * \}
  */
-void bHalIncSysTick()
-{
-    bSysTick += 1;
-}
+   
+/** 
+ * \defgroup GUI_Exported_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup GUI_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup GUI_Exported_Functions
+ * \{
+ */
+int bGUI_Init(int lcd, int touch);
 
-void LCD_DB_Init(uint8_t t)
-{
-    GPIO_InitTypeDef GPIO_Init;
-    GPIO_Init.Pin = GPIO_PIN_All;
-    GPIO_Init.Pull = GPIO_NOPULL;
-    GPIO_Init.Speed = GPIO_SPEED_FREQ_HIGH;
-    if(t)
-    {
-        GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
-    }
-    else
-    {
-        GPIO_Init.Mode = GPIO_MODE_INPUT;
-    }
-    HAL_GPIO_Init(GPIOE, &GPIO_Init);
-}
-
-void bHalInit()
-{
-    LCD_DB_Init(1);// Add code ...gpio init or some other functions
-}
-
-
-
+/**
+ * \}
+ */
+ 
+ 
 /**
  * \}
  */
@@ -159,11 +109,13 @@ void bHalInit()
 /**
  * \}
  */
+#endif
 
+#ifdef __cplusplus
+	}
+#endif
 
-/**
- * \}
- */
+#endif  
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

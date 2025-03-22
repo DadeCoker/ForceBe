@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_hal.c
+ * \file        b_ssd1289.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/02
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,129 +28,76 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+#ifndef __B_SSD1289_H__
+#define __B_SSD1289_H__
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /*Includes ----------------------------------------------*/
-#include "b_hal.h"   
-#include <string.h>
+#include "b_config.h" 
+#include "b_device.h"
 /** 
- * \addtogroup B_HAL
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup HAL
+ * \addtogroup SSD1289
  * \{
  */
 
 /** 
- * \defgroup HAL_Private_TypesDefinitions
+ * \defgroup SSD1289_Exported_TypesDefinitions
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Defines
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Variables
- * \{
- */
-extern UART_HandleTypeDef huart1;
-volatile uint32_t bSysTick = 0;
+typedef bDriverInterface_t bSSD1289_Driver_t;  
 
 /**
  * \}
  */
    
 /** 
- * \defgroup HAL_Private_FunctionPrototypes
+ * \defgroup SSD1289_Exported_Defines
  * \{
  */
-   
+
+
 /**
  * \}
  */
    
 /** 
- * \defgroup HAL_Private_Functions
+ * \defgroup SSD1289_Exported_Macros
  * \{
  */
-   
+
+
+
 /**
  * \}
  */
    
 /** 
- * \addtogroup HAL_Exported_Functions
+ * \defgroup SSD1289_Exported_Variables
  * \{
  */
-
-void bLogOutput(void *p)
-{
-    HAL_UART_Transmit(&huart1, p, strlen(p), 0xffff);    
-}
-
-
-void bHalEnterCritical()
-{
-
-}    
-
-void bHalExitCritical()
-{
-
-}
-
+extern bSSD1289_Driver_t bSSD1289_Driver;   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SSD1289_Exported_Functions
+ * \{
+ */
+int bSSD1289_Init(void);
 
 /**
- * \brief Call this function _TICK_FRQ_HZ times per second \ref _TICK_FRQ_HZ
+ * \}
  */
-void bHalIncSysTick()
-{
-    bSysTick += 1;
-}
-
-void LCD_DB_Init(uint8_t t)
-{
-    GPIO_InitTypeDef GPIO_Init;
-    GPIO_Init.Pin = GPIO_PIN_All;
-    GPIO_Init.Pull = GPIO_NOPULL;
-    GPIO_Init.Speed = GPIO_SPEED_FREQ_HIGH;
-    if(t)
-    {
-        GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
-    }
-    else
-    {
-        GPIO_Init.Mode = GPIO_MODE_INPUT;
-    }
-    HAL_GPIO_Init(GPIOE, &GPIO_Init);
-}
-
-void bHalInit()
-{
-    LCD_DB_Init(1);// Add code ...gpio init or some other functions
-}
-
-
+ 
 
 /**
  * \}
@@ -160,11 +107,14 @@ void bHalInit()
  * \}
  */
 
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif
 
-/**
- * \}
- */
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
 
 

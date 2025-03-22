@@ -72,6 +72,28 @@
 #define TP_CS_RESET()               HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_RESET)
 #define TP_CS_SET()                 HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_SET)
 
+/********************************************************************************************LCD*****/
+#define LCD_CS_SET()                HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET)
+#define LCD_CS_RESET()              HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET)
+
+#define LCD_WR_SET()                HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_SET)
+#define LCD_WR_RESET()              HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_RESET)
+
+#define LCD_RD_SET()                HAL_GPIO_WritePin(LCD_RD_GPIO_Port, LCD_RD_Pin, GPIO_PIN_SET)
+#define LCD_RD_RESET()              HAL_GPIO_WritePin(LCD_RD_GPIO_Port, LCD_RD_Pin, GPIO_PIN_RESET)
+
+#define LCD_RS_SET()                HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_SET)
+#define LCD_RS_RESET()              HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET)
+
+#define LCD_DB_WRITE(n)             do{GPIOE->ODR = n;}while(0)
+#define LCD_DB_READ()               ((uint16_t)GPIOE->IDR)
+
+extern void LCD_DB_Init(unsigned char t);
+
+#define LCD_DB_OUTPUT()             LCD_DB_Init(1)
+#define LCD_DB_INPUT()              LCD_DB_Init(0)
+/******************************************************************************************************/
+
 /**
  * \}
  */

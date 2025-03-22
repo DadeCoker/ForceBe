@@ -55,6 +55,14 @@
 #define SUART_RX_GPIO_Port GPIOA
 #define W25X_CS_Pin GPIO_PIN_12
 #define W25X_CS_GPIO_Port GPIOB
+#define LCD_WR_Pin GPIO_PIN_10
+#define LCD_WR_GPIO_Port GPIOD
+#define LCD_RS_Pin GPIO_PIN_13
+#define LCD_RS_GPIO_Port GPIOD
+#define LCD_RD_Pin GPIO_PIN_15
+#define LCD_RD_GPIO_Port GPIOD
+#define LCD_CS_Pin GPIO_PIN_8
+#define LCD_CS_GPIO_Port GPIOC
 #define TP_CS_Pin GPIO_PIN_9
 #define TP_CS_GPIO_Port GPIOC
 

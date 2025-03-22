@@ -134,6 +134,7 @@ int bDeviceInit()
     {
         return -1;
     }
+    memset(&bNullDriver, 0, sizeof(bNullDriver));
     memset(bDeviceStatusTable, 0, sizeof(bDeviceStatusTable));
     for(i = 0;i < bDEV_MAX_NUM;i++)
     {

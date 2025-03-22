@@ -221,11 +221,29 @@
 
 //<e> FlexibleButton Enable/Disable
 #define _FLEXIBLEBUTTON_ENABLE              0
-
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
+//</e>
+
+//<e> UGUI Enable/Disable
+#define _UGUI_ENABLE                        1
+//<o> X SIZE
+#define _LCD_X_SIZE                         240 
+//<o> Y SIZE
+#define _LCD_Y_SIZE                         320 
+
+//<o> X TOUCH AD MIN
+#define _X_TOUCH_AD_MIN                     476 
+//<o> X TOUCH AD MAX
+#define _X_TOUCH_AD_MAX                     3752 
+
+//<o> Y TOUCH AD MIN
+#define _Y_TOUCH_AD_MIN                     338 
+//<o> Y TOUCH AD MAX
+#define _Y_TOUCH_AD_MAX                     3592 
 
 //</e>
+
 
 //</h>
 

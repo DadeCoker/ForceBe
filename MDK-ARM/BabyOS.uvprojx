@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -337,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal;..\bos\core\thirdparty\nr_micro_shell\inc;..\bos\core\thirdparty\FlexibleButton</IncludePath>
+              <IncludePath>../Core/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Drivers/CMSIS/Include; ..\bos\core\inc\; ..\bos\drivers\inc\; ..\bos\hal; ..\bos\core\thirdparty\FlexibleButton; ..\bos\core\thirdparty\nr_micro_shell\inc; ..\bos\core\thirdparty\UGUI</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -672,10 +673,27 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_log.c</FilePath>
             </File>
+            <File>
+              <FileName>b_gui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_gui.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>b_ssd1289.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_ssd1289.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_xpt2046.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_xpt2046.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal</GroupName>
@@ -724,6 +742,26 @@
               <FileName>flexible_button.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\bos\core\thirdparty\FlexibleButton\flexible_button.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/UGUI</GroupName>
+          <Files>
+            <File>
+              <FileName>ugui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\thirdparty\UGUI\ugui.c</FilePath>
+            </File>
+            <File>
+              <FileName>ugui.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\bos\core\thirdparty\UGUI\ugui.h</FilePath>
+            </File>
+            <File>
+              <FileName>ugui_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\bos\core\thirdparty\UGUI\ugui_config.h</FilePath>
             </File>
           </Files>
         </Group>
