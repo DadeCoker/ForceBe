@@ -158,6 +158,14 @@
 //<q> YMODEM Enable/Disable
 #define _YMODEM_ENABLE              0
 
+
+//<e> Menu Enable/Disable
+#define _MENU_ENABLE                1
+//<o> Menu Item Number
+#define _MENU_ITEM_NUMBER           10
+//</e>
+
+
 //</h>
 
 
@@ -220,7 +228,7 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE              0
+#define _FLEXIBLEBUTTON_ENABLE              1
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
 //</e>

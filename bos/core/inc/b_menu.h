@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_os.h
+ * \file        b_menu.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/04
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,57 +28,92 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_OS_H__
-#define __B_OS_H__
+#ifndef __B_MENU_H__
+#define __B_MENU_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_battery.h"
-#include "b_core.h"
-#include "b_crc32.h"
-#include "b_device.h"
-#include "b_error.h"
-#include "b_event.h"
-#include "b_modbus.h"
-#include "b_protocol.h"
-#include "b_sda.h"
-#include "b_sdb.h"
-#include "b_sdc.h"
-#include "b_sum.h"
-#include "b_tx.h"
-#include "b_utc.h"
-#include "b_fifo.h"
-#include "b_at.h"
-#include "b_shell.h"
-#include "b_kv.h"
-#include "b_xm128.h" 
-#include "b_ymodem.h" 
-#include "b_button.h"
-#include "b_gui.h"
-#include "b_menu.h"
-
-#include "b_hal.h"
-#include "b_utils.h"
+#include "b_config.h"  
+#if _MENU_ENABLE
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup BOS
+ * \addtogroup BOS_MENU
  * \{
  */
-
 
 /** 
- * \defgroup BOS_Exported_Functions
+ * \defgroup MENU_Exported_TypesDefinitions
  * \{
  */
-int bInit(void);
-int bExec(void);
+
+
+typedef void (*pCreateUI)(uint32_t pre_id);
+ 
+
+
+typedef struct bMenuItem
+{
+    uint32_t id;
+	struct bMenuItem  *prev;
+	struct bMenuItem  *next;
+    struct bMenuItem  *parent;
+	struct bMenuItem  *child;
+	pCreateUI         create_ui;
+	uint8_t           visible;
+}bMenuItem_t;
+
+
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup MENU_Exported_Defines
+ * \{
+ */
+#define MENU_UP         1
+#define MENU_DOWN       2
+#define MENU_BACK       3
+#define MENU_ENTER      4
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup MENU_Exported_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup MENU_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup MENU_Exported_Functions
+ * \{
+ */
+int bMenuAddSibling(uint32_t ref_id, uint32_t id, pCreateUI f);
+int bMenuAddChild(uint32_t ref_id, uint32_t id, pCreateUI f);
+void bMenuAction(uint8_t cmd);
+void bMenuJump(uint32_t id);
 /**
  * \}
  */
@@ -90,12 +125,15 @@ int bExec(void);
 /**
  * \}
  */
- 
-#ifdef __cplusplus
-	}
-#endif 
 
 #endif
 
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif  
+
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
 

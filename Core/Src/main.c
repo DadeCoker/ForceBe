@@ -76,15 +76,122 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-UG_WINDOW wnd;
-UG_OBJECT wmdObjTable[3];
-UG_BUTTON btn1;
-
-void _GUI_Callback( UG_MESSAGE* msg)
+uint8_t bButtonRead(void *p)
 {
-
+    uint8_t value = 0;
+    flex_button_t *btn = (flex_button_t *)p;
+    switch(btn->id)
+    {
+        case USER_BUTTON_1:
+            //.....
+            break;
+        case USER_BUTTON_2:
+            //.....
+            break;
+        case USER_BUTTON_3:
+            //.....
+            break;
+        case USER_BUTTON_WAKEUP:
+            //.....
+            break;
+    }
+    return value;
 }
 
+void bButtonCallback(void *p)
+{
+    flex_button_t *btn = (flex_button_t *)p;
+    switch(btn->id)
+    {
+        case USER_BUTTON_1:
+            bMenuAction(MENU_UP);
+            break;
+        case USER_BUTTON_2:
+            bMenuAction(MENU_DOWN);
+            break;
+        case USER_BUTTON_3:
+            bMenuAction(MENU_BACK);
+            break;
+        case USER_BUTTON_WAKEUP:
+            bMenuAction(MENU_ENTER);
+            break;
+    }
+}
+
+/**************************************************/
+void Create1(uint32_t id)
+{
+    if(id == 2)
+    {
+        UG_PutString(50, 70, "  ");
+    }
+    else
+    {
+        UG_PutString(50, 50, "         1");
+        UG_PutString(50, 70, "         2");
+    }
+    UG_PutString(50, 50, ">>");
+}
+
+void Create2(uint32_t id)
+{
+    if(id == 1)
+    {
+        UG_PutString(50, 50, "  ");
+    }
+    else
+    {
+        UG_PutString(50, 50, "         1");
+        UG_PutString(50, 70, "         2");
+    }
+    UG_PutString(50, 70, ">>");
+}
+
+void Create3(uint32_t id)
+{
+    UG_PutString(50, 50, "         3");
+    UG_PutString(50, 70, "          ");
+}
+
+void Create4(uint32_t id)
+{
+    if(id == 5)
+    {
+        UG_PutString(50, 70, "  ");
+    }
+    else
+    {
+        UG_PutString(50, 50, "         4");
+        UG_PutString(50, 70, "         5");
+    }
+    UG_PutString(50, 50, ">>");
+}
+
+void Create5(uint32_t id)
+{
+    if(id == 4)
+    {
+        UG_PutString(50, 50, "  ");
+    }
+    else
+    {
+        UG_PutString(50, 50, "         4");
+        UG_PutString(50, 70, "         5");
+    }
+    UG_PutString(50, 70, ">>");
+}
+
+void Create6(uint32_t id)
+{
+    UG_PutString(50, 50, "    babyos");
+    UG_PutString(50, 70, "          ");
+}
+
+void Create7(uint32_t id)
+{
+    UG_PutString(50, 50, "    b_menu");
+    UG_PutString(50, 70, "          ");
+}
 
 /* USER CODE END 0 */
 
@@ -132,14 +239,20 @@ int main(void)
  
   /****************************Init*******************************/
   bInit();                                      //BabyOS Init
+  bButtonInit();                                //Button
+  bGUI_Init(SSD1289, NULL);                     //GUI
   
-  bGUI_Init(SSD1289, XPT2046);
+  //Create menu
+  bMenuAddSibling(1, 1, Create1);
+  bMenuAddSibling(1, 2, Create2);
+  bMenuAddChild(1, 3, Create3);
+  bMenuAddChild(2, 4, Create4);
+  bMenuAddSibling(4, 5, Create5);
+  bMenuAddChild(4, 6, Create6);
+  bMenuAddChild(5, 7, Create7);
   
-  UG_WindowCreate( &wnd, wmdObjTable, 3, _GUI_Callback);
-  UG_WindowSetTitleText(&wnd, "BabyOS");
-  UG_ButtonCreate( &wnd, &btn1, BTN_ID_0, 50, 50, 200, 200 );
-  UG_ButtonSetText(&wnd, BTN_ID_0, "UGUI");
-  UG_WindowShow(&wnd);
+  
+  
   while (1)
   {
       bExec();
