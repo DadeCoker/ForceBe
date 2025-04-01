@@ -78,21 +78,25 @@ static void MX_SPI3_Init(void);
 /* USER CODE BEGIN 0 */
 uint8_t bButtonRead(void *p)
 {
-    uint8_t value = 0;
+    uint8_t value = 1;
     flex_button_t *btn = (flex_button_t *)p;
     switch(btn->id)
     {
         case USER_BUTTON_1:
             //.....
+            value = HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin);
             break;
         case USER_BUTTON_2:
             //.....
+            value = HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin);
             break;
         case USER_BUTTON_3:
             //.....
+            value = HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin);
             break;
         case USER_BUTTON_WAKEUP:
             //.....
+            value = HAL_GPIO_ReadPin(WAKEUP_GPIO_Port, WAKEUP_Pin);
             break;
     }
     return value;
@@ -101,6 +105,10 @@ uint8_t bButtonRead(void *p)
 void bButtonCallback(void *p)
 {
     flex_button_t *btn = (flex_button_t *)p;
+    if(btn->event != FLEX_BTN_PRESS_DOWN)
+    {
+        return;
+    }
     switch(btn->id)
     {
         case USER_BUTTON_1:
@@ -241,7 +249,7 @@ int main(void)
   bInit();                                      //BabyOS Init
   bButtonInit();                                //Button
   bGUI_Init(SSD1289, NULL);                     //GUI
-  
+  UG_PutString(50, 200, "BabyOS test b_menu");
   //Create menu
   bMenuAddSibling(1, 1, Create1);
   bMenuAddSibling(1, 2, Create2);
@@ -481,18 +489,20 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_SET);
 
+  /*Configure GPIO pins : WAKEUP_Pin SUART_RX_Pin KEY1_Pin KEY2_Pin 
+                           KEY3_Pin */
+  GPIO_InitStruct.Pin = WAKEUP_Pin|SUART_RX_Pin|KEY1_Pin|KEY2_Pin 
+                          |KEY3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /*Configure GPIO pin : SUART_TX_Pin */
   GPIO_InitStruct.Pin = SUART_TX_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(SUART_TX_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : SUART_RX_Pin */
-  GPIO_InitStruct.Pin = SUART_RX_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(SUART_RX_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PE9 */
   GPIO_InitStruct.Pin = GPIO_PIN_9;

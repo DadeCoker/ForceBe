@@ -146,9 +146,9 @@ static void flex_button_read(void)
     /* The button that was registered first, the button value is in the low position of raw_data */
     btn_type_t raw_data = 0;
 
-    for(target = btn_head, i = button_cnt - 1;
+    for(target = btn_head, i = 0;
         (target != NULL) && (target->usr_button_read != NULL);
-        target = target->next, i--)
+        target = target->next, i++)
     {
         raw_data = raw_data | ((target->usr_button_read)(target) << i);
     }

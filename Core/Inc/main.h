@@ -49,10 +49,18 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define WAKEUP_Pin GPIO_PIN_0
+#define WAKEUP_GPIO_Port GPIOA
 #define SUART_TX_Pin GPIO_PIN_1
 #define SUART_TX_GPIO_Port GPIOA
 #define SUART_RX_Pin GPIO_PIN_2
 #define SUART_RX_GPIO_Port GPIOA
+#define KEY1_Pin GPIO_PIN_4
+#define KEY1_GPIO_Port GPIOA
+#define KEY2_Pin GPIO_PIN_5
+#define KEY2_GPIO_Port GPIOA
+#define KEY3_Pin GPIO_PIN_6
+#define KEY3_GPIO_Port GPIOA
 #define W25X_CS_Pin GPIO_PIN_12
 #define W25X_CS_GPIO_Port GPIOB
 #define LCD_WR_Pin GPIO_PIN_10
