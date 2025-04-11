@@ -258,9 +258,6 @@ int main(void)
   bMenuAddSibling(4, 5, Create5);
   bMenuAddChild(4, 6, Create6);
   bMenuAddChild(5, 7, Create7);
-  
-  
-  
   while (1)
   {
       bExec();

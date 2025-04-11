@@ -208,16 +208,16 @@ void bMenuAction(uint8_t cmd)
             }while(c->visible == 0);
             break;
         case MENU_BACK:
-            do
+            if(c->parent->visible != 0)
             {
                 c = c->parent;
-            }while(c->visible == 0);
+            }
             break;
         case MENU_ENTER:
-            do
+            if(c->child->visible != 0)
             {
                 c = c->child;
-            }while(c->visible == 0);
+            }
             break;
         default:
             break;
@@ -253,6 +253,25 @@ void bMenuJump(uint32_t id)
     }
 }
 
+int bMenuSetVisible(uint32_t id, uint8_t s)
+{
+    int i = 0;
+    bMenuItem_t *c;
+    if((i = _bMenuFindIndex(id)) < 0)
+    {
+        return -1;
+    }
+    c = &bMenuItemTable[i];
+    if(s)
+    {
+        c->visible = 1;
+    }
+    else
+    {
+        c->visible = 0;
+    }
+    return 0;
+}
 
 uint32_t bMenuCurrentID()
 {

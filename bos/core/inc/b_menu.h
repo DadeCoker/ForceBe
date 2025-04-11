@@ -114,6 +114,8 @@ int bMenuAddSibling(uint32_t ref_id, uint32_t id, pCreateUI f);
 int bMenuAddChild(uint32_t ref_id, uint32_t id, pCreateUI f);
 void bMenuAction(uint8_t cmd);
 void bMenuJump(uint32_t id);
+uint32_t bMenuCurrentID(void);
+int bMenuSetVisible(uint32_t id, uint8_t s);
 /**
  * \}
  */
