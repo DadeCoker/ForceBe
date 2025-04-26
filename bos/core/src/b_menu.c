@@ -30,7 +30,7 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_MENU.h"  
+#include "b_menu.h"  
 #if _MENU_ENABLE
 
 /** 

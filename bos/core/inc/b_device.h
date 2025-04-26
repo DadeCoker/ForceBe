@@ -58,6 +58,15 @@ typedef struct
 	uint32_t num;
 }bCMD_Erase_t;
 
+typedef struct
+{
+    uint16_t x1;
+    uint16_t y1;
+    uint16_t x2;
+    uint16_t y2;
+    uint16_t color;
+}bCMD_FillFrame_t;
+
 
 typedef struct
 {
@@ -65,6 +74,7 @@ typedef struct
 	union
 	{
 		bCMD_Erase_t erase;
+        bCMD_FillFrame_t fill_frame;
 	}param;
 }bCMD_Struct_t;
 
@@ -111,9 +121,9 @@ typedef enum
  * \defgroup DEVICE_CtlCMD_Defines
  * \{
  */
-
 #define bCMD_ERASE			0
 
+#define bCMD_FILL_FRAME     0x10
 
 /**
  * \}

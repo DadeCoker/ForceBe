@@ -134,6 +134,29 @@ static void _SSD1289WriteReg(uint16_t cmd, uint16_t dat)
 
 /******************************************************************/
 
+static void _bSSD1289SetWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+{
+    _SSD1289WriteReg(0x0044, ((x2 << 8) | x1));
+	_SSD1289WriteReg(0x0045, y1);
+	_SSD1289WriteReg(0x0046, y2);
+	_SSD1289WriteReg(0x004E, x1);
+	_SSD1289WriteReg(0x004F, y1);
+	_SSD1289WriteCmd(0x0022);
+}
+
+static void _bSSD1289FillFrame(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+{
+	uint32_t i = 0;
+    uint32_t j = (x2 - x1 + 1) * (y2 - y1 + 1);
+	_bSSD1289SetWindow(x1, y1, x2, y2);
+	for (i = 0; i < j; i++)
+    {
+        _SSD1289WriteDat(color);
+    }
+}
+
+
+
 static int _bSSD1289Read(uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
     return 0;
@@ -159,18 +182,24 @@ static int _bSSD1289Write(uint32_t addr, uint8_t *pbuf, uint16_t len)
         return -1;
     }
     color = ((uint16_t *)pbuf)[0];
-    _SSD1289WriteReg(0x0044, ((x << 8) | x));
-	_SSD1289WriteReg(0x0045, y);
-	_SSD1289WriteReg(0x0046, y);
-	_SSD1289WriteReg(0x004E, x);
-	_SSD1289WriteReg(0x004F, y);
-	_SSD1289WriteCmd(0x0022);
+    _bSSD1289SetWindow(x, y, x, y);
     _SSD1289WriteDat(color);
     return 0;
 }
 
 static int _bSSD1289Ctl(uint8_t cmd, void * param)
 {
+    switch(cmd)
+    {
+        case bCMD_FILL_FRAME:
+            {
+                bCMD_Struct_t *p = (bCMD_Struct_t *)param;
+                _bSSD1289FillFrame(p->param.fill_frame.x1, p->param.fill_frame.y1
+                                ,p->param.fill_frame.x2, p->param.fill_frame.y2
+                                ,p->param.fill_frame.color);
+            }
+            break;
+    }
     return 0;
 }
 

@@ -6,39 +6,50 @@
 
 ##  BabyOS是什么？
 
-​        BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
+```
+______________________________________________
+    ____                         __       __  
+    /   )          /           /    )   /    )
+---/__ /-----__---/__---------/----/----\-----
+  /    )   /   ) /   ) /   / /    /      \    
+_/____/___(___(_(___/_(___/_(____/___(____/___
+                         /                    
+                     (_ /                     
+```
 
-​        **对项目而言，缩短开发周期**。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
+BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框架。
 
-​        **对工程师而言，减少重复工作**。调试过的功能模块和驱动代码放入BabyOS中进行管理，以后项目可以直接使用，去掉重复调试的工作。
+**对项目而言，缩短开发周期**。项目开发时选择适用的功能模块及驱动。直接进入功能代码编写的阶段。
+
+**对工程师而言，减少重复工作**。调试过的功能模块和驱动代码放入BabyOS中进行管理，以后项目可以直接使用，去掉重复调试的工作。
 
 ------
 
 ## 适用项目
 
-​        **使用裸机开发的项目推荐基于BabyOS进行**。
+**使用裸机开发的项目推荐基于BabyOS进行**。
 
 ​        
 
 ## 前世今生
 
-​        说一说编写BabyOS原由
+说一说编写BabyOS原由
 
-​        ................
+ ................
 
-​        目前使用MCU裸机开发的项目不会很庞大，大多有两个要求：**开发时间**和**产品功耗**。99.874%产品是电池供电，功耗是重点考虑对象。工程师开发的多个项目之间总会碰到相同的功能点，那么是否可以有套代码框架可以容纳已经做过的功能点，去掉重复的工作，加快产品或者demo的开发。
+目前使用MCU裸机开发的项目不会很庞大，大多有两个要求：**开发时间**和**产品功耗**。99.874%产品是电池供电，功耗是重点考虑对象。工程师开发的多个项目之间总会碰到相同的功能点，那么是否可以有套代码框架可以容纳已经做过的功能点，去掉重复的工作，加快产品或者demo的开发。
 
 ### 功耗的考量
 
-​        出于功耗考虑，对外设的操作是：唤醒外设，操作，最后进入休眠。这样的操作形式和文件的操作很类似，文件的操作步骤是打开到编辑到关闭。
+出于功耗考虑，对外设的操作是：唤醒外设，操作，最后进入休眠。这样的操作形式和文件的操作很类似，文件的操作步骤是打开到编辑到关闭。
 
-​       因此将外设的操作看作是对文件的操作进行。每个外设打开后返回一个描述符，后续代码中对外设的操作都是基于这个描述符进行。关闭外设后回收描述符。
+因此将外设的操作看作是对文件的操作进行。每个外设打开后返回一个描述符，后续代码中对外设的操作都是基于这个描述符进行。关闭外设后回收描述符。
 
-​       所以外设的驱动中打开和关闭的操作执行对设备的唤醒和睡眠。利用描述符来操作外设还有一个好处是，当更换外设后，只需更换驱动接口，业务部分的代码不需要变动。
+所以外设的驱动中打开和关闭的操作执行对设备的唤醒和睡眠。利用描述符来操作外设还有一个好处是，当更换外设后，只需更换驱动接口，业务部分的代码不需要变动。
 
 ### 快速开发
 
-​        小型项目的开发中，有较多使用率高的功能模块，例如：UTC、错误管理、电池电量、存储数据、上位机通信、固件升级等等。将这些功能都做成不依赖于硬件的模块交给BabyOS管理。将调试好的外设驱动也交给BabyOS管理。再次启动项目时，通过配置文件，选择当前项目使用的功能模块。以搭积木的方式缩短开发时间。
+小型项目的开发中，有较多使用率高的功能模块，例如：UTC、错误管理、电池电量、存储数据、上位机通信、固件升级等等。将这些功能都做成不依赖于硬件的模块交给BabyOS管理。将调试好的外设驱动也交给BabyOS管理。再次启动项目时，通过配置文件，选择当前项目使用的功能模块。以搭积木的方式缩短开发时间。
 
 ![opt](https://github.com/notrynohigh/BabyOS/raw/master/doc/1.png)
 
@@ -48,31 +59,35 @@
 
 ###   1、添加文件
 
-​        bos/core/src       核心文件及功能模块全部添加至工程
+ bos/core/src       核心文件及功能模块全部添加至工程
 
-​        bos/driver/src    选择需要的驱动添加至工程
+bos/driver/src    选择需要的驱动添加至工程
 
-​        bos/hal/              添加至工程，根据具体平台进行修改
+bos/hal/              添加至工程，根据具体平台进行修改
 
-###   2、选择功能模块
+### 2、增加系统定时器
 
-​        对于b_config.h进行配置，根据自己的需要选择功能模块。
+例如使用滴答定时器，中断服务函数调用：void bHalIncSysTick(void);
 
+注：定时器的周期与b_config.h里_TICK_FRQ_HZ要匹配
 
+###   3、选择功能模块
 
-###   3、列出需要使用的设备
+b_config.h进行配置，根据自己的需要选择功能模块。
 
-​           找到b_device_list.h，在里面添加使用的外设。例如当前项目只需要使用flash和模拟串口，那么添加如下代码：    
+###   4、列出需要使用的设备
+
+b_device_list.h，在里面添加使用的外设。例如当前项目只需要使用flash和模拟串口，那么添加如下代码：    
 
 ```c
 //           设备        驱动接口      描述
 B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 B_DEVICE_REG(SUART, SUART_Driver, "suart")
+//如果没有注册任何设备，取消B_DEVICE_REG(null, bNullDriver, "null")的注释    
+//B_DEVICE_REG(null, bNullDriver, "null")   
 ```
 
-###   4、使用范例
-
-​    
+###   5、使用范例  
 
 ```c
 #include "b_os.h"    //头文件
@@ -141,25 +156,33 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 
 
+### BabyOS教程
+
+<https://gitee.com/notrynohigh/BabyOS_Example>
+
+
+
 ## Baby如何成长
 
-​        之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。
+之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。
 
-​       希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
+希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
 
-​       码云：<https://gitee.com/notrynohigh/BabyOS>
+码云：<https://gitee.com/notrynohigh/BabyOS>
 
-​       github：<https://github.com/notrynohigh/BabyOS>
+github：<https://github.com/notrynohigh/BabyOS>
 
 
 
 # 友情项目
 
-​	BabyOS包含了第三方开源代码，这部分代码都是MCU项目中比较实用的。
+BabyOS包含了第三方开源代码，这部分代码都是MCU项目中比较实用的。
 
-​        b_shell 功能模块基于开源项目nr_micro_shell，<https://gitee.com/nrush/nr_micro_shell>，感谢作者Nrush
+b_shell 功能模块基于开源项目nr_micro_shell，<https://gitee.com/nrush/nr_micro_shell>，感谢作者Nrush
 
-​        b_button 功能模块基于开源项目FlexibleButton，<https://github.com/murphyzhao/FlexibleButton>，感谢作者Murphy
+b_button 功能模块基于开源项目FlexibleButton，<https://github.com/murphyzhao/FlexibleButton>，感谢作者Murphy
+
+b_gui 功能模块基于开源项目uGUI, <https://github.com/achimdoebler/UGUI>, 感谢作者Achimdoebler
 
 
 
@@ -182,4 +205,5 @@ https://github.com/notrynohigh/BabyOS/wiki
 | 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar        | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2019%E5%B9%B412%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 | 2020.01 | 功能模块：KV存储                                          | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B41%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 | 2020.02 | 功能模块：Xmodem128, Ymodem, FlexibleButton 驱动：xpt2046 | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B42%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
+| 2020.03 | 功能模块：b_log, b_gui, b_menu 驱动：ssd1289              | [详情见wiki](https://github.com/notrynohigh/BabyOS/wiki/2020%E5%B9%B43%E6%9C%88%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E) |
 

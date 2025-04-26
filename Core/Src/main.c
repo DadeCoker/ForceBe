@@ -200,6 +200,26 @@ void Create7(uint32_t id)
     UG_PutString(50, 50, "    b_menu");
     UG_PutString(50, 70, "          ");
 }
+/****************************************************/
+
+int uGUI_FillFrame(UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c) 
+{
+    int fd;
+    bCMD_Struct_t cmd;
+    fd = bOpen(SSD1289, BCORE_FLAG_RW);
+    if(fd < 0)
+    {
+        return UG_RESULT_FAIL;
+    }
+    cmd.param.fill_frame.x1 = x1;
+    cmd.param.fill_frame.x2 = x2;
+    cmd.param.fill_frame.y1 = y1;
+    cmd.param.fill_frame.y2 = y2;
+    cmd.param.fill_frame.color = c;
+    bCtl(fd, bCMD_FILL_FRAME, &cmd);
+    bClose(fd);
+    return UG_RESULT_OK;
+}
 
 /* USER CODE END 0 */
 
@@ -249,6 +269,8 @@ int main(void)
   bInit();                                      //BabyOS Init
   bButtonInit();                                //Button
   bGUI_Init(SSD1289, NULL);                     //GUI
+  UG_DriverRegister( DRIVER_FILL_FRAME, uGUI_FillFrame);
+  UG_DriverEnable(DRIVER_FILL_FRAME);
   UG_PutString(50, 200, "BabyOS test b_menu");
   //Create menu
   bMenuAddSibling(1, 1, Create1);
