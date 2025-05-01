@@ -132,7 +132,7 @@ __weak void bLogOutput(void *p)
  * \param line line number
  * \retval none
  */
-void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t line, char *fmt, ...)
+void bLogOut(uint8_t type, const char *ptr_file, const char *ptr_func, uint32_t line, const char *fmt, ...)
 {
     uint32_t buf_len = 0;
     uint32_t param = 0;

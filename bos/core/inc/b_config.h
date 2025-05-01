@@ -216,10 +216,10 @@
 
 
 #if _DEBUG_ENABLE
-#define shell_printf(fmt, args...)          printf(fmt, ##args);
+#define shell_printf(fmt, args...)          b_log(fmt, ##args);
 
 #if NR_SHELL_ECHO_ENABLE
-#define ansi_show_char(x)                   putchar(x)
+#define ansi_show_char(x)                   b_log("%c", x)
 #else
 #define ansi_show_char(x)
 #endif
