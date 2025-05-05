@@ -46,6 +46,12 @@
 
 //<h> Compile Configuration
 
+//<o> Hardware version
+#define HW_VERSION                  200310
+
+//<o> Firmware version
+#define FW_VERSION                  10100
+
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
 #define MS2TICKS(m)                 (m * _TICK_FRQ_HZ / 1000)
@@ -160,7 +166,7 @@
 
 
 //<e> Menu Enable/Disable
-#define _MENU_ENABLE                1
+#define _MENU_ENABLE                0
 //<o> Menu Item Number
 #define _MENU_ITEM_NUMBER           10
 //</e>
@@ -228,13 +234,13 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE              1
+#define _FLEXIBLEBUTTON_ENABLE              0
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
 //</e>
 
 //<e> UGUI Enable/Disable
-#define _UGUI_ENABLE                        1
+#define _UGUI_ENABLE                        0
 //<o> X SIZE
 #define _LCD_X_SIZE                         240 
 //<o> Y SIZE
@@ -250,6 +256,23 @@
 //<o> Y TOUCH AD MAX
 #define _Y_TOUCH_AD_MAX                     3592 
 
+//</e>
+
+
+//<e> CmBacktrace Enable/Disable
+#define _CMBACKTRACE_ENABLE                 1
+
+//<o> CMB_CPU_ARM_CORTEX_M?
+//<0=> ARM_CORTEX_M0
+//<1=> ARM_CORTEX_M3
+//<2=> ARM_CORTEX_M4
+//<3=> ARM_CORTEX_M7
+#define CMB_CPU_PLATFORM_TYPE               1
+
+//<o> Print Language
+//<0=> English
+//<1=> Chinese
+#define CMB_PRINT_LANGUAGE                  1
 //</e>
 
 

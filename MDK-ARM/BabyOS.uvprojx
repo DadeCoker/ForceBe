@@ -184,7 +184,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -338,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;  ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;  ../Drivers/CMSIS/Include;  ..\bos\core\inc\;  ..\bos\drivers\inc\;  ..\bos\hal;  ..\bos\core\thirdparty\FlexibleButton;  ..\bos\core\thirdparty\nr_micro_shell\inc;  ..\bos\core\thirdparty\UGUI</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal;..\bos\core\thirdparty\FlexibleButton;..\bos\core\thirdparty\nr_micro_shell\inc;..\bos\core\thirdparty\UGUI;..\bos\core\thirdparty\CmBacktrace</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -683,6 +682,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_menu.c</FilePath>
             </File>
+            <File>
+              <FileName>b_trace.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_trace.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -767,6 +771,16 @@
               <FileName>ugui_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\bos\core\thirdparty\UGUI\ugui_config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/CmBacktrace</GroupName>
+          <Files>
+            <File>
+              <FileName>cm_backtrace.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\thirdparty\CmBacktrace\cm_backtrace.c</FilePath>
             </File>
           </Files>
         </Group>

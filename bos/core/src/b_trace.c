@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_os.h
+ * \file        b_trace.c
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/10
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,82 +21,124 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO TRACE SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_OS_H__
-#define __B_OS_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_battery.h"
-#include "b_core.h"
-#include "b_crc32.h"
-#include "b_device.h"
-#include "b_error.h"
-#include "b_event.h"
-#include "b_modbus.h"
-#include "b_protocol.h"
-#include "b_sda.h"
-#include "b_sdb.h"
-#include "b_sdc.h"
-#include "b_sum.h"
-#include "b_tx.h"
-#include "b_utc.h"
-#include "b_fifo.h"
-#include "b_at.h"
-#include "b_shell.h"
-#include "b_kv.h"
-#include "b_xm128.h" 
-#include "b_ymodem.h" 
-#include "b_button.h"
-#include "b_gui.h"
-#include "b_menu.h"
 #include "b_trace.h"
+#if _CMBACKTRACE_ENABLE
 
-#include "b_hal.h"
-#include "b_utils.h"
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup BOS
+ * \addtogroup TRACE
  * \{
  */
-
 
 /** 
- * \defgroup BOS_Exported_Functions
+ * \defgroup TRACE_Private_TypesDefinitions
  * \{
  */
-int bInit(void);
-int bExec(void);
-/**
- * \}
- */
- 
-/**
- * \}
- */ 
 
 /**
  * \}
  */
+   
+/** 
+ * \defgroup TRACE_Private_Defines
+ * \{
+ */
+#define _VERSION_S(n)   #n
+#define VERSION_S(n)    _VERSION_S(n) 
  
-#ifdef __cplusplus
-	}
-#endif 
+const char *pVersion[2] = 
+{
+    VERSION_S(HW_VERSION),
+    VERSION_S(FW_VERSION)
+};
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup TRACE_Private_Macros
+ * \{
+ */
 
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup TRACE_Private_Variables
+ * \{
+ */
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup TRACE_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup TRACE_Private_Functions
+ * \{
+ */
+
+/**
+ * \}
+ */
+   
+/** 
+ * \addtogroup TRACE_Exported_Functions
+ * \{
+ */
+
+
+int bTraceInit(const char *pfw_name)
+{
+    cm_backtrace_init(pfw_name, pVersion[0], pVersion[1]);
+    return 0;
+}
+
+void bHardfaultCallback()
+{
+    uint32_t call_stack[16] = {0};
+    size_t i, depth = 0;
+    depth = cm_backtrace_call_stack(call_stack, sizeof(call_stack), cmb_get_sp());
+    for (i = 0; i < depth; i++) 
+    {
+        b_log_e("%08x \r\n", call_stack[i]);
+    }
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 #endif
 
-/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+/************************ Copyright (c) 2019 Bean *****END OF FILE****/
 
