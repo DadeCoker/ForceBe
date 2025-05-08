@@ -119,12 +119,7 @@ int bTraceInit(const char *pfw_name)
 void bHardfaultCallback()
 {
     uint32_t call_stack[16] = {0};
-    size_t i, depth = 0;
-    depth = cm_backtrace_call_stack(call_stack, sizeof(call_stack), cmb_get_sp());
-    for (i = 0; i < depth; i++) 
-    {
-        b_log_e("%08x \r\n", call_stack[i]);
-    }
+    cm_backtrace_call_stack(call_stack, sizeof(call_stack), cmb_get_sp());
 }
 
 /**

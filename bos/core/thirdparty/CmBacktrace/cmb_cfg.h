@@ -33,7 +33,7 @@
 #if _CMBACKTRACE_ENABLE
 
 /* print line, must config by user */
-#define cmb_println(...)                b_log(__VA_ARGS__)   /* e.g., printf(__VA_ARGS__);printf("\r\n") */
+#define cmb_println(...)                do{b_log(__VA_ARGS__);b_log("\r\n");}while(0);   /* e.g., printf(__VA_ARGS__);printf("\r\n") */
 /* enable bare metal(no OS) platform */
 /* #define CMB_USING_BARE_METAL_PLATFORM */
 /* enable OS platform */

@@ -27,6 +27,7 @@
  */
 
 #include <cm_backtrace.h>
+#if _CMBACKTRACE_ENABLE
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
@@ -203,7 +204,9 @@ static struct cmb_hard_fault_regs regs;
 static bool statck_has_fpu_regs = false;
 #endif
 
+#ifdef CMB_OS_PLATFORM_TYPE
 static bool on_thread_before_fault = false;
+#endif
 
 /**
  * library initialize
@@ -212,7 +215,7 @@ void cm_backtrace_init(const char *firmware_name, const char *hardware_ver, cons
     strncpy(fw_name, firmware_name, CMB_NAME_MAX);
     strncpy(hw_ver, hardware_ver, CMB_NAME_MAX);
     strncpy(sw_ver, software_ver, CMB_NAME_MAX);
-    cmb_println("cm backtrace....\r\n");
+
 #if defined(__CC_ARM)
     main_stack_start_addr = (uint32_t)&CSTACK_BLOCK_START(CMB_CSTACK_BLOCK_NAME);
     main_stack_size = (uint32_t)&CSTACK_BLOCK_END(CMB_CSTACK_BLOCK_NAME) - main_stack_start_addr;
@@ -340,7 +343,7 @@ static void dump_stack(uint32_t stack_start_addr, size_t stack_size, uint32_t *s
  */
 size_t cm_backtrace_call_stack(uint32_t *buffer, size_t size, uint32_t sp) {
     uint32_t stack_start_addr = main_stack_start_addr, pc;
-    size_t depth = 0, stack_size = main_stack_size;
+    size_t depth = 0, stack_size = main_stack_size, i;
     bool regs_saved_lr_is_valid = false;
 
     if (on_fault) {
@@ -394,8 +397,20 @@ size_t cm_backtrace_call_stack(uint32_t *buffer, size_t size, uint32_t sp) {
             }
             buffer[depth++] = pc;
         }
+    } 
+    cm_backtrace_firmware_info();
+    for (i = 0; i < depth; i++) {
+        sprintf(call_stack_info + i * (8 + 1), "%08lx", buffer[i]);
+        call_stack_info[i * (8 + 1) + 8] = ' ';
     }
 
+    if (depth) {
+        cmb_println(print_info[PRINT_CALL_STACK_INFO], fw_name, CMB_ELF_FILE_EXTENSION_NAME, depth * (8 + 1),
+                call_stack_info);
+    } else {
+        cmb_println(print_info[PRINT_CALL_STACK_ERR]);
+    }    
+ 
     return depth;
 }
 
@@ -694,3 +709,5 @@ void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
 
     print_call_stack(stack_pointer);
 }
+#endif
+

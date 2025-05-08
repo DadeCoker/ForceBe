@@ -36,8 +36,11 @@
 #include "stm32f1xx_it.h"
 
 /* USER CODE BEGIN 0 */
+#include "b_config.h"
 extern void bHalIncSysTick(void);
+#if _CMBACKTRACE_ENABLE
 extern void bHardfaultCallback(void);
+#endif
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -70,7 +73,9 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
+#if _CMBACKTRACE_ENABLE    
   bHardfaultCallback();
+#endif    
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
