@@ -109,13 +109,22 @@ const char *pVersion[2] =
  * \{
  */
 
-
+/**
+ * \brief Initialize
+ * \param pfw_name Firmware name (BabyOS.axf <==> pfw_name = "BabyOS")
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
 int bTraceInit(const char *pfw_name)
 {
     cm_backtrace_init(pfw_name, pVersion[0], pVersion[1]);
     return 0;
 }
 
+/**
+ * \brief Called in the HardFault_Handler
+ */
 void bHardfaultCallback()
 {
     uint32_t call_stack[16] = {0};

@@ -77,6 +77,13 @@ static void MX_SPI3_Init(void);
 
 /* USER CODE BEGIN 0 */
 typedef void (*pfunc)(void);
+
+int _TestHardfault()
+{
+    ((pfunc)0x00000000)();
+    return 0;
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -124,7 +131,7 @@ int main(void)
   /****************************Init*******************************/
   bInit();                                      //BabyOS Init
   bTraceInit("BabyOS");
-  ((pfunc)0x00000000)();
+  _TestHardfault();
   while (1)
   {
       bExec();
