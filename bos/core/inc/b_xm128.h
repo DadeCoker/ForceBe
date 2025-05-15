@@ -64,7 +64,7 @@ typedef struct
 }bXmodem128Info_t;
 
 
-typedef void (*pcb_t)(uint8_t number, uint8_t *pbuf); 
+typedef void (*pcb_t)(uint16_t number, uint8_t *pbuf); 
 typedef void (*psend)(uint8_t cmd);
 
 /**

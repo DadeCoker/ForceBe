@@ -163,9 +163,12 @@ int bXmodem128Start()
     {
         return -1;
     }
-    pSendByte(XMODEM128_NAK);
-    XmTick = bHalGetTick();
-    Xmodem128Stat = XM_S_WAIT_START;
+    if(Xmodem128Stat == XM_S_NULL)
+    {
+        pSendByte(XMODEM128_NAK);
+        XmTick = bHalGetTick();
+        Xmodem128Stat = XM_S_WAIT_START;
+    }
     return 0;
 }
 
@@ -175,8 +178,11 @@ int bXmodem128Stop()
     {
         return -1;
     }    
-    pSendByte(XMODEM128_CAN);
-    Xmodem128Stat = XM_S_NULL;
+    if(Xmodem128Stat != XM_S_NULL)
+    {
+        pSendByte(XMODEM128_CAN);
+        Xmodem128Stat = XM_S_NULL;
+    }
     return 0; 
 }
 
@@ -185,6 +191,7 @@ int bXmodem128Stop()
 int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
 {
     static uint8_t num = 0;
+    static uint16_t f_num = 0;
     bXmodem128Info_t *pxm = (bXmodem128Info_t *)pbuf;
     if(pbuf == NULL || pCallback == NULL || pSendByte == NULL || Xmodem128Stat == XM_S_NULL)
     {
@@ -200,6 +207,7 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
             {
                 Xmodem128Stat = XM_S_WAIT_DATA;
                 num = 1;
+                f_num = 0;
             }
         }
     }
@@ -210,9 +218,10 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
         {
             if(pxm->number == num)
             {
-                pCallback(num, pxm->dat);
+                pCallback(f_num, pxm->dat);
                 pSendByte(XMODEM128_ACK);
                 num += 1;
+                f_num += 1;
             }
             else
             {
@@ -224,7 +233,7 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
         }
         else if(len == 1 && *pbuf == XMODEM128_EOT)
         {
-            pCallback(num, NULL);
+            pCallback(f_num, NULL);
             pSendByte(XMODEM128_ACK);
             Xmodem128Stat = XM_S_NULL;
         }
@@ -248,6 +257,7 @@ void bXmodem128Timeout()
         XmTick = bHalGetTick();
         if(Xmodem128Stat == XM_S_WAIT_START && s_count < 3)
         {
+            Xmodem128Stat = XM_S_NULL;
             bXmodem128Start();
             s_count += 1;
         }
