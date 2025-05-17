@@ -204,9 +204,12 @@ int bYmodemStart()
     {
         return -1;
     }
-    pSendByte(YMODEM_C);
-    YmTick = bHalGetTick();
-    YmodemStat = YM_S_WAIT_NAME;
+    if(YmodemStat == YM_S_NULL)
+    {
+        pSendByte(YMODEM_C);
+        YmTick = bHalGetTick();
+        YmodemStat = YM_S_WAIT_NAME;
+    }
     return 0;
 }
 
@@ -216,8 +219,11 @@ int bYmodemStop()
     {
         return -1;
     }    
-    pSendByte(YMODEM_CAN);
-    YmodemStat = YM_S_NULL;
+    if(YmodemStat != YM_S_NULL)
+    {
+        pSendByte(YMODEM_CAN);
+        YmodemStat = YM_S_NULL;
+    }
     return 0; 
 }
 
@@ -226,6 +232,7 @@ int bYmodemStop()
 int bYmodemParse(uint8_t *pbuf, uint16_t len)
 {
     static uint8_t num = 0;
+    static uint16_t f_num = 0;
     int t;
     bYmodem128Info_t *pxm = (bYmodem128Info_t *)pbuf;
     
@@ -255,6 +262,7 @@ int bYmodemParse(uint8_t *pbuf, uint16_t len)
         {
             YmodemStat = YM_S_WAIT_DATA;
             num = 1;
+            f_num = 0;
         }
     }
     
@@ -267,13 +275,14 @@ int bYmodemParse(uint8_t *pbuf, uint16_t len)
             {
                 if(t == YMODEM_SOH)
                 {
-                    pCallback(YMODEM_FILEDATA, num, pxm->dat, 128);
+                    pCallback(YMODEM_FILEDATA, f_num, pxm->dat, 128);
                 }
                 else if(t == YMODEM_STX)
                 {
-                    pCallback(YMODEM_FILEDATA, num, pxm->dat, 1024);
+                    pCallback(YMODEM_FILEDATA, f_num, pxm->dat, 1024);
                 }
                 num += 1;
+                f_num += 1;
                 pSendByte(YMODEM_ACK);
             }
             else
@@ -296,7 +305,7 @@ int bYmodemParse(uint8_t *pbuf, uint16_t len)
     }
     else if(YmodemStat == YM_S_WAIT_END)
     {
-        pCallback(YMODEM_FILEDATA, num, NULL, 0);
+        pCallback(YMODEM_FILEDATA, f_num, NULL, 0);
         pSendByte(YMODEM_ACK);
         YmodemStat = YM_S_NULL;
     }
@@ -317,6 +326,7 @@ void bYmodemTimeout()
         YmTick = bHalGetTick();
         if(YmodemStat == YM_S_WAIT_NAME && n_count < 3)
         {
+            YmodemStat = YM_S_NULL;
             bYmodemStart();
             n_count += 1;
         }

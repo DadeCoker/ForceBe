@@ -77,7 +77,7 @@ typedef struct
 
 
 
-typedef void (*pymcb_t)(uint8_t t, uint8_t number, uint8_t *pbuf, uint16_t len); 
+typedef void (*pymcb_t)(uint8_t t, uint16_t number, uint8_t *pbuf, uint16_t len); 
 typedef void (*pymsend)(uint8_t cmd);
 
 /**
