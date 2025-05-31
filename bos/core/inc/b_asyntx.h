@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_tx.h
+ * \file        b_asyntx.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_TX_H__
-#define __B_TX_H__
+#ifndef __B_ASYN_TX_H__
+#define __B_ASYN_TX_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,60 +37,54 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h"  
-#if _TX_ENABLE
+#if _ASYN_TX_ENABLE
 /** 
  * \addtogroup BABYOS
  * \{
  */
 
 /** 
- * \addtogroup TX
+ * \addtogroup ASYN_TX
  * \{
  */
 
 /** 
- * \defgroup TX_Exported_TypesDefinitions
+ * \defgroup ASYN_TX_Exported_TypesDefinitions
  * \{
  */
+typedef void (*pSendBytes)(uint8_t *pbuf, uint16_t len); 
+
 typedef struct
 {
-    uint8_t *ptxBUF;
-    uint16_t buf_size;
     uint8_t state;
-    uint16_t tx_len;
-    uint8_t td_mode;
     volatile uint8_t td_flag;
-    uint8_t dev_no;
+    pSendBytes f;
+    uint32_t s_tick;
     uint32_t timeout;
     uint8_t timeout_f;
-    int fd;
-}bTX_Info_t;
+}bAsyntxInfo_t;
 /**
  * \}
  */
    
 /** 
- * \defgroup TX_Exported_Defines
+ * \defgroup ASYN_TX_Exported_Defines
  * \{
  */
-#define BTX_NULL		    0
-#define BTX_REQ			    1
-#define BTX_TXING		    2
-#define BTX_WAIT		    3
-#define BTX_END			    4 
+#define BASYN_TX_NULL		    0
+#define BASYN_TX_WAIT		    1
 
-#define BTX_F_SYN           0
-#define BTX_F_ASYN          1
 
-#define BTX_REQ_LEVEL0      0
-#define BTX_REQ_LEVEL1      1
+
+#define BASYN_TX_REQ_L0         0
+#define BASYN_TX_REQ_L1         1
 
 /**
  * \}
  */
    
 /** 
- * \defgroup TX_Exported_Macros
+ * \defgroup ASYN_TX_Exported_Macros
  * \{
  */
    
@@ -99,7 +93,7 @@ typedef struct
  */
    
 /** 
- * \defgroup TX_Exported_Variables
+ * \defgroup ASYN_TX_Exported_Variables
  * \{
  */
    
@@ -108,12 +102,12 @@ typedef struct
  */
    
 /** 
- * \defgroup TX_Exported_Functions
+ * \defgroup ASYN_TX_Exported_Functions
  * \{
  */
-int bTX_CplCallback(int no);
-int bTX_Regist(uint8_t *pbuf, uint32_t size, uint8_t td_mode, uint8_t dev_no); 
-int bTX_Request(int no, uint8_t *pbuf, uint16_t size, uint8_t flag);
+int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms);
+int bAsyntxRequest(int no, uint8_t *pbuf, uint16_t size, uint8_t flag);
+int bAsyntxCplCallback(int no);
 /**
  * \}
  */

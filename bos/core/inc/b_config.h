@@ -95,17 +95,25 @@
 #define _MODBUS_I_NUMBER          	1
 //</e>
 
-//<e> Transmit Enable/Disable
-#define _TX_ENABLE           		0
-//<o> TX Instance Number
-#define _TX_I_NUMBER          	    1
+//<e> Asynchronous Transmit Enable/Disable
+#define _ASYN_TX_ENABLE             0
+//<o> ASYN_TX Instance Number
+#define _ASYN_TX_I_NUMBER           1
+//</e>
+
 //<e> Protocol Enable/Disable
 #define _PROTO_ENABLE         		0
+//<o> Size of The Device ID Field
+//<2=> 2Bytes
+//<4=> 4Bytes
+#define _PROTO_FID_SIZE             4
+//<o> Size of The Len Field
+//<1=> 1Byte
+//<2=> 2Bytes
+#define _PROTO_FLEN_SIZE            1 
 //<o> Protocol Instance Number
 #define _PROTO_I_NUMBER             1
 //</e>
-//</e>
-
 
 //<e> Check Enable/Disable
 #define _CHECK_ENABLE             	0

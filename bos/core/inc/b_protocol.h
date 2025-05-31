@@ -1,13 +1,13 @@
 /**
  *!
  * \file        b_protocol.h
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.1.0
+ * \date        2020/03/15
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,26 +53,43 @@
  * \{
  */
 
-////|bProtocolHead_t | data | sum|
+#if _PROTO_FID_SIZE == 2
+typedef uint16_t        bProtoID_t;  
+#define INVALID_ID      0XFFFF
+#else
+typedef uint32_t        bProtoID_t; 
+#define INVALID_ID      0XFFFFFFFF
+#endif
 
+#if _PROTO_FLEN_SIZE == 1
+typedef uint8_t         bProtoLen_t;      
+#else
+typedef uint16_t        bProtoLen_t;  
+#endif
+
+/**
+|      |                    |                     |       |          |       |
+| :--- | ------------------ | ------------------- | ----- | -------- | ----- |
+| 头部 | 设备ID             | 长度（指令+参数）   | 指令  | 参数     | 校验  |
+| 0xFE | sizeof(bProtoID_t) | sizeof(bProtoLen_t) | 1Byte | 0~nBytes | 1Byte |
+*/
 #pragma pack(1) 
 
 typedef struct
 {
     uint8_t head;
-    uint32_t device_id;
-    uint8_t len;
+    bProtoID_t device_id;
+    bProtoLen_t len;
     uint8_t cmd;
 }bProtocolHead_t;   
 
 #pragma pack()
 
-typedef int (*pdispatch)(uint8_t cmd, uint8_t *param, uint8_t param_len);
+typedef int (*pdispatch)(uint8_t cmd, uint8_t *param, bProtoLen_t param_len);
 
 typedef struct
 {
-    uint32_t id;
-    uint8_t tx_no;
+    bProtoID_t id;
     pdispatch f;
 }bProtocolInfo_t;
 
@@ -115,10 +132,10 @@ typedef struct
  * \defgroup PROTOCOL_Exported_Functions
  * \{
  */
-int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f);
-int bProtocolSetID(int no, uint32_t id);
-int bProtocolParse(int no, uint8_t *pbuf, uint8_t len);
-int bProtocolSend(int no, uint8_t cmd, uint8_t *param, uint8_t param_size);
+int bProtocolRegist(bProtoID_t id, pdispatch f);
+int bProtocolSetID(int no, bProtoID_t id);
+int bProtocolParse(int no, uint8_t *pbuf, bProtoLen_t len);
+int bProtocolPack(int no, uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *pbuf);
 /**
  * \}
  */

@@ -1,13 +1,13 @@
 /**
  *!
  * \file        b_protocol.c
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.1.0
+ * \date        2020/03/15
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,6 @@
 /*Includes ----------------------------------------------*/
 #include "b_protocol.h"
 #if _PROTO_ENABLE
-#include "b_sum.h"
-#include "b_tx.h"
 #include <string.h>
 /** 
  * \addtogroup BABYOS
@@ -97,9 +95,10 @@ static uint8_t bProtocolInfoIndex = 0;
  * \defgroup PROTOCOL_Private_Functions
  * \{
  */
-static uint8_t _bProtocolCalCheck(uint8_t *pbuf, uint8_t len)
+static uint8_t _bProtocolCalCheck(uint8_t *pbuf, bProtoLen_t len)
 {
-    uint8_t tmp, i;
+    uint8_t tmp;
+    bProtoLen_t i;
     tmp = pbuf[0];
     for(i = 1;i < len;i++)
     {
@@ -120,20 +119,18 @@ static uint8_t _bProtocolCalCheck(uint8_t *pbuf, uint8_t len)
 /**
  * \brief Create a protocol instance
  * \param id system id
- * \param tx_no TX instance ID
  * \param f Dispatch Function \ref pdispatch
  * \retval Instance ID
  *          \arg >=0  valid
  *          \arg -1   invalid
  */
-int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f)
+int bProtocolRegist(bProtoID_t id, pdispatch f)
 {
     if(bProtocolInfoIndex >= _PROTO_I_NUMBER || f == NULL)
     {
         return -1;
     }
     bProtocolInfo[bProtocolInfoIndex].id = id;
-    bProtocolInfo[bProtocolInfoIndex].tx_no = tx_no;
     bProtocolInfo[bProtocolInfoIndex].f = f;
     bProtocolInfoIndex += 1;
     return (bProtocolInfoIndex - 1);
@@ -149,17 +146,17 @@ int bProtocolRegist(uint32_t id, uint8_t tx_no, pdispatch f)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolParse(int no, uint8_t *pbuf, uint8_t len)
+int bProtocolParse(int no, uint8_t *pbuf, bProtoLen_t len)
 {
     bProtocolHead_t *phead = (bProtocolHead_t *)pbuf;
-    uint8_t length;
+    int length;
     uint8_t crc;
     if(pbuf == NULL || len < (sizeof(bProtocolHead_t) + 1) || no >= bProtocolInfoIndex || no < 0)
     {
         return -1;
     }
     
-    if(phead->head != PROTOCOL_HEAD || (phead->device_id != bProtocolInfo[no].id && (phead->device_id != 0xffffffff) && (bProtocolInfo[no].id != 0xffffffff)))
+    if(phead->head != PROTOCOL_HEAD || (phead->device_id != bProtocolInfo[no].id && (phead->device_id != INVALID_ID) && (bProtocolInfo[no].id != INVALID_ID)))
     {
         return -1;
     }
@@ -175,7 +172,6 @@ int bProtocolParse(int no, uint8_t *pbuf, uint8_t len)
         b_log_e("crc error!%d %d", crc, pbuf[length - 1]);
         return -1;
     }
-    
     return bProtocolInfo[no].f(phead->cmd, &pbuf[sizeof(bProtocolHead_t)], phead->len - 1);
 }
 
@@ -189,7 +185,7 @@ int bProtocolParse(int no, uint8_t *pbuf, uint8_t len)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolSetID(int no, uint32_t id)
+int bProtocolSetID(int no, bProtoID_t id)
 {
     if(no >= bProtocolInfoIndex || no < 0)
     {
@@ -207,32 +203,29 @@ int bProtocolSetID(int no, uint32_t id)
  * \param cmd Protocol command
  * \param param Pointer to the command param
  * \param param_size size of the param
+ * \param pbuf Pointer to the buffer that save the packed data
  * \retval Result
- *          \arg 0  OK
+ *          \arg >0 Amount of data in the pbuf
  *          \arg -1 ERR
  */
-int bProtocolSend(int no, uint8_t cmd, uint8_t *param, uint8_t param_size)
+int bProtocolPack(int no, uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *pbuf)
 {
-    uint8_t length = 0;
+    int length = 0;
     bProtocolHead_t *phead;
-    uint8_t tmp_buf[262];
-    if((param == NULL && param_size > 0) || no >= bProtocolInfoIndex || no < 0)
+
+    if((param == NULL && param_size > 0) || no >= bProtocolInfoIndex || no < 0 || pbuf == NULL)
     {
         return -1;
     }
-    phead = (bProtocolHead_t *)tmp_buf;
+    phead = (bProtocolHead_t *)pbuf;
     phead->head = PROTOCOL_HEAD;
     phead->device_id = bProtocolInfo[no].id;
     phead->cmd = cmd;
     phead->len = 1 + param_size;
-    
-    memcpy(&tmp_buf[sizeof(bProtocolHead_t)], param, param_size);
-    
+    memcpy(&pbuf[sizeof(bProtocolHead_t)], param, param_size);
     length = sizeof(bProtocolHead_t) + phead->len;
-    
-    tmp_buf[length - 1] = _bProtocolCalCheck(tmp_buf, length - 1);
-    
-    return bTX_Request(bProtocolInfo[no].tx_no, tmp_buf, length, BTX_REQ_LEVEL1);
+    pbuf[length - 1] = _bProtocolCalCheck(pbuf, length - 1);
+    return length;
 }
 
 /**

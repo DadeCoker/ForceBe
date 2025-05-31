@@ -563,11 +563,6 @@
               <FilePath>..\bos\core\src\b_sum.c</FilePath>
             </File>
             <File>
-              <FileName>b_tx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\core\src\b_tx.c</FilePath>
-            </File>
-            <File>
               <FileName>b_utc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_utc.c</FilePath>
@@ -687,6 +682,11 @@
               <FileName>b_trace.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\core\src\b_trace.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_asyntx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\core\src\b_asyntx.c</FilePath>
             </File>
           </Files>
         </Group>

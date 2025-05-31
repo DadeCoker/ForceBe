@@ -48,7 +48,7 @@
 #include "b_sdb.h"
 #include "b_sdc.h"
 #include "b_sum.h"
-#include "b_tx.h"
+#include "b_asyntx.h"
 #include "b_utc.h"
 #include "b_fifo.h"
 #include "b_at.h"

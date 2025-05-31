@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v1.1.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -184,7 +184,7 @@ b_button 功能模块基于开源项目FlexibleButton，<https://github.com/murp
 
 b_gui 功能模块基于开源项目uGUI, <https://github.com/achimdoebler/UGUI>, 感谢作者Achimdoebler
 
-
+b_trace功能模块基于开源项目CmBacktrace,<https://gitee.com/Armink/CmBacktrace>, 感谢作者Armink
 
 **如果您觉得这套开源代码有意义，请给个Star表示支持，谢谢！**
 
