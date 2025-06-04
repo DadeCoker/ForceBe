@@ -102,7 +102,7 @@
 //</e>
 
 //<e> Protocol Enable/Disable
-#define _PROTO_ENABLE         		0
+#define _PROTO_ENABLE         		1
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
@@ -268,7 +268,7 @@
 
 
 //<e> CmBacktrace Enable/Disable
-#define _CMBACKTRACE_ENABLE                 1
+#define _CMBACKTRACE_ENABLE                 0
 
 //<o> CMB_CPU_ARM_CORTEX_M?
 //<0=> ARM_CORTEX_M0

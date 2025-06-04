@@ -36,11 +36,8 @@
 #include "stm32f1xx_it.h"
 
 /* USER CODE BEGIN 0 */
-#include "b_config.h"
 extern void bHalIncSysTick(void);
-#if _CMBACKTRACE_ENABLE
-extern void bHardfaultCallback(void);
-#endif
+extern void UartIdleHandler(void);
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -73,9 +70,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-#if _CMBACKTRACE_ENABLE    
-  bHardfaultCallback();
-#endif    
+
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -236,7 +231,7 @@ void DMA1_Channel6_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-    
+  UartIdleHandler();
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */

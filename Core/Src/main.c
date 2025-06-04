@@ -76,11 +76,26 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-typedef void (*pfunc)(void);
+uint8_t rxBuffer[250];
+int Protocol_n = -1;
 
-int _TestHardfault()
+
+void UartIdleHandler()
 {
-    ((pfunc)0x00000000)();
+    uint8_t count = 0;
+    if(__HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_IDLE))
+    {
+        __HAL_UART_CLEAR_IDLEFLAG(&huart1);
+        HAL_UART_DMAStop(&huart1);
+        count = 250 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
+        bProtocolParse(Protocol_n, rxBuffer, count);
+        HAL_UART_Receive_DMA(&huart1, rxBuffer, 250);
+    }
+}
+
+int Dispatch(uint8_t cmd, uint8_t *param, bProtoLen_t param_len)
+{
+    b_log("cmd:%d param: %s len:%d\r\n", cmd, param, param_len);
     return 0;
 }
 
@@ -94,7 +109,10 @@ int _TestHardfault()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  uint8_t table[128];
+  uint32_t tick;
+  uint8_t param[5] = {1,2,3,4,5};
+  uint16_t len;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -123,22 +141,30 @@ int main(void)
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
 
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+  HAL_UART_Receive_DMA(&huart1, rxBuffer, 250);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
- 
-  /****************************Init*******************************/
-  bInit();                                      //BabyOS Init
-  bTraceInit("BabyOS");
-  _TestHardfault();
+  bInit();
+  Protocol_n = bProtocolRegist(0x520, Dispatch);
   while (1)
   {
       bExec();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
+      if(bHalGetTick() - tick > 10000)
+      {
+        tick = bHalGetTick();
+        len = bProtocolPack(Protocol_n, 0x1, param, 5, table);
+        if(len > 0)
+        {
+            HAL_UART_Transmit(&huart1, table, len, 0xffff);
+        }
+      }          
   }
   /* USER CODE END 3 */
 
@@ -272,7 +298,7 @@ static void MX_USART1_UART_Init(void)
 {
 
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

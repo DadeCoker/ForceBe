@@ -179,8 +179,8 @@ int bExec()
     bEventCore();
 #endif    
     
-#if _TX_ENABLE
-    bTX_Core();
+#if _ASYN_TX_ENABLE
+    bAsyntxCore();
 #endif
 #if _UGUI_ENABLE
     static uint32_t g_tick = 0;
