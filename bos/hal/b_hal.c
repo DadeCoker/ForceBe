@@ -30,7 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_hal.h"   
+#include "b_hal.h" 
+#include "b_driver.h"
 #include <string.h>
 /** 
  * \addtogroup B_HAL
@@ -93,7 +94,99 @@ volatile uint32_t bSysTick = 0;
  * \defgroup HAL_Private_Functions
  * \{
  */
-   
+
+/****************************************************************************SSD1289*******/
+
+
+/****************************************************************************xpt2046*******/
+
+
+/*******************************************************************************w25x*******/
+extern SPI_HandleTypeDef hspi2;
+static uint8_t _HalW25X_SPI_RW(uint8_t dat)
+{
+    uint8_t tmp;
+    HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xfff);
+    return tmp;
+}
+
+static void _HalW25X_CS(uint8_t s)
+{
+    if(s)
+    {
+        HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET);
+    }
+}
+
+bW25X_Private_t bW25X_HalIF = {
+    .pSPI_ReadWriteByte = _HalW25X_SPI_RW,
+    .pCS_Control = _HalW25X_CS,
+};
+
+NEW_W25X_DRV(SPIFlashDriver, bW25X_HalIF);
+
+/*******************************************************************************suart*******/
+static void _HalSUART_TX(uint8_t s)
+{
+    if(s)
+    {
+        HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_RESET);
+    }    
+}
+
+static void _HalSUART2_TX(uint8_t s)
+{
+    if(s)
+    {
+        HAL_GPIO_WritePin(SUART2_TX_GPIO_Port, SUART2_TX_Pin, GPIO_PIN_SET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(SUART2_TX_GPIO_Port, SUART2_TX_Pin, GPIO_PIN_RESET);
+    }    
+}
+
+static uint8_t _HalSUART_RX()
+{
+    return HAL_GPIO_ReadPin(SUART_TX_GPIO_Port, SUART_TX_Pin);
+}
+
+static uint8_t _HalSUART2_RX()
+{
+    return HAL_GPIO_ReadPin(SUART2_TX_GPIO_Port, SUART2_TX_Pin);
+}
+
+bSUART_Private_t bSUART_Private1 = {
+    .pTxPIN_Control = _HalSUART_TX,
+    .RxPIN_Read = _HalSUART_RX,
+};
+
+bSUART_Private_t bSUART_Private2 = {
+    .pTxPIN_Control = _HalSUART2_TX,
+    .RxPIN_Read = _HalSUART2_RX,
+};
+
+
+NEW_SUART_DRV(SUART_Driver1, bSUART_Private1);
+NEW_SUART_DRV(SUART_Driver2, bSUART_Private2);
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    S_UartTxTimerHandler(&SUART_Driver1);
+    S_UartRxTimerHandler(&SUART_Driver1);
+    S_UartTxTimerHandler(&SUART_Driver2);
+    S_UartRxTimerHandler(&SUART_Driver2);    
+}
+
+
 /**
  * \}
  */
@@ -128,29 +221,10 @@ void bHalIncSysTick()
     bSysTick += 1;
 }
 
-void LCD_DB_Init(uint8_t t)
-{
-    GPIO_InitTypeDef GPIO_Init;
-    GPIO_Init.Pin = GPIO_PIN_All;
-    GPIO_Init.Pull = GPIO_NOPULL;
-    GPIO_Init.Speed = GPIO_SPEED_FREQ_HIGH;
-    if(t)
-    {
-        GPIO_Init.Mode = GPIO_MODE_OUTPUT_PP;
-    }
-    else
-    {
-        GPIO_Init.Mode = GPIO_MODE_INPUT;
-    }
-    HAL_GPIO_Init(GPIOE, &GPIO_Init);
-}
-
 void bHalInit()
 {
-    LCD_DB_Init(1);// Add code ...gpio init or some other functions
+    // Add code ...gpio init or some other functions
 }
-
-
 
 /**
  * \}

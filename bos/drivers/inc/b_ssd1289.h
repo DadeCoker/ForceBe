@@ -52,8 +52,15 @@
  * \defgroup SSD1289_Exported_TypesDefinitions
  * \{
  */
+ 
+typedef struct
+{
+    void (*pWriteCmd)(uint8_t);
+    void (*pWriteDat)(uint8_t);
+}bSSD1289Private_t; 
+ 
+ 
 typedef bDriverInterface_t bSSD1289_Driver_t;  
-
 /**
  * \}
  */
@@ -83,7 +90,7 @@ typedef bDriverInterface_t bSSD1289_Driver_t;
  * \defgroup SSD1289_Exported_Variables
  * \{
  */
-extern bSSD1289_Driver_t bSSD1289_Driver;   
+ 
 /**
  * \}
  */
@@ -92,7 +99,7 @@ extern bSSD1289_Driver_t bSSD1289_Driver;
  * \defgroup SSD1289_Exported_Functions
  * \{
  */
-int bSSD1289_Init(void);
+int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
 
 /**
  * \}

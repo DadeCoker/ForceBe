@@ -52,9 +52,6 @@
  * \defgroup SUART_Exported_TypesDefinitions
  * \{
  */
- 
-typedef bDriverInterface_t   SUART_Driver_t;  
- 
 typedef struct
 {
     volatile uint8_t byte;
@@ -65,7 +62,19 @@ typedef struct
     volatile uint8_t revf;
     volatile uint8_t idle_count;
     volatile uint8_t idle_flag;
-}S_RXInfo_t;   
+    volatile uint8_t tx_delay_flag;
+}bSUART_Param_t;    
+ 
+ 
+typedef struct
+{
+    bSUART_Param_t info;
+    void (*pTxPIN_Control)(uint8_t);
+    uint8_t (*RxPIN_Read)(void);
+}bSUART_Private_t;
+
+typedef bDriverInterface_t   SUART_Driver_t;  
+
 /**
  * \}
  */
@@ -111,7 +120,7 @@ typedef struct
  * \defgroup SUART_Exported_Variables
  * \{
  */
-extern SUART_Driver_t SUART_Driver;   
+  
 /**
  * \}
  */
@@ -120,11 +129,13 @@ extern SUART_Driver_t SUART_Driver;
  * \defgroup SUART_Exported_Functions
  * \{
  */
-void S_UartTxTimerHandler(void);
-void S_UartRXStart(void);
-void S_UartRxTimerHandler(void);
 
-int SUART_Init(void);
+int SUART_Init(SUART_Driver_t *pdrv);
+
+void S_UartRXStart(SUART_Driver_t *);
+void S_UartTxTimerHandler(SUART_Driver_t *);
+void S_UartRxTimerHandler(SUART_Driver_t *);
+
 /**
  * \}
  */

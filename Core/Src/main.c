@@ -76,27 +76,24 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-uint8_t rxBuffer[250];
-int Protocol_n = -1;
 
-
-void UartIdleHandler()
+void SUART_Test()
 {
-    uint8_t count = 0;
-    if(__HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_IDLE))
+    int fd = -1;
+    fd = bOpen(SUART1, BCORE_FLAG_RW);
+    if(fd >= 0)
     {
-        __HAL_UART_CLEAR_IDLEFLAG(&huart1);
-        HAL_UART_DMAStop(&huart1);
-        count = 250 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
-        bProtocolParse(Protocol_n, rxBuffer, count);
-        HAL_UART_Receive_DMA(&huart1, rxBuffer, 250);
+        bWrite(fd, (uint8_t *)"suart1\r\n", 9);
+        bClose(fd);
     }
-}
 
-int Dispatch(uint8_t cmd, uint8_t *param, bProtoLen_t param_len)
-{
-    b_log("cmd:%d param: %s len:%d\r\n", cmd, param, param_len);
-    return 0;
+    fd = bOpen(SUART2, BCORE_FLAG_RW);
+    if(fd >= 0)
+    {
+        bWrite(fd, (uint8_t *)"suart2\r\n", 9);
+        bClose(fd);
+    }
+    
 }
 
 /* USER CODE END 0 */
@@ -109,10 +106,8 @@ int Dispatch(uint8_t cmd, uint8_t *param, bProtoLen_t param_len)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t table[128];
+  uint8_t table[10];
   uint32_t tick;
-  uint8_t param[5] = {1,2,3,4,5};
-  uint16_t len;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -140,31 +135,31 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-
-  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-  HAL_UART_Receive_DMA(&huart1, rxBuffer, 250);
-
+  HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bInit();
-  Protocol_n = bProtocolRegist(0x520, Dispatch);
+  bKV_Init(SPIFLASH, 0, 4 * 4096, 4096);
+  
+  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", 7);
+  
+  bKV_Get((uint8_t *)"name", table);
+  
+  b_log("name: %s\r\n", table);
+  
   while (1)
   {
       bExec();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-      if(bHalGetTick() - tick > 10000)
+      if(bHalGetTick() - tick > 5000)
       {
-        tick = bHalGetTick();
-        len = bProtocolPack(Protocol_n, 0x1, param, 5, table);
-        if(len > 0)
-        {
-            HAL_UART_Transmit(&huart1, table, len, 0xffff);
-        }
-      }          
+          tick = bHalGetTick();
+          SUART_Test();
+      }
   }
   /* USER CODE END 3 */
 
@@ -362,11 +357,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct;
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(SUART2_TX_GPIO_Port, SUART2_TX_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET);
@@ -385,6 +384,19 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(TP_CS_GPIO_Port, TP_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin : SUART2_TX_Pin */
+  GPIO_InitStruct.Pin = SUART2_TX_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(SUART2_TX_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SUART2_RX_Pin */
+  GPIO_InitStruct.Pin = SUART2_RX_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(SUART2_RX_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : WAKEUP_Pin SUART_RX_Pin KEY1_Pin KEY2_Pin 
                            KEY3_Pin */

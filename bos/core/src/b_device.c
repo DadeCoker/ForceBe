@@ -91,8 +91,8 @@ static const char *bDeviceDescTable[bDEV_MAX_NUM] = {
 
 static uint8_t bDeviceStatusTable[bDEV_MAX_NUM];
 
- 
-
+static bDriverInterface_t * volatile pCurrentDriver = NULL; 
+static bDriverInterface_t * volatile pCurrentDriverBak = NULL; 
 /**
  * \}
  */
@@ -140,7 +140,7 @@ int bDeviceInit()
     {
         if(bDriverTable[i]->init != NULL)
         {
-            if(bDriverTable[i]->init() < 0)
+            if(bDriverTable[i]->init(bDriverTable[i]) < 0)
             {
                 bDeviceStatusTable[i] = BDEVICE_ERROR;
                 b_log_e("%s init error\r\n", bDeviceDescTable[i]);
@@ -160,96 +160,137 @@ int bDeviceInit()
 
 int bDeviceOpen(uint8_t no)
 {
+    int retval = 0;
     if(no >= bDEV_MAX_NUM)
     {
         return -1;
     }
     if(bDeviceStatusTable[no] == 0)
     {
-        if(bDriverTable[no]->open == NULL)
+        if(bDriverTable[no]->open != NULL)
         {
-            return -1;
+            pCurrentDriver = bDriverTable[no];
+            retval = bDriverTable[no]->open();
         }
-        return bDriverTable[no]->open();
     }
-    return -1;
+    else
+    {
+        retval = -255;
+    }
+    return retval;
 }
 
 
 int bDeviceRead(int no, uint32_t address, uint8_t *pdata, uint16_t len)
 {
+    int retval = 0;
     if(no >= bDEV_MAX_NUM || pdata == NULL)
     {
         return -1;
     }
     if(bDeviceStatusTable[no] == 0)
     {
-        if(bDriverTable[no]->read == NULL)
+        if(bDriverTable[no]->read != NULL)
         {
-            return -1;
+            pCurrentDriver = bDriverTable[no];
+            retval = bDriverTable[no]->read(address, pdata, len);
         }
-        return bDriverTable[no]->read(address, pdata, len);
     }
-    return -1;
+    else
+    {
+        retval = -255;
+    }
+    return retval;
 }
 
 int bDeviceWrite(int no, uint32_t address, uint8_t *pdata, uint16_t len)
 {
+    int retval = 0;
     if(no >= bDEV_MAX_NUM || pdata == NULL)
     {
         return -1;
     }
     if(bDeviceStatusTable[no] == 0)
     {
-        if(bDriverTable[no]->write== NULL)
+        if(bDriverTable[no]->write != NULL)
         {
-            return -1;
+            pCurrentDriver = bDriverTable[no];
+            retval = bDriverTable[no]->write(address, pdata, len);
         }
-        return bDriverTable[no]->write(address, pdata, len);
     }
-    return -1;
+    else
+    {
+        retval = -255;
+    }
+    return retval;
 }
 
 
 
 int bDeviceClose(int no)
 {
+    int retval = 0;
     if(no >= bDEV_MAX_NUM)
     {
         return -1;
     }
     if(bDeviceStatusTable[no] == 0)
     {
-        if(bDriverTable[no]->close == NULL)
+        if(bDriverTable[no]->close != NULL)
         {
-            return -1;
+            pCurrentDriver = bDriverTable[no];
+            retval = bDriverTable[no]->close();
         }
-        return bDriverTable[no]->close();
     }
-    return -1;
+    else
+    {
+        retval = -255;
+    }
+    return retval;
 }
 
 
 int bDeviceCtl(int no, uint8_t cmd, void *param)
 {
+    int retval = 0;
     if(no >= bDEV_MAX_NUM)
     {
         return -1;
     }
     if(bDeviceStatusTable[no] == 0)
     {
-        if(bDriverTable[no]->ctl== NULL)
+        if(bDriverTable[no]->ctl != NULL)
         {
-            return -1;
+            pCurrentDriver = bDriverTable[no];
+            retval = bDriverTable[no]->ctl(cmd, param);
         }
-        return bDriverTable[no]->ctl(cmd, param);
     }
-    return -1;
+    else
+    {
+        retval = -255;
+    }
+    return retval;
 }
 
+int bDeviceGetCurrentDrv(bDriverInterface_t **pdrv)
+{
+    if(pdrv == NULL || pCurrentDriver == NULL)
+    {
+        return -1;
+    }
+    *pdrv = pCurrentDriver;
+    return 0;
+}
 
+void bDeviceEnterInterrupt()
+{
+    pCurrentDriverBak = pCurrentDriver;
+}
 
-
+void bDeviceExitInterrupt()
+{
+    pCurrentDriver = pCurrentDriverBak;
+}
 
 /**
  * \}

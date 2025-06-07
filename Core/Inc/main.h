@@ -49,6 +49,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define SUART2_TX_Pin GPIO_PIN_1
+#define SUART2_TX_GPIO_Port GPIOF
+#define SUART2_RX_Pin GPIO_PIN_2
+#define SUART2_RX_GPIO_Port GPIOF
 #define WAKEUP_Pin GPIO_PIN_0
 #define WAKEUP_GPIO_Port GPIOA
 #define SUART_TX_Pin GPIO_PIN_1

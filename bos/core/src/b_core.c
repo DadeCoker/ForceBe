@@ -291,6 +291,16 @@ int bCoreIsIdle()
     return 0;
 }
 
+void bEnterInterrupt()
+{
+    bDeviceEnterInterrupt();
+}
+
+void bExitInterrupt()
+{
+    bDeviceExitInterrupt();
+}
+
 /**
  * \}
  */

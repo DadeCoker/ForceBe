@@ -52,6 +52,14 @@
  * \defgroup XPT2046_Exported_TypesDefinitions
  * \{
  */
+ 
+typedef struct
+{
+    uint8_t (*pSPI_ReadWriteByte)(uint8_t);
+    void (*pCS_Control)(uint8_t);
+}bXPT2046Private_t;    
+ 
+ 
 typedef bDriverInterface_t bXPT2046_Driver_t;  
 
 /**
@@ -83,7 +91,7 @@ typedef bDriverInterface_t bXPT2046_Driver_t;
  * \defgroup XPT2046_Exported_Variables
  * \{
  */
-extern bXPT2046_Driver_t bXPT2046_Driver;   
+  
 /**
  * \}
  */
@@ -92,7 +100,7 @@ extern bXPT2046_Driver_t bXPT2046_Driver;
  * \defgroup XPT2046_Exported_Functions
  * \{
  */
-int bXPT2046_Init(void);
+int bXPT2046_Init(bXPT2046_Driver_t *);
 
 /**
  * \}

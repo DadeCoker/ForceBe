@@ -102,7 +102,7 @@
 //</e>
 
 //<e> Protocol Enable/Disable
-#define _PROTO_ENABLE         		1
+#define _PROTO_ENABLE         		0
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
@@ -146,7 +146,7 @@
 
 
 //<e> KV Enable/Disable
-#define _KV_ENABLE             	    0
+#define _KV_ENABLE             	    1
 //<o> Key/Value Pair Max Number
 #define _KV_PAIR_NUMBER             32
 //</e>

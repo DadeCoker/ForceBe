@@ -124,6 +124,8 @@ int bLseek(int fd, uint32_t off);
 int bClose(int fd);
 
 int bCoreIsIdle(void); 
+void bEnterInterrupt(void);
+void bExitInterrupt(void);
 /**
  * \}
  */

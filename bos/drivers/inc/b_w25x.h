@@ -52,6 +52,13 @@
  * \defgroup W25X_Exported_TypesDefinitions
  * \{
  */
+ 
+typedef struct
+{
+    uint8_t (*pSPI_ReadWriteByte)(uint8_t);
+    void (*pCS_Control)(uint8_t);
+}bW25X_Private_t;  
+ 
 typedef bDriverInterface_t bW25X_Driver_t;  
 
 /**
@@ -125,7 +132,7 @@ typedef bDriverInterface_t bW25X_Driver_t;
  * \defgroup W25X_Exported_Variables
  * \{
  */
-extern bW25X_Driver_t bW25X_Driver;   
+  
 /**
  * \}
  */
@@ -134,7 +141,7 @@ extern bW25X_Driver_t bW25X_Driver;
  * \defgroup W25X_Exported_Functions
  * \{
  */
-int bW25X_Init(void);
+int bW25X_Init(bW25X_Driver_t *pdrv);
 
 /**
  * \}
