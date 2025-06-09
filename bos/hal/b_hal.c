@@ -95,96 +95,67 @@ volatile uint32_t bSysTick = 0;
  * \{
  */
 
-/****************************************************************************SSD1289*******/
-
-
-/****************************************************************************xpt2046*******/
-
-
-/*******************************************************************************w25x*******/
-extern SPI_HandleTypeDef hspi2;
-static uint8_t _HalW25X_SPI_RW(uint8_t dat)
+/*******************************************************************************f8l10d*******/
+uint8_t UartTmpBuffer[250];
+extern UART_HandleTypeDef huart2; 
+extern DMA_HandleTypeDef hdma_usart2_rx;
+static void _F810D_UartSend(uint8_t *pbuf, uint16_t len)
 {
-    uint8_t tmp;
-    HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xfff);
-    return tmp;
+    HAL_UART_Transmit(&huart2, pbuf, len, 0xfff);
 }
 
-static void _HalW25X_CS(uint8_t s)
+static void _F8L10D_SleepPin(uint8_t s)
 {
     if(s)
     {
-        HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(LoRaSLEEP_GPIO_Port, LoRaSLEEP_Pin, GPIO_PIN_SET);
     }
     else
     {
-        HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LoRaSLEEP_GPIO_Port, LoRaSLEEP_Pin, GPIO_PIN_RESET);
     }
 }
 
-bW25X_Private_t bW25X_HalIF = {
-    .pSPI_ReadWriteByte = _HalW25X_SPI_RW,
-    .pCS_Control = _HalW25X_CS,
-};
-
-NEW_W25X_DRV(SPIFlashDriver, bW25X_HalIF);
-
-/*******************************************************************************suart*******/
-static void _HalSUART_TX(uint8_t s)
+static void _F8L10D_ResetPin(uint8_t s)
 {
     if(s)
     {
-        HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(LoRaRESET_GPIO_Port, LoRaRESET_Pin, GPIO_PIN_SET);
     }
     else
     {
-        HAL_GPIO_WritePin(SUART_TX_GPIO_Port, SUART_TX_Pin, GPIO_PIN_RESET);
-    }    
-}
-
-static void _HalSUART2_TX(uint8_t s)
-{
-    if(s)
-    {
-        HAL_GPIO_WritePin(SUART2_TX_GPIO_Port, SUART2_TX_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(LoRaRESET_GPIO_Port, LoRaRESET_Pin, GPIO_PIN_RESET);
     }
-    else
+}
+
+bF8L10D_Private_t bF8L10D_Private = {
+    .pUartSend = _F810D_UartSend,
+    .pSleepPin_Control = _F8L10D_SleepPin,
+    .pResetPin_Control = _F8L10D_ResetPin,
+};
+
+NEW_F8L10D_DRV(F8l10dDriver, bF8L10D_Private);       //Create new driver
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)       //TX Done 
+{
+    if(GPIO_Pin == LoRaTXDone_Pin)
     {
-        HAL_GPIO_WritePin(SUART2_TX_GPIO_Port, SUART2_TX_Pin, GPIO_PIN_RESET);
-    }    
+        bF8L10D_TXDoneIrqHandler(&F8l10dDriver);
+    }
 }
 
-static uint8_t _HalSUART_RX()
+void UartIdleIrqHandler()                           //Received data
 {
-    return HAL_GPIO_ReadPin(SUART_TX_GPIO_Port, SUART_TX_Pin);
+    uint16_t count = 0;
+    __HAL_UART_CLEAR_IDLEFLAG(&huart2);
+    HAL_UART_DMAStop(&huart2);
+    count = 250 - __HAL_DMA_GET_COUNTER(&hdma_usart2_rx);
+    bF8L10D_RXCplHandler(&F8l10dDriver, UartTmpBuffer, count);
+    __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
+    HAL_UART_Receive_DMA(&huart2, UartTmpBuffer, 250);
 }
 
-static uint8_t _HalSUART2_RX()
-{
-    return HAL_GPIO_ReadPin(SUART2_TX_GPIO_Port, SUART2_TX_Pin);
-}
-
-bSUART_Private_t bSUART_Private1 = {
-    .pTxPIN_Control = _HalSUART_TX,
-    .RxPIN_Read = _HalSUART_RX,
-};
-
-bSUART_Private_t bSUART_Private2 = {
-    .pTxPIN_Control = _HalSUART2_TX,
-    .RxPIN_Read = _HalSUART2_RX,
-};
-
-
-NEW_SUART_DRV(SUART_Driver1, bSUART_Private1);
-NEW_SUART_DRV(SUART_Driver2, bSUART_Private2);
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    S_UartTxTimerHandler(&SUART_Driver1);
-    S_UartRxTimerHandler(&SUART_Driver1);
-    S_UartTxTimerHandler(&SUART_Driver2);
-    S_UartRxTimerHandler(&SUART_Driver2);    
-}
+/*******************************************************************************f8l10d end*******/
 
 
 /**
@@ -224,6 +195,14 @@ void bHalIncSysTick()
 void bHalInit()
 {
     // Add code ...gpio init or some other functions
+/*******************************************************************f8l10d init*****/
+    __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
+    HAL_UART_Receive_DMA(&huart2, UartTmpBuffer, 250);
+    
+    
+    
+    
+    
 }
 
 /**

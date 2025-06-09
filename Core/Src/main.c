@@ -76,26 +76,16 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
-void SUART_Test()
+void TestLoRaModule()
 {
     int fd = -1;
-    fd = bOpen(SUART1, BCORE_FLAG_RW);
-    if(fd >= 0)
+    fd = bOpen(LoRaModule, BCORE_FLAG_RW);
+    if(fd >=0 )
     {
-        bWrite(fd, (uint8_t *)"suart1\r\n", 9);
+        bWrite(fd, (uint8_t *)"hello", 6);
         bClose(fd);
     }
-
-    fd = bOpen(SUART2, BCORE_FLAG_RW);
-    if(fd >= 0)
-    {
-        bWrite(fd, (uint8_t *)"suart2\r\n", 9);
-        bClose(fd);
-    }
-    
 }
-
 /* USER CODE END 0 */
 
 /**
@@ -106,7 +96,6 @@ void SUART_Test()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t table[10];
   uint32_t tick;
   /* USER CODE END 1 */
 
@@ -141,13 +130,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bInit();
-  bKV_Init(SPIFLASH, 0, 4 * 4096, 4096);
-  
-  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", 7);
-  
-  bKV_Get((uint8_t *)"name", table);
-  
-  b_log("name: %s\r\n", table);
   
   while (1)
   {
@@ -158,7 +140,7 @@ int main(void)
       if(bHalGetTick() - tick > 5000)
       {
           tick = bHalGetTick();
-          SUART_Test();
+          TestLoRaModule();
       }
   }
   /* USER CODE END 3 */
@@ -374,7 +356,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, LoRaRESET_Pin|W25X_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LoRaSLEEP_GPIO_Port, LoRaSLEEP_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, LCD_WR_Pin|LCD_RS_Pin|LCD_RD_Pin, GPIO_PIN_RESET);
@@ -398,6 +383,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SUART2_RX_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : LoRaTXDone_Pin */
+  GPIO_InitStruct.Pin = LoRaTXDone_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(LoRaTXDone_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pins : WAKEUP_Pin SUART_RX_Pin KEY1_Pin KEY2_Pin 
                            KEY3_Pin */
   GPIO_InitStruct.Pin = WAKEUP_Pin|SUART_RX_Pin|KEY1_Pin|KEY2_Pin 
@@ -419,6 +410,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LoRaRESET_Pin LoRaSLEEP_Pin */
+  GPIO_InitStruct.Pin = LoRaRESET_Pin|LoRaSLEEP_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : W25X_CS_Pin */
   GPIO_InitStruct.Pin = W25X_CS_Pin;
@@ -447,6 +445,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(TP_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 }
 

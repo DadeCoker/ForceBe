@@ -122,6 +122,7 @@ int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms)
     bAsyntxInfoTable[bAsyntxInfoIndex].timeout = timeout_ms;
     bAsyntxInfoTable[bAsyntxInfoIndex].timeout_f = 0;
     bAsyntxInfoTable[bAsyntxInfoIndex].s_tick = 0;
+    bAsyntxInfoTable[bAsyntxInfoIndex].f = f;
     bAsyntxInfoIndex += 1;
     return (bAsyntxInfoIndex - 1);
 }

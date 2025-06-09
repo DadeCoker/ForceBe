@@ -37,6 +37,7 @@
 #include "b_w25x.h"
 #include "b_xpt2046.h"
 #include "b_ssd1289.h"
+#include "b_f8l10d.h"
 
 
 #define NEW_SUART_DRV(name, hal)        SUART_Driver_t name = {.init = SUART_Init,._private = &hal}
@@ -47,14 +48,13 @@
 
 #define NEW_SSD1289_DRV(name, hal)      bSSD1289_Driver_t name = {.init = bSSD1289_Init,._private = &hal}
 
+#define NEW_F8L10D_DRV(name, hal)       bF8L10D_Driver_t name = {.init = bF8L10D_Init,._private = &hal}
 
 
 
-extern bDriverInterface_t SPIFlashDriver;
 
-extern bDriverInterface_t SUART_Driver1;
-extern bDriverInterface_t SUART_Driver2;
 
+extern bF8L10D_Driver_t F8l10dDriver;
 
 
 #endif

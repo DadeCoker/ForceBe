@@ -53,6 +53,9 @@
 #define SUART2_TX_GPIO_Port GPIOF
 #define SUART2_RX_Pin GPIO_PIN_2
 #define SUART2_RX_GPIO_Port GPIOF
+#define LoRaTXDone_Pin GPIO_PIN_6
+#define LoRaTXDone_GPIO_Port GPIOF
+#define LoRaTXDone_EXTI_IRQn EXTI9_5_IRQn
 #define WAKEUP_Pin GPIO_PIN_0
 #define WAKEUP_GPIO_Port GPIOA
 #define SUART_TX_Pin GPIO_PIN_1
@@ -65,6 +68,10 @@
 #define KEY2_GPIO_Port GPIOA
 #define KEY3_Pin GPIO_PIN_6
 #define KEY3_GPIO_Port GPIOA
+#define LoRaRESET_Pin GPIO_PIN_10
+#define LoRaRESET_GPIO_Port GPIOB
+#define LoRaSLEEP_Pin GPIO_PIN_11
+#define LoRaSLEEP_GPIO_Port GPIOB
 #define W25X_CS_Pin GPIO_PIN_12
 #define W25X_CS_GPIO_Port GPIOB
 #define LCD_WR_Pin GPIO_PIN_10

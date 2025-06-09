@@ -54,7 +54,7 @@
  * \{
  */
  
-typedef int (*pAT_TX)(uint8_t *, uint16_t len); 
+typedef void (*pAT_TX)(uint8_t *, uint16_t len); 
  
 typedef struct
 {

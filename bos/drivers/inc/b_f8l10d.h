@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_device_list.h
+ * \file        b_f8l10d.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/18
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,40 +28,109 @@
  * SOFTWARE.
  *******************************************************************************
  */
+#ifndef __B_F8L10D_H__
+#define __B_F8L10D_H__
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+/*Includes ----------------------------------------------*/
+#include "b_config.h" 
+#include "b_device.h"
+/** 
+ * \addtogroup B_DRIVER
+ * \{
+ */
+
+/** 
+ * \addtogroup F8L10D
+ * \{
+ */
+
+/** 
+ * \defgroup F8L10D_Exported_TypesDefinitions
+ * \{
+ */
+ 
+typedef struct
+{
+    /**************depend on the platform**************************/
+    void (*pUartSend)(uint8_t *, uint16_t);
+    void (*pSleepPin_Control)(uint8_t);
+    void (*pResetPin_Control)(uint8_t);
+    
+    /**********************private variables**********************************/
+    int at_no;
+    int atx_no;
+    uint8_t buf[200];
+}bF8L10D_Private_t;    
+ 
+ 
+typedef bDriverInterface_t bF8L10D_Driver_t;  
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Defines
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Macros
+ * \{
+ */
 
 
 
 /**
-           for example !
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Variables
+ * \{
+ */
+  
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Functions
+ * \{
+ */
+int bF8L10D_Init(bF8L10D_Driver_t *);
+void bF8L10D_TXDoneIrqHandler(bF8L10D_Driver_t *pdrv);
+void bF8L10D_RXCplHandler(bF8L10D_Driver_t *pdrv, uint8_t *pbuf, uint16_t len);
+/**
+ * \}
+ */
+ 
 
-/////B_DEVICE_REG(dev, driver_interface, desc);           
+/**
+ * \}
  */
 
-//B_DEVICE_REG(SSD1289, bSSD1289_Driver, "LCD")
-//B_DEVICE_REG(XPT2046, bXPT2046_Driver, "TOUCH")
-//B_DEVICE_REG(SPIFLASH, SPIFlashDriver, "flash")
+/**
+ * \}
+ */
 
-//B_DEVICE_REG(SUART1, SUART_Driver1, "suart1")
-
-//B_DEVICE_REG(SUART2, SUART_Driver2, "suart2")
-
-B_DEVICE_REG(LoRaModule, F8l10dDriver, "lora")
-
-
-
-
-
-
-//B_DEVICE_REG(null, bNullDriver, "null")
-
-
-
-#undef B_DEVICE_REG
-
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif
 
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 
 
 
