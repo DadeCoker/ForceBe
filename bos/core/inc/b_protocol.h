@@ -70,7 +70,7 @@ typedef uint16_t        bProtoLen_t;
 /**
 |      |                    |                     |       |          |       |
 | :--- | ------------------ | ------------------- | ----- | -------- | ----- |
-| 头部 | 设备ID             | 长度（指令+参数）   | 指令  | 参数     | 校验  |
+| Head | Device ID          | Len（cmd+param）    | Cmd   |  Param   | Check |
 | 0xFE | sizeof(bProtoID_t) | sizeof(bProtoLen_t) | 1Byte | 0~nBytes | 1Byte |
 */
 #pragma pack(1) 

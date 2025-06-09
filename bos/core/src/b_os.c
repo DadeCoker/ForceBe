@@ -72,6 +72,7 @@ extern void bYmodemTimeout(void);
 extern int bEventCore(void);
 extern int bTX_Core(void);
 extern void bGUI_TouchExec(void);
+extern void bAsyntxCore(void);
 /**
  * \}
  */
@@ -180,7 +181,7 @@ int bExec()
 #endif    
     
 #if _ASYN_TX_ENABLE
-    bAsyntxCore();
+    bAsyntxCore(); 
 #endif
 #if _UGUI_ENABLE
     static uint32_t g_tick = 0;
