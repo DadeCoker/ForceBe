@@ -76,16 +76,7 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-void TestLoRaModule()
-{
-    int fd = -1;
-    fd = bOpen(LoRaModule, BCORE_FLAG_RW);
-    if(fd >=0 )
-    {
-        bWrite(fd, (uint8_t *)"hello", 6);
-        bClose(fd);
-    }
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -96,7 +87,7 @@ void TestLoRaModule()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint32_t tick;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -124,7 +115,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim6);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -137,11 +128,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-      if(bHalGetTick() - tick > 5000)
-      {
-          tick = bHalGetTick();
-          TestLoRaModule();
-      }
+
   }
   /* USER CODE END 3 */
 

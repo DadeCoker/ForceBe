@@ -54,9 +54,6 @@
 
 
 
-extern bF8L10D_Driver_t F8l10dDriver;
-
-
 #endif
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/

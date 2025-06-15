@@ -31,7 +31,7 @@
    
 /*Includes ----------------------------------------------*/
 #include "b_f8l10d.h"
-
+#if (_ASYN_TX_ENABLE == 1 && _AT_ENABLE == 1)
 #include "b_at.h"
 #include "b_asyntx.h"
 #include "b_at.h"
@@ -144,7 +144,7 @@ const char *pATSetTable[I_NUMBER] = {
 static int _F8L10D_EnterATMode(int at_no)
 {
     int i = 0;
-    static bAT_ExpectedResp_t bAT_ExpectedResp;
+    bAT_ExpectedResp_t bAT_ExpectedResp;
     bAT_ExpectedResp.timeout = 1000;
     for(i = 0;i < 6;i++)
     {
@@ -461,6 +461,6 @@ void bF8L10D_RXCplHandler(bF8L10D_Driver_t *pdrv, uint8_t *pbuf, uint16_t len)
 /**
  * \}
  */
-
+#endif
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

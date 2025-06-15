@@ -96,7 +96,7 @@
 //</e>
 
 //<e> Asynchronous Transmit Enable/Disable
-#define _ASYN_TX_ENABLE             1
+#define _ASYN_TX_ENABLE             0
 //<o> ASYN_TX Instance Number
 #define _ASYN_TX_I_NUMBER           1
 //</e>
@@ -159,7 +159,7 @@
 //</e>
 
 //<e> AT Enable/Disable
-#define _AT_ENABLE             	    1
+#define _AT_ENABLE             	    0
 //<o> AT Instance Number
 #define _AT_I_NUMBER                1
 //<o> AT TX Buffer Length

@@ -38,6 +38,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
 #include "b_device.h"
+
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -128,7 +129,6 @@ void bF8L10D_RXCplHandler(bF8L10D_Driver_t *pdrv, uint8_t *pbuf, uint16_t len);
 #endif
  
 #endif
-
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

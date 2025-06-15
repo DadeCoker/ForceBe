@@ -96,6 +96,7 @@ volatile uint32_t bSysTick = 0;
  */
 
 /*******************************************************************************f8l10d*******/
+#if 0
 uint8_t UartTmpBuffer[250];
 extern UART_HandleTypeDef huart2; 
 extern DMA_HandleTypeDef hdma_usart2_rx;
@@ -154,7 +155,7 @@ void UartIdleIrqHandler()                           //Received data
     __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
     HAL_UART_Receive_DMA(&huart2, UartTmpBuffer, 250);
 }
-
+#endif
 /*******************************************************************************f8l10d end*******/
 
 
@@ -194,14 +195,7 @@ void bHalIncSysTick()
 
 void bHalInit()
 {
-    // Add code ...gpio init or some other functions
-/*******************************************************************f8l10d init*****/
-    __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
-    HAL_UART_Receive_DMA(&huart2, UartTmpBuffer, 250);
-    
-    
-    
-    
+    // Add code ...gpio init or some other functions 
     
 }
 
