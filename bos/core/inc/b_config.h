@@ -146,7 +146,7 @@
 
 
 //<e> KV Enable/Disable
-#define _KV_ENABLE             	    0
+#define _KV_ENABLE             	    1
 //<o> Key/Value Pair Max Number
 #define _KV_PAIR_NUMBER             32
 //</e>

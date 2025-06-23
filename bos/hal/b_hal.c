@@ -74,7 +74,6 @@
  * \defgroup HAL_Private_Variables
  * \{
  */
-extern UART_HandleTypeDef huart1;
 volatile uint32_t bSysTick = 0;
 
 /**
@@ -230,6 +229,31 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 #endif
 /*****************************************************************************suart end**********/
 
+
+/********************************************************************************spiflash**********/
+#if 1
+extern SPI_HandleTypeDef hspi2;
+static uint8_t _W25X_SPI_ReadWrite(uint8_t byte)
+{
+    uint8_t tmp;
+    HAL_SPI_TransmitReceive(&hspi2, &byte, &tmp, 1, 0xfff);
+    return tmp;
+}
+static void _W25X_CS(uint8_t s)
+{
+    if(s)   HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
+    else    HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET);
+}
+bW25X_Private_t bW25X_Private = {
+    .pSPI_ReadWriteByte = _W25X_SPI_ReadWrite,
+    .pCS_Control = _W25X_CS,
+};
+
+NEW_W25X_DRV(bW25X_Driver, bW25X_Private);
+
+#endif
+/*****************************************************************************spiflash end**********/
+
 /**
  * \}
  */
@@ -238,7 +262,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  * \addtogroup HAL_Exported_Functions
  * \{
  */
-
+extern UART_HandleTypeDef huart1;
 void bLogOutput(void *p)
 {
     HAL_UART_Transmit(&huart1, p, strlen(p), 0xffff);    

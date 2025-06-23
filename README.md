@@ -89,6 +89,56 @@ B_DEVICE_REG(SUART, SUART_Driver, "suart")
 
 ###   5、使用范例  
 
+以b_kv功能模块为例，先在b_config里面使能b_kv。
+
+#### 5.1、增加SPI Flash驱动
+
+完成驱动需要的硬件相关代码。
+
+```C
+//每个驱动的h文件里面都可以看到一个名以Private_t结尾的结构体类型
+typedef struct
+{
+    uint8_t (*pSPI_ReadWriteByte)(uint8_t);   //SPI读写字节
+    void (*pCS_Control)(uint8_t);             //CS引脚控制
+}bW25X_Private_t;  
+
+//b_hal.c内增加如下代码
+extern SPI_HandleTypeDef hspi2;
+static uint8_t _W25X_SPI_ReadWrite(uint8_t byte)
+{
+    uint8_t tmp;
+    HAL_SPI_TransmitReceive(&hspi2, &byte, &tmp, 1, 0xfff);
+    return tmp;
+}
+static void _W25X_CS(uint8_t s)
+{
+    if(s)   HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
+    else    HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET);
+}
+bW25X_Private_t bW25X_Private = {
+    .pSPI_ReadWriteByte = _W25X_SPI_ReadWrite,
+    .pCS_Control = _W25X_CS,
+};
+```
+
+硬件操作与驱动进行结合
+
+```C
+//每个驱动在b_driver.h里面有对应的宏用于组装：NEW_XXXXX_DRV(name, hal)
+NEW_W25X_DRV(bW25X_Driver, bW25X_Private);  //最终使用的驱动就是bW25X_Driver
+//将驱动bW25X_Driver在b_driver.h进行记录
+extern bDriverInterface_t   bW25X_Driver;
+```
+
+b_device_list.h内注册设备
+
+```C
+B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
+```
+
+#### 5.2、基于SPIFLASH使用KV功能
+
 ```c
 #include "b_os.h"    //头文件
 //b_config.h配置文件中使能KV存储
@@ -104,21 +154,9 @@ int main()
         b_log("bKV_Init ok...\r\n");
     }
     //存储键值对（可用于存储系统配置信息）
-    b_log("save ip, name\r\n");
-    bKV_Set((uint8_t *)"ip", (uint8_t *)"192.168.1.155", sizeof("192.168.1.155"));
-    bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", sizeof("BabyOS"));
-    //获取值
-    b_log("read ip, name...\r\n");
-    bKV_Get((uint8_t *)"ip", buf);
-    b_log("ip: %s\r\n", buf);
+    bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", 7);
     bKV_Get((uint8_t *)"name", buf);
-    b_log("name %s\r\n", buf); 
-    //修改键值对的值
-    b_log("change name...\r\n");
-    bKV_Set((uint8_t *)"name", (uint8_t *)"abcde", sizeof("abcde"));
-    //重新获取值
-    bKV_Get((uint8_t *)"name", buf);
-    b_log("new name: %s\r\n", buf); 
+    b_log("name:%s\r\n", buf); 
     //......
     while(1)
     {
@@ -131,7 +169,9 @@ int main()
 
 ```
 
+如果不使用功能模块，单独对设备进行操作，使用如下方式进行：
 
+*注：当在中断服务函数内操作设备，需要在中断服务函数开头和结尾处分别调用bEnterInterrupt/bExitInterrupt*
 
 ```c
 //举例使用W25QXX读取数据，从0地址读取128个字节数据至buf
@@ -147,6 +187,8 @@ int main()
     bClose(fd); 
 }
 ```
+
+
 
 更多使用介绍： 
 

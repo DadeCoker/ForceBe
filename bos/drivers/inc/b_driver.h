@@ -52,6 +52,7 @@
 
 
 
+extern bDriverInterface_t   bW25X_Driver;
 
 
 #endif
