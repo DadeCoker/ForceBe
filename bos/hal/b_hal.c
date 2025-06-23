@@ -159,6 +159,77 @@ void UartIdleIrqHandler()                           //Received data
 /*******************************************************************************f8l10d end*******/
 
 
+/********************************************************************************suart**********/
+#if 0
+static void _TX1_Control(uint8_t s)
+{
+    if(s)
+    {
+        HAL_GPIO_WritePin(TX1_GPIO_Port, TX1_Pin, GPIO_PIN_SET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(TX1_GPIO_Port, TX1_Pin, GPIO_PIN_RESET);
+    }
+}
+
+static uint8_t _RX1_Read()
+{
+    return HAL_GPIO_ReadPin(RX1_GPIO_Port, RX1_Pin);
+}
+
+static void _TX2_Control(uint8_t s)
+{
+    if(s)
+    {
+        HAL_GPIO_WritePin(TX2_GPIO_Port, TX2_Pin, GPIO_PIN_SET);
+    }
+    else
+    {
+        HAL_GPIO_WritePin(TX2_GPIO_Port, TX2_Pin, GPIO_PIN_RESET);
+    }
+}
+
+static uint8_t _RX2_Read()
+{
+    return HAL_GPIO_ReadPin(RX2_GPIO_Port, RX2_Pin);
+}
+
+bSUART_Private_t bSUART1_Private = {
+    .pTxPIN_Control = _TX1_Control,
+    .RxPIN_Read = _RX1_Read,
+};
+
+bSUART_Private_t bSUART2_Private = {
+    .pTxPIN_Control = _TX2_Control,
+    .RxPIN_Read = _RX2_Read,
+};
+
+NEW_SUART_DRV(SUART1_DRV, bSUART1_Private);
+
+NEW_SUART_DRV(SUART2_DRV, bSUART2_Private);
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    S_UartTimerHandler(&SUART1_DRV);
+    S_UartTimerHandler(&SUART2_DRV);  
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if(GPIO_Pin == RX1_Pin)
+    {
+        S_UartEXTI_Handler(&SUART1_DRV);
+    }
+    else if(GPIO_Pin == RX2_Pin)
+    {
+        S_UartEXTI_Handler(&SUART2_DRV);
+    }    
+}
+#endif
+/*****************************************************************************suart end**********/
+
 /**
  * \}
  */
@@ -196,7 +267,6 @@ void bHalIncSysTick()
 void bHalInit()
 {
     // Add code ...gpio init or some other functions 
-    
 }
 
 /**

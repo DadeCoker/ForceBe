@@ -54,23 +54,30 @@
  */
 typedef struct
 {
+    uint8_t rxbuf[128];
     volatile uint8_t byte;
     volatile uint8_t status;
     volatile uint8_t c_bits;
-    uint8_t buf[128];
     volatile uint8_t count;
+    
     volatile uint8_t revf;
     volatile uint8_t idle_count;
     volatile uint8_t idle_flag;
-    volatile uint8_t tx_delay_flag;
+    
+    uint8_t txbuf[128];
+    volatile uint8_t tx_len;
+    volatile uint8_t tx_bit;
+    volatile uint8_t tx_index;
 }bSUART_Param_t;    
  
  
 typedef struct
 {
-    bSUART_Param_t info;
     void (*pTxPIN_Control)(uint8_t);
     uint8_t (*RxPIN_Read)(void);
+    
+    bSUART_Param_t info;
+    
 }bSUART_Private_t;
 
 typedef bDriverInterface_t   SUART_Driver_t;  
@@ -132,9 +139,8 @@ typedef bDriverInterface_t   SUART_Driver_t;
 
 int SUART_Init(SUART_Driver_t *pdrv);
 
-void S_UartRXStart(SUART_Driver_t *);
-void S_UartTxTimerHandler(SUART_Driver_t *);
-void S_UartRxTimerHandler(SUART_Driver_t *);
+void S_UartEXTI_Handler(SUART_Driver_t *pdrv);
+void S_UartTimerHandler(SUART_Driver_t *pdrv);
 
 /**
  * \}

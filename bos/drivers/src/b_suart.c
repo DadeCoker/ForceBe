@@ -98,56 +98,71 @@ static void _S_UartStatusReset(SUART_Driver_t *pdrv)
     ((bSUART_Private_t *)pdrv->_private)->info.idle_flag = 0;
 }
 
-static void _S_UartTxDelay(SUART_Driver_t *pdrv)
-{  
-    ((bSUART_Private_t *)pdrv->_private)->info.tx_delay_flag = 0;
-    while(((bSUART_Private_t *)pdrv->_private)->info.tx_delay_flag == 0);
-}
 
-static int _S_UartSendByte(SUART_Driver_t *pdrv, uint8_t byte)
+static void _S_UartSend(SUART_Driver_t *pdrv)
 {
-    uint8_t i = 0;
-    
     bSUART_Private_t *_private;
     _private = pdrv->_private;
-    _S_UartTxDelay(pdrv);
-    _private->pTxPIN_Control(0);
-    _S_UartTxDelay(pdrv);
-    for(i = 0;i < 8;i++)
+    
+    if(_private->info.tx_index < _private->info.tx_len)
     {
-        if(byte & 0x01)
-        {
-            _private->pTxPIN_Control(1);
-        }
-        else
+        if(_private->info.tx_bit == 0)
         {
             _private->pTxPIN_Control(0);
+            _private->info.tx_bit += 1;
         }
-        _S_UartTxDelay(pdrv);
-        byte >>= 1;
+        else if(_private->info.tx_bit <= 8)
+        {
+            if(_private->info.txbuf[_private->info.tx_index] & (0x1 << (_private->info.tx_bit - 1)))
+            {
+                _private->pTxPIN_Control(1);
+            }
+            else
+            {
+                _private->pTxPIN_Control(0);
+            }
+            _private->info.tx_bit += 1;
+        }
+        else if(_private->info.tx_bit == 9)
+        {
+            _private->pTxPIN_Control(1);
+            _private->info.tx_index++;
+            _private->info.tx_bit = 0;
+        }
     }
-    _private->pTxPIN_Control(1);
-    return 0;
 }
 
+static void _S_UartRXStart(SUART_Driver_t *pdrv)
+{
+    bSUART_Private_t *iface = (bSUART_Private_t *)pdrv->_private;
+    if(iface->info.status == S_RX_S_NULL)
+    {
+        iface->info.status = S_RX_S_START;
+        iface->info.c_bits = 0;
+        iface->info.byte = 0; 
+        iface->info.idle_count = 0;
+        iface->info.idle_flag = 0;
+    }
+}
 
 /*******************************************************************************************************driver interface*****/
 
-static int _S_UartSendBuf(uint32_t off, uint8_t *pbuf,uint16_t len)
+static int _S_UartSendBuf(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t i = 0;
-    
     SUART_Driver_t *pdrv;
     if(0 > bDeviceGetCurrentDrv(&pdrv) || pbuf == NULL)
     {
         return -1;
     }        
-    
-    for(i = 0;i < len;i++)
+    if(len > 128)
     {
-        _S_UartSendByte(pdrv, pbuf[i]);
+        len = 128;
     }
-    return 0;
+    memcpy(((bSUART_Private_t *)pdrv->_private)->info.txbuf, pbuf, len);
+    ((bSUART_Private_t *)pdrv->_private)->info.tx_len = len;
+    ((bSUART_Private_t *)pdrv->_private)->info.tx_bit = 0;
+    ((bSUART_Private_t *)pdrv->_private)->info.tx_index = 0;
+    return len;
 }
 
 static int _S_UartRead(uint32_t off, uint8_t *pbuf, uint16_t len)
@@ -164,7 +179,7 @@ static int _S_UartRead(uint32_t off, uint8_t *pbuf, uint16_t len)
         {
             len = ((bSUART_Private_t *)pdrv->_private)->info.count;
         }
-        memcpy(pbuf, ((bSUART_Private_t *)pdrv->_private)->info.buf, len);
+        memcpy(pbuf, ((bSUART_Private_t *)pdrv->_private)->info.rxbuf, len);
         _S_UartStatusReset(pdrv);
         return len;
     }
@@ -180,37 +195,24 @@ static int _S_UartRead(uint32_t off, uint8_t *pbuf, uint16_t len)
  * \addtogroup SUART_Exported_Functions
  * \{
  */
-
 /**
- * \brief RX Start
+ * \brief EXTI handler
  */
-void S_UartRXStart(SUART_Driver_t *pdrv)
+void S_UartEXTI_Handler(SUART_Driver_t *pdrv)
 {
-    bSUART_Private_t *iface = (bSUART_Private_t *)pdrv->_private;
-    if(iface->info.status == S_RX_S_NULL)
-    {
-        iface->info.status = S_RX_S_START;
-        iface->info.c_bits = 0;
-        iface->info.byte = 0; 
-        iface->info.idle_count = 0;
-        iface->info.idle_flag = 0;
-    }
+    _S_UartRXStart(pdrv);
 }
 
-/**
- * \brief TX Timer handler
- */
-void S_UartTxTimerHandler(SUART_Driver_t *pdrv)
-{
-    ((bSUART_Private_t *)pdrv->_private)->info.tx_delay_flag = 1;
-} 
 
 /**
- * \brief RX Timer handler
+ * \brief Timer handler
  */
-void S_UartRxTimerHandler(SUART_Driver_t *pdrv)
+void S_UartTimerHandler(SUART_Driver_t *pdrv)
 {
     bSUART_Private_t *iface = (bSUART_Private_t *)pdrv->_private;
+    
+    _S_UartSend(pdrv);
+    
     if(iface->info.status == S_RX_S_START)
     {
         iface->info.status = S_RX_S_ING;
@@ -231,7 +233,7 @@ void S_UartRxTimerHandler(SUART_Driver_t *pdrv)
             }
             if(iface->info.count < 128)
             {
-                iface->info.buf[iface->info.count] = iface->info.byte;
+                iface->info.rxbuf[iface->info.count] = iface->info.byte;
                 iface->info.count += 1;
             }
             iface->info.revf = 1;
@@ -261,7 +263,7 @@ int SUART_Init(SUART_Driver_t *pdrv)
     iface->info.count = 0;
     iface->info.revf = 0;
     iface->info.idle_flag = 0;
-    iface->info.tx_delay_flag = 0;
+    iface->info.tx_len = iface->info.tx_index = 0;
     
     pdrv->close = NULL;
     pdrv->open = NULL;
