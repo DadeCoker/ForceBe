@@ -77,12 +77,11 @@ b_config.h进行配置，根据自己的需要选择功能模块。
 
 ###   4、列出需要使用的设备
 
-b_device_list.h，在里面添加使用的外设。例如当前项目只需要使用flash和模拟串口，那么添加如下代码：    
+b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码：    
 
 ```c
 //           设备        驱动接口      描述
 B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
-B_DEVICE_REG(SUART, SUART_Driver, "suart")
 //如果没有注册任何设备，取消B_DEVICE_REG(null, bNullDriver, "null")的注释    
 //B_DEVICE_REG(null, bNullDriver, "null")   
 ```
