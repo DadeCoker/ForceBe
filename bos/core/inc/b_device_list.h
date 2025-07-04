@@ -48,7 +48,7 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 
 
 
-
+//If there is no device to register, uncomment the null device
 //B_DEVICE_REG(null, bNullDriver, "null")
 
 

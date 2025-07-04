@@ -55,8 +55,8 @@
  
 typedef struct
 {
-    void (*pWriteCmd)(uint8_t);
-    void (*pWriteDat)(uint8_t);
+    void (*pWriteCmd)(uint16_t);
+    void (*pWriteDat)(uint16_t);
 }bSSD1289Private_t; 
  
  

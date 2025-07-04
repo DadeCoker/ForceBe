@@ -113,6 +113,18 @@
 #define _PROTO_FLEN_SIZE            1 
 //<o> Protocol Instance Number
 #define _PROTO_I_NUMBER             1
+//<e> Encrypt Enable/Disable 
+#define _PROTO_ENCRYPT_ENABLE       0
+//<o> Secret Key 1
+#define _SECRET_KEY1                1
+//<o> Secret Key 2
+#define _SECRET_KEY2                22
+//<o> Secret Key 3
+#define _SECRET_KEY3                333
+//<o> Secret Key 4
+#define _SECRET_KEY4                4444
+//</e>
+
 //</e>
 
 //<e> Check Enable/Disable
@@ -249,9 +261,9 @@
 
 //<e> UGUI Enable/Disable
 #define _UGUI_ENABLE                        0
-//<o> X SIZE
+//<o> X PHYSICAL SIZE
 #define _LCD_X_SIZE                         240 
-//<o> Y SIZE
+//<o> Y PHYSICAL SIZE
 #define _LCD_Y_SIZE                         320 
 
 //<o> X TOUCH AD MIN
@@ -263,6 +275,11 @@
 #define _Y_TOUCH_AD_MIN                     338 
 //<o> Y TOUCH AD MAX
 #define _Y_TOUCH_AD_MAX                     3592 
+
+//<o> LCD DISPLAY MODE
+//<0=> H
+//<1=> V
+#define _LCD_DISP_MODE                      1
 
 //</e>
 

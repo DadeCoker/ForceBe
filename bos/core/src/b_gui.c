@@ -101,7 +101,17 @@ static UG_GUI bGUI_Handle;
 static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
 {
     int fd = -1;
-    uint32_t off = y;
+    uint32_t off;
+#if (_LCD_DISP_MODE == 0)
+    int tmp_y = x;
+    x = _LCD_X_SIZE - 1 - y;
+    y = tmp_y;
+#endif
+    off = y;
+    if(x >= _LCD_X_SIZE || y >= _LCD_Y_SIZE)
+    {
+        return;
+    }
     fd = bOpen(GUI_Info.lcd_id, BCORE_FLAG_W);
     if(fd < 0)
     {
@@ -129,8 +139,11 @@ int bGUI_Init(int lcd, int touch)
     }
     GUI_Info.lcd_id = lcd;
     GUI_Info.touch_id = touch;
-    
+#if (_LCD_DISP_MODE == 0)
+    UG_Init( &bGUI_Handle, _LCD_SetColorPixel, _LCD_Y_SIZE, _LCD_X_SIZE);
+#else    
     UG_Init( &bGUI_Handle, _LCD_SetColorPixel, _LCD_X_SIZE, _LCD_Y_SIZE);
+#endif
     UG_SelectGUI(&bGUI_Handle);
     UG_SetForecolor(C_WHITE);
     UG_SetBackcolor(C_BLUE);
@@ -143,7 +156,7 @@ int bGUI_Init(int lcd, int touch)
 void bGUI_TouchExec()
 {
     int fd = -1;
-    uint16_t xy[2];
+    uint16_t xy[2], tmp;
     if(GUI_Info.lcd_id < 0 || GUI_Info.touch_id < 0)
     {
         return;
@@ -164,6 +177,11 @@ void bGUI_TouchExec()
     {
         xy[0] = (xy[0] - _X_TOUCH_AD_MIN) * _LCD_X_SIZE / (_X_TOUCH_AD_MAX - _X_TOUCH_AD_MIN);
         xy[1] = (xy[1] - _Y_TOUCH_AD_MIN) * _LCD_Y_SIZE / (_Y_TOUCH_AD_MAX - _Y_TOUCH_AD_MIN);
+#if (_LCD_DISP_MODE == 0)
+        tmp = xy[0];
+        xy[0] = xy[1];
+        xy[1] = _LCD_X_SIZE - 1 - tmp;
+#endif        
         UG_TouchUpdate( xy[0], xy[1], TOUCH_STATE_PRESSED);
     }
 }

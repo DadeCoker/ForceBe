@@ -57,7 +57,10 @@
  * \defgroup PROTOCOL_Private_Defines
  * \{
  */
-   
+#if _PROTO_ENCRYPT_ENABLE
+#define _PROTO_TEA_DELTA                  0x9e3779b9
+const static uint32_t Keys[4] = {_SECRET_KEY1, _SECRET_KEY2, _SECRET_KEY3, _SECRET_KEY4};
+#endif
 /**
  * \}
  */
@@ -107,6 +110,72 @@ static uint8_t _bProtocolCalCheck(uint8_t *pbuf, bProtoLen_t len)
     return tmp;
 } 
 
+#if _PROTO_ENCRYPT_ENABLE
+static void _bProtocolEncryptGroup(uint32_t *text, uint32_t *key)
+{
+	uint32_t sum = 0, v0 = text[0], v1 = text[1];
+	uint32_t k0 = key[0], k1 = key[1], k2 = key[2], k3 = key[3];
+	int i = 0;
+
+	for(i = 0;i < 16;i++)
+	{
+		sum += _PROTO_TEA_DELTA;
+		v0 += (v1 << 4) + k0 ^ v1 + sum ^ (v1 >> 5) + k1;
+		v1 += (v0 << 4) + k2 ^ v0 + sum ^ (v0 >> 5) + k3;
+	}
+	text[0] = v0;
+	text[1] = v1;
+}
+
+static void _bProtocolDecryptGroup(uint32_t *text, uint32_t *key)
+{
+	uint32_t sum = _PROTO_TEA_DELTA * 16, v0 = text[0], v1 = text[1];
+	uint32_t k0 = key[0], k1 = key[1], k2 = key[2], k3 = key[3];
+	int i = 0;
+
+	for(i = 0;i < 16;i++)
+	{
+		v1 -= (v0 << 4) + k2 ^ v0 + sum ^ (v0 >> 5) + k3;
+		v0 -= (v1 << 4) + k0 ^ v1 + sum ^ (v1 >> 5) + k1;
+		sum -= _PROTO_TEA_DELTA;
+	}
+	text[0] = v0;
+	text[1] = v1;
+}
+
+static void _bProtocolEncrypt(uint8_t *text, uint32_t size)
+{
+	uint32_t number = size >> 3;
+	int i = 0;
+	
+	if(size < 8)
+	{
+		return;
+	}
+	for(i = 0;i < number;i++)
+	{
+		_bProtocolEncryptGroup(&(((uint32_t *)text)[i * 2]), (uint32_t *)Keys);
+	}
+}
+
+
+static void _bProtocolDecrypt(uint8_t *text, uint32_t size)
+{
+	uint32_t number = size >> 3;
+	int  i = 0;
+	
+	if(size < 8)
+	{
+		return;
+	}
+
+	for(i = 0;i < number;i++)
+	{
+		_bProtocolDecryptGroup(&(((uint32_t *)text)[i * 2]), (uint32_t *)Keys);
+	}
+}
+#endif
+
 /**
  * \}
  */
@@ -155,7 +224,9 @@ int bProtocolParse(int no, uint8_t *pbuf, bProtoLen_t len)
     {
         return -1;
     }
-    
+#if _PROTO_ENCRYPT_ENABLE
+    _bProtocolDecrypt(pbuf, len);
+#endif    
     if(phead->head != PROTOCOL_HEAD || (phead->device_id != bProtocolInfo[no].id && (phead->device_id != INVALID_ID) && (bProtocolInfo[no].id != INVALID_ID)))
     {
         return -1;
@@ -225,6 +296,9 @@ int bProtocolPack(int no, uint8_t cmd, uint8_t *param, bProtoLen_t param_size, u
     memcpy(&pbuf[sizeof(bProtocolHead_t)], param, param_size);
     length = sizeof(bProtocolHead_t) + phead->len;
     pbuf[length - 1] = _bProtocolCalCheck(pbuf, length - 1);
+#if _PROTO_ENCRYPT_ENABLE
+    _bProtocolEncrypt(pbuf, length);
+#endif        
     return length;
 }
 
