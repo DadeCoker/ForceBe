@@ -203,6 +203,12 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 
 
+### BabyOS私有协议上位机Demo
+
+<https://gitee.com/notrynohigh/BabyOS_Protocol>
+
+
+
 ## Baby如何成长
 
 之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。
