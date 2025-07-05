@@ -184,7 +184,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -717,6 +716,11 @@
               <FileName>b_f8l10d.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\drivers\src\b_f8l10d.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_fm25cl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\src\b_fm25cl.c</FilePath>
             </File>
           </Files>
         </Group>
