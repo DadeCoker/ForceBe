@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_driver.h
+ * \file        b_hal.c
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,26 +28,119 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRIVER_H__
-#define __B_DRIVER_H__
+   
+/*Includes ----------------------------------------------*/
+#include "b_hal.h" 
+#include "b_driver.h"
+#include <string.h>
+/** 
+ * \addtogroup B_HAL
+ * \{
+ */
+
+/** 
+ * \addtogroup HAL
+ * \{
+ */
+
+/** 
+ * \defgroup HAL_Private_TypesDefinitions
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Private_Defines
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Private_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Private_Variables
+ * \{
+ */
+volatile uint32_t bSysTick = 0;
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Private_Functions
+ * \{
+ */
 
 
+/**
+ * \}
+ */
+   
+/** 
+ * \addtogroup HAL_Exported_Functions
+ * \{
+ */
+void bHalEnterCritical()
+{
 
-#include "b_suart.h"
-#include "b_w25x.h"
-#include "b_xpt2046.h"
-#include "b_ssd1289.h"
-#include "b_f8l10d.h"
-#include "b_fm25cl.h"
-#include "b_ili9341.h"
+}    
+
+void bHalExitCritical()
+{
+
+}
 
 
+/**
+ * \brief Call this function _TICK_FRQ_HZ times per second \ref _TICK_FRQ_HZ
+ */
+void bHalIncSysTick()
+{
+    bSysTick += 1;
+}
 
 
-extern bSSD1289_Driver_t bSSD1289_Driver;
+void bHalInit()
+{
+    // Add code ...gpio init or some other functions 
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 
-#endif
+/**
+ * \}
+ */
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
 

@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc;   ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;   ../Drivers/CMSIS/Include;   ..\bos\core\inc\;   ..\bos\drivers\inc\;   ..\bos\hal;   ..\bos\core\thirdparty\FlexibleButton;   ..\bos\core\thirdparty\nr_micro_shell\inc;   ..\bos\core\thirdparty\UGUI;   ..\bos\core\thirdparty\CmBacktrace</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\hal\utils\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -730,17 +730,37 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>BOS/Hal</GroupName>
+          <GroupName>BOS/Hal/hal</GroupName>
           <Files>
             <File>
               <FileName>b_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\hal\b_hal.c</FilePath>
+              <FilePath>..\bos\hal\hal\src\b_hal.c</FilePath>
             </File>
+            <File>
+              <FileName>b_hal_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\src\b_hal_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\src\b_hal_lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\src\b_hal_gpio.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Hal/utils</GroupName>
+          <Files>
             <File>
               <FileName>b_utils.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\hal\b_utils.c</FilePath>
+              <FilePath>..\bos\hal\utils\src\b_utils.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -750,17 +770,17 @@
             <File>
               <FileName>ansi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\ansi.c</FilePath>
+              <FilePath>..\bos\thirdparty\nr_micro_shell\src\ansi.c</FilePath>
             </File>
             <File>
               <FileName>ansi_port.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\ansi_port.c</FilePath>
+              <FilePath>..\bos\thirdparty\nr_micro_shell\src\ansi_port.c</FilePath>
             </File>
             <File>
               <FileName>nr_micro_shell.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\core\thirdparty\nr_micro_shell\src\nr_micro_shell.c</FilePath>
+              <FilePath>..\bos\thirdparty\nr_micro_shell\src\nr_micro_shell.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -770,12 +790,7 @@
             <File>
               <FileName>flexible_button.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\core\thirdparty\FlexibleButton\flexible_button.c</FilePath>
-            </File>
-            <File>
-              <FileName>flexible_button.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\bos\core\thirdparty\FlexibleButton\flexible_button.h</FilePath>
+              <FilePath>..\bos\thirdparty\FlexibleButton\flexible_button.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -785,17 +800,7 @@
             <File>
               <FileName>ugui.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\core\thirdparty\UGUI\ugui.c</FilePath>
-            </File>
-            <File>
-              <FileName>ugui.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\bos\core\thirdparty\UGUI\ugui.h</FilePath>
-            </File>
-            <File>
-              <FileName>ugui_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\bos\core\thirdparty\UGUI\ugui_config.h</FilePath>
+              <FilePath>..\bos\thirdparty\UGUI\ugui.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -805,7 +810,7 @@
             <File>
               <FileName>cm_backtrace.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\core\thirdparty\CmBacktrace\cm_backtrace.c</FilePath>
+              <FilePath>..\bos\thirdparty\CmBacktrace\cm_backtrace.c</FilePath>
             </File>
           </Files>
         </Group>

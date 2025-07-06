@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_ssd1289.h
+ * \file        b_hal.h
  * \version     v0.0.1
- * \date        2020/03/02
+ * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2020 Bean
+ * Copyright (c) 2019 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_SSD1289_H__
-#define __B_SSD1289_H__
+#ifndef __B_HAL_H__
+#define __B_HAL_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,29 +37,95 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-#include "b_device.h"
+#include "stm32f1xx_hal.h"
+
+#include "b_hal_uart.h"
+#include "b_hal_lcd.h"
+#include "b_hal_gpio.h"
 /** 
- * \addtogroup B_DRIVER
+ * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup SSD1289
+ * \addtogroup HAL
  * \{
  */
 
 /** 
- * \defgroup SSD1289_Exported_TypesDefinitions
+ * \defgroup HAL_Exported_TypesDefinitions
  * \{
  */
- typedef bDriverInterface_t bSSD1289_Driver_t;  
- 
+typedef enum
+{
+    B_HAL_UART_1,
+}bHalUartNumber_t;  
+
+typedef enum
+{
+    B_HAL_GPIOA,
+    B_HAL_GPIOB,
+    B_HAL_GPIOC,
+    B_HAL_GPIOD,
+    B_HAL_GPIOE,
+    B_HAL_GPIOF,
+    B_HAL_GPIOG,
+}bHalGPIOPort_t;
+
+typedef enum
+{
+    B_HAL_PIN1,
+    B_HAL_PIN2,
+    B_HAL_PIN3,
+    B_HAL_PIN4,
+    B_HAL_PIN5,
+    B_HAL_PIN6,
+    B_HAL_PIN7,
+    B_HAL_PIN8,
+    B_HAL_PIN9,
+    B_HAL_PIN10,
+    B_HAL_PIN11,
+    B_HAL_PIN12,
+    B_HAL_PIN13,
+    B_HAL_PIN14,
+    B_HAL_PIN15,
+    B_HAL_PIN16,
+    B_HAL_PINAll,     
+}bHalGPIOPin_t;
 /**
  * \}
  */
    
 /** 
- * \defgroup SSD1289_Exported_Defines
+ * \defgroup HAL_Exported_Defines
+ * \{
+ */
+
+#define HAL_LOG_UART_PORT       B_HAL_UART_1
+
+
+#ifdef LCD_FSMC
+#define HAL_LCD_FSMC_ADDR       ((uint32_t)(0x60000000 | 0x0007FFFE))
+#else
+#define HAL_LCD_RS_PORT         B_HAL_GPIOD                 
+#define HAL_LCD_RS_PIN          B_HAL_PIN13
+#define HAL_LCD_WR_PORT         B_HAL_GPIOB
+#define HAL_LCD_WR_PIN          B_HAL_PIN14
+#define HAL_LCD_RD_PORT         B_HAL_GPIOD
+#define HAL_LCD_RD_PIN          B_HAL_PIN15
+#define HAL_LCD_CS_PORT         B_HAL_GPIOC
+#define HAL_LCD_CS_PIN          B_HAL_PIN8
+#define HAL_LCD_DAT_PORT        B_HAL_GPIOE 
+#endif
+
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup HAL_Exported_Macros
  * \{
  */
 
@@ -69,35 +135,25 @@
  */
    
 /** 
- * \defgroup SSD1289_Exported_Macros
+ * \defgroup HAL_Exported_Variables
  * \{
  */
-
-
-
+   
 /**
  * \}
  */
    
 /** 
- * \defgroup SSD1289_Exported_Variables
+ * \defgroup HAL_Exported_Functions
  * \{
  */
- 
+void bHalEnterCritical(void); 
+void bHalExitCritical(void);
+void bHalIncSysTick(void);
+void bHalInit(void);
 /**
  * \}
  */
-   
-/** 
- * \defgroup SSD1289_Exported_Functions
- * \{
- */
-int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
-
-/**
- * \}
- */
- 
 
 /**
  * \}
@@ -115,6 +171,5 @@ int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
 
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
 
 

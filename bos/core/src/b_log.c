@@ -32,6 +32,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_log.h"
 #if _DEBUG_ENABLE
+#include "b_hal.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -114,13 +115,10 @@ static const char bLogPrefix[3] = {'I', 'W', 'E'};
  * \{
  */
 
-#if __GNUC__ 
-void __attribute__((weak)) bLogOutput(void *p)
-#else
-__weak void bLogOutput(void *p)
-#endif
+
+void bLogOutput(void *p)
 {
-    ;
+    bHalUartSend(HAL_LOG_UART_PORT, p, strlen(p));
 }
 
 

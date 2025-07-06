@@ -31,6 +31,7 @@
    
 /*Includes ----------------------------------------------*/
 #include "b_ssd1289.h"
+#include "b_hal.h"
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -79,7 +80,9 @@
  * \defgroup SSD1289_Private_Variables
  * \{
  */
-
+bSSD1289_Driver_t bSSD1289_Driver = {
+    .init = bSSD1289_Init,
+};
 /**
  * \}
  */
@@ -99,32 +102,32 @@
  */
 
 /****************************************************************/
-static void _SSD1289WriteReg(bSSD1289_Driver_t *pdrv, uint16_t cmd, uint16_t dat)
+static void _SSD1289WriteReg(uint16_t cmd, uint16_t dat)
 {
-    ((bSSD1289Private_t *)pdrv->_private)->pWriteCmd(cmd);
-	((bSSD1289Private_t *)pdrv->_private)->pWriteDat(dat);
+    bHalLcdWriteCmd(cmd);
+    bHalLcdWriteData(dat);
 }
 
 /******************************************************************/
 
-static void _bSSD1289SetWindow(bSSD1289_Driver_t *pdrv, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+static void _bSSD1289SetWindow(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-    _SSD1289WriteReg(pdrv, 0x0044, ((x2 << 8) | x1));
-	_SSD1289WriteReg(pdrv, 0x0045, y1);
-	_SSD1289WriteReg(pdrv, 0x0046, y2);
-	_SSD1289WriteReg(pdrv, 0x004E, x1);
-	_SSD1289WriteReg(pdrv, 0x004F, y1);
-	((bSSD1289Private_t *)pdrv->_private)->pWriteCmd(0x0022);
+    _SSD1289WriteReg(0x0044, ((x2 << 8) | x1));
+	_SSD1289WriteReg(0x0045, y1);
+	_SSD1289WriteReg(0x0046, y2);
+	_SSD1289WriteReg(0x004E, x1);
+	_SSD1289WriteReg(0x004F, y1);
+	bHalLcdWriteCmd(0x0022);
 }
 
-static void _bSSD1289FillFrame(bSSD1289_Driver_t *pdrv, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+static void _bSSD1289FillFrame(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
 	uint32_t i = 0;
     uint32_t j = (x2 - x1 + 1) * (y2 - y1 + 1);
-	_bSSD1289SetWindow(pdrv, x1, y1, x2, y2);
+	_bSSD1289SetWindow(x1, y1, x2, y2);
 	for (i = 0; i < j; i++)
     {
-        ((bSSD1289Private_t *)pdrv->_private)->pWriteDat(color);
+        bHalLcdWriteData(color);
     }
 }
 
@@ -137,37 +140,24 @@ static int _bSSD1289Write(uint32_t addr, uint8_t *pbuf, uint16_t len)
     uint16_t x = addr % _LCD_X_SIZE;
     uint16_t y = addr / _LCD_X_SIZE;
     uint16_t color;
-    bSSD1289_Driver_t *pdrv;
     if(y >= _LCD_Y_SIZE || pbuf == NULL || len < 2)
     {
         return -1;
-    }
-    
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    }     
-    
+    } 
     color = ((uint16_t *)pbuf)[0];
-    _bSSD1289SetWindow(pdrv, x, y, x, y);
-    ((bSSD1289Private_t *)pdrv->_private)->pWriteDat(color);
+    _bSSD1289SetWindow(x, y, x, y);
+    bHalLcdWriteData(color);
     return 0;
 }
 
 static int _bSSD1289Ctl(uint8_t cmd, void * param)
-{
-    bSSD1289_Driver_t *pdrv;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    }
-    
+{ 
     switch(cmd)
     {
         case bCMD_FILL_FRAME:
             {
                 bCMD_Struct_t *p = (bCMD_Struct_t *)param;
-                _bSSD1289FillFrame(pdrv, p->param.fill_frame.x1, p->param.fill_frame.y1
+                _bSSD1289FillFrame(p->param.fill_frame.x1, p->param.fill_frame.y1
                                 ,p->param.fill_frame.x2, p->param.fill_frame.y2
                                 ,p->param.fill_frame.color);
             }
@@ -184,22 +174,23 @@ static int _bSSD1289Ctl(uint8_t cmd, void * param)
  * \addtogroup SSD1289_Exported_Functions
  * \{
  */
-int bSSD1289_Init(bSSD1289_Driver_t *pdrv)
+int bSSD1289_Init()
 {      
-	_SSD1289WriteReg(pdrv, 0x0007, 0x0021);
-	_SSD1289WriteReg(pdrv, 0x0000, 0x0001);
-	_SSD1289WriteReg(pdrv, 0x0007, 0x0023);
-	_SSD1289WriteReg(pdrv, 0x0010, 0x0000);
-	_SSD1289WriteReg(pdrv, 0x0007, 0x0033);
-	_SSD1289WriteReg(pdrv, 0x0011, 0x6838); 
-	_SSD1289WriteReg(pdrv, 0x0002, 0x0600);
-    _SSD1289WriteReg(pdrv, 0x0001, 0x2B3F); 
+    bHalLcdInit();
+	_SSD1289WriteReg(0x0007, 0x0021);
+	_SSD1289WriteReg(0x0000, 0x0001);
+	_SSD1289WriteReg(0x0007, 0x0023);
+	_SSD1289WriteReg(0x0010, 0x0000);
+	_SSD1289WriteReg(0x0007, 0x0033);
+	_SSD1289WriteReg(0x0011, 0x6838); 
+	_SSD1289WriteReg(0x0002, 0x0600);
+    _SSD1289WriteReg(0x0001, 0x2B3F); 
  
-    pdrv->close = NULL;
-    pdrv->read = NULL;
-    pdrv->ctl = _bSSD1289Ctl;
-    pdrv->open = NULL;
-    pdrv->write = _bSSD1289Write;
+    bSSD1289_Driver.close = NULL;
+    bSSD1289_Driver.read = NULL;
+    bSSD1289_Driver.ctl = _bSSD1289Ctl;
+    bSSD1289_Driver.open = NULL;
+    bSSD1289_Driver.write = _bSSD1289Write;
     return 0;
 }
 

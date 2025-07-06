@@ -272,26 +272,6 @@ int bDeviceCtl(int no, uint8_t cmd, void *param)
     return retval;
 }
 
-int bDeviceGetCurrentDrv(bDriverInterface_t **pdrv)
-{
-    if(pdrv == NULL || pCurrentDriver == NULL)
-    {
-        return -1;
-    }
-    *pdrv = pCurrentDriver;
-    return 0;
-}
-
-void bDeviceEnterInterrupt()
-{
-    pCurrentDriverBak = pCurrentDriver;
-}
-
-void bDeviceExitInterrupt()
-{
-    pCurrentDriver = pCurrentDriverBak;
-}
-
 /**
  * \}
  */

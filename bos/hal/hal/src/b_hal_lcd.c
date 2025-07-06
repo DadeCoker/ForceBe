@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_hal.h
+ * \file        b_hal_lcd.c
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,65 +21,28 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SLCDL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_H__
-#define __B_HAL_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-#include "stm32f1xx_hal.h"
-
+#include "b_hal.h" 
 /** 
  * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup HAL
+ * \addtogroup LCD
  * \{
  */
 
 /** 
- * \defgroup HAL_Exported_TypesDefinitions
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Exported_Macros
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Exported_Variables
+ * \defgroup LCD_Private_TypesDefinitions
  * \{
  */
    
@@ -88,32 +51,100 @@
  */
    
 /** 
- * \defgroup HAL_Exported_Functions
+ * \defgroup LCD_Private_Defines
  * \{
  */
-void bHalEnterCritical(void); 
-void bHalExitCritical(void);
-void bHalIncSysTick(void);
-void bHalInit(void);
+   
 /**
  * \}
  */
+   
+/** 
+ * \defgroup LCD_Private_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup LCD_Private_Variables
+ * \{
+ */
+
 
 /**
  * \}
  */
+   
+/** 
+ * \defgroup LCD_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup LCD_Private_Functions
+ * \{
+ */
+
 
 /**
  * \}
  */
-
-#ifdef __cplusplus
-	}
-#endif
+   
+/** 
+ * \addtogroup LCD_Exported_Functions
+ * \{
+ */
  
-#endif
+void bHalLcdWriteData(uint16_t dat)
+{
+
+}
+
+void bHalLcdWriteCmd(uint16_t cmd)
+{
+
+}
+
+uint16_t bHalLcdReadData()
+{
+
+}
+
+uint16_t bHalLcdReadCmd()
+{
+
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/**
+ * \}
+ */
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
+
+
+
+
+
+
+
+
+
 
 

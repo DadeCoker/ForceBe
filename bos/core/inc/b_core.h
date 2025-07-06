@@ -122,10 +122,6 @@ int bWrite(int fd, uint8_t *pdata, uint16_t len);
 int bCtl(int fd, uint8_t cmd, void *param);
 int bLseek(int fd, uint32_t off);
 int bClose(int fd);
-
-int bCoreIsIdle(void); 
-void bEnterInterrupt(void);
-void bExitInterrupt(void);
 /**
  * \}
  */

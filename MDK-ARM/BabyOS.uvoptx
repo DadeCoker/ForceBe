@@ -264,7 +264,7 @@
 
   <Group>
     <GroupName>Application/User/Core</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -516,7 +516,7 @@
 
   <Group>
     <GroupName>BOS/Core</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -848,7 +848,7 @@
 
   <Group>
     <GroupName>BOS/Driver</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -939,8 +939,8 @@
   </Group>
 
   <Group>
-    <GroupName>BOS/Hal</GroupName>
-    <tvExp>0</tvExp>
+    <GroupName>BOS/Hal/hal</GroupName>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -951,7 +951,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\hal\b_hal.c</PathWithFileName>
+      <PathWithFileName>..\bos\hal\hal\src\b_hal.c</PathWithFileName>
       <FilenameWithoutPath>b_hal.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -963,7 +963,51 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\hal\b_utils.c</PathWithFileName>
+      <PathWithFileName>..\bos\hal\hal\src\b_hal_uart.c</PathWithFileName>
+      <FilenameWithoutPath>b_hal_uart.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>7</GroupNumber>
+      <FileNumber>57</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\bos\hal\hal\src\b_hal_lcd.c</PathWithFileName>
+      <FilenameWithoutPath>b_hal_lcd.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>7</GroupNumber>
+      <FileNumber>58</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\bos\hal\hal\src\b_hal_gpio.c</PathWithFileName>
+      <FilenameWithoutPath>b_hal_gpio.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>BOS/Hal/utils</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>8</GroupNumber>
+      <FileNumber>59</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\bos\hal\utils\src\b_utils.c</PathWithFileName>
       <FilenameWithoutPath>b_utils.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -977,37 +1021,37 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>8</GroupNumber>
-      <FileNumber>57</FileNumber>
+      <GroupNumber>9</GroupNumber>
+      <FileNumber>60</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\nr_micro_shell\src\ansi.c</PathWithFileName>
+      <PathWithFileName>..\bos\thirdparty\nr_micro_shell\src\ansi.c</PathWithFileName>
       <FilenameWithoutPath>ansi.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>8</GroupNumber>
-      <FileNumber>58</FileNumber>
+      <GroupNumber>9</GroupNumber>
+      <FileNumber>61</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\nr_micro_shell\src\ansi_port.c</PathWithFileName>
+      <PathWithFileName>..\bos\thirdparty\nr_micro_shell\src\ansi_port.c</PathWithFileName>
       <FilenameWithoutPath>ansi_port.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>8</GroupNumber>
-      <FileNumber>59</FileNumber>
+      <GroupNumber>9</GroupNumber>
+      <FileNumber>62</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\nr_micro_shell\src\nr_micro_shell.c</PathWithFileName>
+      <PathWithFileName>..\bos\thirdparty\nr_micro_shell\src\nr_micro_shell.c</PathWithFileName>
       <FilenameWithoutPath>nr_micro_shell.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1021,26 +1065,14 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>9</GroupNumber>
-      <FileNumber>60</FileNumber>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>63</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\FlexibleButton\flexible_button.c</PathWithFileName>
+      <PathWithFileName>..\bos\thirdparty\FlexibleButton\flexible_button.c</PathWithFileName>
       <FilenameWithoutPath>flexible_button.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>9</GroupNumber>
-      <FileNumber>61</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\FlexibleButton\flexible_button.h</PathWithFileName>
-      <FilenameWithoutPath>flexible_button.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1053,38 +1085,14 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>10</GroupNumber>
-      <FileNumber>62</FileNumber>
+      <GroupNumber>11</GroupNumber>
+      <FileNumber>64</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\UGUI\ugui.c</PathWithFileName>
+      <PathWithFileName>..\bos\thirdparty\UGUI\ugui.c</PathWithFileName>
       <FilenameWithoutPath>ugui.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>10</GroupNumber>
-      <FileNumber>63</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\UGUI\ugui.h</PathWithFileName>
-      <FilenameWithoutPath>ugui.h</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>10</GroupNumber>
-      <FileNumber>64</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\UGUI\ugui_config.h</PathWithFileName>
-      <FilenameWithoutPath>ugui_config.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1097,13 +1105,13 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>11</GroupNumber>
+      <GroupNumber>12</GroupNumber>
       <FileNumber>65</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\core\thirdparty\CmBacktrace\cm_backtrace.c</PathWithFileName>
+      <PathWithFileName>..\bos\thirdparty\CmBacktrace\cm_backtrace.c</PathWithFileName>
       <FilenameWithoutPath>cm_backtrace.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

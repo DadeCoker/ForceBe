@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_ssd1289.h
+ * \file        b_hal_gpio.h
  * \version     v0.0.1
- * \date        2020/03/02
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,15 +21,15 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SGPIOL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_SSD1289_H__
-#define __B_SSD1289_H__
+#ifndef __B_HAL_GPIO_H__
+#define __B_HAL_GPIO_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,29 +37,43 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-#include "b_device.h"
+
+
 /** 
- * \addtogroup B_DRIVER
+ * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup SSD1289
+ * \addtogroup GPIO
  * \{
  */
 
 /** 
- * \defgroup SSD1289_Exported_TypesDefinitions
+ * \defgroup GPIO_Exported_TypesDefinitions
  * \{
  */
- typedef bDriverInterface_t bSSD1289_Driver_t;  
- 
+  
 /**
  * \}
  */
    
 /** 
- * \defgroup SSD1289_Exported_Defines
+ * \defgroup GPIO_Exported_Defines
+ * \{
+ */
+#define B_HAL_GPIO_INPUT        0
+#define B_HAL_GPIO_OUTPUT       1
+
+#define B_HAL_GPIO_NOPULL       0
+#define B_HAL_GPIO_PULLUP       1
+#define B_HAL_GPIO_PULLDOWN     2
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup GPIO_Exported_Macros
  * \{
  */
 
@@ -69,35 +83,28 @@
  */
    
 /** 
- * \defgroup SSD1289_Exported_Macros
+ * \defgroup GPIO_Exported_Variables
  * \{
  */
-
-
-
+   
 /**
  * \}
  */
    
 /** 
- * \defgroup SSD1289_Exported_Variables
+ * \defgroup GPIO_Exported_Functions
  * \{
  */
- 
-/**
- * \}
- */
-   
-/** 
- * \defgroup SSD1289_Exported_Functions
- * \{
- */
-int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
+
+void bHalGPIO_Config(uint8_t port, uint8_t pin, uint8_t mode, uint8_t pull);
+void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s);
+uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin);
+void bHalGPIO_Write(uint8_t port, uint16_t dat);
+uint16_t bHalGPIO_Read(uint8_t port);
 
 /**
  * \}
  */
- 
 
 /**
  * \}
@@ -114,7 +121,6 @@ int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
 #endif
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 
