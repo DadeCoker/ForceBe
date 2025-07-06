@@ -39,19 +39,26 @@
 #include "b_ssd1289.h"
 #include "b_f8l10d.h"
 #include "b_fm25cl.h"
+#include "b_ili9341.h"
 
-
+/*************************************************************************************************************suart driver***/
 #define NEW_SUART_DRV(name, hal)        SUART_Driver_t name = {.init = SUART_Init,._private = &hal}
 
+/*************************************************************************************************************flash driver***/
 #define NEW_W25X_DRV(name, hal)         bW25X_Driver_t name = {.init = bW25X_Init,._private = &hal}
+#define NEW_FM25CL_DRV(name, hal)       bF8L10D_Driver_t name = {.init = bFM25CL_Init,._private = &hal}
 
+
+/*************************************************************************************************************touch driver***/
 #define NEW_XPT2046_DRV(name, hal)      bXPT2046_Driver_t name = {.init = bXPT2046_Init,._private = &hal}
 
+/*************************************************************************************************************lcd driver***/
 #define NEW_SSD1289_DRV(name, hal)      bSSD1289_Driver_t name = {.init = bSSD1289_Init,._private = &hal}
+#define NEW_ILI9341_DRV(name, hal)      bILI9341_Driver_t name = {.init = bILI9341_Init,._private = &hal}
 
+/*************************************************************************************************************lora module driver***/
 #define NEW_F8L10D_DRV(name, hal)       bF8L10D_Driver_t name = {.init = bF8L10D_Init,._private = &hal}
 
-#define NEW_FM25CL_DRV(name, hal)       bF8L10D_Driver_t name = {.init = bFM25CL_Init,._private = &hal}
 
 
 
