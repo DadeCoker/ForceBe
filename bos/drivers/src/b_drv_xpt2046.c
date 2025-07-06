@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_xpt2046.c
+ * \file        b_drv_xpt2046.c
  * \version     v0.0.1
  * \date        2020/02/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -30,7 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_xpt2046.h"
+#include "b_drv_xpt2046.h"
+#include "b_hal.h"
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -75,7 +76,9 @@
  * \defgroup XPT2046_Private_Variables
  * \{
  */
-
+bXPT2046_Driver_t bXPT2046_Driver = {
+    .init = bXPT2046_Init,
+};
 
 /**
  * \}
@@ -94,20 +97,20 @@
  * \defgroup XPT2046_Private_Functions
  * \{
  */
-static uint8_t _bXPT2046TxRx(bXPT2046_Driver_t *pdrv, uint8_t dat)
+static uint8_t _bXPT2046TxRx(uint8_t dat)
 {
-    return ((bXPT2046Private_t *)pdrv->_private)->pSPI_ReadWriteByte(dat);
+    return bHalSPI_SendReceiveByte(HAL_XPT2046_SPI, dat);
 }
 
 
-static uint16_t _bXPT2046ReadVal(bXPT2046_Driver_t *pdrv, uint8_t r)
+static uint16_t _bXPT2046ReadVal(uint8_t r)
 {
     uint16_t l, h;
-	((bXPT2046Private_t *)pdrv->_private)->pCS_Control(0);
-	_bXPT2046TxRx(pdrv, r);
-	h = _bXPT2046TxRx(pdrv, 0x00);
-	l = _bXPT2046TxRx(pdrv, 0x00);
-	((bXPT2046Private_t *)pdrv->_private)->pCS_Control(1);
+    bHalGPIO_WritePin(HAL_XPT2046_CS_PORT, HAL_XPT2046_CS_PIN, 0);
+	_bXPT2046TxRx(r);
+	h = _bXPT2046TxRx(0x00);
+	l = _bXPT2046TxRx(0x00);
+    bHalGPIO_WritePin(HAL_XPT2046_CS_PORT, HAL_XPT2046_CS_PIN, 1);
 	return ((h << 8) | (l)) >> 3;
 }
 
@@ -115,31 +118,20 @@ static uint16_t _bXPT2046ReadVal(bXPT2046_Driver_t *pdrv, uint8_t r)
 /**************************************************************************************************driver interface*****/
 static int _bXPT2046Read(uint32_t addr, uint8_t *pbuf, uint16_t len)
 {
-    uint16_t *pxy = (uint16_t *)pbuf;
-    
-    bXPT2046_Driver_t *pdrv;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    }  
+    uint16_t *pxy = (uint16_t *)pbuf;  
     
     if(len < 4 || pbuf == NULL)
     {
         return -1;
     }
-    pxy[0] = _bXPT2046ReadVal(pdrv, XPT2046_X);
-    pxy[1] = _bXPT2046ReadVal(pdrv, XPT2046_Y);
+    pxy[0] = _bXPT2046ReadVal(XPT2046_X);
+    pxy[1] = _bXPT2046ReadVal(XPT2046_Y);
     return 0;
 }
 
 static int _bXPT2046Close()
-{
-    bXPT2046_Driver_t *pdrv;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    }      
-    _bXPT2046ReadVal(pdrv, XPT2046_I);
+{   
+    _bXPT2046ReadVal(XPT2046_I);
     return 0;
 }
 
@@ -153,14 +145,14 @@ static int _bXPT2046Close()
  * \addtogroup XPT2046_Exported_Functions
  * \{
  */
-int bXPT2046_Init(bXPT2046_Driver_t *pdrv)
+int bXPT2046_Init()
 {  
-    _bXPT2046ReadVal(pdrv, XPT2046_I);
-    pdrv->close = _bXPT2046Close;
-    pdrv->read = _bXPT2046Read;
-    pdrv->ctl = NULL;
-    pdrv->open = NULL;
-    pdrv->write = NULL;
+    _bXPT2046ReadVal(XPT2046_I);
+    bXPT2046_Driver.close = _bXPT2046Close;
+    bXPT2046_Driver.read = _bXPT2046Read;
+    bXPT2046_Driver.ctl = NULL;
+    bXPT2046_Driver.open = NULL;
+    bXPT2046_Driver.write = NULL;
     return 0;
 }
 

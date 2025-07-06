@@ -156,7 +156,7 @@ int bGUI_Init(int lcd, int touch)
 void bGUI_TouchExec()
 {
     int fd = -1;
-    uint16_t xy[2], tmp;
+    uint16_t xy[2];
     if(GUI_Info.lcd_id < 0 || GUI_Info.touch_id < 0)
     {
         return;

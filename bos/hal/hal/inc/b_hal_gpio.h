@@ -53,7 +53,40 @@
  * \defgroup GPIO_Exported_TypesDefinitions
  * \{
  */
-  
+typedef enum
+{
+    B_HAL_GPIOA,
+    B_HAL_GPIOB,
+    B_HAL_GPIOC,
+    B_HAL_GPIOD,
+    B_HAL_GPIOE,
+    B_HAL_GPIOF,
+    B_HAL_GPIOG,
+}bHalGPIOPort_t;
+
+typedef enum
+{
+    B_HAL_PIN1,
+    B_HAL_PIN2,
+    B_HAL_PIN3,
+    B_HAL_PIN4,
+    B_HAL_PIN5,
+    B_HAL_PIN6,
+    B_HAL_PIN7,
+    B_HAL_PIN8,
+    B_HAL_PIN9,
+    B_HAL_PIN10,
+    B_HAL_PIN11,
+    B_HAL_PIN12,
+    B_HAL_PIN13,
+    B_HAL_PIN14,
+    B_HAL_PIN15,
+    B_HAL_PIN16,
+    B_HAL_PINAll,     
+}bHalGPIOPin_t;  
+
+typedef void (*pEXTI_Callback)(void);
+
 /**
  * \}
  */
@@ -102,6 +135,8 @@ uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin);
 void bHalGPIO_Write(uint8_t port, uint16_t dat);
 uint16_t bHalGPIO_Read(uint8_t port);
 
+void bHalGPIO_RegEXTICallback(uint8_t pin, pEXTI_Callback cb);
+void bHalGPIO_EXTI_Callback(uint8_t pin);
 /**
  * \}
  */

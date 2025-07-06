@@ -53,7 +53,28 @@
  * \defgroup UART_Exported_TypesDefinitions
  * \{
  */
-  
+
+#define UART_BUF_LEN            200
+ 
+typedef enum
+{
+    B_HAL_UART_1,
+    B_HAL_UART_2,
+    B_HAL_UART_NUMBER
+}bHalUartNumber_t; 
+
+typedef void (*pUartIdleCallback)(uint8_t *pbuf, uint16_t len);
+
+typedef struct
+{
+    volatile uint8_t buf[UART_BUF_LEN];
+    volatile uint32_t l_tick;
+    volatile uint16_t index;
+    pUartIdleCallback fCallback;
+}bHalUartRxInfo_t;
+
+
+
 /**
  * \}
  */
@@ -93,6 +114,10 @@
  */
 
 void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len);
+
+void bHalUartRegIdleCallback(uint8_t no, pUartIdleCallback f);
+void bHalUartRxIrqCallback(uint8_t no, uint8_t dat);
+
 /**
  * \}
  */

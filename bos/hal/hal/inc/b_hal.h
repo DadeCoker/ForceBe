@@ -42,6 +42,7 @@
 #include "b_hal_uart.h"
 #include "b_hal_lcd.h"
 #include "b_hal_gpio.h"
+#include "b_hal_spi.h"
 /** 
  * \addtogroup B_HAL
  * \{
@@ -56,42 +57,7 @@
  * \defgroup HAL_Exported_TypesDefinitions
  * \{
  */
-typedef enum
-{
-    B_HAL_UART_1,
-}bHalUartNumber_t;  
-
-typedef enum
-{
-    B_HAL_GPIOA,
-    B_HAL_GPIOB,
-    B_HAL_GPIOC,
-    B_HAL_GPIOD,
-    B_HAL_GPIOE,
-    B_HAL_GPIOF,
-    B_HAL_GPIOG,
-}bHalGPIOPort_t;
-
-typedef enum
-{
-    B_HAL_PIN1,
-    B_HAL_PIN2,
-    B_HAL_PIN3,
-    B_HAL_PIN4,
-    B_HAL_PIN5,
-    B_HAL_PIN6,
-    B_HAL_PIN7,
-    B_HAL_PIN8,
-    B_HAL_PIN9,
-    B_HAL_PIN10,
-    B_HAL_PIN11,
-    B_HAL_PIN12,
-    B_HAL_PIN13,
-    B_HAL_PIN14,
-    B_HAL_PIN15,
-    B_HAL_PIN16,
-    B_HAL_PINAll,     
-}bHalGPIOPin_t;
+ 
 /**
  * \}
  */
@@ -101,10 +67,9 @@ typedef enum
  * \{
  */
 
-#define HAL_LOG_UART_PORT       B_HAL_UART_1
+#define HAL_LOG_UART            B_HAL_UART_1
 
-
-#ifdef LCD_FSMC
+#if 0
 #define HAL_LCD_FSMC_ADDR       ((uint32_t)(0x60000000 | 0x0007FFFE))
 #else
 #define HAL_LCD_RS_PORT         B_HAL_GPIOD                 
@@ -118,8 +83,27 @@ typedef enum
 #define HAL_LCD_DAT_PORT        B_HAL_GPIOE 
 #endif
 
+#define HAL_XPT2046_SPI         B_HAL_SPI_3
+#define HAL_XPT2046_CS_PORT     B_HAL_GPIOC             
+#define HAL_XPT2046_CS_PIN      B_HAL_PIN9
 
+#define HAL_W25X_SPI            B_HAL_SPI_2
+#define HAL_W25X_CS_PORT        B_HAL_GPIOB             
+#define HAL_W25X_CS_PIN         B_HAL_PIN9
 
+#define HAL_F8L10D_UART         B_HAL_UART_2
+#define HAL_F8L10D_RESET_PORT   B_HAL_GPIOC
+#define HAL_F8L10D_RESET_PIN    B_HAL_PIN1
+#define HAL_F8L10D_SLEEP_PORT   B_HAL_GPIOC
+#define HAL_F8L10D_SLEEP_PIN    B_HAL_PIN2
+#define HAL_F8L10D_STA_PORT     B_HAL_GPIOC
+#define HAL_F8L10D_STA_PIN      B_HAL_PIN3
+#define HAL_F8L10D_TXD_PORT     B_HAL_GPIOC
+#define HAL_F8L10D_TXD_PIN      B_HAL_PIN4
+
+#define HAL_FM25CL_SPI          B_HAL_SPI_2
+#define HAL_FM25CL_CS_PORT      B_HAL_GPIOC
+#define HAL_FM25CL_CS_PIN       B_HAL_PIN4
 /**
  * \}
  */

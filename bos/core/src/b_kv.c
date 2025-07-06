@@ -124,7 +124,6 @@ static int _bKV_ClearSector(uint8_t t)
     bCMD_Struct_t cmd;
     int retval = -1;
     const bKV_Index_t kv_f = {.id = 0x12345678, .address = 0x87654321, .len = 0x88888888};
-    cmd.type = bCMD_ERASE;
     fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     if(fd < 0)
     {

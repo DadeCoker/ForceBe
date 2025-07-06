@@ -50,16 +50,16 @@
 #define HW_VERSION                  200310
 
 //<o> Firmware version
-#define FW_VERSION                  10100
+#define FW_VERSION                  20000
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
 #define MS2TICKS(m)                 (m * _TICK_FRQ_HZ / 1000)
 //<q> UTC2000 Enable/Disable
-#define _UTC2000_ENABLE           	0
+#define _UTC2000_ENABLE           	1
 
 //<q> Lunar Enable/Disable
-#define _LUNAR_ENABLE           	0
+#define _LUNAR_ENABLE           	1
 
 //<o> Debug level
 //<0=> off
@@ -70,7 +70,7 @@
 
 
 //<e> Battery Enable/Disable
-#define _BATTERY_ENABLE           	0
+#define _BATTERY_ENABLE           	1
 //<o> Battery Threshold (mv)
 #define _BATTERY_THRESHOLD      	3350
 //<o> Battery Detection Cycle (ms)
@@ -79,31 +79,31 @@
 
 
 //<e> Error Manage Enable/Disable
-#define _ERROR_MANAGE_ENABLE       	0
+#define _ERROR_MANAGE_ENABLE       	1
 //<o> Error Queue Length
 #define _ERROR_Q_LENGTH          	5
 //</e>
 
 //<e> Event Manage Enable/Disable
-#define _EVENT_MANAGE_ENABLE       	0
+#define _EVENT_MANAGE_ENABLE       	1
 //<o> Event Queue Length
 #define _EVENT_Q_LENGTH          	5
 //</e>
 
 //<e> Modbus Enable/Disable
-#define _MODBUS_ENABLE           	0
+#define _MODBUS_ENABLE           	1
 //<o> Modbus Instance Number
 #define _MODBUS_I_NUMBER          	1
 //</e>
 
 //<e> Asynchronous Transmit Enable/Disable
-#define _ASYN_TX_ENABLE             0
+#define _ASYN_TX_ENABLE             1
 //<o> ASYN_TX Instance Number
 #define _ASYN_TX_I_NUMBER           1
 //</e>
 
 //<e> Protocol Enable/Disable
-#define _PROTO_ENABLE         		0
+#define _PROTO_ENABLE         		1
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
@@ -129,7 +129,7 @@
 //</e>
 
 //<e> Check Enable/Disable
-#define _CHECK_ENABLE             	0
+#define _CHECK_ENABLE             	1
 //<q> CRC32
 #define _CHECK_CRC32_ENABLE         1
 //<q> XOR SUM
@@ -138,7 +138,7 @@
 
 
 //<e> Save Data Enable/Disable
-#define _SAVE_DATA_ENABLE         	0
+#define _SAVE_DATA_ENABLE         	1
 
 //<e> Save Data ClassA
 #define _SAVE_DATA_A_ENABLE         1
@@ -166,13 +166,13 @@
 
 
 //<e> FIFO Enable/Disable
-#define _FIFO_ENABLE             	0
+#define _FIFO_ENABLE             	1
 //<o> FIFO Instance Number
 #define _FIFO_I_NUMBER              1
 //</e>
 
 //<e> AT Enable/Disable
-#define _AT_ENABLE             	    0
+#define _AT_ENABLE             	    1
 //<o> AT Instance Number
 #define _AT_I_NUMBER                1
 //<o> AT TX Buffer Length
@@ -180,14 +180,14 @@
 //</e>
 
 //<q> XMODEM128 Enable/Disable
-#define _XMODEM128_ENABLE           0
+#define _XMODEM128_ENABLE           1
 
 //<q> YMODEM Enable/Disable
-#define _YMODEM_ENABLE              0
+#define _YMODEM_ENABLE              1
 
 
 //<e> Menu Enable/Disable
-#define _MENU_ENABLE                0
+#define _MENU_ENABLE                1
 //<o> Menu Item Number
 #define _MENU_ITEM_NUMBER           10
 //</e>
@@ -199,7 +199,7 @@
 //<h> Third Party Configuration
 
 //<e> NR Micro Shell Enable/Disable
-#define _NR_MICRO_SHELL_ENABLE              0
+#define _NR_MICRO_SHELL_ENABLE              1
 
 //<s> The user's name
 #define NR_SHELL_USER_NAME                 "nr@bos:"
@@ -255,13 +255,13 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE              0
+#define _FLEXIBLEBUTTON_ENABLE              1
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
 //</e>
 
 //<e> UGUI Enable/Disable
-#define _UGUI_ENABLE                        0
+#define _UGUI_ENABLE                        1
 //<o> X PHYSICAL SIZE
 #define _LCD_X_SIZE                         240 
 //<o> Y PHYSICAL SIZE
@@ -286,7 +286,7 @@
 
 
 //<e> CmBacktrace Enable/Disable
-#define _CMBACKTRACE_ENABLE                 0
+#define _CMBACKTRACE_ENABLE                 1
 
 //<o> CMB_CPU_ARM_CORTEX_M?
 //<0=> ARM_CORTEX_M0

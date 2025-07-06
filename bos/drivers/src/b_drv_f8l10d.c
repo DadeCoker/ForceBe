@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_f8l10d.c
+ * \file        b_drv_f8l10d.c
  * \version     v0.0.1
  * \date        2020/03/18
  * \author      Bean(notrynohigh@outlook.com)
@@ -30,7 +30,7 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_f8l10d.h"
+#include "b_drv_f8l10d.h"
 #if (_ASYN_TX_ENABLE == 1 && _AT_ENABLE == 1)
 #include "b_at.h"
 #include "b_asyntx.h"
@@ -38,6 +38,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "b_utils.h"
+#include "b_hal.h"
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -102,6 +103,12 @@ typedef enum
  * \defgroup F8L10D_Private_Variables
  * \{
  */
+ 
+bF8L10D_Driver_t bF8L10D_Driver = {
+    .init = bF8L10D_Init,
+}; 
+ 
+ 
 const char *pATTable[I_NUMBER] = {
     "AT+LFR?\r\n",
     "AT+NID?\r\n",
@@ -122,6 +129,8 @@ const char *pATSetTable[I_NUMBER] = {
     "AT+TPR=%d\r\n",    
 };
 
+static int AT_No = -1, ATX_No = -1;
+static uint8_t F8L10D_Buf[200];
 
 /**
  * \}
@@ -140,7 +149,11 @@ const char *pATSetTable[I_NUMBER] = {
  * \defgroup F8L10D_Private_Functions
  * \{
  */
- 
+static void _F8L10D_UartSend(uint8_t *pbuf, uint16_t len)
+{
+    bHalUartSend(HAL_F8L10D_UART, pbuf, len);
+}
+
 static int _F8L10D_EnterATMode(int at_no)
 {
     int i = 0;
@@ -310,76 +323,58 @@ static int _F8L10D_Init(int at_no, _F8L10D_Config_t config)
 }
 
 
-static void _F8L10D_Reset(bF8L10D_Driver_t *pdrv)
+static void _F8L10D_Reset()
 {
-    bF8L10D_Private_t *_private = (bF8L10D_Private_t *)pdrv->_private;
-    _private->pSleepPin_Control(0);
-    _private->pResetPin_Control(0);
+    bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 0);
+    bHalGPIO_WritePin(HAL_F8L10D_RESET_PORT, HAL_F8L10D_SLEEP_PIN, 0);
     bHalDelayMS(250);
-    _private->pResetPin_Control(1);
+    bHalGPIO_WritePin(HAL_F8L10D_RESET_PORT, HAL_F8L10D_SLEEP_PIN, 1);
     bHalDelayMS(250);
-    _private->pSleepPin_Control(0);
+    bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 0);
     bHalDelayMS(1500);
+}
+
+static void _F8L10D_TXDoneCB()
+{
+    bAsyntxCplCallback(ATX_No);
+}
+
+
+static void _F8L10D_RXCplCB(uint8_t *pbuf, uint16_t len)
+{
+    bAT_Read(ATX_No, pbuf, len);
 }
 
 /**************************************************************************************************driver interface*****/
 
 static int _F8L10D_Sleep()
 {
-    bF8L10D_Driver_t *pdrv;
-    bF8L10D_Private_t *_private;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    } 
-    _private = (bF8L10D_Private_t *)pdrv->_private;
-    _private->pSleepPin_Control(0);
+    bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 0);
     return 0;
 }
 
 static int _F8L10D_Wakeup()
 {
-    bF8L10D_Driver_t *pdrv;
-    bF8L10D_Private_t *_private;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    } 
-    _private = (bF8L10D_Private_t *)pdrv->_private;
-    _private->pSleepPin_Control(1);
+    bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 1);
     bHalDelayMS(90);
     return 0;
 }
 
 static int _F8L10D_Read(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    bF8L10D_Driver_t *pdrv;
-    bF8L10D_Private_t *_private;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    }     
-    _private = (bF8L10D_Private_t *)pdrv->_private;
     if(off >= 200)
     {
         return -1;
     }
     len = (200 - off > len) ? len : (200 - off);
-    memcpy(pbuf, &_private->buf[off], len);
+    memcpy(pbuf, &F8L10D_Buf[off], len);
     return len;
 }
 
 static int _F8L10D_Write(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    bF8L10D_Driver_t *pdrv;
-    bF8L10D_Private_t *_private;
-    if(0 > bDeviceGetCurrentDrv(&pdrv))
-    {
-        return -1;
-    }     
-    _private = (bF8L10D_Private_t *)pdrv->_private;
     len = (len <= 200) ? len : 200;
-    if(0 > bAsyntxRequest(_private->atx_no, pbuf, len, BASYN_TX_REQ_L0))
+    if(0 > bAsyntxRequest(ATX_No, pbuf, len, BASYN_TX_REQ_L0))
     {
         return -1;
     }
@@ -394,7 +389,7 @@ static int _F8L10D_Write(uint32_t off, uint8_t *pbuf, uint16_t len)
  * \addtogroup F8L10D_Exported_Functions
  * \{
  */
-int bF8L10D_Init(bF8L10D_Driver_t *pdrv)
+int bF8L10D_Init()
 {  
     _F8L10D_Config_t  _F8L10D_Config = 
     {
@@ -406,49 +401,41 @@ int bF8L10D_Init(bF8L10D_Driver_t *pdrv)
         .speed = 4,
         .dbi = 20,
     };
-    
-    bF8L10D_Private_t *_private = (bF8L10D_Private_t *)pdrv->_private;
-    
-    _private->at_no = bAT_Regist(_private->pUartSend);
-    if(_private->at_no < 0)
+   
+    AT_No = bAT_Regist(_F8L10D_UartSend);
+    if(AT_No < 0)
     {
         return -1;
     }
     
-    _private->atx_no = bAsyntxRegist(_private->pUartSend, 1000);
-    if(_private->atx_no < 0)
+    ATX_No = bAsyntxRegist(_F8L10D_UartSend, 1000);
+    if(ATX_No < 0)
     {
         return -1;
     }   
-    _F8L10D_Reset(pdrv);
     
-    _private->pSleepPin_Control(1);
+    _F8L10D_Reset();
+    bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 1);
     bHalDelayMS(90);
-    if(0 > _F8L10D_Init(_private->at_no, _F8L10D_Config))
+    if(0 > _F8L10D_Init(AT_No, _F8L10D_Config))
     {
-        _private->pSleepPin_Control(0);
+        bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 0);
         return -1;
     }
-    _private->pSleepPin_Control(0);
-    pdrv->close = _F8L10D_Sleep;
-    pdrv->open = _F8L10D_Wakeup;
-    pdrv->read = _F8L10D_Read;
-    pdrv->write = _F8L10D_Write;
-    pdrv->ctl = NULL;
+    bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 0);
+    bF8L10D_Driver.close = _F8L10D_Sleep;
+    bF8L10D_Driver.open = _F8L10D_Wakeup;
+    bF8L10D_Driver.read = _F8L10D_Read;
+    bF8L10D_Driver.write = _F8L10D_Write;
+    bF8L10D_Driver.ctl = NULL;
+    
+    bHalGPIO_RegEXTICallback(HAL_F8L10D_TXD_PIN, _F8L10D_TXDoneCB);
+    bHalUartRegIdleCallback(HAL_F8L10D_UART, _F8L10D_RXCplCB);
     return 0;
 }
 
 
-void bF8L10D_TXDoneIrqHandler(bF8L10D_Driver_t *pdrv)
-{
-    bAsyntxCplCallback(((bF8L10D_Private_t *)pdrv->_private)->atx_no);
-}
 
-
-void bF8L10D_RXCplHandler(bF8L10D_Driver_t *pdrv, uint8_t *pbuf, uint16_t len)
-{
-    bAT_Read(((bF8L10D_Private_t *)pdrv->_private)->atx_no, pbuf, len);
-}
 
 /**
  * \}

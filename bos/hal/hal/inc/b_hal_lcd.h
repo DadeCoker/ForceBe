@@ -53,7 +53,12 @@
  * \defgroup LCD_Exported_TypesDefinitions
  * \{
  */
-  
+typedef struct
+{
+    uint16_t reg;
+    uint16_t dat;
+}bHalLcdAddr_t;   
+
 /**
  * \}
  */

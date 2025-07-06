@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_ssd1289.c
+ * \file        b_drv_ssd1289.c
  * \version     v0.0.1
  * \date        2020/03/02
  * \author      Bean(notrynohigh@outlook.com)
@@ -30,7 +30,7 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_ssd1289.h"
+#include "b_drv_ssd1289.h"
 #include "b_hal.h"
 /** 
  * \addtogroup B_DRIVER
@@ -176,7 +176,6 @@ static int _bSSD1289Ctl(uint8_t cmd, void * param)
  */
 int bSSD1289_Init()
 {      
-    bHalLcdInit();
 	_SSD1289WriteReg(0x0007, 0x0021);
 	_SSD1289WriteReg(0x0000, 0x0001);
 	_SSD1289WriteReg(0x0007, 0x0023);

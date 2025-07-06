@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -693,39 +694,34 @@
           <GroupName>BOS/Driver</GroupName>
           <Files>
             <File>
-              <FileName>b_ssd1289.c</FileName>
+              <FileName>b_drv_f8l10d.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_ssd1289.c</FilePath>
+              <FilePath>..\bos\drivers\src\b_drv_f8l10d.c</FilePath>
             </File>
             <File>
-              <FileName>b_xpt2046.c</FileName>
+              <FileName>b_drv_fm25cl.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_xpt2046.c</FilePath>
+              <FilePath>..\bos\drivers\src\b_drv_fm25cl.c</FilePath>
             </File>
             <File>
-              <FileName>b_w25x.c</FileName>
+              <FileName>b_drv_ili9341.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_w25x.c</FilePath>
+              <FilePath>..\bos\drivers\src\b_drv_ili9341.c</FilePath>
             </File>
             <File>
-              <FileName>b_suart.c</FileName>
+              <FileName>b_drv_ssd1289.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_suart.c</FilePath>
+              <FilePath>..\bos\drivers\src\b_drv_ssd1289.c</FilePath>
             </File>
             <File>
-              <FileName>b_f8l10d.c</FileName>
+              <FileName>b_drv_w25x.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_f8l10d.c</FilePath>
+              <FilePath>..\bos\drivers\src\b_drv_w25x.c</FilePath>
             </File>
             <File>
-              <FileName>b_fm25cl.c</FileName>
+              <FileName>b_drv_xpt2046.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_fm25cl.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_ili9341.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\src\b_ili9341.c</FilePath>
+              <FilePath>..\bos\drivers\src\b_drv_xpt2046.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -751,6 +747,11 @@
               <FileName>b_hal_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\src\b_hal_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\src\b_hal_spi.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_ili9341.h
+ * \file        b_drv_ssd1289.h
  * \version     v0.0.1
  * \date        2020/03/02
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_ILI9341_H__
-#define __B_ILI9341_H__
+#ifndef __B_DRV_SSD1289_H__
+#define __B_DRV_SSD1289_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -44,30 +44,22 @@
  */
 
 /** 
- * \addtogroup ILI9341
+ * \addtogroup SSD1289
  * \{
  */
 
 /** 
- * \defgroup ILI9341_Exported_TypesDefinitions
+ * \defgroup SSD1289_Exported_TypesDefinitions
  * \{
  */
+typedef bDriverInterface_t bSSD1289_Driver_t;  
  
-typedef struct
-{
-    void (*pWriteCmd)(uint16_t);
-    void (*pWriteDat)(uint16_t);
-    uint16_t (*pReadDat)();
-}bILI9341Private_t; 
- 
- 
-typedef bDriverInterface_t bILI9341_Driver_t;  
 /**
  * \}
  */
    
 /** 
- * \defgroup ILI9341_Exported_Defines
+ * \defgroup SSD1289_Exported_Defines
  * \{
  */
 
@@ -77,7 +69,7 @@ typedef bDriverInterface_t bILI9341_Driver_t;
  */
    
 /** 
- * \defgroup ILI9341_Exported_Macros
+ * \defgroup SSD1289_Exported_Macros
  * \{
  */
 
@@ -88,7 +80,7 @@ typedef bDriverInterface_t bILI9341_Driver_t;
  */
    
 /** 
- * \defgroup ILI9341_Exported_Variables
+ * \defgroup SSD1289_Exported_Variables
  * \{
  */
  
@@ -97,10 +89,10 @@ typedef bDriverInterface_t bILI9341_Driver_t;
  */
    
 /** 
- * \defgroup ILI9341_Exported_Functions
+ * \defgroup SSD1289_Exported_Functions
  * \{
  */
-int bILI9341_Init(bILI9341_Driver_t *pdrv);
+int bSSD1289_Init(void);
 
 /**
  * \}

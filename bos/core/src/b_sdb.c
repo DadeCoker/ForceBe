@@ -175,7 +175,6 @@ int bSDB_Write(int no, uint8_t *pbuf)
     }
 
 	bCMD_Struct_t cmd_s;
-    cmd_s.type = bCMD_ERASE;
 	cmd_s.param.erase.addr = bSDB_InfoTable[no].address;
 	cmd_s.param.erase.num = 1;
 

@@ -118,7 +118,7 @@ static const char bLogPrefix[3] = {'I', 'W', 'E'};
 
 void bLogOutput(void *p)
 {
-    bHalUartSend(HAL_LOG_UART_PORT, p, strlen(p));
+    bHalUartSend(HAL_LOG_UART, p, strlen(p));
 }
 
 

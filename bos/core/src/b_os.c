@@ -73,6 +73,8 @@ extern int bEventCore(void);
 extern int bTX_Core(void);
 extern void bGUI_TouchExec(void);
 extern void bAsyntxCore(void);
+
+extern void bHalUartDetectIdle(void);
 /**
  * \}
  */
@@ -127,6 +129,9 @@ int bInit()
     b_log("_/____/___(___(_(___/_(___/_(____/___(____/___\n\r");
     b_log("                         /                    \n\r");
     b_log("                     (_ /                     \n\r");
+    b_log("HW:%d.%d.%d FW:%d.%d.%d COMPILE:%s-%s\r\n", (HW_VERSION / 10000), (HW_VERSION % 10000) / 100,
+            HW_VERSION % 100, (FW_VERSION / 10000), (FW_VERSION % 10000) / 100,
+            FW_VERSION % 100,__DATE__, __TIME__);
     bHalInit();
     b_log("device number:%d\r\n", bDEV_MAX_NUM);
     return bDeviceInit();
@@ -140,6 +145,7 @@ int bInit()
  */
 int bExec()
 {
+    bHalUartDetectIdle();
 #if _BATTERY_ENABLE
     static uint32_t b_tick = 0xffffffff - MS2TICKS(_BATTERY_D_CYCLE);
     if(bHalGetTick() - b_tick > (MS2TICKS(_BATTERY_D_CYCLE)))

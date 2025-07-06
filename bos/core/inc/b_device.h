@@ -70,7 +70,6 @@ typedef struct
 
 typedef struct
 {
-	uint8_t type;
 	union
 	{
 		bCMD_Erase_t erase;
@@ -82,7 +81,7 @@ typedef struct
 
 typedef struct bDriverInterface
 {
-    int (*init)(struct bDriverInterface *);
+    int (*init)(void);
     int (*open)(void);
     int (*close)(void);
     int (*ctl)(uint8_t cmd, void *param);

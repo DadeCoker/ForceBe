@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_fm25cl.h
+ * \file        b_hal_spi.h
  * \version     v0.0.1
- * \date        2020/02/05
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,15 +21,15 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SSPIL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_FM25CL_H__
-#define __B_FM25CL_H__
+#ifndef __B_HAL_SPI_H__
+#define __B_HAL_SPI_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,56 +37,37 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-#include "b_device.h"
+
+
 /** 
- * \addtogroup B_DRIVER
+ * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup FM25CL
+ * \addtogroup SPI
  * \{
  */
 
 /** 
- * \defgroup FM25CL_Exported_TypesDefinitions
+ * \defgroup SPI_Exported_TypesDefinitions
  * \{
  */
- 
-typedef struct
+typedef enum
 {
-    uint8_t (*pSPI_ReadWriteByte)(uint8_t);
-    void (*pCS_Control)(uint8_t);
-}bFM25CLPrivate_t;    
- 
- 
-typedef bDriverInterface_t bFM25CL_Driver_t;  
-
+    B_HAL_SPI_1,
+    B_HAL_SPI_2,
+    B_HAL_SPI_3,
+    B_HAL_SPI_4,
+}bHalSPINumber_t; 
 /**
  * \}
  */
    
 /** 
- * \defgroup FM25CL_Exported_Defines
+ * \defgroup SPI_Exported_Defines
  * \{
  */
-
-#define SFC_WREN        0x06 	//Set write enable latch
-#define SFC_WRDI        0x04	//Write disable
-#define SFC_RDSR        0x05	//Read Status Register
-#define SFC_WRSR        0x01	//Write Status Register
-#define SFC_READ        0x03	//Read memory data
-#define SFC_WRITE    	0x02	//Write memory data
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup FM25CL_Exported_Macros
- * \{
- */
-
 
 
 /**
@@ -94,24 +75,33 @@ typedef bDriverInterface_t bFM25CL_Driver_t;
  */
    
 /** 
- * \defgroup FM25CL_Exported_Variables
+ * \defgroup SPI_Exported_Macros
  * \{
  */
-  
+
+
 /**
  * \}
  */
    
 /** 
- * \defgroup FM25CL_Exported_Functions
+ * \defgroup SPI_Exported_Variables
  * \{
  */
-int bFM25CL_Init(bFM25CL_Driver_t *);
-
+   
 /**
  * \}
  */
- 
+   
+/** 
+ * \defgroup SPI_Exported_Functions
+ * \{
+ */
+
+uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat);
+/**
+ * \}
+ */
 
 /**
  * \}
@@ -128,7 +118,6 @@ int bFM25CL_Init(bFM25CL_Driver_t *);
 #endif
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 

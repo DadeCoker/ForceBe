@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_xpt2046.h
+ * \file        b_hal_spi.c
  * \version     v0.0.1
- * \date        2020/02/05
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,91 +21,106 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SSPIL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_XPT2046_H__
-#define __B_XPT2046_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-#include "b_device.h"
+#include "b_hal.h" 
 /** 
- * \addtogroup B_DRIVER
+ * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup XPT2046
+ * \addtogroup SPI
  * \{
  */
 
 /** 
- * \defgroup XPT2046_Exported_TypesDefinitions
+ * \defgroup SPI_Private_TypesDefinitions
  * \{
  */
- 
-typedef struct
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Defines
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Variables
+ * \{
+ */
+extern SPI_HandleTypeDef hspi2;
+extern SPI_HandleTypeDef hspi3;
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Functions
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \addtogroup SPI_Exported_Functions
+ * \{
+ */
+
+uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
 {
-    uint8_t (*pSPI_ReadWriteByte)(uint8_t);
-    void (*pCS_Control)(uint8_t);
-}bXPT2046Private_t;    
- 
- 
-typedef bDriverInterface_t bXPT2046_Driver_t;  
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup XPT2046_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup XPT2046_Exported_Macros
- * \{
- */
+    uint8_t tmp;
+    switch(no)
+    {
+        case B_HAL_SPI_2:
+            HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xff);
+            break;
+        case B_HAL_SPI_3:
+            HAL_SPI_TransmitReceive(&hspi3, &dat, &tmp, 1, 0xff);
+            break;
+        default:
+            break;
+    }
+    return tmp;
+}
 
 
 
-/**
- * \}
- */
-   
-/** 
- * \defgroup XPT2046_Exported_Variables
- * \{
- */
-  
-/**
- * \}
- */
-   
-/** 
- * \defgroup XPT2046_Exported_Functions
- * \{
- */
-int bXPT2046_Init(bXPT2046_Driver_t *);
-
-/**
- * \}
- */
- 
 
 /**
  * \}
@@ -115,14 +130,11 @@ int bXPT2046_Init(bXPT2046_Driver_t *);
  * \}
  */
 
-#ifdef __cplusplus
-	}
-#endif
- 
-#endif
 
+/**
+ * \}
+ */
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 

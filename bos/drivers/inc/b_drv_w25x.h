@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_w25x.h
+ * \file        b_drv_w25x.h
  * \version     v0.0.1
  * \date        2019/06/05
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_W25X_H__
-#define __B_W25X_H__
+#ifndef __B_DRV_W25X_H__
+#define __B_DRV_W25X_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -52,12 +52,6 @@
  * \defgroup W25X_Exported_TypesDefinitions
  * \{
  */
- 
-typedef struct
-{
-    uint8_t (*pSPI_ReadWriteByte)(uint8_t);
-    void (*pCS_Control)(uint8_t);
-}bW25X_Private_t;  
  
 typedef bDriverInterface_t bW25X_Driver_t;  
 
@@ -141,7 +135,7 @@ typedef bDriverInterface_t bW25X_Driver_t;
  * \defgroup W25X_Exported_Functions
  * \{
  */
-int bW25X_Init(bW25X_Driver_t *pdrv);
+int bW25X_Init(void);
 
 /**
  * \}

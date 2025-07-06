@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_ssd1289.h
+ * \file        b_drv_f8l10d.h
  * \version     v0.0.1
- * \date        2020/03/02
+ * \date        2020/03/18
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_SSD1289_H__
-#define __B_SSD1289_H__
+#ifndef __B_DRV_F8L10D_H__
+#define __B_DRV_F8L10D_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -38,41 +38,32 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
 #include "b_device.h"
+
 /** 
  * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup SSD1289
+ * \addtogroup F8L10D
  * \{
  */
 
 /** 
- * \defgroup SSD1289_Exported_TypesDefinitions
+ * \defgroup F8L10D_Exported_TypesDefinitions
  * \{
- */
- typedef bDriverInterface_t bSSD1289_Driver_t;  
- 
-/**
- * \}
- */
-   
-/** 
- * \defgroup SSD1289_Exported_Defines
- * \{
- */
+ */  
 
+typedef bDriverInterface_t bF8L10D_Driver_t;  
 
 /**
  * \}
  */
    
 /** 
- * \defgroup SSD1289_Exported_Macros
+ * \defgroup F8L10D_Exported_Defines
  * \{
  */
-
 
 
 /**
@@ -80,20 +71,32 @@
  */
    
 /** 
- * \defgroup SSD1289_Exported_Variables
+ * \defgroup F8L10D_Exported_Macros
  * \{
  */
- 
+
+
+
 /**
  * \}
  */
    
 /** 
- * \defgroup SSD1289_Exported_Functions
+ * \defgroup F8L10D_Exported_Variables
  * \{
  */
-int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
-
+  
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup F8L10D_Exported_Functions
+ * \{
+ */
+int bF8L10D_Init(void);
+void bF8L10D_TXDoneIrqHandler(bF8L10D_Driver_t *pdrv);
+void bF8L10D_RXCplHandler(bF8L10D_Driver_t *pdrv, uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */
@@ -112,7 +115,6 @@ int bSSD1289_Init(bSSD1289_Driver_t *pdrv);
 #endif
  
 #endif
-
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
 

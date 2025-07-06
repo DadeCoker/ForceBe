@@ -214,8 +214,7 @@ int bSDC_Write(int no, uint8_t *pbuf)
         return -1;
     }
     
-	bCMD_Struct_t cmd_s;
-    cmd_s.type = bCMD_ERASE;	
+	bCMD_Struct_t cmd_s;	
 	cmd_s.param.erase.num = 1;
     if(bSDC_InfoTable[no].index == 0)
     {

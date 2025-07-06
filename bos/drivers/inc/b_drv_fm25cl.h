@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_driver.h
+ * \file        b_drv_fm25cl.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/02/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,29 +28,100 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRIVER_H__
-#define __B_DRIVER_H__
+#ifndef __B_DRV_FM25CL_H__
+#define __B_DRV_FM25CL_H__
 
-
-
-#include "b_drv_w25x.h"
-#include "b_drv_xpt2046.h"
-#include "b_drv_ssd1289.h"
-#include "b_drv_f8l10d.h"
-#include "b_drv_fm25cl.h"
-#include "b_drv_ili9341.h"
-
-
-
-
-extern bDriverInterface_t   bSSD1289_Driver;
-extern bDriverInterface_t   bXPT2046_Driver;
-extern bDriverInterface_t   bW25X_Driver;
-extern bDriverInterface_t   bF8L10D_Driver;
-extern bDriverInterface_t   bFM25CL_Driver;
-extern bDriverInterface_t   bILI9341_Driver;
-
+#ifdef __cplusplus
+ extern "C" {
 #endif
 
+/*Includes ----------------------------------------------*/
+#include "b_config.h" 
+#include "b_device.h"
+/** 
+ * \addtogroup B_DRIVER
+ * \{
+ */
+
+/** 
+ * \addtogroup FM25CL
+ * \{
+ */
+
+/** 
+ * \defgroup FM25CL_Exported_TypesDefinitions
+ * \{
+ */
+ 
+typedef bDriverInterface_t bFM25CL_Driver_t;  
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FM25CL_Exported_Defines
+ * \{
+ */
+
+#define SFC_WREN        0x06 	//Set write enable latch
+#define SFC_WRDI        0x04	//Write disable
+#define SFC_RDSR        0x05	//Read Status Register
+#define SFC_WRSR        0x01	//Write Status Register
+#define SFC_READ        0x03	//Read memory data
+#define SFC_WRITE    	0x02	//Write memory data
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FM25CL_Exported_Macros
+ * \{
+ */
+
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FM25CL_Exported_Variables
+ * \{
+ */
+  
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FM25CL_Exported_Functions
+ * \{
+ */
+int bFM25CL_Init(void);
+
+/**
+ * \}
+ */
+ 
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif
+
+
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
+
 
