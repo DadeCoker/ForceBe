@@ -131,7 +131,7 @@ static int _FM25_ReadBuff(uint32_t addr, uint8_t *pDat, uint16_t len)
         pDat[i] = _private->pSPI_ReadWriteByte(0);
     }
 	_private->pCS_Control(1); 
-    return 0;
+    return len;
 }   
 
 
@@ -159,7 +159,7 @@ static int _FM25_WritBuff(uint32_t addr, uint8_t* pdat,uint16_t len)
 	_private->pCS_Control(1);
 	//-----------------------------------------------------------
 	_FM25_WR_Lock(pdrv);    
-    return 0;
+    return len;
 } 
 
 
