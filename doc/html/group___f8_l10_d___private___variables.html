@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V1.1.0</span>
+   &#160;<span id="projectnumber">V3.0.0</span>
    </div>
   </td>
  </tr>
@@ -43,18 +43,18 @@ $(function() {
   <div class="summary">
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">F8L10D_Private_Variables<div class="ingroups"><a class="el" href="group___b___d_r_i_v_e_r.html">B_DRIVER</a> &raquo; <a class="el" href="group___f8_l10_d.html">F8L10D</a></div></div>  </div>
+<div class="title">F8L10D_Private_Variables<div class="ingroups"><a class="el" href="group___b_a_b_y_o_s.html">BABYOS</a> &raquo; <a class="el" href="group___b___d_r_i_v_e_r.html">B_DRIVER</a> &raquo; <a class="el" href="group___f8_l10_d.html">F8L10D</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:gaa9479c261d65eecedd3d9582f7f0f89c"><td class="memItemLeft" align="right" valign="top">UART_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___private___variables.html#gaa9479c261d65eecedd3d9582f7f0f89c">huart2</a></td></tr>
-<tr class="separator:gaa9479c261d65eecedd3d9582f7f0f89c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga784aa25dc7e4580cfbf80658340f482c"><td class="memItemLeft" align="right" valign="top">DMA_HandleTypeDef&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___private___variables.html#ga784aa25dc7e4580cfbf80658340f482c">hdma_usart2_rx</a></td></tr>
-<tr class="separator:ga784aa25dc7e4580cfbf80658340f482c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5afdf2a0e03c7fedf1b1c03ede3350a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___f8_l10_d___exported___types_definitions.html#ga8c86a10e36d7c236670aabfbd89c06dd">bF8L10D_Driver_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___private___variables.html#ga5afdf2a0e03c7fedf1b1c03ede3350a6">bF8L10D_Driver</a></td></tr>
 <tr class="separator:ga5afdf2a0e03c7fedf1b1c03ede3350a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8f5226248336edeed694397af81b24d2"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___private___variables.html#ga8f5226248336edeed694397af81b24d2">pATTable</a> [<a class="el" href="group___f8_l10_d___private___types_definitions.html#gga928ba90093c9e4f80d64e1a54293e6e4ac677a6a4373810ea1bd0567ba2c76368">I_NUMBER</a>]</td></tr>
+<tr class="separator:ga8f5226248336edeed694397af81b24d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab7be62551fdda80c27e91363d3314489"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___private___variables.html#gab7be62551fdda80c27e91363d3314489">pATSetTable</a> [<a class="el" href="group___f8_l10_d___private___types_definitions.html#gga928ba90093c9e4f80d64e1a54293e6e4ac677a6a4373810ea1bd0567ba2c76368">I_NUMBER</a>]</td></tr>
+<tr class="separator:gab7be62551fdda80c27e91363d3314489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Variable Documentation</h2>
@@ -69,41 +69,41 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= </div><div class="line">{</div><div class="line">        .init = <a class="code" href="group___f8_l10_d___exported___functions.html#ga849e31a9798533db9778e67b431cef2f">bF8L10D_Init</a>,</div><div class="line">}</div><div class="ttc" id="group___f8_l10_d___exported___functions_html_ga849e31a9798533db9778e67b431cef2f"><div class="ttname"><a href="group___f8_l10_d___exported___functions.html#ga849e31a9798533db9778e67b431cef2f">bF8L10D_Init</a></div><div class="ttdeci">int bF8L10D_Init(void)</div><div class="ttdef"><b>Definition:</b> <a href="b__f8l10d_8c_source.html#l00200">b_f8l10d.c:200</a></div></div>
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    .init = <a class="code" href="group___f8_l10_d___exported___functions.html#ga849e31a9798533db9778e67b431cef2f">bF8L10D_Init</a>,</div><div class="line">}</div><div class="ttc" id="group___f8_l10_d___exported___functions_html_ga849e31a9798533db9778e67b431cef2f"><div class="ttname"><a href="group___f8_l10_d___exported___functions.html#ga849e31a9798533db9778e67b431cef2f">bF8L10D_Init</a></div><div class="ttdeci">int bF8L10D_Init(void)</div><div class="ttdef"><b>Definition:</b> <a href="b__drv__f8l10d_8c_source.html#l00396">b_drv_f8l10d.c:396</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="b__f8l10d_8c_source.html#l00084">84</a> of file <a class="el" href="b__f8l10d_8c_source.html">b_f8l10d.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__drv__f8l10d_8c_source.html#l00111">111</a> of file <a class="el" href="b__drv__f8l10d_8c_source.html">b_drv_f8l10d.c</a>.</p>
 
 </div>
 </div>
-<a id="ga784aa25dc7e4580cfbf80658340f482c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga784aa25dc7e4580cfbf80658340f482c">&#9670;&nbsp;</a></span>hdma_usart2_rx</h2>
+<a id="gab7be62551fdda80c27e91363d3314489"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab7be62551fdda80c27e91363d3314489">&#9670;&nbsp;</a></span>pATSetTable</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">DMA_HandleTypeDef hdma_usart2_rx</td>
+          <td class="memname">const char* pATSetTable[<a class="el" href="group___f8_l10_d___private___types_definitions.html#gga928ba90093c9e4f80d64e1a54293e6e4ac677a6a4373810ea1bd0567ba2c76368">I_NUMBER</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="reference">Referenced by <a class="el" href="b__f8l10d_8c_source.html#l00244">bF8L10D_UartIdle()</a>.</p>
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    <span class="stringliteral">&quot;AT+LFR=%d\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+NID=%d\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+PID=%d\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+TID=%d\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+SLE=%d\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+LRS=%d\r\n&quot;</span>, </div><div class="line">    <span class="stringliteral">&quot;AT+TPR=%d\r\n&quot;</span>,    </div><div class="line">}</div></div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="b__drv__f8l10d_8c_source.html#l00126">126</a> of file <a class="el" href="b__drv__f8l10d_8c_source.html">b_drv_f8l10d.c</a>.</p>
 
 </div>
 </div>
-<a id="gaa9479c261d65eecedd3d9582f7f0f89c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaa9479c261d65eecedd3d9582f7f0f89c">&#9670;&nbsp;</a></span>huart2</h2>
+<a id="ga8f5226248336edeed694397af81b24d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8f5226248336edeed694397af81b24d2">&#9670;&nbsp;</a></span>pATTable</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">UART_HandleTypeDef huart2</td>
+          <td class="memname">const char* pATTable[<a class="el" href="group___f8_l10_d___private___types_definitions.html#gga928ba90093c9e4f80d64e1a54293e6e4ac677a6a4373810ea1bd0567ba2c76368">I_NUMBER</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="reference">Referenced by <a class="el" href="b__f8l10d_8c_source.html#l00244">bF8L10D_UartIdle()</a>.</p>
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    <span class="stringliteral">&quot;AT+LFR?\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+NID?\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+PID?\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+TID?\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+SLE?\r\n&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;AT+LRS?\r\n&quot;</span>, </div><div class="line">    <span class="stringliteral">&quot;AT+TPR?\r\n&quot;</span>,    </div><div class="line">}</div></div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="b__drv__f8l10d_8c_source.html#l00116">116</a> of file <a class="el" href="b__drv__f8l10d_8c_source.html">b_drv_f8l10d.c</a>.</p>
 
 </div>
 </div>

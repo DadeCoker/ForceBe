@@ -38,6 +38,13 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
 #include "b_device.h"
+
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -100,6 +107,10 @@ typedef bDriverInterface_t bFM25CL_Driver_t;
  * \{
  */
 int bFM25CL_Init(void);
+
+/**
+ * \}
+ */
 
 /**
  * \}

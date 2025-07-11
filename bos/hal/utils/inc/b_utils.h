@@ -36,11 +36,11 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-
-
+#include "b_util_delay.h" 
+#include "b_util_at.h" 
+#include "b_util_asyntx.h" 
 /** 
- * \addtogroup B_HAL
+ * \addtogroup B_UTILS
  * \{
  */
 
@@ -91,10 +91,6 @@
  * \defgroup UTILS_Exported_Functions
  * \{
  */
-
-void bHalDelayMS(uint32_t xms);
-void bHalDelayUS(uint32_t xus);  
-uint32_t bHalGetTick(void);
 
 /**
  * \}

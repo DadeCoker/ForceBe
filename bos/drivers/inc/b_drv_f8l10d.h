@@ -40,6 +40,12 @@
 #include "b_device.h"
 
 /** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
+/** 
  * \addtogroup B_DRIVER
  * \{
  */
@@ -97,6 +103,11 @@ typedef bDriverInterface_t bF8L10D_Driver_t;
 int bF8L10D_Init(void);
 void bF8L10D_TXDoneIrqHandler(bF8L10D_Driver_t *pdrv);
 void bF8L10D_RXCplHandler(bF8L10D_Driver_t *pdrv, uint8_t *pbuf, uint16_t len);
+
+/**
+ * \}
+ */
+
 /**
  * \}
  */

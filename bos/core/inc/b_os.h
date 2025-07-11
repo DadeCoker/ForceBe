@@ -36,35 +36,20 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_battery.h"
+
 #include "b_core.h"
-#include "b_crc32.h"
 #include "b_device.h"
-#include "b_error.h"
-#include "b_event.h"
-#include "b_modbus.h"
-#include "b_protocol.h"
-#include "b_sda.h"
-#include "b_sdb.h"
-#include "b_sdc.h"
-#include "b_sum.h"
-#include "b_asyntx.h"
-#include "b_utc.h"
-#include "b_fifo.h"
-#include "b_at.h"
-#include "b_shell.h"
-#include "b_kv.h"
-#include "b_xm128.h" 
-#include "b_ymodem.h" 
-#include "b_button.h"
-#include "b_gui.h"
-#include "b_menu.h"
-#include "b_trace.h"
 
 #include "b_hal.h"
 #include "b_utils.h"
+#include "b_modules.h"
 /** 
  * \addtogroup BABYOS
+ * \{
+ */
+
+/** 
+ * \addtogroup CORE
  * \{
  */
 
@@ -87,6 +72,10 @@ int bExec(void);
 /**
  * \}
  */ 
+
+/**
+ * \}
+ */
 
 /**
  * \}

@@ -43,6 +43,11 @@
  */
 
 /** 
+ * \addtogroup CORE
+ * \{
+ */
+
+/** 
  * \addtogroup DEVICE
  * \{
  */
@@ -176,7 +181,9 @@ int bDeviceCtl(int no, uint8_t cmd, void *param);
  * \}
  */
 
-
+/**
+ * \}
+ */
 
 #ifdef __cplusplus
 	}

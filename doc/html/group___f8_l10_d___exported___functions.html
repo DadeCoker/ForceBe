@@ -20,7 +20,7 @@
   <td id="projectlogo"><img alt="Logo" src="2.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">BabyOS
-   &#160;<span id="projectnumber">V1.1.0</span>
+   &#160;<span id="projectnumber">V3.0.0</span>
    </div>
   </td>
  </tr>
@@ -43,7 +43,7 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">F8L10D_Exported_Functions<div class="ingroups"><a class="el" href="group___b___d_r_i_v_e_r.html">B_DRIVER</a> &raquo; <a class="el" href="group___f8_l10_d.html">F8L10D</a></div></div>  </div>
+<div class="title">F8L10D_Exported_Functions<div class="ingroups"><a class="el" href="group___b_a_b_y_o_s.html">BABYOS</a> &raquo; <a class="el" href="group___b___d_r_i_v_e_r.html">B_DRIVER</a> &raquo; <a class="el" href="group___f8_l10_d.html">F8L10D</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
@@ -51,8 +51,10 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:ga849e31a9798533db9778e67b431cef2f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___exported___functions.html#ga849e31a9798533db9778e67b431cef2f">bF8L10D_Init</a> (void)</td></tr>
 <tr class="separator:ga849e31a9798533db9778e67b431cef2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabc8cefa3f54f3eddaaf62db7e80556c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___exported___functions.html#gabc8cefa3f54f3eddaaf62db7e80556c0">bF8L10D_UartIdle</a> (void)</td></tr>
-<tr class="separator:gabc8cefa3f54f3eddaaf62db7e80556c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafbd850a75aa03909c7248e3092e08ce9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___exported___functions.html#gafbd850a75aa03909c7248e3092e08ce9">bF8L10D_TXDoneIrqHandler</a> (<a class="el" href="group___f8_l10_d___exported___types_definitions.html#ga8c86a10e36d7c236670aabfbd89c06dd">bF8L10D_Driver_t</a> *pdrv)</td></tr>
+<tr class="separator:gafbd850a75aa03909c7248e3092e08ce9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga63d659a297a7aba45c313cf08a8bad81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___f8_l10_d___exported___functions.html#ga63d659a297a7aba45c313cf08a8bad81">bF8L10D_RXCplHandler</a> (<a class="el" href="group___f8_l10_d___exported___types_definitions.html#ga8c86a10e36d7c236670aabfbd89c06dd">bF8L10D_Driver_t</a> *pdrv, uint8_t *pbuf, uint16_t len)</td></tr>
+<tr class="separator:ga63d659a297a7aba45c313cf08a8bad81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -72,29 +74,61 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__f8l10d_8c_source.html#l00200">200</a> of file <a class="el" href="b__f8l10d_8c_source.html">b_f8l10d.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="b__drv__f8l10d_8c_source.html#l00396">396</a> of file <a class="el" href="b__drv__f8l10d_8c_source.html">b_drv_f8l10d.c</a>.</p>
+
+<p class="reference">References <a class="el" href="b__drv__f8l10d_8c_source.html#l00063">_F8L10D_Config_t::frq</a>.</p>
 
 </div>
 </div>
-<a id="gabc8cefa3f54f3eddaaf62db7e80556c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabc8cefa3f54f3eddaaf62db7e80556c0">&#9670;&nbsp;</a></span>bF8L10D_UartIdle()</h2>
+<a id="ga63d659a297a7aba45c313cf08a8bad81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga63d659a297a7aba45c313cf08a8bad81">&#9670;&nbsp;</a></span>bF8L10D_RXCplHandler()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void bF8L10D_UartIdle </td>
+          <td class="memname">void bF8L10D_RXCplHandler </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="group___f8_l10_d___exported___types_definitions.html#ga8c86a10e36d7c236670aabfbd89c06dd">bF8L10D_Driver_t</a> *&#160;</td>
+          <td class="paramname"><em>pdrv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>pbuf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="b__f8l10d_8c_source.html#l00244">244</a> of file <a class="el" href="b__f8l10d_8c_source.html">b_f8l10d.c</a>.</p>
+</div>
+</div>
+<a id="gafbd850a75aa03909c7248e3092e08ce9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafbd850a75aa03909c7248e3092e08ce9">&#9670;&nbsp;</a></span>bF8L10D_TXDoneIrqHandler()</h2>
 
-<p class="reference">References <a class="el" href="group___a_t___exported___functions.html#ga8c06cbe99efea24cb2510ac555967fbf">bAT_Read()</a>, <a class="el" href="group___f8_l10_d___private___variables.html#ga784aa25dc7e4580cfbf80658340f482c">hdma_usart2_rx</a>, and <a class="el" href="group___f8_l10_d___private___variables.html#gaa9479c261d65eecedd3d9582f7f0f89c">huart2</a>.</p>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void bF8L10D_TXDoneIrqHandler </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___f8_l10_d___exported___types_definitions.html#ga8c86a10e36d7c236670aabfbd89c06dd">bF8L10D_Driver_t</a> *&#160;</td>
+          <td class="paramname"><em>pdrv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

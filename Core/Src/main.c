@@ -87,7 +87,7 @@ static void MX_SPI3_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t buf[128];
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -121,14 +121,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bInit();
-  
-  if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096))
-  {
-    b_log("bKV_Init ok...\r\n");
-  }
-  bKV_Set((uint8_t *)"name", (uint8_t *)"BabyOS", 7);
-  bKV_Get((uint8_t *)"name", buf);
-  b_log("name:%s\r\n", buf);
   while (1)
   {
       bExec();

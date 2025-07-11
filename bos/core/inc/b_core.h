@@ -49,6 +49,11 @@
  */
 
 /** 
+ * \addtogroup CORE
+ * \{
+ */
+
+/** 
  * \defgroup CORE_Exported_TypesDefinitions
  * \{
  */
@@ -126,6 +131,10 @@ int bClose(int fd);
  * \}
  */
 
+
+/**
+ * \}
+ */
 
 /**
  * \}

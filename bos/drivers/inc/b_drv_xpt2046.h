@@ -38,6 +38,13 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
 #include "b_device.h"
+
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -98,6 +105,10 @@ int bXPT2046_Init(void);
  * \}
  */
  
+
+/**
+ * \}
+ */
 
 /**
  * \}

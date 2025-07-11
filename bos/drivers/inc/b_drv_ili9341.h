@@ -38,6 +38,13 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
 #include "b_device.h"
+
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -92,6 +99,10 @@ typedef bDriverInterface_t bILI9341_Driver_t;
  * \{
  */
 int bILI9341_Init(void);
+
+/**
+ * \}
+ */
 
 /**
  * \}

@@ -38,6 +38,13 @@
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
 #include "b_device.h"
+
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -93,6 +100,10 @@ typedef bDriverInterface_t bSSD1289_Driver_t;
  * \{
  */
 int bSSD1289_Init(void);
+
+/**
+ * \}
+ */
 
 /**
  * \}
