@@ -120,6 +120,11 @@ void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len)
 
 void bHalUartRegIdleCallback(uint8_t no, pUartIdleCallback f)
 {
+    if(bHalUartInitFlag == 0)
+    {
+        memset(bHalUartRxInfo, 0, sizeof(bHalUartRxInfo));
+        bHalUartInitFlag = 1;
+    }
     if(no >= B_HAL_UART_NUMBER)
     {
         return;
@@ -154,11 +159,6 @@ void bHalUartDetectIdle()
  */ 
 void bHalUartRxIrqCallback(uint8_t no, uint8_t dat)
 {
-    if(bHalUartInitFlag == 0)
-    {
-        memset(bHalUartRxInfo, 0, sizeof(bHalUartRxInfo));
-        bHalUartInitFlag = 1;
-    }
     if(no >= B_HAL_UART_NUMBER)
     {
         return;

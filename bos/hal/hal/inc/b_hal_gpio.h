@@ -66,6 +66,7 @@ typedef enum
 
 typedef enum
 {
+    B_HAL_PIN0,    
     B_HAL_PIN1,
     B_HAL_PIN2,
     B_HAL_PIN3,
@@ -81,11 +82,16 @@ typedef enum
     B_HAL_PIN13,
     B_HAL_PIN14,
     B_HAL_PIN15,
-    B_HAL_PIN16,
     B_HAL_PINAll,     
 }bHalGPIOPin_t;  
 
 typedef void (*pEXTI_Callback)(void);
+
+typedef struct
+{
+    bHalGPIOPort_t port;
+    bHalGPIOPin_t pin;
+}bHalGPIOInstance_t;
 
 /**
  * \}

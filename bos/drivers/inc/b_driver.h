@@ -39,16 +39,29 @@
 #include "b_drv_f8l10d.h"
 #include "b_drv_fm25cl.h"
 #include "b_drv_ili9341.h"
+#include "b_drv_pcf8574.h"
 
 
 
-
-extern bDriverInterface_t   bSSD1289_Driver;
-extern bDriverInterface_t   bXPT2046_Driver;
+//Flash IC
 extern bDriverInterface_t   bW25X_Driver;
-extern bDriverInterface_t   bF8L10D_Driver;
 extern bDriverInterface_t   bFM25CL_Driver;
+
+//LCD Controller
+extern bDriverInterface_t   bSSD1289_Driver;
 extern bDriverInterface_t   bILI9341_Driver;
+
+//Touch
+extern bDriverInterface_t   bXPT2046_Driver;
+
+//LoRa Modules
+extern bDriverInterface_t   bF8L10D_Driver;
+
+//IO Expander
+extern bDriverInterface_t   bPCF8574_Driver;
+
+//Camera
+extern bDriverInterface_t   bOV5640_Driver;
 
 #endif
 

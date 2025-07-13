@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_mod_kv.h
+ * \file        b_hal_i2c.c
  * \version     v0.0.1
- * \date        2020/01/08
+ * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,119 +21,114 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO KV SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SI2CL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_MOD_KV_H__
-#define __B_MOD_KV_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#if _KV_ENABLE
-
+#include "b_hal.h" 
 /** 
- * \addtogroup BABYOS
+ * \addtogroup B_HAL
  * \{
  */
 
 /** 
- * \addtogroup MODULES
+ * \addtogroup I2C
  * \{
  */
 
 /** 
- * \addtogroup KV
+ * \defgroup I2C_Private_TypesDefinitions
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup I2C_Private_Defines
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup I2C_Private_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup I2C_Private_Variables
+ * \{
+ */
+extern I2C_HandleTypeDef hi2c2;
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup I2C_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup I2C_Private_Functions
  * \{
  */
 
+
+/**
+ * \}
+ */
+   
 /** 
- * \defgroup KV_Exported_TypesDefinitions
+ * \addtogroup I2C_Exported_Functions
  * \{
  */
-typedef struct
+
+void bHalI2C_SendByte(uint8_t no, uint8_t dev_addr, uint8_t dat)
 {
-    uint32_t id;
-    uint32_t address;
-    uint32_t len;
-}bKV_Index_t;    
- 
- 
- 
-typedef struct
+    switch(no)
+    {
+        case B_HAL_I2C_2:
+            HAL_I2C_Master_Transmit(&hi2c2, dev_addr, &dat, 1, 0xff);
+            break;
+
+        default:
+            break;
+    }
+}
+
+uint8_t bHalI2C_ReceiveByte(uint8_t no, uint8_t dev_addr)
 {
-    uint8_t status;
-    uint8_t index;
-    int dev_no;
-    uint32_t s_address;
-    uint32_t e_size;
-    uint32_t tc_address;
-    uint32_t dc_address;
-    uint32_t t_address[2];
-    uint32_t d_address[2];
-}bKV_Info_t;
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup KV_Exported_Defines
- * \{
- */
-#define bKV_IDLE        0
-#define bKV_BUSY        1
-#define bKV_ERROR       2
+    uint8_t tmp;
+    switch(no)
+    {
+        case B_HAL_I2C_2:
+            HAL_I2C_Master_Receive(&hi2c2, dev_addr, &tmp, 1, 0xff);
+            break;
+        default:
+            break;
+    }
+    return tmp;
+}
 
 
-#define bKV_SECTOR_T1   0X01
-#define bKV_SECTOR_T2   0X02 
-#define bKV_SECTOR_D1   0X04
-#define bKV_SECTOR_D2   0X08 
-#define bKV_SECTOR_ALL  0X0F 
-/**
- * \}
- */
-   
-/** 
- * \defgroup KV_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup KV_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup KV_Exported_Functions
- * \{
- */
-
-int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size);
-int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len);
-int bKV_Get(const char *key, uint8_t *pvalue);
-int bKV_Delete(const char *key);
-/**
- * \}
- */
- 
- 
 /**
  * \}
  */
@@ -142,17 +137,11 @@ int bKV_Delete(const char *key);
  * \}
  */
 
+
 /**
  * \}
  */
-#endif
 
-#ifdef __cplusplus
-	}
-#endif
-
-#endif  
-
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 

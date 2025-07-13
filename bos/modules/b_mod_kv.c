@@ -281,10 +281,10 @@ static int _bKV_LoadInfo()
     return 0;
 }
 
-static uint32_t _bKV_GenerateID(uint8_t *key)
+static uint32_t _bKV_GenerateID(const char *key)
 {
    uint32_t id = 0;
-   uint16_t klen = strlen((const char *)key);
+   uint16_t klen = strlen(key);
    while(klen) 
    {
         id = (id << 5) + id + *key++;
@@ -537,7 +537,7 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
 
 
 
-int bKV_Set(uint8_t *key, uint8_t *pvalue, uint16_t len)
+int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len)
 {
     uint32_t id = 0;
     int retval;
@@ -573,7 +573,7 @@ int bKV_Set(uint8_t *key, uint8_t *pvalue, uint16_t len)
 }
 
 
-int bKV_Get(uint8_t *key, uint8_t *pvalue)
+int bKV_Get(const char *key, uint8_t *pvalue)
 {
     uint32_t id = 0;
     int retval;
@@ -595,7 +595,7 @@ int bKV_Get(uint8_t *key, uint8_t *pvalue)
 }
 
 
-int bKV_Delete(uint8_t *key)
+int bKV_Delete(const char *key)
 {
     uint32_t id = 0;
     int retval;
