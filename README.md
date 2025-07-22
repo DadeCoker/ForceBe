@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v2.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v3.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -51,7 +51,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 小型项目的开发中，有较多使用率高的功能模块，例如：UTC、错误管理、电池电量、存储数据、上位机通信、固件升级等等。将这些功能都做成不依赖于硬件的模块交给BabyOS管理。将调试好的外设驱动也交给BabyOS管理。再次启动项目时，通过配置文件，选择当前项目使用的功能模块。以搭积木的方式缩短开发时间。
 
-![opt](https://github.com/notrynohigh/BabyOS/raw/master/doc/1.png)
+![frame](https://github.com/notrynohigh/BabyOS/raw/master/doc/frame.png)
 
 ​       
 
@@ -59,11 +59,19 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 ###   1、添加文件
 
- bos/core/src       核心文件及功能模块全部添加至工程
+ bos/core/         核心文件全部添加至工程
 
-bos/driver/src    选择需要的驱动添加至工程
+bos/config/		配置文件及设备列表文件，添加至工程
 
-bos/hal/              添加至工程，根据具体平台进行修改
+bos/driver/       选择需要的驱动添加至工程
+
+bos/hal/hal/      硬件抽象层，将用到的接口添加至工程，根据具体平台进行修改
+
+bos/hal/utils/    底层实用代码，添加至工程
+
+bos/modules/   功能模块，全部添加至工程
+
+bos/thirdparty/ 第三方开源代码，将用到的添加至工程
 
 ### 2、增加系统定时器
 
@@ -75,9 +83,11 @@ bos/hal/              添加至工程，根据具体平台进行修改
 
 b_config.h进行配置，根据自己的需要选择功能模块。
 
+![config](https://github.com/notrynohigh/BabyOS/raw/master/doc/1.png)
+
 ###   4、列出需要使用的设备
 
-b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码：    
+b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码： 
 
 ```c
 //           设备        驱动接口      描述
@@ -90,50 +100,42 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 
 以b_kv功能模块为例，先在b_config里面使能b_kv。
 
-#### 5.1、增加SPI Flash驱动
+#### 5.1、指定硬件接口
 
-完成驱动需要的硬件相关代码。
+b_hal.h中定义SPI Flash的硬件接口：
 
 ```C
-//每个驱动的h文件里面都可以看到一个名以Private_t结尾的结构体类型
-typedef struct
-{
-    uint8_t (*pSPI_ReadWriteByte)(uint8_t);   //SPI读写字节
-    void (*pCS_Control)(uint8_t);             //CS引脚控制
-}bW25X_Private_t;  
+#define HAL_W25X_SPI                    B_HAL_SPI_2
+#define HAL_W25X_CS_PORT                B_HAL_GPIOB             
+#define HAL_W25X_CS_PIN                 B_HAL_PIN12
+```
 
-//b_hal.c内增加如下代码
-extern SPI_HandleTypeDef hspi2;
-static uint8_t _W25X_SPI_ReadWrite(uint8_t byte)
+修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台）
+
+```C
+uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
 {
     uint8_t tmp;
-    HAL_SPI_TransmitReceive(&hspi2, &byte, &tmp, 1, 0xfff);
+    switch(no)
+    {
+        case B_HAL_SPI_2:
+            HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xff);
+            break;
+        default:
+            break;
+    }
     return tmp;
 }
-static void _W25X_CS(uint8_t s)
+```
+
+修改硬件抽象层b_hal_gpio.c内IO的操作（依赖硬件平台）
+
+```C
+void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s)
 {
-    if(s)   HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
-    else    HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_RESET);
+    GPIO_PinState sta = (s) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    HAL_GPIO_WritePin(GPIO_PortTable[port], GPIO_PinTable[pin], sta);
 }
-bW25X_Private_t bW25X_Private = {
-    .pSPI_ReadWriteByte = _W25X_SPI_ReadWrite,
-    .pCS_Control = _W25X_CS,
-};
-```
-
-硬件操作与驱动进行结合
-
-```C
-//每个驱动在b_driver.h里面有对应的宏用于组装：NEW_XXXXX_DRV(name, hal)
-NEW_W25X_DRV(bW25X_Driver, bW25X_Private);  //最终使用的驱动就是bW25X_Driver
-//将驱动bW25X_Driver在b_driver.h进行记录
-extern bDriverInterface_t   bW25X_Driver;
-```
-
-b_device_list.h内注册设备
-
-```C
-B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 ```
 
 #### 5.2、基于SPIFLASH使用KV功能
@@ -169,8 +171,6 @@ int main()
 ```
 
 如果不使用功能模块，单独对设备进行操作，使用如下方式进行：
-
-*注：当在中断服务函数内操作设备，需要在中断服务函数开头和结尾处分别调用bEnterInterrupt/bExitInterrupt*
 
 ```c
 //举例使用W25QXX读取数据，从0地址读取128个字节数据至buf

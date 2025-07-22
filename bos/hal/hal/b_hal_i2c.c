@@ -72,7 +72,7 @@
  * \defgroup I2C_Private_Variables
  * \{
  */
-extern I2C_HandleTypeDef hi2c2;
+//extern I2C_HandleTypeDef hi2c2;
 /**
  * \}
  */
@@ -106,7 +106,7 @@ void bHalI2C_SendByte(uint8_t no, uint8_t dev_addr, uint8_t dat)
     switch(no)
     {
         case B_HAL_I2C_2:
-            HAL_I2C_Master_Transmit(&hi2c2, dev_addr, &dat, 1, 0xff);
+//            HAL_I2C_Master_Transmit(&hi2c2, dev_addr, &dat, 1, 0xff);
             break;
 
         default:
@@ -120,7 +120,7 @@ uint8_t bHalI2C_ReceiveByte(uint8_t no, uint8_t dev_addr)
     switch(no)
     {
         case B_HAL_I2C_2:
-            HAL_I2C_Master_Receive(&hi2c2, dev_addr, &tmp, 1, 0xff);
+//            HAL_I2C_Master_Receive(&hi2c2, dev_addr, &tmp, 1, 0xff);
             break;
         default:
             break;

@@ -686,6 +686,16 @@
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_uart.c</FilePath>
             </File>
+            <File>
+              <FileName>b_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\b_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_sccb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\b_hal_sccb.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
