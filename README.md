@@ -51,7 +51,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 小型项目的开发中，有较多使用率高的功能模块，例如：UTC、错误管理、电池电量、存储数据、上位机通信、固件升级等等。将这些功能都做成不依赖于硬件的模块交给BabyOS管理。将调试好的外设驱动也交给BabyOS管理。再次启动项目时，通过配置文件，选择当前项目使用的功能模块。以搭积木的方式缩短开发时间。
 
-![frame](https://github.com/notrynohigh/BabyOS/raw/master/doc/frame.png)
+![frame](https://github.com/notrynohigh/BabyOS/raw/master/doc/frame.jpg)
 
 ​       
 
