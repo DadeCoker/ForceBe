@@ -257,7 +257,7 @@
 //<o> LCD DISPLAY MODE
 //<0=> H
 //<1=> V
-#define _LCD_DISP_MODE                      1
+#define _LCD_DISP_MODE                      0
 
 //</e>
 

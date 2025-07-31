@@ -162,6 +162,9 @@ void bGUI_TouchExec()
 {
     int fd = -1;
     uint16_t xy[2];
+#if (_LCD_DISP_MODE == 0)
+     uint16_t tmp;
+#endif       
     if(GUI_Info.lcd_id < 0 || GUI_Info.touch_id < 0)
     {
         return;
