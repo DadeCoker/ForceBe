@@ -39,7 +39,7 @@
 
 //B_DEVICE_REG(SSD1289, bSSD1289_Driver, "LCD")
 //B_DEVICE_REG(XPT2046, bXPT2046_Driver, "TOUCH")
-B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
+//B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 //B_DEVICE_REG(SUART1, SUART_Driver1, "suart1")
 //B_DEVICE_REG(SUART2, SUART_Driver2, "suart2")
 //B_DEVICE_REG(LoRaModule, F8l10dDriver, "lora")
@@ -49,7 +49,7 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 
 
 //If there is no device to register, uncomment the null device
-//B_DEVICE_REG(null, bNullDriver, "null")
+B_DEVICE_REG(null, bNullDriver, "null")
 
 
 

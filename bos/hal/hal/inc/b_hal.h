@@ -134,7 +134,8 @@
  * \defgroup HAL_Exported_Variables
  * \{
  */
-   
+extern UART_HandleTypeDef huart1;
+
 /**
  * \}
  */

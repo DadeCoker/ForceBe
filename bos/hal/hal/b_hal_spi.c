@@ -72,8 +72,7 @@
  * \defgroup SPI_Private_Variables
  * \{
  */
-extern SPI_HandleTypeDef hspi2;
-extern SPI_HandleTypeDef hspi3;
+
 /**
  * \}
  */
@@ -107,11 +106,14 @@ uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
     uint8_t tmp;
     switch(no)
     {
+        case B_HAL_SPI_1:
+
+            break;        
         case B_HAL_SPI_2:
-            HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xff);
+
             break;
         case B_HAL_SPI_3:
-            HAL_SPI_TransmitReceive(&hspi3, &dat, &tmp, 1, 0xff);
+
             break;
         default:
             break;

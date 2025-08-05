@@ -74,8 +74,6 @@
  * \defgroup UART_Private_Variables
  * \{
  */
-extern UART_HandleTypeDef huart1;
-
 static bHalUartRxInfo_t  bHalUartRxInfo[B_HAL_UART_NUMBER];
 static volatile uint8_t bHalUartInitFlag = 0;
 /**
@@ -113,11 +111,20 @@ void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len)
         case B_HAL_UART_1:
             HAL_UART_Transmit(&huart1, pbuf, len, 0xfff);
             break;
+        case B_HAL_UART_2:
+    
+            break;        
         default:
             break;
     }
 }
 
+
+/**
+ * \brief Register idle event callbacks
+ * \param no the uart port number \ref bHalUartNumber_t
+ * \param f specific callback funtion
+ */
 void bHalUartRegIdleCallback(uint8_t no, pUartIdleCallback f)
 {
     if(bHalUartInitFlag == 0)
@@ -132,6 +139,9 @@ void bHalUartRegIdleCallback(uint8_t no, pUartIdleCallback f)
     bHalUartRxInfo[no].fCallback = f;
 }
 
+/**
+ * \brief Determine idle events. Called in bExec()
+ */
 void bHalUartDetectIdle()
 {
     uint32_t c_tick = bUtilGetTick();

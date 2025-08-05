@@ -154,7 +154,11 @@ uint16_t bHalGPIO_Read(uint8_t port)
 }
 
 
-
+/**
+ * \brief Register EXTI event callbacks
+ * \param pin Pin number \ref bHalGPIOPin_t
+ * \param cb specific callback funtion
+ */
 void bHalGPIO_RegEXTICallback(uint8_t pin, pEXTI_Callback cb)
 {
     if(pin >= B_HAL_PINAll)
