@@ -4,11 +4,31 @@
 
 ![logo](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/2.png)
 
-[TOC]
+
+# 目录
+
+- [BabyOS](#BabyOS)
+    - [BabyOS是什么](#BabyOS是什么)
+    - [适用项目](#适用项目)
+    - [前世今生](#前世今生)
+        - [功耗的考量](#功耗的考量)
+        - [缩短开发周期](#缩短开发周期)
+    - [使用方法](#使用方法)
+        - [添加文件](#添加文件)
+        - [增加系统定时器](#增加系统定时器)
+        - [选择功能模块](#选择功能模块)
+        - [注册设备](#注册设备)
+        - [使用范例](#使用范例)
+            - [指定硬件接口](#指定硬件接口)
+            - [基于SPIFLASH使用KV功能](#基于SPIFLASH使用KV功能)
+    - [BabyOS教程](#BabyOS教程)
+    - [BabyOS私有协议上位机Demo](#BabyOS私有协议上位机Demo)
+    - [Baby如何成长](#Baby如何成长)
+    - [友情项目](#友情项目)
+    - [更新记录](#更新记录)
 
 
-
-##  BabyOS是什么？
+##  BabyOS是什么
 
 ```
 ______________________________________________
@@ -59,7 +79,7 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 ###   添加文件
 
- bos/core/         核心文件全部添加至工程
+bos/core/         核心文件全部添加至工程
 
 bos/config/       配置文件及设备列表文件，添加至工程
 
@@ -85,7 +105,7 @@ b_config.h进行配置，根据自己的需要选择功能模块。
 
 ![config](https://gitee.com/notrynohigh/BabyOS/raw/master/doc/1.png)
 
-###   列出需要使用的设备
+###   注册设备
 
 b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码： 
 
