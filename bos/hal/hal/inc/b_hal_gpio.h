@@ -85,7 +85,7 @@ typedef enum
     B_HAL_PINAll,     
 }bHalGPIOPin_t;  
 
-typedef void (*pEXTI_Callback)(void);
+
 
 typedef struct
 {
@@ -141,7 +141,7 @@ uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin);
 void bHalGPIO_Write(uint8_t port, uint16_t dat);
 uint16_t bHalGPIO_Read(uint8_t port);
 
-void bHalGPIO_RegEXTICallback(uint8_t pin, pEXTI_Callback cb);
+void bHalGPIO_EXTI_IRQHandler(uint8_t pin);
 void bHalGPIO_EXTI_Callback(uint8_t pin);
 /**
  * \}

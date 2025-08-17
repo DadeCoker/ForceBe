@@ -128,6 +128,34 @@ void bHalInit()
     // Add code ...gpio init or some other functions 
 }
 
+void bHalGPIO_EXTI_Callback(uint8_t pin)
+{
+    if(pin >= B_HAL_PINAll)
+    {
+        return;
+    }
+#ifdef HAL_F8L10D_TXD_PIN    
+    if(pin == HAL_F8L10D_TXD_PIN)
+    {
+        bF8L10D_TXDoneCallback();
+    }
+#endif        
+}
+
+void bHalUartIdleCallback(uint8_t no, uint8_t *pbuf, uint16_t len)
+{
+    if(no >= B_HAL_UART_NUMBER)
+    {
+        return;
+    }
+#ifdef HAL_F8L10D_UART
+    if(no == HAL_F8L10D_UART)
+    {
+        bF8L10D_RxCallback(pbuf, len);
+    }
+#endif
+}
+
 /**
  * \}
  */

@@ -77,7 +77,6 @@ const static uint16_t GPIO_PinTable[] = {GPIO_PIN_0, GPIO_PIN_1, GPIO_PIN_2, GPI
                                         GPIO_PIN_6, GPIO_PIN_7, GPIO_PIN_8, GPIO_PIN_9, GPIO_PIN_10, GPIO_PIN_11, 
                                         GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_All};
 
-static pEXTI_Callback EXTI_CallbackTable[B_HAL_PINAll] = {0, };
 /**
  * \}
  */
@@ -155,39 +154,30 @@ uint16_t bHalGPIO_Read(uint8_t port)
 
 
 /**
- * \brief Register EXTI event callbacks
+ * \brief EXTI line detection callbacks
  * \param pin Pin number \ref bHalGPIOPin_t
- * \param cb specific callback funtion
  */
-void bHalGPIO_RegEXTICallback(uint8_t pin, pEXTI_Callback cb)
+__weak void bHalGPIO_EXTI_Callback(uint8_t pin)
 {
     if(pin >= B_HAL_PINAll)
     {
         return;
-    }
-    EXTI_CallbackTable[pin] = cb;
+    }       
 }
 
 
 /**
- * \brief EXTI line detection callbacks
+ * \brief This function handles EXTI interrupts.
  * \param pin Specifies the pins connected EXTI line \ref bHalGPIOPin_t
  */ 
-void bHalGPIO_EXTI_Callback(uint8_t pin)
+void bHalGPIO_EXTI_IRQHandler(uint8_t pin)
 {
     if(pin >= B_HAL_PINAll)
     {
         return;
     }
-    if(EXTI_CallbackTable[pin])
-    {
-        EXTI_CallbackTable[pin]();
-    }
+    bHalGPIO_EXTI_Callback(pin);
 }
-
-
-
-
 
 /**
  * \}

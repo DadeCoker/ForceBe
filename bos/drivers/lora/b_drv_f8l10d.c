@@ -338,17 +338,6 @@ static void _F8L10D_Reset()
     bUtilDelayMS(1500);
 }
 
-static void _F8L10D_TXDoneCB()
-{
-    bAsyntxCplCallback(ATX_No);
-}
-
-
-static void _F8L10D_RXCplCB(uint8_t *pbuf, uint16_t len)
-{
-    bAT_Read(ATX_No, pbuf, len);
-}
-
 /**************************************************************************************************driver interface*****/
 
 static int _F8L10D_Sleep()
@@ -433,11 +422,19 @@ int bF8L10D_Init()
     bF8L10D_Driver.write = _F8L10D_Write;
     bF8L10D_Driver.ctl = NULL;
     
-    bHalGPIO_RegEXTICallback(HAL_F8L10D_TXD_PIN, _F8L10D_TXDoneCB);
-    bHalUartRegIdleCallback(HAL_F8L10D_UART, _F8L10D_RXCplCB);
     return 0;
 }
 
+
+void bF8L10D_TXDoneCallback()
+{
+    bAsyntxCplCallback(ATX_No);
+}
+
+void bF8L10D_RxCallback(uint8_t *pbuf, uint16_t len)
+{
+    bAT_Read(ATX_No, pbuf, len);
+}
 
 /**
  * \}
