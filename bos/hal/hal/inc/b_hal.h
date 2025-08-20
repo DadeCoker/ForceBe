@@ -71,6 +71,9 @@
 
 #define HAL_LOG_UART                    B_HAL_UART_1
 
+
+
+/**                           LCD Controller                            */
 #if 0
 #define HAL_LCD_FSMC_ADDR               ((uint32_t)(0x60000000 | 0x0007FFFE))
 #else
@@ -85,33 +88,47 @@
 #define HAL_LCD_DAT_PORT                B_HAL_GPIOE 
 #endif
 
-#define HAL_XPT2046_SPI                 B_HAL_SPI_3
-#define HAL_XPT2046_CS_PORT             B_HAL_GPIOC             
-#define HAL_XPT2046_CS_PIN              B_HAL_PIN9
 
-#define HAL_W25X_SPI                    B_HAL_SPI_2
-#define HAL_W25X_CS_PORT                B_HAL_GPIOB             
-#define HAL_W25X_CS_PIN                 B_HAL_PIN12
+/**                           Touch IC                                 */
+//#define HAL_XPT2046_SPI                 B_HAL_SPI_3
+//#define HAL_XPT2046_CS_PORT             B_HAL_GPIOC             
+//#define HAL_XPT2046_CS_PIN              B_HAL_PIN9
 
-#define HAL_F8L10D_UART                 B_HAL_UART_2
-#define HAL_F8L10D_RESET_PORT           B_HAL_GPIOC
-#define HAL_F8L10D_RESET_PIN            B_HAL_PIN1
-#define HAL_F8L10D_SLEEP_PORT           B_HAL_GPIOC
-#define HAL_F8L10D_SLEEP_PIN            B_HAL_PIN2
-#define HAL_F8L10D_STA_PORT             B_HAL_GPIOC
-#define HAL_F8L10D_STA_PIN              B_HAL_PIN3
-#define HAL_F8L10D_TXD_PORT             B_HAL_GPIOC
-#define HAL_F8L10D_TXD_PIN              B_HAL_PIN4
 
-#define HAL_FM25CL_SPI                  B_HAL_SPI_2
-#define HAL_FM25CL_CS_PORT              B_HAL_GPIOC
-#define HAL_FM25CL_CS_PIN               B_HAL_PIN4
+/**                           Flash IC                                 */
+///< W25X
+//#define HAL_W25X_SPI                    B_HAL_SPI_2
+//#define HAL_W25X_CS_PORT                B_HAL_GPIOB             
+//#define HAL_W25X_CS_PIN                 B_HAL_PIN12
+///< FM25CL
+//#define HAL_FM25CL_SPI                  B_HAL_SPI_2
+//#define HAL_FM25CL_CS_PORT              B_HAL_GPIOC
+//#define HAL_FM25CL_CS_PIN               B_HAL_PIN4
 
-#define HAL_PCF8574_I2C                 B_HAL_I2C_2
 
-#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
-#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
-#define HAL_OV5640_RESET_PIN            B_HAL_PIN15
+/**                           LoRa Modules                             */
+///<F8L10D
+//#define HAL_F8L10D_UART                 B_HAL_UART_2
+//#define HAL_F8L10D_RESET_PORT           B_HAL_GPIOC
+//#define HAL_F8L10D_RESET_PIN            B_HAL_PIN1
+//#define HAL_F8L10D_SLEEP_PORT           B_HAL_GPIOC
+//#define HAL_F8L10D_SLEEP_PIN            B_HAL_PIN2
+//#define HAL_F8L10D_STA_PORT             B_HAL_GPIOC
+//#define HAL_F8L10D_STA_PIN              B_HAL_PIN3
+//#define HAL_F8L10D_TXD_PORT             B_HAL_GPIOC
+//#define HAL_F8L10D_TXD_PIN              B_HAL_PIN4
+
+
+/**                           IO Expander                             */
+///<PCF8574
+//#define HAL_PCF8574_I2C                 B_HAL_I2C_2
+
+
+/**                           IO Expander                             */
+///<OV5640
+//#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
+//#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
+//#define HAL_OV5640_RESET_PIN            B_HAL_PIN15
 
 
 

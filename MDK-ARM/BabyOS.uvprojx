@@ -626,38 +626,6 @@
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
-          <Files>
-            <File>
-              <FileName>b_drv_fm25cl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\flash\b_drv_fm25cl.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_drv_w25x.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\flash\b_drv_w25x.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_drv_ili9341.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\lcd\b_drv_ili9341.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_drv_ssd1289.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\lcd\b_drv_ssd1289.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_drv_f8l10d.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\lora\b_drv_f8l10d.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_drv_xpt2046.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\touch\b_drv_xpt2046.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal/hal</GroupName>
@@ -668,34 +636,9 @@
               <FilePath>..\bos\hal\hal\b_hal.c</FilePath>
             </File>
             <File>
-              <FileName>b_hal_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_hal_lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_lcd.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_hal_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_spi.c</FilePath>
-            </File>
-            <File>
               <FileName>b_hal_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_hal_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_hal_sccb.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_sccb.c</FilePath>
             </File>
           </Files>
         </Group>
