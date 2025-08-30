@@ -124,7 +124,7 @@
 //#define HAL_PCF8574_I2C                 B_HAL_I2C_2
 
 
-/**                           IO Expander                             */
+/**                           Camera                                 */
 ///<OV5640
 //#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
 //#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
