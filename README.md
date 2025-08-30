@@ -81,17 +81,17 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 bos/core/         核心文件全部添加至工程
 
-bos/config/       配置文件及设备列表文件，添加至工程
+bos/config/       配置文件及设备列表文件，全部添加至工程
 
-bos/driver/       选择需要的驱动添加至工程
+bos/driver/       选择需要的驱动添加至工程，将b_hal.h内定义的硬件接口取消注释
 
-bos/hal/hal/      硬件抽象层，将用到的接口添加至工程，根据具体平台进行修改
+bos/hal/hal/      硬件抽象层，将需要的文件添加至工程，根据具体平台进行修改
 
-bos/hal/utils/    底层实用代码，添加至工程
+bos/hal/utils/    底层实用代码，全部添加至工程
 
 bos/modules/   功能模块，全部添加至工程
 
-bos/thirdparty/ 第三方开源代码，将用到的添加至工程
+bos/thirdparty/ 第三方开源代码，将需要的添加至工程
 
 ### 增加系统定时器
 
@@ -110,7 +110,7 @@ b_config.h进行配置，根据自己的需要选择功能模块。
 b_device_list.h，在里面添加使用的外设。例如项目只需要使用SPIFlash，那么添加如下代码： 
 
 ```c
-//           设备        驱动接口      描述
+//           设备        驱动          描述
 B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 //如果没有注册任何设备，取消B_DEVICE_REG(null, bNullDriver, "null")的注释    
 //B_DEVICE_REG(null, bNullDriver, "null")   
@@ -120,9 +120,9 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 
 以b_kv功能模块为例，先在b_config里面使能b_kv。
 
-#### 指定硬件接口
+#### 取消硬件接口的注释
 
-b_hal.h中定义SPI Flash的硬件接口：
+b_hal.h中取消如下部分的注释，并根据实际连接图修改GPIO和SPI号
 
 ```C
 #define HAL_W25X_SPI                    B_HAL_SPI_2
@@ -130,7 +130,7 @@ b_hal.h中定义SPI Flash的硬件接口：
 #define HAL_W25X_CS_PIN                 B_HAL_PIN12
 ```
 
-修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台）
+修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台，使用STM32 HAL库为例）
 
 ```C
 uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
@@ -148,7 +148,7 @@ uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
 }
 ```
 
-修改硬件抽象层b_hal_gpio.c内IO的操作（依赖硬件平台）
+修改硬件抽象层b_hal_gpio.c内IO的操作（依赖硬件平台，使用STM32 HAL库为例）
 
 ```C
 void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s)
