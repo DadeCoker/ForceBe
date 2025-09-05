@@ -72,6 +72,14 @@ typedef struct
     uint16_t color;
 }bCMD_FillFrame_t;
 
+typedef struct
+{
+    union
+    {
+        uint32_t value;
+        uint16_t size[4];  //x-off y-off x-size y-size
+    }config;
+}bCMD_CameraConfig_t;
 
 typedef struct
 {
@@ -79,6 +87,7 @@ typedef struct
 	{
 		bCMD_Erase_t erase;
         bCMD_FillFrame_t fill_frame;
+        bCMD_CameraConfig_t camera_config;
 	}param;
 }bCMD_Struct_t;
 
@@ -126,9 +135,22 @@ typedef enum
  * \defgroup DEVICE_CtlCMD_Defines
  * \{
  */
-#define bCMD_ERASE			0
+/****************************************************Flash***/
+#define bCMD_ERASE              0
 
-#define bCMD_FILL_FRAME     0x10
+/****************************************************LCD****/
+#define bCMD_FILL_FRAME         0x10
+
+/**************************************************Camera***/
+#define bCMD_CONF_LIGHTMODE     0x20
+#define bCMD_CONF_COLOR_SAT     0x21            //ColorSaturation
+#define bCMD_CONF_BRIGHTNESS    0x22
+#define bCMD_CONF_CONTRAST      0x23
+#define bCMD_CONF_SHARPNESS     0x24
+#define bCMD_CONF_FLASH         0x25
+#define bCMD_CONF_OUTSIZE       0x26
+
+
 
 /**
  * \}

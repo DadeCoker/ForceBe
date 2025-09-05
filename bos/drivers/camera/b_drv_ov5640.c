@@ -102,17 +102,6 @@ const static uint8_t OV5640_SaturationTable[7][6]=
  	0X2B,0xAB,0XD6,0XDA,0XD6,0X04,//+3
 };
 
-const static uint8_t OV5640_EffectsTable[7][3]=
-{ 
-	0X06,0x40,0X10,    
-	0X1E,0xA0,0X40,    
-	0X1E,0x80,0XC0,     
-	0X1E,0x80,0X80,     
-	0X1E,0x40,0XA0,    
-	0X40,0x40,0X10,     
-	0X1E,0x60,0X60,    
-}; 
-
 /**
  * \}
  */
@@ -173,12 +162,12 @@ static void _OV5640_FlashCtrl(uint8_t sw)
     }
 } 
 
-static void _OV5640_JPEGMode() 
+static void _OV5640_RGB565Mode() 
 {
 	uint16_t i=0; 
-	for(i = 0;i < (sizeof(ov5640_jpeg_reg_tbl) / 4);i++)
+	for(i = 0;i < (sizeof(ov5640_rgb565_reg_tbl) / 4);i++)
 	{
-		_OV5640_WriteReg(ov5640_jpeg_reg_tbl[i][0],ov5640_jpeg_reg_tbl[i][1]);  
+		_OV5640_WriteReg(ov5640_rgb565_reg_tbl[i][0],ov5640_rgb565_reg_tbl[i][1]);  
 	}   
 }
 
@@ -294,19 +283,6 @@ static void _OV5640_Sharpness(uint8_t sharp)
 }
 
     
-static void _OV5640_SpecialEffects(uint8_t eft)
-{ 
-	_OV5640_WriteReg(0x3212, 0x03); //start group 3
-	_OV5640_WriteReg(0x5580, OV5640_EffectsTable[eft][0]);
-	_OV5640_WriteReg(0x5583, OV5640_EffectsTable[eft][1]);// sat U
-	_OV5640_WriteReg(0x5584, OV5640_EffectsTable[eft][2]);// sat V
-	_OV5640_WriteReg(0x5003, 0x08);
-	_OV5640_WriteReg(0x3212, 0x13); //end group 3
-	_OV5640_WriteReg(0x3212, 0xa3); //launch group 3
-}
-
-
-
 static uint8_t _OV5640_OutsizeSet(uint16_t offx,uint16_t offy,uint16_t width,uint16_t height)
 { 
     _OV5640_WriteReg(0X3212, 0X03);  	
@@ -357,7 +333,61 @@ static uint8_t _OV5640_FocusInit()
 } 
 
 /************************************************************************************************************driver interface*******/
-
+static int _OV5640_Ctl(uint8_t cmd, void *param)
+{
+    bCMD_CameraConfig_t *config;
+    if(param == NULL)
+    {
+        return -1;
+    }
+    config = (bCMD_CameraConfig_t *)param;
+    switch(cmd)
+    {
+        case bCMD_CONF_LIGHTMODE: 
+            if(config->config.value >= 5)
+            {
+                config->config.value = 4;
+            }
+            _OV5640_LightMode(config->config.value);	 
+            break;
+        case bCMD_CONF_COLOR_SAT: 
+            if(config->config.value >= 7)
+            {
+                config->config.value = 6;
+            }
+            _OV5640_ColorSaturation(config->config.value);	 
+            break; 
+        case bCMD_CONF_BRIGHTNESS: 
+            _OV5640_Brightness(config->config.value);	 
+            break;
+        case bCMD_CONF_CONTRAST: 
+            if(config->config.value >= 7)
+            {
+                config->config.value = 6;
+            }
+            _OV5640_Contrast(config->config.value);	 
+            break;     
+        case bCMD_CONF_SHARPNESS: 
+            _OV5640_Sharpness(config->config.value);	 
+            break;
+        case bCMD_CONF_FLASH: 
+            if(config->config.value == 0)
+            {
+                _OV5640_FlashCtrl(0);
+            }
+            else
+            {
+                _OV5640_FlashCtrl(1);
+            } 
+            break;    
+        case bCMD_CONF_OUTSIZE:
+            _OV5640_OutsizeSet(config->config.size[0], config->config.size[1], config->config.size[2], config->config.size[3]);
+            break;
+        default:
+            break;
+    }
+    return 0;
+}
 
 
 /**
@@ -398,27 +428,15 @@ int bOV5640_Init()
 	{
 		_OV5640_WriteReg(ov5640_uxga_init_reg_tbl[i][0],ov5640_uxga_init_reg_tbl[i][1]);
 	}   
-
-//	_OV5640_Flash_Ctrl(1);
-//	bUtilDelayMS(50);
-//	_OV5640_Flash_Ctrl(0);  
-    
-    
-    _OV5640_FocusInit(); 
-    _OV5640_LightMode(0);	         
-    _OV5640_ColorSaturation(3);     
-    _OV5640_Brightness(0);	           
-    _OV5640_Contrast(6);		          
-    _OV5640_Sharpness(33);	           
-    _OV5640_SpecialEffects(3);     
-
-    _OV5640_JPEGMode();
-    _OV5640_OutsizeSet(16,4,240,320);
+ 
+    _OV5640_FocusInit();   
+    _OV5640_RGB565Mode();
+    _OV5640_OutsizeSet(16,4,320,240);
 
     
     bOV5640_Driver.close = NULL;
     bOV5640_Driver.read = NULL;
-    bOV5640_Driver.ctl = NULL;
+    bOV5640_Driver.ctl = _OV5640_Ctl;
     bOV5640_Driver.open = NULL;
     bOV5640_Driver.write = NULL;
     return 0;
