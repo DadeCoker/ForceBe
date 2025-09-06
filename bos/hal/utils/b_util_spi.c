@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_utils.h
+ * \file        b_util_spi.c
  * \version     v0.0.1
- * \date        2019/12/26
+ * \date        2020/04/01
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,60 +28,22 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTILS_H__
-#define __B_UTILS_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
+   
 /*Includes ----------------------------------------------*/
-#include "b_util_delay.h" 
-#include "b_util_at.h" 
-#include "b_util_asyntx.h" 
-#include "b_util_i2c.h"
-#include "b_util_spi.h"
+#include "b_util_spi.h"   
+
 /** 
  * \addtogroup B_UTILS
  * \{
  */
 
 /** 
- * \addtogroup UTILS
+ * \addtogroup SPI
  * \{
  */
 
 /** 
- * \defgroup UTILS_Exported_TypesDefinitions
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Macros
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Variables
+ * \defgroup SPI_Private_TypesDefinitions
  * \{
  */
    
@@ -90,29 +52,105 @@
  */
    
 /** 
- * \defgroup UTILS_Exported_Functions
+ * \defgroup SPI_Private_Defines
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Macros
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Variables
  * \{
  */
 
-/**
- * \}
- */
 
 /**
  * \}
  */
+   
+/** 
+ * \defgroup SPI_Private_FunctionPrototypes
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Private_Functions
+ * \{
+ */
+
 
 /**
  * \}
  */
+   
+/** 
+ * \addtogroup SPI_Exported_Functions
+ * \{
+ */
 
-#ifdef __cplusplus
+uint8_t bUtilSPI_WriteRead(bUtilSPI_t spi, uint8_t dat)
+{
+    uint8_t polarity = (spi.CPOL == 0) ? 0 : 1;
+    uint8_t init_p = polarity;
+    uint8_t i = 0;
+    bHalGPIO_WritePin(spi.clk.port, spi.clk.pin, polarity);
+    if(spi.CPHA)
+    {
+        polarity = polarity ^ 0x01;
+        bHalGPIO_WritePin(spi.clk.port, spi.clk.pin, polarity);
+    }
+	for(i = 0;i < 8;i++)
+	{
+        bHalGPIO_WritePin(spi.mosi.port, spi.mosi.pin, dat & 0x80);
+        dat <<= 1;
+        polarity = polarity ^ 0x01;
+        bHalGPIO_WritePin(spi.clk.port, spi.clk.pin, polarity);
+
+        if(bHalGPIO_ReadPin(spi.miso.port, spi.miso.pin))
+        {
+            dat++;
+        }
+           
+        polarity = polarity ^ 0x01;
+        bHalGPIO_WritePin(spi.clk.port, spi.clk.pin, polarity);
 	}
-#endif
- 
-#endif
+    if(init_p != polarity)
+    {
+        polarity = polarity ^ 0x01;
+        bHalGPIO_WritePin(spi.clk.port, spi.clk.pin, polarity);
+    }
+    return dat;
+
+}
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/**
+ * \}
+ */
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 

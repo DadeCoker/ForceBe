@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_utils.h
+ * \file        b_util_i2c.h
  * \version     v0.0.1
- * \date        2019/12/26
+ * \date        2020/04/01
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,42 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTILS_H__
-#define __B_UTILS_H__
+#ifndef __B_UTIL_I2C_H__
+#define __B_UTIL_I2C_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_util_delay.h" 
-#include "b_util_at.h" 
-#include "b_util_asyntx.h" 
-#include "b_util_i2c.h"
-#include "b_util_spi.h"
+#include "b_config.h" 
+#include "b_hal_gpio.h"
+
 /** 
  * \addtogroup B_UTILS
  * \{
  */
 
 /** 
- * \addtogroup UTILS
+ * \addtogroup I2C
  * \{
  */
 
 /** 
- * \defgroup UTILS_Exported_TypesDefinitions
+ * \defgroup I2C_Exported_TypesDefinitions
  * \{
  */
-   
+typedef struct
+{
+    bHalGPIOInstance_t sda;
+    bHalGPIOInstance_t clk;
+}bUtilI2C_t;    
 /**
  * \}
  */
    
 /** 
- * \defgroup UTILS_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Macros
+ * \defgroup I2C_Exported_Defines
  * \{
  */
 
@@ -81,7 +73,17 @@
  */
    
 /** 
- * \defgroup UTILS_Exported_Variables
+ * \defgroup I2C_Exported_Macros
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup I2C_Exported_Variables
  * \{
  */
    
@@ -90,9 +92,19 @@
  */
    
 /** 
- * \defgroup UTILS_Exported_Functions
+ * \defgroup I2C_Exported_Functions
  * \{
  */
+
+void bUtilI2C_Start(bUtilI2C_t i2c);
+void bUtilI2C_Stop(bUtilI2C_t i2c);
+int bUtilI2C_ACK(bUtilI2C_t i2c);
+void bUtilI2C_mACK(bUtilI2C_t i2c);
+void bUtilI2C_WriteByte(bUtilI2C_t i2c, uint8_t dat);
+uint8_t bUtilI2C_ReadByte(bUtilI2C_t i2c);
+int bUtilI2C_WriteData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t dat);
+uint8_t bUtilI2C_ReadData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr);
+
 
 /**
  * \}
@@ -113,6 +125,6 @@
 #endif
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 

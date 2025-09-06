@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_utils.h
+ * \file        b_util_spi.h
  * \version     v0.0.1
- * \date        2019/12/26
+ * \date        2020/04/01
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,31 +28,65 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_UTILS_H__
-#define __B_UTILS_H__
+#ifndef __B_UTIL_SPI_H__
+#define __B_UTIL_SPI_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_util_delay.h" 
-#include "b_util_at.h" 
-#include "b_util_asyntx.h" 
-#include "b_util_i2c.h"
-#include "b_util_spi.h"
+#include "b_config.h" 
+#include "b_hal_gpio.h"
+
 /** 
  * \addtogroup B_UTILS
  * \{
  */
 
 /** 
- * \addtogroup UTILS
+ * \addtogroup SPI
  * \{
  */
 
 /** 
- * \defgroup UTILS_Exported_TypesDefinitions
+ * \defgroup SPI_Exported_TypesDefinitions
+ * \{
+ */
+typedef struct
+{
+    bHalGPIOInstance_t miso;
+    bHalGPIOInstance_t mosi;
+    bHalGPIOInstance_t clk;
+    uint8_t CPOL;
+    uint8_t CPHA;
+}bUtilSPI_t;    
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Exported_Defines
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Exported_Macros
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPI_Exported_Variables
  * \{
  */
    
@@ -61,38 +95,12 @@
  */
    
 /** 
- * \defgroup UTILS_Exported_Defines
+ * \defgroup SPI_Exported_Functions
  * \{
  */
 
 
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Macros
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup UTILS_Exported_Functions
- * \{
- */
+uint8_t bUtilSPI_WriteRead(bUtilSPI_t spi, uint8_t dat);
 
 /**
  * \}
@@ -113,6 +121,6 @@
 #endif
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 
