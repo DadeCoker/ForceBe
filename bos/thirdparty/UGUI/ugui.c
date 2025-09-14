@@ -5288,7 +5288,7 @@ void _UG_PutChar( char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc, const 
    if ( gui->driver[DRIVER_FILL_AREA].state & DRIVER_ENABLED )
    {
 	   //(void(*)(UG_COLOR))
-      push_pixel = ((void*(*)(UG_S16, UG_S16, UG_S16, UG_S16))gui->driver[DRIVER_FILL_AREA].driver)(x,y,x+actual_char_width-1,y+font->char_height-1);
+      push_pixel = (void(*)(UG_COLOR))((void*(*)(UG_S16, UG_S16, UG_S16, UG_S16))gui->driver[DRIVER_FILL_AREA].driver)(x,y,x+actual_char_width-1,y+font->char_height-1);
 	   
       if (font->font_type == FONT_TYPE_1BPP)
 	  {

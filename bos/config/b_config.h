@@ -169,6 +169,17 @@
 #define _MENU_ITEM_NUMBER           10
 //</e>
 
+//<e> Heap4 Enable/Disable
+#define _HEAP_ENABLE                0
+//<o> Heap Size
+#define _HEAP_SIZE                  1024
+//<e> External SDRAM ?
+#define _EX_SDRAM_ENABLE            0
+//<o> Heap Address
+#define _EX_HEAP_ADDRESS            0xC0000000
+//</e>
+//</e>
+
 
 //</h>
 
