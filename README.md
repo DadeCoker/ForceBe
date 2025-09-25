@@ -53,7 +53,9 @@ BabyOS适用于MCU项目，她是一套管理功能模块和外设驱动的框�
 
 ## 适用项目
 
-使用裸机开发的项目推荐基于BabyOS进行
+使用裸机开发的项目推荐基于BabyOS进行。
+
+使用操作系统开发的项目，BabyOS可作为功能库及驱动库使用。
 
 ​        
 
@@ -272,5 +274,5 @@ b_trace功能模块基于开源项目CmBacktrace,<https://gitee.com/Armink/CmBac
 | 2019.12 | 功能模块：FIFO, AT, Nr_micro_shell, Lunar calendar           |      |
 | 2020.01 | 功能模块：KV存储                                             |      |
 | 2020.02 | 功能模块：Xmodem128, Ymodem, FlexibleButton 驱动：xpt2046    |      |
-| 2020.03 | 功能模块：b_log, b_gui, b_menu, b_trace 驱动：ssd1289 ili9341 |      |
+| 2020.03 | 功能模块：b_log, b_gui, b_menu, b_trace，b_heap 驱动：ssd1289 ili9341 |      |
 
