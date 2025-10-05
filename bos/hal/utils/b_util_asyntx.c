@@ -128,11 +128,8 @@ int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms)
 
 /**
  * \brief Transmit data
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
  */
-int bAsyntxCore()
+void bAsyntxCore()
 {
     int i = 0;
     for(i = 0;i < bAsyntxInfoIndex;i++)
@@ -150,7 +147,6 @@ int bAsyntxCore()
             }
         }
     }
-    return 0;
 }
 
 

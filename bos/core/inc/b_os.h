@@ -58,6 +58,10 @@
  * \{
  */
 
+#define BOS_PERIODIC_TASK(pf, ms)   {static uint32_t tick##pf = 0; if(bUtilGetTick() - tick##pf > (MS2TICKS(ms))){\
+                                    tick##pf = bUtilGetTick();pf();}}   
+
+
 
 /** 
  * \defgroup BOS_Exported_Functions

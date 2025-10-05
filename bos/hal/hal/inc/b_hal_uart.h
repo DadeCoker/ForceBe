@@ -118,6 +118,12 @@ void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len);
 void bHalUartRxIRQ_Handler(uint8_t no, uint8_t dat);
 void bHalUartIdleCallback(uint8_t no, uint8_t *pbuf, uint16_t len);
 
+
+
+///<Called in bHalCore()
+void bHalUartDetectIdle(void);
+
+
 /**
  * \}
  */

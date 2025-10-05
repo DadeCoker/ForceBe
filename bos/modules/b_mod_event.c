@@ -169,12 +169,9 @@ int bEventTrigger(uint8_t number)
 }
 
 /**
- * \brief check and do callback
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
+ * \brief check and run callback
  */
-int bEventCore()
+void bEventCore()
 {
     uint8_t i = 0;
     for(i = 0;i < _EVENT_Q_LENGTH;i++)
@@ -185,7 +182,6 @@ int bEventCore()
             bEventInfoTable[i].trigger = 0;
         }
     }
-    return 0;
 }
 
 

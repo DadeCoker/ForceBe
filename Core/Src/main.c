@@ -76,7 +76,10 @@ static void MX_SPI3_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+void TestLog()
+{
+    b_log_i("hello world\r\n");
+}
 /* USER CODE END 0 */
 
 /**
@@ -121,14 +124,13 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bInit();
-  
   while (1)
   {
       bExec();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
+      BOS_PERIODIC_TASK(TestLog, 1000);
   }
   /* USER CODE END 3 */
 

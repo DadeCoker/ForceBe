@@ -69,16 +69,7 @@
  * \defgroup BOS_Private_Macros
  * \{
  */
-extern int bErrorCore(void);
-extern int bBatteryCore(void);
-extern void bXmodem128Timeout(void);
-extern void bYmodemTimeout(void);
-extern int bEventCore(void);
-extern int bTX_Core(void);
-extern void bGUI_TouchExec(void);
-extern void bAsyntxCore(void);
 
-extern void bHalUartDetectIdle(void);
 /**
  * \}
  */
@@ -151,21 +142,11 @@ int bExec()
 {
     bHalUartDetectIdle();
 #if _BATTERY_ENABLE
-    static uint32_t b_tick = 0xffffffff - MS2TICKS(_BATTERY_D_CYCLE);
-    if(bUtilGetTick() - b_tick > (MS2TICKS(_BATTERY_D_CYCLE)))
-    {
-        b_tick = bUtilGetTick();
-        bBatteryCore();
-    }
+    BOS_PERIODIC_TASK(bBatteryCore, _BATTERY_D_CYCLE);
 #endif  
 
 #if _ERROR_MANAGE_ENABLE
-    static uint32_t e_tick = 0;
-    if(bUtilGetTick() - e_tick > (MS2TICKS(1000)))
-    {
-        e_tick = bUtilGetTick();
-        bErrorCore();
-    }
+    BOS_PERIODIC_TASK(bErrorCore, 1000);
 #endif
 
 #if _XMODEM128_ENABLE
@@ -177,31 +158,25 @@ int bExec()
 #endif
 
 #if _FLEXIBLEBUTTON_ENABLE
-    static uint32_t fb_tick = 0;
-    if(bUtilGetTick() - fb_tick >= (_TICK_FRQ_HZ / FLEX_BTN_SCAN_FREQ_HZ))
-    {
-        fb_tick = bUtilGetTick();
-        flex_button_scan();
-    }
+    BOS_PERIODIC_TASK(flex_button_scan, 20);
 #endif
-
 
 #if _EVENT_MANAGE_ENABLE
     bEventCore();
 #endif    
-    
-#if _ASYN_TX_ENABLE
-    bAsyntxCore(); 
-#endif
+     
 #if _UGUI_ENABLE
-    static uint32_t g_tick = 0;
-    if(bUtilGetTick() - g_tick > (MS2TICKS(10)))
-    {
-        g_tick = bUtilGetTick();
-        bGUI_TouchExec();
-    }
+    BOS_PERIODIC_TASK(bGUI_TouchExec, 10);
     UG_Update();
-#endif    
+#endif   
+
+
+/*************************************************b_utils****/
+    bAsyntxCore();
+    
+/**************************************************b_hal*****/
+    bHalCore();
+
     return 0;
 }
 

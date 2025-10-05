@@ -165,6 +165,11 @@ void bHalEnterCritical(void);
 void bHalExitCritical(void);
 void bHalIncSysTick(void);
 void bHalInit(void);
+
+
+///<Called in bExec()
+void bHalCore(void);
+
 /**
  * \}
  */

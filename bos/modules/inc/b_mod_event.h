@@ -105,6 +105,11 @@ typedef struct
 int bEventIsIdle(void); 
 int bEventTrigger(uint8_t number);
 int bEventRegist(uint8_t number, pEventHandler_t phandler);
+
+
+///<Called in bExec()
+void bEventCore(void);
+
 /**
  * \}
  */

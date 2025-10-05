@@ -102,6 +102,10 @@ typedef struct
  */
 int bGUI_Init(int lcd, int touch);
 
+
+///<Called in bExec()
+void bGUI_TouchExec(void);
+
 /**
  * \}
  */

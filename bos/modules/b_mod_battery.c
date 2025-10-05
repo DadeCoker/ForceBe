@@ -131,11 +131,8 @@ __weak int bBatteryGetmV(uint16_t *pmV)
 
 /**
  * \brief Read V and compare with bLowThreshold \ref _BATTERY_THRESHOLD
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
  */
-int bBatteryCore()
+void bBatteryCore()
 {
     uint32_t mv = 0;
     uint16_t min_tmp = 0xffff, max_tmp = 0, tmp, i;
@@ -144,7 +141,7 @@ int bBatteryCore()
     {
         if(bBatteryGetmV(&tmp) < 0)
         {
-            return -1;
+            return;
         }
         mv += tmp;
         if(tmp > max_tmp)
@@ -167,7 +164,6 @@ int bBatteryCore()
         bBatteryStatus = BATTERY_STA_LOW;
     }
     bBatteryVoltage = tmp;
-    return 0;
 }
 
 

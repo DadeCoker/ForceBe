@@ -108,9 +108,16 @@
  * \defgroup BATTERY_Exported_Functions
  * \{
  */
+ 
 int bBatteryGetmV(uint16_t *pval);
 uint8_t bBatGetStatus(void);
 uint16_t bBatGetVoltageValue(void);
+
+
+
+///<Called in bExec()
+void bBatteryCore(void);
+
 /**
  * \}
  */

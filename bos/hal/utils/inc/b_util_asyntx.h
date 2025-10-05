@@ -110,6 +110,10 @@ typedef struct
 int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms);
 int bAsyntxRequest(int no, uint8_t *pbuf, uint16_t size, uint8_t flag);
 int bAsyntxCplCallback(int no);
+
+///<Called in bExec()
+void bAsyntxCore(void);
+
 /**
  * \}
  */

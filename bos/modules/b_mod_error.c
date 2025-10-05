@@ -211,11 +211,8 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
 
 /**
  * \brief Find out an error that should be handled
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
  */
-int bErrorCore()
+void bErrorCore()
 {
     uint32_t i = 0;
     uint32_t tick = 0;
@@ -246,7 +243,6 @@ int bErrorCore()
             }
         } 
     } 
-    return 0;
 }
 
 /**

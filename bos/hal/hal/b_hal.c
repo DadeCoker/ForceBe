@@ -128,6 +128,17 @@ void bHalInit()
     // Add code ...gpio init or some other functions 
 }
 
+
+
+
+void bHalCore()
+{
+    bHalUartDetectIdle();
+}
+
+
+
+
 void bHalGPIO_EXTI_Callback(uint8_t pin)
 {
     if(pin >= B_HAL_PINAll)
