@@ -123,7 +123,7 @@ const static uint8_t OV5640_SaturationTable[7][6]=
 static void _OV5640_WriteReg(uint16_t reg,uint8_t data)
 {
 	SCCB_Start(HAL_OV5640_SCCB);
-    SCCB_SendByte(HAL_OV5640_SCCB, OV5640_SCCB_ADDR);
+    SCCB_SendByte(HAL_OV5640_SCCB, HAL_OV5640_SCCB_ADDR);
     SCCB_SendByte(HAL_OV5640_SCCB, reg >> 8);
     SCCB_SendByte(HAL_OV5640_SCCB, reg);
     SCCB_SendByte(HAL_OV5640_SCCB, data);
@@ -134,13 +134,13 @@ static uint8_t _OV5640_ReadReg(uint16_t reg)
 {
 	uint8_t val=0;
 	SCCB_Start(HAL_OV5640_SCCB);
-    SCCB_SendByte(HAL_OV5640_SCCB, OV5640_SCCB_ADDR);
+    SCCB_SendByte(HAL_OV5640_SCCB, HAL_OV5640_SCCB_ADDR);
     SCCB_SendByte(HAL_OV5640_SCCB, reg >> 8);
     SCCB_SendByte(HAL_OV5640_SCCB, reg);			  
 	SCCB_Stop(HAL_OV5640_SCCB);  
 
 	SCCB_Start(HAL_OV5640_SCCB);
-    SCCB_SendByte(HAL_OV5640_SCCB, OV5640_SCCB_ADDR | 0x1);
+    SCCB_SendByte(HAL_OV5640_SCCB, HAL_OV5640_SCCB_ADDR | 0x1);
 
    	val = SCCB_ReceiveByte(HAL_OV5640_SCCB);
   	SCCB_NoAck(HAL_OV5640_SCCB);

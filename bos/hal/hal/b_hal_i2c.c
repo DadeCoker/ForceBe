@@ -31,6 +31,7 @@
    
 /*Includes ----------------------------------------------*/
 #include "b_hal.h" 
+#include "b_utils.h"
 /** 
  * \addtogroup B_HAL
  * \{
@@ -72,7 +73,10 @@
  * \defgroup I2C_Private_Variables
  * \{
  */
-
+static bUtilI2C_t I2C_IO_3 = {
+    .sda = {B_HAL_GPIOB, B_HAL_PIN7},
+    .clk = {B_HAL_GPIOB, B_HAL_PIN6}
+};
 /**
  * \}
  */
@@ -134,6 +138,56 @@ uint8_t bHalI2C_ReceiveByte(uint8_t no, uint8_t dev_addr)
     return tmp;
 }
 
+
+int bHalI2C_MemWrite(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+{
+    int retval = 0;
+    int i = 0;
+    switch(no)
+    {
+        case B_HAL_I2C_1:
+
+            break;        
+        case B_HAL_I2C_2:
+            
+            break;
+        case B_HAL_I2C_3:
+            for(i = 0;i < len;i++)
+            {
+                bUtilI2C_WriteData(I2C_IO_3, dev_addr, mem_addr + i, pbuf[i]);
+                bUtilDelayMS(5);
+            }
+            break;        
+        default:
+            break;
+    }
+    return retval;
+}
+
+
+int bHalI2C_MemRead(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+{
+    int retval = 0;
+    int i = 0;
+    switch(no)
+    {
+        case B_HAL_I2C_1:
+ 
+            break;        
+        case B_HAL_I2C_2:
+            
+            break;
+        case B_HAL_I2C_3:
+            for(i = 0;i < len;i++)
+            {
+                pbuf[i] = bUtilI2C_ReadData(I2C_IO_3, dev_addr, mem_addr + i);
+            }
+            break;        
+        default:
+            break;
+    }
+    return retval;
+}
 
 /**
  * \}

@@ -62,7 +62,7 @@ typedef bDriverInterface_t bPCF8574_Driver_t;
  * \defgroup PCF8574_Exported_Defines
  * \{
  */
-#define PCF8574_IIC_ADDR            0X40
+
 
 /**
  * \}
@@ -114,7 +114,7 @@ int bPCF8574_Init(void);
 #endif
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 
 

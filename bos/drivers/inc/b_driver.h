@@ -40,6 +40,7 @@
 #include "b_drv_fm25cl.h"
 #include "b_drv_ili9341.h"
 #include "b_drv_pcf8574.h"
+#include "b_drv_24cxx.h"
 
 
 
@@ -62,6 +63,11 @@ extern bDriverInterface_t   bPCF8574_Driver;
 
 //Camera
 extern bDriverInterface_t   bOV5640_Driver;
+
+//EEPROM
+extern bDriverInterface_t   b24CXX_Driver;
+
+
 
 #endif
 

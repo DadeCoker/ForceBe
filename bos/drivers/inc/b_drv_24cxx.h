@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_hal_i2c.h
+ * \file        b_drv_24cxx.h
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -21,15 +21,15 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SI2CL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_I2C_H__
-#define __B_HAL_I2C_H__
+#ifndef __B_DRV_24CXX_H__
+#define __B_DRV_24CXX_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,35 +37,29 @@
 
 /*Includes ----------------------------------------------*/
 #include "b_config.h" 
-
-
+#include "b_device.h"
 /** 
- * \addtogroup B_HAL
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup I2C
+ * \addtogroup 24CXX
  * \{
  */
 
 /** 
- * \defgroup I2C_Exported_TypesDefinitions
+ * \defgroup 24CXX_Exported_TypesDefinitions
  * \{
  */
-typedef enum
-{
-    B_HAL_I2C_1,
-    B_HAL_I2C_2,
-    B_HAL_I2C_3,
-    B_HAL_I2C_4,
-}bHalI2CNumber_t; 
+ 
+typedef bDriverInterface_t b24CXX_Driver_t;  
 /**
  * \}
  */
    
 /** 
- * \defgroup I2C_Exported_Defines
+ * \defgroup 24CXX_Exported_Defines
  * \{
  */
 
@@ -75,9 +69,10 @@ typedef enum
  */
    
 /** 
- * \defgroup I2C_Exported_Macros
+ * \defgroup 24CXX_Exported_Macros
  * \{
  */
+
 
 
 /**
@@ -85,28 +80,24 @@ typedef enum
  */
    
 /** 
- * \defgroup I2C_Exported_Variables
+ * \defgroup 24CXX_Exported_Variables
  * \{
  */
-   
+ 
 /**
  * \}
  */
    
 /** 
- * \defgroup I2C_Exported_Functions
+ * \defgroup 24CXX_Exported_Functions
  * \{
  */
-
-void bHalI2C_SendByte(uint8_t no, uint8_t dev_addr, uint8_t dat);
-uint8_t bHalI2C_ReceiveByte(uint8_t no, uint8_t dev_addr);
-
-int bHalI2C_MemWrite(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
-int bHalI2C_MemRead(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
+int b24CXX_Init(void);
 
 /**
  * \}
  */
+ 
 
 /**
  * \}
@@ -124,5 +115,6 @@ int bHalI2C_MemRead(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pb
 
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
 
 

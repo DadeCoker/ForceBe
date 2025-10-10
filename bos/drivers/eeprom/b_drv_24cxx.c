@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_drv_pcf8574.c
+ * \file        b_drv_24cxx.c
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -30,20 +30,21 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_drv_pcf8574.h"
+#include "b_drv_24cxx.h"
 #include "b_hal.h"
+#include "b_utils.h"
 /** 
  * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup PCF8574
+ * \addtogroup 24CXX
  * \{
  */
 
 /** 
- * \defgroup PCF8574_Private_TypesDefinitions
+ * \defgroup 24CXX_Private_TypesDefinitions
  * \{
  */
  
@@ -53,7 +54,7 @@
  */
    
 /** 
- * \defgroup PCF8574_Private_Defines
+ * \defgroup 24CXX_Private_Defines
  * \{
  */
 
@@ -62,7 +63,7 @@
  */
    
 /** 
- * \defgroup PCF8574_Private_Macros
+ * \defgroup 24CXX_Private_Macros
  * \{
  */
    
@@ -71,18 +72,18 @@
  */
    
 /** 
- * \defgroup PCF8574_Private_Variables
+ * \defgroup 24CXX_Private_Variables
  * \{
  */
-bPCF8574_Driver_t bPCF8574_Driver = {
-    .init = bPCF8574_Init,
+b24CXX_Driver_t b24CXX_Driver = {
+    .init = b24CXX_Init,
 };
 /**
  * \}
  */
    
 /** 
- * \defgroup PCF8574_Private_FunctionPrototypes
+ * \defgroup 24CXX_Private_FunctionPrototypes
  * \{
  */
 
@@ -91,51 +92,48 @@ bPCF8574_Driver_t bPCF8574_Driver = {
  */
    
 /** 
- * \defgroup PCF8574_Private_Functions
+ * \defgroup 24CXX_Private_Functions
  * \{
  */	
 
 /************************************************************************************************************driver interface*******/
 
 
-static int _bPCF8574Write(uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _b24CXXWrite(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    uint8_t tmp;
-    if(off >= 8 || len != 1)
+    uint8_t l_c = off % 8;
+    uint16_t i = 0;
+    if(len <= l_c)
     {
-        return -1;
-    }
-    
-    tmp = bHalI2C_ReceiveByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR);
-    if(pbuf[0])
-    {
-        tmp |= 1 << off;
+        bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, len);
     }
     else
     {
-        tmp &= ~(1 << off);
+        bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, l_c);
+        bUtilDelayMS(5);
+        off += l_c;
+        pbuf += l_c;
+        len -= l_c;
+        for(i = 0;i < len / 8;i++)
+        {
+            bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, 8);
+            bUtilDelayMS(5);
+            off += 8;
+            pbuf += 8;
+        }
+        if((len % 8) > 0)
+        {
+            bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, (len % 8));
+            bUtilDelayMS(5);
+        }
     }
-    bHalI2C_SendByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR, tmp);
     return len;
 }
 
 
-static int _bPCF8574Read(uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _b24CXXRead(uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    uint8_t tmp;
-    if(off >= 8 || len != 1)
-    {
-        return -1;
-    }  
-    tmp = bHalI2C_ReceiveByte(HAL_PCF8574_I2C, HAL_PCF8574_I2C_ADDR);
-    if(tmp & (1 << off))
-    {
-        pbuf[0] = 1;
-    }
-    else
-    {
-        pbuf[0] = 0;
-    }
+    bHalI2C_MemRead(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, len);
     return len;
 }
 
@@ -144,16 +142,16 @@ static int _bPCF8574Read(uint32_t off, uint8_t *pbuf, uint16_t len)
  */
    
 /** 
- * \addtogroup PCF8574_Exported_Functions
+ * \addtogroup 24CXX_Exported_Functions
  * \{
  */
-int bPCF8574_Init()
+int b24CXX_Init()
 {          
-    bPCF8574_Driver.close = NULL;
-    bPCF8574_Driver.read = _bPCF8574Read;
-    bPCF8574_Driver.ctl = NULL;
-    bPCF8574_Driver.open = NULL;
-    bPCF8574_Driver.write = _bPCF8574Write;
+    b24CXX_Driver.close = NULL;
+    b24CXX_Driver.read = _b24CXXRead;
+    b24CXX_Driver.ctl = NULL;
+    b24CXX_Driver.open = NULL;
+    b24CXX_Driver.write = _b24CXXWrite;
     return 0;
 }
 

@@ -122,16 +122,19 @@
 /**                           IO Expander                             */
 ///<PCF8574
 //#define HAL_PCF8574_I2C                 B_HAL_I2C_2
-
+//#define HAL_PCF8574_I2C_ADDR            0X40
 
 /**                           Camera                                 */
 ///<OV5640
 //#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
+//#define HAL_OV5640_SCCB_ADDR            0X78
 //#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
 //#define HAL_OV5640_RESET_PIN            B_HAL_PIN15
 
-
-
+/**                           EEPROM                                 */
+///<24cxx
+//#define HAL_24CXX_I2C                   B_HAL_I2C_3
+//#define HAL_24CXX_I2C_ADDR              0XA0
 
 /**
  * \}

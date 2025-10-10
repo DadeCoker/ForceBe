@@ -62,7 +62,7 @@ typedef bDriverInterface_t bOV5640_Driver_t;
  * \defgroup OV5640_Exported_Defines
  * \{
  */
-#define OV5640_SCCB_ADDR        		0X78
+
 #define OV5640_CHIPIDH                  0X300A  	
 #define OV5640_CHIPIDL                  0X300B  	
 #define OV5640_ID                       0X5640
