@@ -142,11 +142,9 @@
 //</e>
 
 
-//<e> KV Enable/Disable
+//<q> KV Enable/Disable
 #define _KV_ENABLE             	    0
-//<o> Key/Value Pair Max Number
-#define _KV_PAIR_NUMBER             32
-//</e>
+
 
 
 //<e> FIFO Enable/Disable

@@ -1,8 +1,8 @@
 /**
  *!
  * \file        b_mod_kv.h
- * \version     v0.0.1
- * \date        2020/01/08
+ * \version     v0.0.2
+ * \date        2020/04/09
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -63,6 +63,7 @@ typedef struct
     uint32_t id;
     uint32_t address;
     uint32_t len;
+    uint32_t statu;    
 }bKV_Index_t;    
  
  
@@ -70,14 +71,18 @@ typedef struct
 typedef struct
 {
     uint8_t status;
-    uint8_t index;
+    uint32_t index;
     int dev_no;
-    uint32_t s_address;
-    uint32_t e_size;
-    uint32_t tc_address;
-    uint32_t dc_address;
-    uint32_t t_address[2];
-    uint32_t d_address[2];
+    uint32_t str_address;
+    uint32_t ts_address;
+    uint32_t te_address;
+    uint32_t t_index;
+    uint32_t t_max;
+    uint32_t e_size; 
+    uint32_t ds_address;
+    uint32_t de_address;
+    uint32_t d_size;
+    uint32_t d_index;
 }bKV_Info_t;
 
 /**
@@ -98,6 +103,10 @@ typedef struct
 #define bKV_SECTOR_D1   0X04
 #define bKV_SECTOR_D2   0X08 
 #define bKV_SECTOR_ALL  0X0F 
+
+#define bKV_HEAD_STR    "B_KV"
+
+
 /**
  * \}
  */
@@ -153,6 +162,6 @@ int bKV_Delete(const char *key);
 
 #endif  
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 
