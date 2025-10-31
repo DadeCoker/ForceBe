@@ -244,6 +244,8 @@
 #define _FLEXIBLEBUTTON_ENABLE              0
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
+//<o> Number of Buttons
+#define FLEX_BTN_NUMBER                     3
 //</e>
 
 //<e> UGUI Enable/Disable

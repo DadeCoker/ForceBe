@@ -58,14 +58,12 @@
  * \defgroup BUTTON_Exported_TypesDefinitions
  * \{
  */
-typedef enum
+typedef struct
 {
-    USER_BUTTON_1,
-    USER_BUTTON_2,
-    USER_BUTTON_3,
-    USER_BUTTON_WAKEUP,
-    USER_BUTTON_MAX
-}bBUTTON_ID_t;  
+    uint8_t port;
+    uint8_t pin;
+    uint8_t logic_level;
+}bButtonInfo_t;
 
 /**
  * \}
@@ -106,7 +104,6 @@ typedef enum
 int bButtonInit(void);
 
 void bButtonCallback(void *p);
-uint8_t bButtonRead(void *p);
 /**
  * \}
  */

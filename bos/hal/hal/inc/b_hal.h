@@ -136,6 +136,15 @@
 //#define HAL_24CXX_I2C                   B_HAL_I2C_3
 //#define HAL_24CXX_I2C_ADDR              0XA0
 
+
+/**                           b_mod_button                           */
+///<b_mod_button {port, pin, pressed_logic_level}
+#if _FLEXIBLEBUTTON_ENABLE
+#define HAL_B_BUTTON_GPIO               {{B_HAL_GPIOA, B_HAL_PIN3, 0},\
+                                         {B_HAL_GPIOA, B_HAL_PIN2, 0},\
+                                         {B_HAL_GPIOC, B_HAL_PIN13, 0},}
+#endif
+
 /**
  * \}
  */

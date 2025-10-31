@@ -33,6 +33,7 @@
 #include "b_mod_button.h"
 #include <string.h>
 #if _FLEXIBLEBUTTON_ENABLE
+#include "b_hal.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -79,20 +80,8 @@
  * \defgroup BUTTON_Private_Variables
  * \{
  */
-static flex_button_t bButtonList[USER_BUTTON_MAX] = {
-    [USER_BUTTON_1] = {
-        .pressed_logic_level = 0,
-    },
-    [USER_BUTTON_2] = {
-        .pressed_logic_level = 0,
-    },
-    [USER_BUTTON_3] = {
-        .pressed_logic_level = 0,
-    },
-    [USER_BUTTON_WAKEUP] = {
-        .pressed_logic_level = 0,
-    },     
-}; 
+static flex_button_t bButtonList[FLEX_BTN_NUMBER]; 
+const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
 /**
  * \}
  */
@@ -111,6 +100,11 @@ static flex_button_t bButtonList[USER_BUTTON_MAX] = {
  * \{
  */
 
+static uint8_t bButtonRead(void *p)
+{
+    flex_button_t *btn = (flex_button_t *)p;
+    return bHalGPIO_ReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
+}
 /**
  * \}
  */
@@ -124,9 +118,10 @@ static flex_button_t bButtonList[USER_BUTTON_MAX] = {
 int bButtonInit()
 {
     int i;
-    for (i = 0; i < USER_BUTTON_MAX; i++)
+    for (i = 0; i < FLEX_BTN_NUMBER; i++)
     {
         bButtonList[i].id = i;
+        bButtonList[i].pressed_logic_level = bButtonInfo[i].logic_level;
         bButtonList[i].usr_button_read = bButtonRead;
         bButtonList[i].cb = bButtonCallback;
         bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(1500);
@@ -147,26 +142,6 @@ __weak void bButtonCallback(void *p)
     flex_button_t *btn = (flex_button_t *)p;
     b_log("id: [%d]  event: [%d]  repeat: %d\n", btn->id,btn->event,btn->click_cnt);
 }
-
-
-#if __GNUC__ 
-uint8_t __attribute__((weak)) bButtonRead(void *p)
-#else
-__weak uint8_t bButtonRead(void *p)
-#endif
-{
-    uint8_t value = 0;
-    flex_button_t *btn = (flex_button_t *)p;
-    switch(btn->id)
-    {
-        case USER_BUTTON_1:
-            //.....
-            break;
-        //...
-    }
-    return value;
-}
-
 
 /**
  * \}
