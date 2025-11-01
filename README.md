@@ -221,7 +221,11 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 ## BabyOS教程
 
-<https://gitee.com/notrynohigh/BabyOS_Example>
+教程的代码仓库中不同分支对应着不同实验
+
+<https://gitee.com/notrynohigh/BabyOS_Example>  【基于STM32F107CV】
+
+<https://gitee.com/notrynohigh/BabyOS_HDSC>      【基于华大MCU HC32L136K8TA】
 
 
 
