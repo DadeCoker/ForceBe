@@ -141,18 +141,12 @@ static int _bKV_AllocateSpace(uint32_t size, uint32_t s_addr)
     return 0;
 }
 
-static int _bKV_ISFirstTime()
+static int _bKV_ISFirstTime(int fd)
 {
     int retval = 0;
-    int fd = -1;
     uint8_t buf[16];
     uint8_t buf2[16];
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("_bKV_ISNew open dev error\r\n");
-        return -2;
-    }
+
     bLseek(fd, bKV_Info.str_address);
     retval = bRead(fd, buf, strlen(bKV_HEAD_STR));
     
@@ -162,7 +156,6 @@ static int _bKV_ISFirstTime()
         retval = bRead(fd, buf2, strlen(bKV_HEAD_STR));
     }
     
-    bClose(fd);
     if(retval > 0)
     {
         if(strncmp(bKV_HEAD_STR, (const char *)buf, strlen(bKV_HEAD_STR)) == 0 || 
@@ -179,22 +172,15 @@ static int _bKV_ISFirstTime()
     return 0;
 }
 
-static int _bKV_ClearSector(uint8_t t)
+static int _bKV_ClearSector(int fd, uint8_t t)
 {
-    int fd = -1;
     bCMD_Struct_t cmd;
     int retval = -1;
     if(bKV_Info.e_size == 0)
     {
         return 0;
     }
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("_bKV_ClearSector open dev error\r\n");
-        return -1;
-    }
-    
+
     if(t & bKV_SECTOR_T1)
     {
         cmd.param.erase.addr = bKV_Info.ts_address;
@@ -219,26 +205,21 @@ static int _bKV_ClearSector(uint8_t t)
         cmd.param.erase.num = bKV_Info.d_size / bKV_Info.e_size;
         retval = bCtl(fd, bCMD_ERASE, &cmd); 
     }
-    bClose(fd);
     return retval;
 }
 
-static int _bKV_AddHeadString()
+static int _bKV_AddHeadString(int fd)
 {
-    int fd = -1;
     int retval = -1;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
     bLseek(fd, bKV_Info.str_address + bKV_Info.e_size * bKV_Info.index);
     retval = bWrite(fd, (uint8_t *)bKV_HEAD_STR, strlen(bKV_HEAD_STR));
-    bClose(fd);
     return retval; 
 }
 
 
 
-static int _bKV_Locate(uint8_t t)
+static int _bKV_Locate(int fd, uint8_t t)
 {
-    int fd = -1;
     bKV_Index_t tmp;
     uint16_t max_num = bKV_Info.t_max;
     uint32_t left = 1, right = max_num, index = max_num / 2;
@@ -250,17 +231,10 @@ static int _bKV_Locate(uint8_t t)
         return -1;
     }
     
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("_bKV_LoadInfo open dev error\r\n");
-        return -1;
-    }
     bLseek(fd, bKV_Info.str_address + bKV_Info.e_size * t);
     bRead(fd, buf, strlen(bKV_HEAD_STR));
     if(strncmp(bKV_HEAD_STR, (const char *)buf, strlen(bKV_HEAD_STR)))
     {
-        bClose(fd);
         return -1;
     }
     
@@ -305,16 +279,15 @@ static int _bKV_Locate(uint8_t t)
             bKV_Info.d_index = tmp.address + tmp.len;
         }
     }
-    bClose(fd);
     return right;
 }
 
 
-static int _bKV_LoadInfo()
+static int _bKV_LoadInfo(int fd)
 {
     int t0, t1;
-    t0 = _bKV_Locate(0);
-    t1 = _bKV_Locate(1);
+    t0 = _bKV_Locate(fd, 0);
+    t1 = _bKV_Locate(fd, 1);
     if(bKV_Info.e_size == 0)
     {
         if(bKV_Info.d_index > bKV_Info.de_address)
@@ -345,17 +318,10 @@ static int _bKV_LoadInfo()
     return 0;
 }
 
-static int _bKV_ISExist(uint32_t id, bKV_Index_t *pt)
+static int _bKV_ISExist(int fd, uint32_t id, bKV_Index_t *pt)
 {
     int i = 0;
-    int fd = -1;
-    bKV_Index_t tmp;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("_bKV_LoadInfo open dev error\r\n");
-        return -1;
-    }    
+    bKV_Index_t tmp;   
     
     for(i = (bKV_Info.t_index - 1);i >= 0; i--)
     {
@@ -369,12 +335,10 @@ static int _bKV_ISExist(uint32_t id, bKV_Index_t *pt)
         
         if(tmp.id == id)
         {  
-            bClose(fd);
             memcpy(pt, &tmp, sizeof(bKV_Index_t));
             return i;
         }
     }
-    bClose(fd);
     return -1;
 }
 
@@ -401,20 +365,13 @@ static int _bKV_MoveData(int fd, uint32_t s_addr, uint32_t d_addr, uint16_t size
 }
 
 
-static int _bKV_ArrangeSpace()
+static int _bKV_ArrangeSpace(int fd)
 {
-    int fd = -1;
     uint32_t i = 0;
     uint32_t addr = 0;
     bKV_Index_t tmp;
     uint32_t index_tmp = 0, t_addr;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("_bKV_LoadInfo open dev error\r\n");
-        return -1;
-    } 
-    
+
     index_tmp = bKV_Info.index;
     bKV_Info.index = (bKV_Info.index + 1) % 2;
     
@@ -441,30 +398,29 @@ static int _bKV_ArrangeSpace()
         bWrite(fd, (uint8_t *)&tmp, sizeof(bKV_Index_t) - sizeof(uint32_t));
         t_addr += sizeof(bKV_Index_t);
     }
-    bClose(fd);
+
     bKV_Info.d_index = addr;
     bKV_Info.t_index = (t_addr - (bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size)) / sizeof(bKV_Index_t);
     if(index_tmp == 0)
     {
-        _bKV_ClearSector(bKV_SECTOR_T1 | bKV_SECTOR_D1);
+        _bKV_ClearSector(fd, bKV_SECTOR_T1 | bKV_SECTOR_D1);
     }
     else
     {
-        _bKV_ClearSector(bKV_SECTOR_T2 | bKV_SECTOR_D2);
+        _bKV_ClearSector(fd, bKV_SECTOR_T2 | bKV_SECTOR_D2);
     }
     b_log_w("t_index:%d index:%d\r\n",bKV_Info.t_index, bKV_Info.index );
     return 0;
 }
 
 
-static int _bKV_AddNew(uint32_t id, uint8_t *pbuf, uint16_t len)
+static int _bKV_AddNew(int fd, uint32_t id, uint8_t *pbuf, uint16_t len)
 {
     bKV_Index_t tmp;
-    int fd = -1;
     
     if(bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) || bKV_Info.t_index >= bKV_Info.t_max)
     {
-        _bKV_ArrangeSpace();
+        _bKV_ArrangeSpace(fd);
     }
     
     if(bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) || bKV_Info.t_index >= bKV_Info.t_max)
@@ -475,33 +431,26 @@ static int _bKV_AddNew(uint32_t id, uint8_t *pbuf, uint16_t len)
     tmp.address = bKV_Info.d_index;
     tmp.id = id;
     tmp.len = len;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("_bKV_LoadInfo open dev error\r\n");
-        return -1;
-    }  
+  
     bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size + bKV_Info.t_index * sizeof(bKV_Index_t));
     bWrite(fd, (uint8_t *)&tmp, sizeof(bKV_Index_t) - sizeof(uint32_t));
     bKV_Info.d_index += len;
     bKV_Info.t_index += 1;
     bLseek(fd, tmp.address);
     bWrite(fd, pbuf, len);
-    bClose(fd);
     b_log_w("n: t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);  
     return 0;
 }
 
 
-static int _bKV_ModifyValue(uint32_t index, bKV_Index_t t, uint32_t id, uint8_t *pbuf, uint16_t len)
+static int _bKV_ModifyValue(int fd, uint32_t index, bKV_Index_t t, uint32_t id, uint8_t *pbuf, uint16_t len)
 {
-    int fd = -1;
     int retval = 0;
     if(len > t.len || (bKV_Info.e_size > 0))
     {
         if(bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) || (bKV_Info.t_index >= bKV_Info.t_max && bKV_Info.e_size > 0))
         {
-            _bKV_ArrangeSpace();
+            _bKV_ArrangeSpace(fd);
         }
         if(bKV_Info.d_index + len > (bKV_Info.de_address + bKV_Info.index * bKV_Info.d_size) || (bKV_Info.t_index >= bKV_Info.t_max && bKV_Info.e_size > 0))
         {
@@ -521,62 +470,33 @@ static int _bKV_ModifyValue(uint32_t index, bKV_Index_t t, uint32_t id, uint8_t 
             t.address = bKV_Info.d_index;
             bKV_Info.d_index += len;
         }
-        fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-        if(fd < 0)
-        {
-            b_log_e("_bKV_LoadInfo open dev error\r\n");
-            return -1;
-        } 
         bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size + index * sizeof(bKV_Index_t));
         bWrite(fd, (uint8_t *)&t, sizeof(bKV_Index_t) - sizeof(uint32_t));
         bLseek(fd, t.address);
         bWrite(fd, pbuf, len);
-        bClose(fd);
     }
     else
     {
         t.statu = 0x12345678;
-        fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-        if(fd < 0)
-        {
-            b_log_e("_bKV_LoadInfo open dev error\r\n");
-            return -1;
-        } 
         bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size + index * sizeof(bKV_Index_t) + sizeof(bKV_Index_t) - sizeof(uint32_t));
         bWrite(fd, (uint8_t *)&t.statu, sizeof(uint32_t));
-        bClose(fd);
-        retval = _bKV_AddNew(id, pbuf, len);
+        retval = _bKV_AddNew(fd, id, pbuf, len);
     }
     b_log_w("t_index:%d index:%d\r\n", bKV_Info.t_index, bKV_Info.index);  
     return retval;
 }
 
-static int _bKV_Get(bKV_Index_t t, uint8_t *pbuf)
+static int _bKV_Get(int fd, bKV_Index_t t, uint8_t *pbuf)
 {
-    int fd = -1;
     int retval = 0;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("... open dev error\r\n");
-        return -1;
-    }
     bLseek(fd, t.address);
     retval = bRead(fd, pbuf, t.len);
-    bClose(fd);
     return retval;
 }
 
-static int _bKV_DeleteKey(uint32_t index, bKV_Index_t t)
+static int _bKV_DeleteKey(int fd, uint32_t index, bKV_Index_t t)
 {
-    int fd = -1;
     int retval = 0;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("... open dev error\r\n");
-        return -1;
-    }
     if(bKV_Info.e_size == 0)
     {
         bLseek(fd, bKV_Info.ts_address + (bKV_Info.t_index - 1) * sizeof(bKV_Index_t));
@@ -593,25 +513,17 @@ static int _bKV_DeleteKey(uint32_t index, bKV_Index_t t)
         bLseek(fd, bKV_Info.ts_address + bKV_Info.index * bKV_Info.e_size + index * sizeof(bKV_Index_t) + sizeof(bKV_Index_t) - sizeof(uint32_t));
         bWrite(fd, (uint8_t *)&t.statu, sizeof(uint32_t));
     }
-    bClose(fd);
     return retval;
 }
 
-static void _bKV_InvalidTable()
+static void _bKV_InvalidTable(int fd)
 {
-    int fd = -1;
     int i = 0;
-    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
-    {
-        b_log_e("... open dev error\r\n");
-    }
     for(i = 0;i < bKV_Info.t_max;i++)
     {
         bLseek(fd, bKV_Info.ts_address + i * sizeof(bKV_Index_t));
         bWrite(fd, (uint8_t *)&InvalidIndex, sizeof(bKV_Index_t));
     }
-    bClose(fd);
 }
 
 
@@ -637,6 +549,7 @@ static void _bKV_InvalidTable()
 int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
 {
     int retval = 0;
+    int fd = -1;
     bKV_Info.status = bKV_ERROR;
     if(dev_no < 0)
     {
@@ -672,8 +585,15 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
             return -1;
         }
     }
-        
-    retval = _bKV_ISFirstTime();
+
+    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
+    if(fd < 0)
+    {
+        b_log_e("... open dev error\r\n");
+        return -1;
+    }
+    
+    retval = _bKV_ISFirstTime(fd);
     if(retval == -2)
     {
         bKV_Info.status = bKV_ERROR;
@@ -682,28 +602,29 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
     if(retval == 0)
     {   
         bKV_Info.index = 0;
-        if(0 == _bKV_ClearSector(bKV_SECTOR_ALL))
+        if(0 == _bKV_ClearSector(fd, bKV_SECTOR_ALL))
         {
             b_log("KV clear sector...ok\r\n");
-            if(0 > _bKV_AddHeadString())
+            if(0 > _bKV_AddHeadString(fd))
             {
                 return -1;
             }
         }
         if(e_size == 0)
         {
-            _bKV_InvalidTable();
+            _bKV_InvalidTable(fd);
         }
     }
     else
     {
-        if(_bKV_LoadInfo() < 0)
+        if(_bKV_LoadInfo(fd) < 0)
         {
             b_log_e("load info error...\r\n");
             bKV_Info.status = bKV_ERROR;
             return -1;
         }
     }
+    bClose(fd);
     bKV_Info.status = bKV_IDLE;
     b_log("k/v max num:%d index:%d\r\n", bKV_Info.t_max, bKV_Info.t_index);
     return 0;
@@ -714,24 +635,32 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
 int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len)
 {
     uint32_t id = 0;
-    int retval;
+    int retval = 0, fd = -1;
     bKV_Index_t tmp;
     if(key == NULL || pvalue == NULL || bKV_Info.status != bKV_IDLE)
     {
         return -1;
     }
+    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
+    if(fd < 0)
+    {
+        b_log_e("... open dev error\r\n");
+        return -1;
+    }  
+    
     bKV_Info.status = bKV_BUSY;
     id = _bKV_GenerateID(key);
-    retval = _bKV_ISExist(id, &tmp);
+    retval = _bKV_ISExist(fd, id, &tmp);
 
     if(retval < 0)
     {
-        _bKV_AddNew(id, pvalue, len);
+        _bKV_AddNew(fd, id, pvalue, len);
     }
     else
     {
-        _bKV_ModifyValue(retval, tmp, id, pvalue, len);
+        _bKV_ModifyValue(fd, retval, tmp, id, pvalue, len);
     }
+    bClose(fd);
     bKV_Info.status = bKV_IDLE;
     return retval;
 }
@@ -740,21 +669,30 @@ int bKV_Set(const char *key, uint8_t *pvalue, uint16_t len)
 int bKV_Get(const char *key, uint8_t *pvalue)
 {
     uint32_t id = 0;
-    int retval;
+    int retval = 0, fd = -1;
     bKV_Index_t tmp;
     if(key == NULL || pvalue == NULL || bKV_Info.status != bKV_IDLE)
     {
         return -1;
     }
+    
+    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
+    if(fd < 0)
+    {
+        b_log_e("... open dev error\r\n");
+        return -1;
+    } 
+    
     bKV_Info.status = bKV_BUSY;
     id = _bKV_GenerateID(key);
-    retval = _bKV_ISExist(id, &tmp);
+    retval = _bKV_ISExist(fd, id, &tmp);
     if(retval < 0)
     {
         bKV_Info.status = bKV_IDLE;
         return -1;
     }
-    retval = _bKV_Get(tmp, pvalue);
+    retval = _bKV_Get(fd, tmp, pvalue);
+    bClose(fd);
     bKV_Info.status = bKV_IDLE;
     return retval;
 }
@@ -763,21 +701,30 @@ int bKV_Get(const char *key, uint8_t *pvalue)
 int bKV_Delete(const char *key)
 {
     uint32_t id = 0;
-    int retval;
+    int retval = 0, fd = -1;
     bKV_Index_t tmp;
     if(key == NULL || bKV_Info.status != bKV_IDLE)
     {
         return -1;
     }  
+
+    fd = bOpen(bKV_Info.dev_no, BCORE_FLAG_RW);
+    if(fd < 0)
+    {
+        b_log_e("... open dev error\r\n");
+        return -1;
+    }     
+    
     bKV_Info.status = bKV_BUSY;
     id = _bKV_GenerateID(key);
-    retval = _bKV_ISExist(id, &tmp);
+    retval = _bKV_ISExist(fd, id, &tmp);
     if(retval < 0)
     {
         bKV_Info.status = bKV_IDLE;
         return -1;
     }
-    _bKV_DeleteKey(retval, tmp);
+    _bKV_DeleteKey(fd, retval, tmp);
+    bClose(fd);
     bKV_Info.status = bKV_IDLE;
     return retval;
 }
