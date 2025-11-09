@@ -140,7 +140,7 @@ int bFIFO_Flush(int no)
     {
         return -1;
     } 
-    bFIFO_Info[no].r_index = bFIFO_Info[no].w_index;
+    bFIFO_Info[no].r_index = bFIFO_Info[no].w_index = 0;
     return 0;
 }
 
