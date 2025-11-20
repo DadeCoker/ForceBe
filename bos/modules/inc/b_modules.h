@@ -54,6 +54,7 @@
 #include "b_mod_gui.h"
 #include "b_mod_menu.h"
 #include "b_mod_trace.h"
+#include "b_mod_heap.h"
  
 #ifdef __cplusplus
 	}
