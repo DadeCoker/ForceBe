@@ -597,6 +597,7 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
     if(retval == -2)
     {
         bKV_Info.status = bKV_ERROR;
+        bClose(fd);
         return -1;
     }
     if(retval == 0)
@@ -607,6 +608,7 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
             b_log("KV clear sector...ok\r\n");
             if(0 > _bKV_AddHeadString(fd))
             {
+                bClose(fd);
                 return -1;
             }
         }
@@ -621,6 +623,7 @@ int bKV_Init(int dev_no, uint32_t s_addr, uint32_t size, uint32_t e_size)
         {
             b_log_e("load info error...\r\n");
             bKV_Info.status = bKV_ERROR;
+            bClose(fd);
             return -1;
         }
     }
@@ -689,6 +692,7 @@ int bKV_Get(const char *key, uint8_t *pvalue)
     if(retval < 0)
     {
         bKV_Info.status = bKV_IDLE;
+        bClose(fd);
         return -1;
     }
     retval = _bKV_Get(fd, tmp, pvalue);
@@ -721,6 +725,7 @@ int bKV_Delete(const char *key)
     if(retval < 0)
     {
         bKV_Info.status = bKV_IDLE;
+        bClose(fd);
         return -1;
     }
     _bKV_DeleteKey(fd, retval, tmp);
