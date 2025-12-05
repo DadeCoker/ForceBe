@@ -93,7 +93,7 @@ typedef uint32_t    bUTC_t;
  * \{
  */
 #define IS_TIME_VALID(n)        (n.year < 2999 && (n.month > 0 && n.month <= 12) && (n.day > 0 && n.day <= 31) && \
-                                        n.week <= 7 && n.hour <= 23 && n.minute <= 59 && n.second <= 59)   
+                                        n.hour <= 23 && n.minute <= 59 && n.second <= 59)   
 /**
  * \}
  */
