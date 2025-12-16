@@ -87,7 +87,9 @@
 #define HAL_LCD_CS_PIN                  B_HAL_PIN8
 #define HAL_LCD_DAT_PORT                B_HAL_GPIOE 
 #endif
-
+///<OLED
+//#define HAL_OLED_I2C                    B_HAL_I2C_1
+//#define HAL_OLED_I2C_ADDR               0X78
 
 /**                           Touch IC                                 */
 //#define HAL_XPT2046_SPI                 B_HAL_SPI_3

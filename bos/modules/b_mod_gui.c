@@ -151,8 +151,7 @@ int bGUI_Init(int lcd, int touch)
 #endif
     UG_SelectGUI(&bGUI_Handle);
     UG_SetForecolor(C_WHITE);
-    UG_SetBackcolor(C_BLUE);
-    UG_FillScreen(C_BLUE);
+    UG_SetBackcolor(C_BLACK);
     UG_FontSelect(&FONT_8X12);
     return 0;
 }
