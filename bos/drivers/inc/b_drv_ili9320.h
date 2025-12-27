@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_driver.h
+ * \file        b_drv_ili9320.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/03/02
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,103 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRIVER_H__
-#define __B_DRIVER_H__
+#ifndef __B_DRV_ILI9320_H__
+#define __B_DRV_ILI9320_H__
 
-
-
-#include "b_drv_w25x.h"
-#include "b_drv_xpt2046.h"
-#include "b_drv_ssd1289.h"
-#include "b_drv_f8l10d.h"
-#include "b_drv_fm25cl.h"
-#include "b_drv_ili9341.h"
-#include "b_drv_pcf8574.h"
-#include "b_drv_24cxx.h"
-#include "b_drv_oled.h"
-#include "b_drv_ili9320.h"
-
-//Flash IC
-extern bDriverInterface_t   bW25X_Driver;
-extern bDriverInterface_t   bFM25CL_Driver;
-
-//LCD Controller
-extern bDriverInterface_t   bSSD1289_Driver;
-extern bDriverInterface_t   bILI9341_Driver;
-extern bDriverInterface_t   bILI9320_Driver;
-extern bDriverInterface_t   bOLED_Driver;
-
-//Touch
-extern bDriverInterface_t   bXPT2046_Driver;
-
-//LoRa Modules
-extern bDriverInterface_t   bF8L10D_Driver;
-
-//IO Expander
-extern bDriverInterface_t   bPCF8574_Driver;
-
-//Camera
-extern bDriverInterface_t   bOV5640_Driver;
-
-//EEPROM
-extern bDriverInterface_t   b24CXX_Driver;
-
-
-
+#ifdef __cplusplus
+ extern "C" {
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/*Includes ----------------------------------------------*/
+#include "b_config.h" 
+#include "b_device.h"
+
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
+/** 
+ * \addtogroup B_DRIVER
+ * \{
+ */
+
+/** 
+ * \addtogroup ILI9320
+ * \{
+ */
+
+/** 
+ * \defgroup ILI9320_Exported_TypesDefinitions
+ * \{
+ */
+typedef bDriverInterface_t bILI9320_Driver_t;  
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup ILI9320_Exported_Defines
+ * \{
+ */
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup ILI9320_Exported_Macros
+ * \{
+ */
+
+
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup ILI9320_Exported_Variables
+ * \{
+ */
+ 
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup ILI9320_Exported_Functions
+ * \{
+ */
+int bILI9320_Init(void);
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+ 
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
+
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif
+
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
+
 
