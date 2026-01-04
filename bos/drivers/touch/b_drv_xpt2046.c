@@ -133,7 +133,7 @@ static int _bXPT2046Read(uint32_t addr, uint8_t *pbuf, uint16_t len)
     }
     pxy[0] = _bXPT2046ReadVal(XPT2046_X);
     pxy[1] = _bXPT2046ReadVal(XPT2046_Y);
-    return 0;
+    return 4;
 }
 
 static int _bXPT2046Close()
