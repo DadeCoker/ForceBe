@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_os.h
+ * \file        algorithm.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/04/27
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_OS_H__
-#define __B_OS_H__
+#ifndef __B_ALGORITHM_H__
+#define __B_ALGORITHM_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -37,61 +37,27 @@
 
 /*Includes ----------------------------------------------*/
 
-#include "b_core.h"
-#include "b_device.h"
 
-#include "b_hal.h"
-#include "b_utils.h"
-#include "b_modules.h"
-
-#include "algorithm.h"
 /** 
- * \addtogroup BABYOS
+ * \addtogroup ALGORITHM
  * \{
  */
 
-/** 
- * \addtogroup CORE
- * \{
- */
+#include "algo_hmac_sha1.h"
+#include "algo_base64.h"
 
-/** 
- * \addtogroup BOS
- * \{
- */
-
-#define BOS_PERIODIC_TASK(pf, ms)   {static uint32_t tick##pf = 0; if(bUtilGetTick() - tick##pf > (MS2TICKS(ms))){\
-                                    tick##pf = bUtilGetTick();pf();}}   
-
-
-
-/** 
- * \defgroup BOS_Exported_Functions
- * \{
- */
-int bInit(void);
-int bExec(void);
-/**
- * \}
- */
- 
-/**
- * \}
- */ 
 
 /**
  * \}
  */
 
-/**
- * \}
- */
- 
 #ifdef __cplusplus
 	}
-#endif 
-
+#endif
+ 
 #endif
 
+
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
 

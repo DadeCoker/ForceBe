@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -337,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -748,6 +749,21 @@
               <FileName>b_device_list.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\bos\config\b_device_list.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Algorithm</GroupName>
+          <Files>
+            <File>
+              <FileName>algo_hmac_sha1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\algorithm\algo_hmac_sha1.c</FilePath>
+            </File>
+            <File>
+              <FileName>algo_base64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\algorithm\algo_base64.c</FilePath>
             </File>
           </Files>
         </Group>
