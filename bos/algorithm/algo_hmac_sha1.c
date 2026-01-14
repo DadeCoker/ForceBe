@@ -55,7 +55,7 @@
  * \defgroup HMAC_SHA1_Private_Defines
  * \{
  */
-#define MAX_MESSAGE_LENGTH 4096  
+#define MAX_MESSAGE_LENGTH 128  
 /**
  * \}
  */
@@ -388,11 +388,7 @@ void sha1   (
 /* hmac-sha1()                                        */
 /* Performs the hmac-sha1 keyed secure hash algorithm */
 /******************************************************/
-uint8_t k0[64];
-uint8_t k0xorIpad[64];
-uint8_t step7data[64];
-uint8_t step5data[MAX_MESSAGE_LENGTH+128];
-uint8_t step8data[64+20];
+
 
 void hmac_sha1(
                 uint8_t *key,
@@ -403,6 +399,11 @@ void hmac_sha1(
                 )
  
 {
+    uint8_t k0[64];
+    uint8_t k0xorIpad[64];
+    uint8_t step7data[64];
+    uint8_t step5data[MAX_MESSAGE_LENGTH+128];
+    uint8_t step8data[64+20];
     int b = 64; /* blocksize */
     uint8_t ipad = 0x36;
  
@@ -413,8 +414,6 @@ void hmac_sha1(
     {
         k0[i] = 0x00;
     }
- 
- 
  
     if (key_length != b)    /* Step 1 */
     {
@@ -442,17 +441,13 @@ void hmac_sha1(
             k0[i] = key[i];
         }
     }
-#ifdef HMAC_DEBUG
-    debug_out("k0",k0,64);
-#endif
+
     /* Step 4 */
     for (i=0; i<64; i++)
     {
         k0xorIpad[i] = k0[i] ^ ipad;
     }
-#ifdef HMAC_DEBUG
-    debug_out("k0 xor ipad",k0xorIpad,64);
-#endif
+
     /* Step 5 */
     for (i=0; i<64; i++)
     {
@@ -462,26 +457,15 @@ void hmac_sha1(
     {
         step5data[i+64] = data[i];
     }
-#ifdef HMAC_DEBUG
-    debug_out("(k0 xor ipad) || text",step5data,data_length+64);
-#endif
  
     /* Step 6 */
     sha1(step5data, data_length+b, digest);
- 
-#ifdef HMAC_DEBUG
-    debug_out("Hash((k0 xor ipad) || text)",digest,20);
-#endif
  
     /* Step 7 */
     for (i=0; i<64; i++)
     {
         step7data[i] = k0[i] ^ opad;
     }
- 
-#ifdef HMAC_DEBUG
-    debug_out("(k0 xor opad)",step7data,64);
-#endif
  
     /* Step 8 */
     for (i=0;i<64;i++)
@@ -493,16 +477,8 @@ void hmac_sha1(
         step8data[i+64] = digest[i];
     }
  
-#ifdef HMAC_DEBUG
-    debug_out("(k0 xor opad) || Hash((k0 xor ipad) || text)",step8data,20+64);
-#endif
- 
     /* Step 9 */
     sha1(step8data, b+20, digest);
- 
-#ifdef HMAC_DEBUG
-    debug_out("HASH((k0 xor opad) || Hash((k0 xor ipad) || text))",digest,20);
-#endif
 }
 
 
