@@ -125,17 +125,17 @@
 #define _SAVE_DATA_ENABLE         	0
 
 //<e> Save Data ClassA
-#define _SAVE_DATA_A_ENABLE         1
+#define _SAVE_DATA_A_ENABLE         0
 //<o> ClassA Instance Number
 #define _SAVE_DATA_A_I_NUMBER       1
 //</e>
 //<e> Save Data ClassB
-#define _SAVE_DATA_B_ENABLE         1
+#define _SAVE_DATA_B_ENABLE         0
 //<o> ClassB Instance Number
 #define _SAVE_DATA_B_I_NUMBER       1
 //</e>
 //<e> Save Data ClassC
-#define _SAVE_DATA_C_ENABLE         1
+#define _SAVE_DATA_C_ENABLE         0
 //<o> ClassC Instance Number
 #define _SAVE_DATA_C_I_NUMBER       1
 //</e>
