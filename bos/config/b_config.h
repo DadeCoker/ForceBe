@@ -54,7 +54,7 @@
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
-#define MS2TICKS(m)                 (m * _TICK_FRQ_HZ / 1000)
+#define MS2TICKS(m)                 (m / (1000 / _TICK_FRQ_HZ))
 //<q> UTC2000 Enable/Disable
 #define _UTC2000_ENABLE           	0
 
