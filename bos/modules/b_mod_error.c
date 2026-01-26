@@ -274,6 +274,29 @@ int bErrorClear(uint8_t e_no)
     return 0;
 }
 
+/**
+ * \brief Check that error is in the bErrorRecordLx \ref bErrorRecordL0 bErrorRecordL1
+ * \param e_no Error number
+ * \retval Result
+ *          \arg 0  Exist
+ *          \arg -1 None
+ */
+int bErrorIS_Exist(uint8_t e_no)
+{
+    int i;
+    if(e_no == INVALID_ERR)
+    {
+        return -1;
+    }
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
+    {
+        if(bErrorRecordL0[i].err == e_no || bErrorRecordL1[i].err == e_no)
+        {
+            return 0;
+        }
+    }
+    return -1;
+}
 
 /**
  * \}

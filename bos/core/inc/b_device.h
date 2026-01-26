@@ -191,6 +191,7 @@ int bDeviceRead(int no, uint32_t address, uint8_t *pdata, uint16_t len);
 int bDeviceWrite(int no, uint32_t address, uint8_t *pdata, uint16_t len);
 int bDeviceClose(int no);
 int bDeviceCtl(int no, uint8_t cmd, void *param);
+int bDeviceISNormal(uint8_t no);
 /**
  * \}
  */

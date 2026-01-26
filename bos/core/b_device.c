@@ -277,6 +277,21 @@ int bDeviceCtl(int no, uint8_t cmd, void *param)
     return retval;
 }
 
+
+int bDeviceISNormal(uint8_t no)
+{
+    if(no >= bDEV_MAX_NUM)
+    {
+        return -1;
+    }
+    if(bDeviceStatusTable[no] == BDEVICE_ERROR)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+
 /**
  * \}
  */
