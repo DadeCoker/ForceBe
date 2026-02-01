@@ -279,4 +279,5 @@ b_trace功能模块基于开源项目CmBacktrace,<https://gitee.com/Armink/CmBac
 | 2020.01 | 功能模块：KV存储                                             |      |
 | 2020.02 | 功能模块：Xmodem128, Ymodem, FlexibleButton 驱动：xpt2046    |      |
 | 2020.03 | 功能模块：b_log, b_gui, b_menu, b_trace，b_heap 驱动：ssd1289 ili9341 |      |
+| 2020.04 | 增加基于华大MCU例子，增加驱动ili9320 oled12864，优化b_mod_kv等功能模块，增加algorithm目录 |      |
 
