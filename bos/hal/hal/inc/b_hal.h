@@ -45,6 +45,7 @@
 #include "b_hal_spi.h"
 #include "b_hal_i2c.h"
 #include "b_hal_sccb.h"
+#include "b_hal_qspi.h"
 /** 
  * \addtogroup B_HAL
  * \{
@@ -102,6 +103,10 @@
 //#define HAL_W25X_SPI                    B_HAL_SPI_2
 //#define HAL_W25X_CS_PORT                B_HAL_GPIOB             
 //#define HAL_W25X_CS_PIN                 B_HAL_PIN12
+
+///<W25X QSPI
+#define HAL_W25X_QSPI                   B_HAL_QSPI_1
+
 ///< FM25CL
 //#define HAL_FM25CL_SPI                  B_HAL_SPI_2
 //#define HAL_FM25CL_CS_PORT              B_HAL_GPIOC

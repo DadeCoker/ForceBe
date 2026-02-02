@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_hal_spi.c
+ * \file        b_hal_qspi.c
  * \version     v0.0.1
- * \date        2020/03/25
+ * \date        2020/05/04
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,7 +21,7 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SSPIL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SQSPIL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -37,12 +37,12 @@
  */
 
 /** 
- * \addtogroup SPI
+ * \addtogroup QSPI
  * \{
  */
 
 /** 
- * \defgroup SPI_Private_TypesDefinitions
+ * \defgroup QSPI_Private_TypesDefinitions
  * \{
  */
    
@@ -51,7 +51,7 @@
  */
    
 /** 
- * \defgroup SPI_Private_Defines
+ * \defgroup QSPI_Private_Defines
  * \{
  */
    
@@ -60,7 +60,7 @@
  */
    
 /** 
- * \defgroup SPI_Private_Macros
+ * \defgroup QSPI_Private_Macros
  * \{
  */
    
@@ -69,7 +69,7 @@
  */
    
 /** 
- * \defgroup SPI_Private_Variables
+ * \defgroup QSPI_Private_Variables
  * \{
  */
 
@@ -78,7 +78,7 @@
  */
    
 /** 
- * \defgroup SPI_Private_FunctionPrototypes
+ * \defgroup QSPI_Private_FunctionPrototypes
  * \{
  */
    
@@ -87,7 +87,7 @@
  */
    
 /** 
- * \defgroup SPI_Private_Functions
+ * \defgroup QSPI_Private_Functions
  * \{
  */
 
@@ -97,31 +97,11 @@
  */
    
 /** 
- * \addtogroup SPI_Exported_Functions
+ * \addtogroup QSPI_Exported_Functions
  * \{
  */
 
-uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
-{
-    uint8_t tmp;
-    switch(no)
-    {
-        case B_HAL_SPI_1:
-
-            break;        
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
-
-            break;
-        default:
-            break;
-    }
-    return tmp;
-}
-
-int bHalSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalQSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
     {
@@ -129,22 +109,16 @@ int bHalSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
     }
     switch(no)
     {
-        case B_HAL_SPI_1:
-
+        case B_HAL_QSPI_1:
+//            HAL_QSPI_Transmit(&hqspi, pbuf, 0xffff);
             break;        
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
-
-            break;
         default:
             break;
     }
     return 0;
 }
 
-int bHalSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalQSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
     {
@@ -152,15 +126,48 @@ int bHalSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len)
     }
     switch(no)
     {
-        case B_HAL_SPI_1:
-
+        case B_HAL_QSPI_1:
+//            HAL_QSPI_Receive(&hqspi, pbuf, 0xffff);
             break;        
-        case B_HAL_SPI_2:
-
+        default:
             break;
-        case B_HAL_SPI_3:
+    }
+    return 0;
+}
 
-            break;
+int bHalQSPI_Command(uint8_t no,
+                     uint32_t cmd, 
+                     uint32_t addr, 
+                     uint32_t addr_mode, 
+                     uint32_t addr_size_bit, 
+                     uint32_t data_mode, 
+                     uint32_t nb_data)
+{
+//    QSPI_CommandTypeDef QSPI_Command;
+    
+//    QSPI_Command.Instruction = cmd;                 
+//    QSPI_Command.Address = addr;                          
+//    QSPI_Command.DummyCycles = 0;                  
+//    QSPI_Command.InstructionMode = QSPI_INSTRUCTION_1_LINE;			
+//    QSPI_Command.AddressMode = (addr_mode == 0) ? QSPI_ADDRESS_NONE : QSPI_ADDRESS_1_LINE; 
+//    if(addr_size_bit == 24)
+//    {
+//        QSPI_Command.AddressSize = QSPI_ADDRESS_24_BITS;
+//    }
+//    else
+//    {
+//        QSPI_Command.AddressSize = QSPI_ADDRESS_32_BITS;
+//    }			
+//    QSPI_Command.DataMode = (data_mode == 0) ? QSPI_DATA_NONE : QSPI_DATA_1_LINE;             			
+//    QSPI_Command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;       	
+//    QSPI_Command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE; 
+//    QSPI_Command.DdrMode = QSPI_DDR_MODE_DISABLE;          
+//    QSPI_Command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+    switch(no)
+    {
+        case B_HAL_QSPI_1:
+//            HAL_QSPI_Command(&hqspi, &QSPI_Command, 0xffff);
+            break;        
         default:
             break;
     }
