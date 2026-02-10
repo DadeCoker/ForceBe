@@ -163,6 +163,7 @@ int bHalQSPI_Command(uint8_t no,
 //    QSPI_Command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE; 
 //    QSPI_Command.DdrMode = QSPI_DDR_MODE_DISABLE;          
 //    QSPI_Command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+//    QSPI_Command.NbData = nb_data;
     switch(no)
     {
         case B_HAL_QSPI_1:

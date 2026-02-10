@@ -105,7 +105,7 @@
 //#define HAL_W25X_CS_PIN                 B_HAL_PIN12
 
 ///<W25X QSPI
-#define HAL_W25X_QSPI                   B_HAL_QSPI_1
+//#define HAL_W25X_QSPI                   B_HAL_QSPI_1
 
 ///< FM25CL
 //#define HAL_FM25CL_SPI                  B_HAL_SPI_2
