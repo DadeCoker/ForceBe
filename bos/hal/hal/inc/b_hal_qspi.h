@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_hal_spi.h
+ * \file        b_hal_qspi.h
  * \version     v0.0.1
  * \date        2020/03/25
  * \author      Bean(notrynohigh@outlook.com)
@@ -21,15 +21,15 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SSPIL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SQSPIL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_SPI_H__
-#define __B_HAL_SPI_H__
+#ifndef __B_HAL_QSPI_H__
+#define __B_HAL_QSPI_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -45,27 +45,24 @@
  */
 
 /** 
- * \addtogroup SPI
+ * \addtogroup QSPI
  * \{
  */
 
 /** 
- * \defgroup SPI_Exported_TypesDefinitions
+ * \defgroup QSPI_Exported_TypesDefinitions
  * \{
  */
 typedef enum
 {
-    B_HAL_SPI_1,
-    B_HAL_SPI_2,
-    B_HAL_SPI_3,
-    B_HAL_SPI_4,
-}bHalSPINumber_t; 
+    B_HAL_QSPI_1,
+}bHalQSPINumber_t; 
 /**
  * \}
  */
    
 /** 
- * \defgroup SPI_Exported_Defines
+ * \defgroup QSPI_Exported_Defines
  * \{
  */
 
@@ -75,7 +72,7 @@ typedef enum
  */
    
 /** 
- * \defgroup SPI_Exported_Macros
+ * \defgroup QSPI_Exported_Macros
  * \{
  */
 
@@ -85,7 +82,7 @@ typedef enum
  */
    
 /** 
- * \defgroup SPI_Exported_Variables
+ * \defgroup QSPI_Exported_Variables
  * \{
  */
    
@@ -94,14 +91,18 @@ typedef enum
  */
    
 /** 
- * \defgroup SPI_Exported_Functions
+ * \defgroup QSPI_Exported_Functions
  * \{
  */
-
-uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat);
-
-int bHalSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len);
-int bHalSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len);
+int bHalQSPI_Command(uint8_t no,
+                     uint32_t cmd, 
+                     uint32_t addr, 
+                     uint32_t addr_mode, 
+                     uint32_t addr_size_bit, 
+                     uint32_t data_mode, 
+                     uint32_t nb_data);
+int bHalQSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len);
+int bHalQSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */
