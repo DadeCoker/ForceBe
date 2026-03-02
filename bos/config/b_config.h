@@ -70,7 +70,7 @@
 
 
 //<e> Battery Enable/Disable
-#define _BATTERY_ENABLE           	0
+#define _BATTERY_ENABLE           	1
 //<o> Battery Threshold (mv)
 #define _BATTERY_THRESHOLD      	3350
 //<o> Battery Detection Cycle (ms)
@@ -79,7 +79,7 @@
 
 
 //<e> Error Manage Enable/Disable
-#define _ERROR_MANAGE_ENABLE       	0
+#define _ERROR_MANAGE_ENABLE       	1
 //<o> Error Queue Length
 #define _ERROR_Q_LENGTH          	5
 //</e>
@@ -300,6 +300,14 @@
 #define b_log_e(...) 
 #define b_log(...)
 #endif
+
+typedef struct bPollingFuncStruct
+{
+    void (*pPollingFunction)(void);
+    struct bPollingFuncStruct *pnext;
+}bPollingFunc_t; 
+
+int bRegistPollingFunc(bPollingFunc_t *pfunc);
 
 #ifdef __cplusplus
 	}

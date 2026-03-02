@@ -53,8 +53,6 @@
  * \defgroup UART_Exported_TypesDefinitions
  * \{
  */
-
-#define UART_BUF_LEN            200
  
 typedef enum
 {
@@ -65,12 +63,19 @@ typedef enum
 
 
 
-typedef struct
+typedef void (*pUartRxIdleCallback)(uint8_t *pbuf, uint16_t len);
+
+typedef struct bHalUartRxStruct
 {
+    bHalUartNumber_t uart;
     uint8_t *pbuf;
+    uint16_t buf_len;
+    uint32_t idle_threshold;
+    pUartRxIdleCallback cb;
     volatile uint32_t l_tick;
     volatile uint16_t index;
-    uint16_t max_len;
+    
+    struct bHalUartRxStruct *pnext;
 }bHalUartRxInfo_t;
 
 
@@ -83,8 +88,7 @@ typedef struct
  * \defgroup UART_Exported_Defines
  * \{
  */
-#define UART_1_RXBUF_LEN        200        
-#define UART_2_RXBUF_LEN        200  
+
 /**
  * \}
  */
@@ -114,15 +118,11 @@ typedef struct
  */
 
 void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len);
+int bHalUartRxRegist(bHalUartRxInfo_t *puart_rx);
+
+
 
 void bHalUartRxIRQ_Handler(uint8_t no, uint8_t dat);
-void bHalUartIdleCallback(uint8_t no, uint8_t *pbuf, uint16_t len);
-
-
-
-///<Called in bHalCore()
-void bHalUartDetectIdle(void);
-
 
 /**
  * \}

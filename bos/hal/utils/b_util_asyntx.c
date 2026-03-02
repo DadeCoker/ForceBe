@@ -31,6 +31,7 @@
    
 /*Includes ----------------------------------------------*/ 
 #include "b_utils.h"
+#include "b_hal.h"
 /** 
  * \addtogroup B_UTILS
  * \{
@@ -74,6 +75,7 @@
  */
 static bAsyntxInfo_t bAsyntxInfoTable[_ASYN_TX_I_NUMBER]; 
 static uint8_t bAsyntxInfoIndex = 0;
+static bPollingFunc_t bUtilAsyntxPollingFunc;
 /**
  * \}
  */
@@ -91,7 +93,28 @@ static uint8_t bAsyntxInfoIndex = 0;
  * \defgroup ASYN_TX_Private_Functions
  * \{
  */
-   
+/**
+ * \brief Transmit data
+ */
+static void _bAsyntxCore()
+{
+    int i = 0;
+    for(i = 0;i < bAsyntxInfoIndex;i++)
+    {
+        if(bAsyntxInfoTable[i].state == BASYN_TX_WAIT)
+        {
+            if(bAsyntxInfoTable[i].td_flag || 
+                (((bUtilGetTick() - bAsyntxInfoTable[i].s_tick) > (MS2TICKS(bAsyntxInfoTable[i].timeout))) 
+                    && bAsyntxInfoTable[i].timeout_f == 1))
+            {
+                bAsyntxInfoTable[i].timeout_f = 0;
+                bAsyntxInfoTable[i].td_flag = 0;
+                bAsyntxInfoTable[i].state = BASYN_TX_NULL;
+                b_log("ASYN_TX done %d\r\n", bUtilGetTick() - bAsyntxInfoTable[i].s_tick);
+            }
+        }
+    }
+}   
 /**
  * \}
  */
@@ -115,6 +138,12 @@ int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms)
     {
         return -1;
     }
+    if(bAsyntxInfoIndex == 0)
+    {
+        bUtilAsyntxPollingFunc.pnext = NULL;
+        bUtilAsyntxPollingFunc.pPollingFunction = _bAsyntxCore;
+        bRegistPollingFunc(&bUtilAsyntxPollingFunc);
+    }
     bAsyntxInfoTable[bAsyntxInfoIndex].state = BASYN_TX_NULL;
     bAsyntxInfoTable[bAsyntxInfoIndex].td_flag = 0;
     bAsyntxInfoTable[bAsyntxInfoIndex].timeout = timeout_ms;
@@ -123,30 +152,6 @@ int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms)
     bAsyntxInfoTable[bAsyntxInfoIndex].f = f;
     bAsyntxInfoIndex += 1;
     return (bAsyntxInfoIndex - 1);
-}
-
-
-/**
- * \brief Transmit data
- */
-void bAsyntxCore()
-{
-    int i = 0;
-    for(i = 0;i < bAsyntxInfoIndex;i++)
-    {
-        if(bAsyntxInfoTable[i].state == BASYN_TX_WAIT)
-        {
-            if(bAsyntxInfoTable[i].td_flag || 
-                (((bUtilGetTick() - bAsyntxInfoTable[i].s_tick) > (MS2TICKS(bAsyntxInfoTable[i].timeout))) 
-                    && bAsyntxInfoTable[i].timeout_f == 1))
-            {
-                bAsyntxInfoTable[i].timeout_f = 0;
-                bAsyntxInfoTable[i].td_flag = 0;
-                bAsyntxInfoTable[i].state = BASYN_TX_NULL;
-                b_log("ASYN_TX done %d\r\n", bUtilGetTick() - bAsyntxInfoTable[i].s_tick);
-            }
-        }
-    }
 }
 
 
@@ -168,8 +173,6 @@ int bAsyntxRequest(int no, uint8_t *pbuf, uint16_t size, uint8_t flag)
     bAsyntxInfoTable[no].s_tick = bUtilGetTick();
     return 0;
 }
-
-
 
 
 int bAsyntxCplCallback(int no)

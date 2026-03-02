@@ -74,25 +74,11 @@
  * \defgroup UART_Private_Variables
  * \{
  */
-static uint8_t  bHalUart1Buffer[UART_1_RXBUF_LEN];
-static uint8_t  bHalUart2Buffer[UART_2_RXBUF_LEN];
- 
-static bHalUartRxInfo_t  bHalUartRxInfo[B_HAL_UART_NUMBER] = {
-    [B_HAL_UART_1] = {
-        .pbuf = bHalUart1Buffer,
-        .l_tick = 0,
-        .index = 0,
-        .max_len = UART_1_RXBUF_LEN,
-    },
-    [B_HAL_UART_2] = {
-        .pbuf = bHalUart2Buffer,
-        .l_tick = 0,
-        .index = 0,
-        .max_len = UART_2_RXBUF_LEN,
-    },    
-    // add more ...
+static bHalUartRxInfo_t bHalUartRxInfoHead = {
+    .pnext = NULL,
 };
 
+static bPollingFunc_t bHalUartRxPollingFunc;
 /**
  * \}
  */
@@ -110,7 +96,23 @@ static bHalUartRxInfo_t  bHalUartRxInfo[B_HAL_UART_NUMBER] = {
  * \defgroup UART_Private_Functions
  * \{
  */
-
+/**
+ * \brief Determine idle events. Called in bExec()
+ */
+static void _bHalUartDetectIdle()
+{
+    uint32_t c_tick = bUtilGetTick();
+    bHalUartRxInfo_t *ptmp = bHalUartRxInfoHead.pnext;
+    
+    while(ptmp)
+    {
+        if(ptmp->index > 0 && (c_tick - ptmp->l_tick >= ptmp->idle_threshold) && ptmp->cb != NULL)
+        {
+            ptmp->cb(ptmp->pbuf, ptmp->index);
+            ptmp->index = 0;
+        }
+    }
+}
 
 /**
  * \}
@@ -137,31 +139,27 @@ void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len)
 }
 
 /**
- * \brief Uart idle detection callbacks
- * \param no Uart number \ref bHalUartNumber_t
- * \param pbuf Pointer to the data buffer
- * \param len Amount of data in the buffer
+ * \brief Register UART_RX information
+ * \param puart_rx Pointer to UART_RX information \ref bHalUartRxInfo_t
  */
-__weak void bHalUartIdleCallback(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalUartRxRegist(bHalUartRxInfo_t *puart_rx)
 {
-    ;
-}
-
-/**
- * \brief Determine idle events. Called in bExec()
- */
-void bHalUartDetectIdle()
-{
-    uint32_t c_tick = bUtilGetTick();
-    uint8_t i = 0;
-    for(i = 0;i < B_HAL_UART_NUMBER;i++)
+    if(puart_rx == NULL)
     {
-        if(c_tick - bHalUartRxInfo[i].l_tick >= 3 && bHalUartRxInfo[i].index > 0)
-        {
-            bHalUartIdleCallback(i, bHalUartRxInfo[i].pbuf, bHalUartRxInfo[i].index);
-            bHalUartRxInfo[i].index = 0;
-        }
+        return -1;
     }
+    
+    if(bHalUartRxInfoHead.pnext == NULL)
+    {
+        bHalUartRxPollingFunc.pnext = NULL;
+        bHalUartRxPollingFunc.pPollingFunction = _bHalUartDetectIdle;
+        bRegistPollingFunc(&bHalUartRxPollingFunc);
+    }
+    
+    puart_rx->index = 0;
+    puart_rx->pnext = bHalUartRxInfoHead.pnext;
+    bHalUartRxInfoHead.pnext = puart_rx;
+    return 0;
 }
 
 
@@ -173,16 +171,21 @@ void bHalUartDetectIdle()
  */ 
 void bHalUartRxIRQ_Handler(uint8_t no, uint8_t dat)
 {
+    bHalUartRxInfo_t *ptmp = bHalUartRxInfoHead.pnext;
     if(no >= B_HAL_UART_NUMBER)
     {
         return;
     }
-    if(bHalUartRxInfo[no].index < bHalUartRxInfo[no].max_len)
+    while(ptmp)
     {
-        bHalUartRxInfo[no].pbuf[bHalUartRxInfo[no].index] = dat;
-        bHalUartRxInfo[no].index += 1;
+        if(ptmp->uart == no)
+        {
+            ptmp->pbuf[ptmp->index++] = dat;
+            ptmp->l_tick = bUtilGetTick();
+            break;
+        }
+        ptmp = ptmp->pnext;
     }
-    bHalUartRxInfo[no].l_tick = bUtilGetTick(); 
 }
 
 

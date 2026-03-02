@@ -78,7 +78,9 @@
  * \defgroup BOS_Private_Variables
  * \{
  */
-
+static bPollingFunc_t bPollingFuncHead = {
+    .pnext = NULL,
+}; 
 
 /**
  * \}
@@ -132,6 +134,21 @@ int bInit()
     return bDeviceInit();
 }
 
+
+int bRegistPollingFunc(bPollingFunc_t *pfunc)
+{
+    if(pfunc == NULL)
+    {
+        return -1;
+    }
+    pfunc->pnext = bPollingFuncHead.pnext;
+    bPollingFuncHead.pnext = pfunc;
+    return 0;
+}
+
+
+
+
 /**
  * \brief  Call this function inside the while(1)
  * \retval Result
@@ -140,7 +157,7 @@ int bInit()
  */
 int bExec()
 {
-    bHalUartDetectIdle();
+    bPollingFunc_t *ptmp = bPollingFuncHead.pnext;  
 #if _BATTERY_ENABLE
     BOS_PERIODIC_TASK(bBatteryCore, _BATTERY_D_CYCLE);
 #endif  
@@ -169,14 +186,14 @@ int bExec()
     BOS_PERIODIC_TASK(bGUI_TouchExec, 10);
     UG_Update();
 #endif   
-
-
-/*************************************************b_utils****/
-    bAsyntxCore();
-    
-/**************************************************b_hal*****/
-    bHalCore();
-
+    while(ptmp)
+    {
+        if(ptmp->pPollingFunction)
+        {
+            ptmp->pPollingFunction();
+        }
+        ptmp = ptmp->pnext;
+    }
     return 0;
 }
 

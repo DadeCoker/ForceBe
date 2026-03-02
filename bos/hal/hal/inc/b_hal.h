@@ -60,7 +60,7 @@
  * \defgroup HAL_Exported_TypesDefinitions
  * \{
  */
- 
+
 /**
  * \}
  */
@@ -115,15 +115,15 @@
 
 /**                           LoRa Modules                             */
 ///<F8L10D
-//#define HAL_F8L10D_UART                 B_HAL_UART_2
-//#define HAL_F8L10D_RESET_PORT           B_HAL_GPIOC
-//#define HAL_F8L10D_RESET_PIN            B_HAL_PIN1
-//#define HAL_F8L10D_SLEEP_PORT           B_HAL_GPIOC
-//#define HAL_F8L10D_SLEEP_PIN            B_HAL_PIN2
-//#define HAL_F8L10D_STA_PORT             B_HAL_GPIOC
-//#define HAL_F8L10D_STA_PIN              B_HAL_PIN3
-//#define HAL_F8L10D_TXD_PORT             B_HAL_GPIOC
-//#define HAL_F8L10D_TXD_PIN              B_HAL_PIN4
+#define HAL_F8L10D_UART                 B_HAL_UART_2
+#define HAL_F8L10D_RESET_PORT           B_HAL_GPIOC
+#define HAL_F8L10D_RESET_PIN            B_HAL_PIN1
+#define HAL_F8L10D_SLEEP_PORT           B_HAL_GPIOC
+#define HAL_F8L10D_SLEEP_PIN            B_HAL_PIN2
+#define HAL_F8L10D_STA_PORT             B_HAL_GPIOC
+#define HAL_F8L10D_STA_PIN              B_HAL_PIN3
+#define HAL_F8L10D_TXD_PORT             B_HAL_GPIOC
+#define HAL_F8L10D_TXD_PIN              B_HAL_PIN4
 
 
 /**                           IO Expander                             */
@@ -182,12 +182,11 @@ extern UART_HandleTypeDef huart1;
  */
 void bHalEnterCritical(void); 
 void bHalExitCritical(void);
-void bHalIncSysTick(void);
 void bHalInit(void);
 
 
-///<Called in bExec()
-void bHalCore(void);
+///<Depend on the platform
+void bHalIncSysTick(void);
 
 /**
  * \}

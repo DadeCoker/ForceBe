@@ -111,8 +111,12 @@ typedef enum
 bF8L10D_Driver_t bF8L10D_Driver = {
     .init = bF8L10D_Init,
 }; 
- 
- 
+
+static bHalGPIO_EXTI_t bHalF8L10D_EXTI;
+static bHalUartRxInfo_t bHalF8L10D_UartRx;
+
+static uint8_t F8L10D_UartBuff[200];
+
 const char *pATTable[I_NUMBER] = {
     "AT+LFR?\r\n",
     "AT+NID?\r\n",
@@ -374,6 +378,16 @@ static int _F8L10D_Write(uint32_t off, uint8_t *pbuf, uint16_t len)
     return len;
 }
 
+
+static void _bF8L10D_TXDoneCallback()
+{
+    bAsyntxCplCallback(ATX_No);
+}
+
+static void _bF8L10D_RxCallback(uint8_t *pbuf, uint16_t len)
+{
+    bAT_Read(ATX_No, pbuf, len);
+}
 /**
  * \}
  */
@@ -407,6 +421,21 @@ int bF8L10D_Init()
         return -1;
     }   
     
+    bHalF8L10D_EXTI.pin = HAL_F8L10D_TXD_PIN;
+    bHalF8L10D_EXTI.pnext = NULL;
+    bHalF8L10D_EXTI.cb = _bF8L10D_TXDoneCallback;
+    bHalGPIO_EXTI_Regist(&bHalF8L10D_EXTI);
+    
+    bHalF8L10D_UartRx.pbuf = F8L10D_UartBuff;
+    bHalF8L10D_UartRx.buf_len = 200;
+    bHalF8L10D_UartRx.cb = _bF8L10D_RxCallback;
+    bHalF8L10D_UartRx.idle_threshold = 5;
+    bHalF8L10D_UartRx.uart = HAL_F8L10D_UART;
+    bHalF8L10D_UartRx.index = 0;
+    bHalF8L10D_UartRx.l_tick = 0;
+    bHalF8L10D_UartRx.pnext = NULL;
+    bHalUartRxRegist(&bHalF8L10D_UartRx);
+    
     _F8L10D_Reset();
     bHalGPIO_WritePin(HAL_F8L10D_SLEEP_PORT, HAL_F8L10D_SLEEP_PIN, 1);
     bUtilDelayMS(90);
@@ -426,15 +455,7 @@ int bF8L10D_Init()
 }
 
 
-void bF8L10D_TXDoneCallback()
-{
-    bAsyntxCplCallback(ATX_No);
-}
 
-void bF8L10D_RxCallback(uint8_t *pbuf, uint16_t len)
-{
-    bAT_Read(ATX_No, pbuf, len);
-}
 
 /**
  * \}

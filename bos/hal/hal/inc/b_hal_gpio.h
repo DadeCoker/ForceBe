@@ -93,6 +93,19 @@ typedef struct
     bHalGPIOPin_t pin;
 }bHalGPIOInstance_t;
 
+
+
+typedef void (*pExtiCallback)(void);
+
+typedef struct bHalGPIO_EXTI_Struct
+{
+    bHalGPIOPin_t pin;
+    pExtiCallback cb;
+    
+    struct bHalGPIO_EXTI_Struct *pnext;
+}bHalGPIO_EXTI_t;
+
+
 /**
  * \}
  */
@@ -140,9 +153,11 @@ void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s);
 uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin);
 void bHalGPIO_Write(uint8_t port, uint16_t dat);
 uint16_t bHalGPIO_Read(uint8_t port);
+int bHalGPIO_EXTI_Regist(bHalGPIO_EXTI_t *pexti);
+
 
 void bHalGPIO_EXTI_IRQHandler(uint8_t pin);
-void bHalGPIO_EXTI_Callback(uint8_t pin);
+
 /**
  * \}
  */
