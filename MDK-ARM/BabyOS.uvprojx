@@ -631,13 +631,6 @@
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
-          <Files>
-            <File>
-              <FileName>b_drv_f8l10d.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\lora\b_drv_f8l10d.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal/hal</GroupName>
@@ -652,45 +645,15 @@
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_uart.c</FilePath>
             </File>
-            <File>
-              <FileName>b_hal_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_hal_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_spi.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal/utils</GroupName>
           <Files>
             <File>
-              <FileName>b_util_asyntx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\utils\b_util_asyntx.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_util_at.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\utils\b_util_at.c</FilePath>
-            </File>
-            <File>
               <FileName>b_util_delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\utils\b_util_delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_util_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\utils\b_util_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_util_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\utils\b_util_spi.c</FilePath>
             </File>
           </Files>
         </Group>

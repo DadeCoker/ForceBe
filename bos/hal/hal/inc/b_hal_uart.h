@@ -73,6 +73,7 @@ typedef struct bHalUartRxStruct
     uint32_t idle_threshold;
     pUartRxIdleCallback cb;
     volatile uint32_t l_tick;
+    volatile uint32_t l_index;
     volatile uint16_t index;
     
     struct bHalUartRxStruct *pnext;

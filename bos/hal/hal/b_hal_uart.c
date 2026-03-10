@@ -106,10 +106,29 @@ static void _bHalUartDetectIdle()
     
     while(ptmp)
     {
-        if(ptmp->index > 0 && (c_tick - ptmp->l_tick >= ptmp->idle_threshold) && ptmp->cb != NULL)
+        if(ptmp->index > 0)
         {
-            ptmp->cb(ptmp->pbuf, ptmp->index);
-            ptmp->index = 0;
+            if(ptmp->l_index == 0)
+            {
+                ptmp->l_index = ptmp->index;
+                ptmp->l_tick = bUtilGetTick();
+            }
+            else
+            {
+                if(ptmp->index != ptmp->l_index)
+                {
+                    ptmp->l_index = ptmp->index;
+                    ptmp->l_tick = bUtilGetTick();
+                }
+                else if(bUtilGetTick() - ptmp->l_tick > ptmp->idle_threshold)
+                {
+                    if(ptmp->cb != NULL)
+                    {
+                        ptmp->cb(ptmp->pbuf, ptmp->index);
+                        ptmp->index = 0;
+                    }
+                }
+            }
         }
     }
 }
@@ -157,6 +176,7 @@ int bHalUartRxRegist(bHalUartRxInfo_t *puart_rx)
     }
     
     puart_rx->index = 0;
+    puart_rx->l_index = 0;
     puart_rx->pnext = bHalUartRxInfoHead.pnext;
     bHalUartRxInfoHead.pnext = puart_rx;
     return 0;
@@ -180,8 +200,10 @@ void bHalUartRxIRQ_Handler(uint8_t no, uint8_t dat)
     {
         if(ptmp->uart == no)
         {
-            ptmp->pbuf[ptmp->index++] = dat;
-            ptmp->l_tick = bUtilGetTick();
+            if(ptmp->index < ptmp->buf_len)
+            {
+                ptmp->pbuf[ptmp->index++] = dat;
+            }
             break;
         }
         ptmp = ptmp->pnext;
