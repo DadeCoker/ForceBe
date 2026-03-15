@@ -50,7 +50,7 @@
 #define HW_VERSION                  200310
 
 //<o> Firmware version
-#define FW_VERSION                  30000
+#define FW_VERSION                  30200
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
