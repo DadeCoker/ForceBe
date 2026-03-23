@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -734,6 +734,66 @@
               <FileName>algo_base64.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\algorithm\algo_base64.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/qpn</GroupName>
+          <Files>
+            <File>
+              <FileName>qepn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\qpn\src\qepn.c</FilePath>
+            </File>
+            <File>
+              <FileName>qfn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\qpn\src\qfn.c</FilePath>
+            </File>
+            <File>
+              <FileName>qstamp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\qpn\src\qstamp.c</FilePath>
+            </File>
+            <File>
+              <FileName>qvn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\qpn\src\qvn.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Examples/qpn</GroupName>
+          <Files>
+            <File>
+              <FileName>b_mod_qpn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Examples\qpn\b_mod_qpn.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_mod_qpn.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Examples\qpn\b_mod_qpn.h</FilePath>
+            </File>
+            <File>
+              <FileName>blinky.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Examples\qpn\blinky.c</FilePath>
+            </File>
+            <File>
+              <FileName>blinky.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Examples\qpn\blinky.h</FilePath>
+            </File>
+            <File>
+              <FileName>bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Examples\qpn\bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Examples\qpn\bsp.h</FilePath>
             </File>
           </Files>
         </Group>

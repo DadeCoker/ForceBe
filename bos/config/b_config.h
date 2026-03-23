@@ -248,6 +248,12 @@
 #define FLEX_BTN_NUMBER                     3
 //</e>
 
+//<e> QPN Enable/Disable
+#define _QPN_ENABLE                         0
+//<o> How often ISR_TIMER_COMPA_vect() and qpn_run() is called (ms)
+#define QPN_PER_SEC                         10
+//</e>
+
 //<e> UGUI Enable/Disable
 #define _UGUI_ENABLE                        0
 //<o> X PHYSICAL SIZE

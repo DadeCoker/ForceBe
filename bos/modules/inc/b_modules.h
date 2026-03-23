@@ -55,7 +55,7 @@
 #include "b_mod_menu.h"
 #include "b_mod_trace.h"
 #include "b_mod_heap.h"
- 
+#include "b_mod_qpn.h"
 #ifdef __cplusplus
 	}
 #endif 

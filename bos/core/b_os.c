@@ -181,7 +181,12 @@ int bExec()
 #if _EVENT_MANAGE_ENABLE
     bEventCore();
 #endif    
-     
+
+#if _QPN_ENABLE
+    BOS_PERIODIC_TASK(ISR_TIMER_COMPA_vect, QPN_PER_SEC);
+    BOS_PERIODIC_TASK(qpn_run, QPN_PER_SEC);
+#endif
+
 #if _UGUI_ENABLE
     BOS_PERIODIC_TASK(bGUI_TouchExec, 10);
     UG_Update();
