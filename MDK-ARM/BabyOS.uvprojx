@@ -627,6 +627,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\modules\b_mod_heap.c</FilePath>
             </File>
+            <File>
+              <FileName>b_mod_qpn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\modules\b_mod_qpn.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -708,36 +713,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>BOS/Config</GroupName>
-          <Files>
-            <File>
-              <FileName>b_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\bos\config\b_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>b_device_list.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\bos\config\b_device_list.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>BOS/Algorithm</GroupName>
-          <Files>
-            <File>
-              <FileName>algo_hmac_sha1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\algorithm\algo_hmac_sha1.c</FilePath>
-            </File>
-            <File>
-              <FileName>algo_base64.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\algorithm\algo_base64.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>BOS/ThirdParty/qpn</GroupName>
           <Files>
             <File>
@@ -766,16 +741,6 @@
           <GroupName>BOS/Examples/qpn</GroupName>
           <Files>
             <File>
-              <FileName>b_mod_qpn.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Examples\qpn\b_mod_qpn.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_mod_qpn.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Examples\qpn\b_mod_qpn.h</FilePath>
-            </File>
-            <File>
               <FileName>blinky.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Examples\qpn\blinky.c</FilePath>
@@ -794,6 +759,36 @@
               <FileName>bsp.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Examples\qpn\bsp.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Algorithm</GroupName>
+          <Files>
+            <File>
+              <FileName>algo_hmac_sha1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\algorithm\algo_hmac_sha1.c</FilePath>
+            </File>
+            <File>
+              <FileName>algo_base64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\algorithm\algo_base64.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/Config</GroupName>
+          <Files>
+            <File>
+              <FileName>b_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\bos\config\b_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>b_device_list.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\bos\config\b_device_list.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -34,6 +34,8 @@
 #ifndef QPN_CONF_H
 #define QPN_CONF_H
 
+#include "b_config.h"
+
 #define Q_PARAM_SIZE            4
 #define QF_MAX_TICK_RATE        1
 #define QF_TIMEEVT_CTR_SIZE     2

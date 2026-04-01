@@ -40,7 +40,7 @@
 #include "qpn_conf.h" /* QP-nano configuration file (from the application) */
 #include "qfn_port.h" /* QF-nano port from the port directory */
 #include "qassert.h"  /* embedded systems-friendly assertions */
-
+#if _QPN_ENABLE
 Q_DEFINE_THIS_MODULE("qepn")
 
 /****************************************************************************/
@@ -473,3 +473,5 @@ QStateHandler QHsm_childState_(QHsm * const me,
 
     return child; /* return the child */
 }
+
+#endif

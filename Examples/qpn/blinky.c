@@ -31,12 +31,11 @@
 * <www.state-machine.com/licensing>
 * <info@state-machine.com>
 *****************************************************************************/
-#include "qpn.h"
+
 #include "blinky.h"
 #include "bsp.h"
-
+#if _QPN_ENABLE
 //Q_DEFINE_THIS_FILE
-
 /*..........................................................................*/
 typedef struct BlinkyTag {  /* the Blinky active object */
     QActive super;          /* inherit QActive */
@@ -48,7 +47,8 @@ static QState Blinky_off    (Blinky * const me);
 static QState Blinky_on     (Blinky * const me);
 
 /* Global objects ----------------------------------------------------------*/
-Blinky AO_Blinky;   /* the single instance of the Blinky AO */
+Blinky AO_Blinky;       /* the single instance of the Blinky AO */
+QEvt l_blinkyQSto[10];  /* Event queue storage for Blinky */
 
 /*..........................................................................*/
 void Blinky_ctor(void) {
@@ -102,3 +102,5 @@ QState Blinky_on(Blinky * const me) {
     }
     return status;
 }
+
+#endif

@@ -33,6 +33,9 @@
 *****************************************************************************/
 #ifndef BLINKY_H
 #define BLINKY_H
+#include "qpn.h"
+#if _QPN_ENABLE
+
 
 enum BlinkySignals {
     DUMMY_SIG = Q_USER_SIG,
@@ -44,6 +47,9 @@ enum BlinkySignals {
 
 void Blinky_ctor(void);
 
+extern QEvt l_blinkyQSto[10];
 extern struct BlinkyTag AO_Blinky;
+
+#endif
 
 #endif /* BLINKY_H */

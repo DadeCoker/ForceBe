@@ -40,7 +40,7 @@
 #include "qpn_conf.h" /* QP-nano configuration file (from the application) */
 #include "qfn_port.h" /* QF-nano port from the port directory */
 #include "qassert.h"  /* embedded systems-friendly assertions */
-
+#if _QPN_ENABLE
 Q_DEFINE_THIS_MODULE("qfn")
 
 /* Global-scope objects *****************************************************/
@@ -506,3 +506,5 @@ void QActive_disarmX(QActive * const me, uint_fast8_t const tickRate) {
     QF_INT_ENABLE();
 }
 #endif /* #if (QF_TIMEEVT_CTR_SIZE != 0) */
+
+#endif

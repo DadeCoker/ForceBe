@@ -44,22 +44,17 @@
 
 /* ISRs used in this project ===============================================*/
 
-void ISR_TIMER_COMPA_vect(void)
-{
-	QF_tickXISR(0U); /* process time events for rate 0 */
-}
-
 /* BSP functions ===========================================================*/
 void BSP_init(void) {
-	printf("LED pinMode OUTPUT\n");
+	b_log("LED pinMode OUTPUT\n");
 }
 /*..........................................................................*/
 void BSP_ledOff(void) {
-	printf("LED Off\n");
+	b_log("LED Off\n");
 }
 /*..........................................................................*/
 void BSP_ledOn(void) {
-	printf("LED On\n");
+	b_log("LED On\n");
 }
 
 /* QF callbacks ============================================================*/
