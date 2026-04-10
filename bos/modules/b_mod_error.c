@@ -112,11 +112,17 @@ static pecb bFcb = NULL;
 
 int bErrorInit(pecb cb)
 {
+    int i = 0;
     if(cb == NULL)
     {
         return -1;
     }
     bFcb = cb;
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
+    {
+    	bErrorRecordL0[i].err = INVALID_ERR;
+        bErrorRecordL1[i].err = INVALID_ERR;
+    }
     return 0;
 }
 
@@ -136,19 +142,9 @@ int bErrorInit(pecb cb)
  */  
 int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
 {
-    static uint8_t einit = 0;
     static uint8_t index = 0;
     uint32_t i = 0, valid_index = _ERROR_Q_LENGTH;
     uint32_t tick = 0;
-    if(einit == 0)
-    {
-        for(i = 0;i < _ERROR_Q_LENGTH;i++)
-        {
-            bErrorRecordL0[i].err = INVALID_ERR;
-            bErrorRecordL1[i].err = INVALID_ERR;
-        }
-        einit = 1;
-    }
     
     if(level == BERROR_LEVEL_0)
     {
@@ -297,6 +293,22 @@ int bErrorIS_Exist(uint8_t e_no)
     }
     return -1;
 }
+
+
+int bErrorIS_Empty()
+{
+    int i = 0;
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
+    {
+        if(bErrorRecordL0[i].err != INVALID_ERR || bErrorRecordL1[i].err != INVALID_ERR)
+        {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+
 
 /**
  * \}

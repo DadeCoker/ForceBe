@@ -112,6 +112,9 @@ int bErrorInit(pecb cb);
 int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level);
 int bErrorClear(uint8_t e_no);
 int bErrorIS_Exist(uint8_t e_no);
+int bErrorIS_Empty(void);
+
+
 
 ///<Called in bExec()
 void bErrorCore(void);
