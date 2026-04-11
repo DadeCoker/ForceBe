@@ -1,13 +1,15 @@
 /**
  *!
  * \file        b_mod_modbus.c
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.0.2
+ * \date        2020/05/13
  * \author      Bean(notrynohigh@outlook.com)
+ * \note        This is not a complete Modbus-RTU stack. It only supports 
+ *              function code: 03(read holding registers), 16(preset multiple registers).
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +34,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_mod_modbus.h"
 #if _MODBUS_ENABLE
-#include "b_core.h"
-#include "b_device.h"
+#include <string.h>
 /** 
  * \addtogroup BABYOS
  * \{
@@ -82,7 +83,7 @@
  */
 static bMB_Info_t bMB_InfoTable[_MODBUS_I_NUMBER];
 static uint32_t bMB_InfoIndex = 0;   
-
+static uint8_t bMB_SendBuff[_MODBUS_BUF_SIZE];
 
 static const uint8_t aucCRCHi[] = {
     0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
@@ -133,24 +134,6 @@ static const uint8_t aucCRCLo[] = {
     0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42, 0x43, 0x83,
     0x41, 0x81, 0x80, 0x40
 };
-
-static uint16_t _bMBCRC16( uint8_t * pucFrame, uint16_t usLen )
-{
-    uint8_t           ucCRCHi = 0xFF;
-    uint8_t           ucCRCLo = 0xFF;
-    int             iIndex;
-
-    while( usLen-- )
-    {
-        iIndex = ucCRCLo ^ *( pucFrame++ );
-        ucCRCLo = ( uint8_t )( ucCRCHi ^ aucCRCHi[iIndex] );
-        ucCRCHi = aucCRCLo[iIndex];
-    }
-    return ( uint16_t )( ucCRCHi << 8 | ucCRCLo );
-}
-
-
-
 /**
  * \}
  */
@@ -168,18 +151,65 @@ static uint16_t _bMBCRC16( uint8_t * pucFrame, uint16_t usLen )
  * \defgroup MODBUS_Private_Functions
  * \{
  */
-static int _bMB_l2b_b2l_16(uint16_t *pdata)
+
+static uint16_t _bMBCRC16( uint8_t * pucFrame, uint16_t usLen )
 {
-    uint8_t *p = (uint8_t *)pdata;
-    if(pdata == NULL)
+    uint8_t ucCRCHi = 0xFF;
+    uint8_t ucCRCLo = 0xFF;
+    int iIndex;
+
+    while( usLen-- )
+    {
+        iIndex = ucCRCLo ^ *( pucFrame++ );
+        ucCRCLo = ( uint8_t )( ucCRCHi ^ aucCRCHi[iIndex] );
+        ucCRCHi = aucCRCLo[iIndex];
+    }
+    return ( uint16_t )( ucCRCHi << 8 | ucCRCLo );
+}
+
+static int _bMB_CheckRTUReadACK(uint8_t *psrc, uint16_t len)
+{
+    if(psrc == NULL)
     {
         return -1;
     }
-    uint8_t tmp = p[1];
-    p[1] = p[0];
-    p[0] = tmp;
+    bMB_RTU_ReadRegsAck_t *phead = (bMB_RTU_ReadRegsAck_t *)psrc;
+    
+    if((sizeof(bMB_RTU_ReadRegsAck_t) - 1 + phead->len + 2) > len)
+    {
+        return -1;
+    }
+    
+    uint16_t crc = _bMBCRC16(psrc, sizeof(bMB_RTU_ReadRegsAck_t) - 1 + phead->len);
+    uint16_t crc2 = ((uint16_t *)(psrc + sizeof(bMB_RTU_ReadRegsAck_t) - 1 + phead->len))[0];
+    if(crc != crc2)
+    {
+        b_log_e("crc error %x %x\r\n", crc, crc2);
+        return -1;
+    }
     return 0;
-} 
+}
+
+
+static int _bMB_CheckRTUWriteACK(uint8_t *psrc, uint16_t len)
+{
+    if(psrc == NULL)
+    {
+        return -1;
+    }
+    if(sizeof(bMB_RTU_WriteRegsAck_t) > len)
+    {
+        return -1;
+    }
+    uint16_t crc = _bMBCRC16(psrc, sizeof(bMB_RTU_WriteRegsAck_t) - 2);
+    uint16_t crc2 = ((uint16_t *)(psrc + (sizeof(bMB_RTU_WriteRegsAck_t) - 2)))[0];
+    if(crc != crc2)
+    {
+        b_log_e("crc error %x %x\r\n", crc, crc2);
+        return -1;
+    }
+    return 0;
+}
 
 /**
  * \}
@@ -192,91 +222,142 @@ static int _bMB_l2b_b2l_16(uint16_t *pdata)
  
 /**
  * \brief Create a MB instance
- * \param dev_no Device number
+ * \param sf Pointer to the function to send the bytes
+ * \param cb A Callback function to receive the response from the slave device
  * \retval Instance ID
  *          \arg >=0  valid
  *          \arg -1   invalid
  */
-int bMB_Regist(uint8_t dev_no)
+int bMB_Regist(pMB_Send_t sf, pMB_Callback_t cb)
 {
-    if(bMB_InfoIndex >= _MODBUS_I_NUMBER)
+    if(bMB_InfoIndex >= _MODBUS_I_NUMBER || sf == NULL || cb == NULL)
     {
         return -1;    
     }
-    bMB_InfoTable[bMB_InfoIndex].dev_no = dev_no;
+    bMB_InfoTable[bMB_InfoIndex].f = sf;
+    bMB_InfoTable[bMB_InfoIndex].cb = cb;
     bMB_InfoIndex += 1;
     return (bMB_InfoIndex - 1);
 }
 
 
 /**
- * \brief Modbus send command
+ * \brief Modbus RTU Read Regiter
  * \param no Instance ID \ref bMB_Regist
  * \param addr Device address
  * \param func Function code
  * \param reg  Register address
- * \param num  Register number
+ * \param num  the number of Register to be read
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bMB_WriteCmd(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
+int bMB_ReadRegs(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
 {
-    bMB_RTUS_W_t wd;
-    int retval = -1;
+    bMB_RTU_ReadRegs_t wd;
     if(no < 0 || no >= bMB_InfoIndex)
     {
         return -1;
     }
-    
-    if(_bMB_l2b_b2l_16(&reg) < 0)
-    {
-        return -1;
-    }
-    
-    if(_bMB_l2b_b2l_16(&num) < 0)
-    {
-        return -1;
-    }    
     wd.addr = addr;
     wd.func = func;
-    wd.reg = reg;
-    wd.num = num;
-    wd.crc = _bMBCRC16((uint8_t *)&wd, sizeof(bMB_RTUS_W_t) - sizeof(wd.crc));
-    
-    int fd = -1;
-    fd = bOpen(bMB_InfoTable[no].dev_no, BCORE_FLAG_RW);
-    if(fd < 0)
+    wd.reg = L2B_B2L_16b(reg);
+    wd.num = L2B_B2L_16b(num);
+    wd.crc = _bMBCRC16((uint8_t *)&wd, sizeof(bMB_RTU_ReadRegs_t) - sizeof(wd.crc));
+    bMB_InfoTable[no].f((uint8_t *)&wd, sizeof(bMB_RTU_ReadRegs_t));
+    return 0;
+}
+
+
+/**
+ * \brief Modbus write regs
+ * \param no Instance ID \ref bMB_Regist
+ * \param addr Device address
+ * \param func Function code
+ * \param reg  Register address
+ * \param num  The number of Register to write to
+ * \param reg_value  Pointer to the register value 
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
+ */
+int bMB_WriteRegs(int no, 
+                  uint8_t addr, 
+                  uint8_t func, 
+                  uint16_t reg, 
+                  uint16_t num, 
+                  uint16_t *reg_value)
+{
+    bMB_RTU_WriteRegs_t *phead = (bMB_RTU_WriteRegs_t *)bMB_SendBuff;
+    int i = 0;
+    uint16_t tmp_len = 0;
+    if(no < 0 || no >= bMB_InfoIndex || reg_value == NULL)
     {
         return -1;
     }
-    retval = bWrite(fd, (uint8_t *)&wd, sizeof(bMB_RTUS_W_t));
-    bClose(retval);
+    phead->addr = addr;
+    phead->func = func;
+    phead->reg = L2B_B2L_16b(reg);
+    phead->num = L2B_B2L_16b(num);
+    phead->len = num * 2;
+    memcpy(phead->param, (uint8_t *)reg_value, phead->len);
+    for(i = 0;i < num;i++)
+    {
+        ((uint16_t *)phead->param)[i] = L2B_B2L_16b(((uint16_t *)phead->param)[i]);
+    }
+    tmp_len = sizeof(bMB_RTU_WriteRegs_t) - 1 + phead->len;
+    ((uint16_t *)&bMB_SendBuff[tmp_len])[0] = _bMBCRC16(bMB_SendBuff, tmp_len);
+    bMB_InfoTable[no].f(bMB_SendBuff, tmp_len + 2);
+    return 0;
+}
+
+
+
+int bMB_FeedReceivedData(int no, uint8_t *pbuf, uint16_t len)
+{
+    bMB_SlaveDeviceData_t _data;
+    int i = 0;
+    int retval = -1;
+    bMB_RTU_ReadRegsAck_t *pr = (bMB_RTU_ReadRegsAck_t *)pbuf;
+    bMB_RTU_WriteRegsAck_t *pw = (bMB_RTU_WriteRegsAck_t *)pbuf;
+    if(pbuf == NULL)
+    {
+        return -1;
+    }
+    if(_bMB_CheckRTUReadACK(pbuf, len) == 0)
+    {
+        _data.type = 0;
+        _data.result.r_result.func = pr->func;
+        _data.result.r_result.reg_num = pr->len / 2;
+        _data.result.r_result.reg_value = (uint16_t *)pr->buf;
+        
+        for(i = 0;i < _data.result.r_result.reg_num;i++)
+        {
+            _data.result.r_result.reg_value[i] = L2B_B2L_16b(_data.result.r_result.reg_value[i]);
+        }
+        bMB_InfoTable[no].cb(&_data);
+        retval = 0;
+    }
+    else if(_bMB_CheckRTUWriteACK(pbuf, len) == 0)
+    {
+        _data.type = 1;
+        _data.result.w_result.func = pw->func;
+        _data.result.w_result.reg = L2B_B2L_16b(pw->reg);
+        _data.result.w_result.reg_num = L2B_B2L_16b(pw->num);
+        bMB_InfoTable[no].cb(&_data);
+        retval = 0;
+    }
     return retval;
 }
 
 
-int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len)
-{
-    if(psrc == NULL)
-    {
-        return -1;
-    }
-    bMB_RTUS_Ack_t *phead = (bMB_RTUS_Ack_t *)psrc;
-    if((sizeof(bMB_RTUS_Ack_t) - 1 + phead->len + 2) > len)
-    {
-        return -1;
-    }
-    
-    uint16_t crc = _bMBCRC16(psrc, sizeof(bMB_RTUS_Ack_t) - 1 + phead->len);
-    uint16_t crc2 = ((uint16_t *)(psrc + sizeof(bMB_RTUS_Ack_t) - 1 + phead->len))[0];
-    if(crc != crc2)
-    {
-        b_log_e("crc error\r\n");
-        return -1;
-    }
-    return 0;
-}
+
+
+
+
+
+
+
 
 
 
@@ -298,5 +379,5 @@ int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len)
  */
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 

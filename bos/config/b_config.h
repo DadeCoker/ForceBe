@@ -94,6 +94,8 @@
 #define _MODBUS_ENABLE           	0
 //<o> Modbus Instance Number
 #define _MODBUS_I_NUMBER          	1
+//<o> Modbus Buffer Size
+#define _MODBUS_BUF_SIZE            200
 //</e>
 
 //<e> Protocol Enable/Disable

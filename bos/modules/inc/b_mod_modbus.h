@@ -68,7 +68,7 @@ typedef struct
     uint16_t reg;       //Big endian
     uint16_t num;       //Big endian
     uint16_t crc;       //Little endian
-}bMB_RTUS_W_t;
+}bMB_RTU_ReadRegs_t;
 
 
 typedef struct
@@ -77,15 +77,71 @@ typedef struct
     uint8_t func;
     uint8_t len;
     uint8_t buf[1];
-}bMB_RTUS_Ack_t;
+}bMB_RTU_ReadRegsAck_t;
 
+typedef struct
+{
+    uint8_t addr;
+    uint8_t func;
+    uint16_t reg;       //Big endian
+    uint16_t num;       //Big endian
+    uint8_t len;
+    uint8_t param[1];
+}bMB_RTU_WriteRegs_t;
+
+
+typedef struct
+{
+    uint8_t addr;
+    uint8_t func;
+    uint16_t reg;       //Big endian
+    uint16_t num;       //Big endian
+    uint16_t crc;       //Little endian
+}bMB_RTU_WriteRegsAck_t;
 
 
 #pragma pack()
- 
+
+
+typedef struct
+{
+    uint8_t func;
+    uint8_t reg_num;
+    uint16_t *reg_value;
+}bMB_ReadResult_t;
+
+
+typedef struct
+{
+    uint8_t func;
+    uint16_t reg;
+    uint16_t reg_num;
+}bMB_WriteResult_t;
+
+
+typedef struct
+{
+    uint8_t type;         //0: read     1:write 
+    union
+    {
+        bMB_ReadResult_t r_result;
+        bMB_WriteResult_t w_result;
+    }result;
+}bMB_SlaveDeviceData_t;
+
+
+
+
+
+typedef void (*pMB_Send_t)(uint8_t *pbuf, uint16_t len);
+typedef void (*pMB_Callback_t)(bMB_SlaveDeviceData_t *pdata);
+
+
+
 typedef struct 
 {
-    uint8_t dev_no;
+    pMB_Send_t f;
+    pMB_Callback_t cb;
 }bMB_Info_t;
    
 /**
@@ -108,7 +164,7 @@ typedef struct
  * \defgroup MODBUS_Exported_Macros
  * \{
  */
-#define L2B_B2L_16b(n)  (((n) << 8) | (n >> 8))   
+#define L2B_B2L_16b(n)  ((((n) & 0xff) << 8) | (((n) & 0xff00) >> 8))   
 /**
  * \}
  */
@@ -126,9 +182,15 @@ typedef struct
  * \defgroup MODBUS_Exported_Functions
  * \{
  */
-int bMB_Regist(uint8_t dev_no);
-int bMB_WriteCmd(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num);
-int bMB_CheckRTUS_ACK(uint8_t *psrc, uint16_t len);
+int bMB_Regist(pMB_Send_t sf, pMB_Callback_t cb);
+int bMB_ReadRegs(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num);
+int bMB_WriteRegs(int no, 
+                  uint8_t addr, 
+                  uint8_t func, 
+                  uint16_t reg, 
+                  uint16_t num, 
+                  uint16_t *reg_value);
+int bMB_FeedReceivedData(int no, uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */
