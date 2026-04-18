@@ -43,7 +43,6 @@
 #include "b_mod_protocol.h"
 #include "b_mod_sda.h"
 #include "b_mod_sdb.h"
-#include "b_mod_sdc.h"
 #include "b_mod_utc.h"
 #include "b_mod_fifo.h"
 #include "b_mod_shell.h"
@@ -56,6 +55,8 @@
 #include "b_mod_trace.h"
 #include "b_mod_heap.h"
 #include "b_mod_qpn.h"
+#include "b_mod_timer.h"
+
 #ifdef __cplusplus
 	}
 #endif 

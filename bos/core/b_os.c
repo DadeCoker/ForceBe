@@ -78,9 +78,7 @@
  * \defgroup BOS_Private_Variables
  * \{
  */
-static bPollingFunc_t bPollingFuncHead = {
-    .pnext = NULL,
-}; 
+static bPollingFunc_t *pPollingFuncHead = NULL;
 
 /**
  * \}
@@ -99,7 +97,19 @@ static bPollingFunc_t bPollingFuncHead = {
  * \defgroup BOS_Private_Functions
  * \{
  */
-
+static int _bPollingFuncIS_Exist(bPollingFunc_t *pfunc)
+{
+    bPollingFunc_t *ptmp = pPollingFuncHead; 
+    while(ptmp)
+    {
+        if(ptmp == pfunc)
+        {
+            return 0;
+        }
+        ptmp = ptmp->pnext;
+    }
+    return -1;
+}
 
 /**
  * \}
@@ -141,8 +151,20 @@ int bRegistPollingFunc(bPollingFunc_t *pfunc)
     {
         return -1;
     }
-    pfunc->pnext = bPollingFuncHead.pnext;
-    bPollingFuncHead.pnext = pfunc;
+    if(_bPollingFuncIS_Exist(pfunc) == 0)
+    {
+        return 0;
+    }
+    pfunc->pnext = NULL;
+    if(pPollingFuncHead == NULL)
+    {
+        pPollingFuncHead = pfunc;
+    }
+    else
+    {
+        pfunc->pnext = pPollingFuncHead->pnext;
+        pPollingFuncHead->pnext = pfunc;
+    }
     return 0;
 }
 
@@ -157,40 +179,7 @@ int bRegistPollingFunc(bPollingFunc_t *pfunc)
  */
 int bExec()
 {
-    bPollingFunc_t *ptmp = bPollingFuncHead.pnext;  
-#if _BATTERY_ENABLE
-    BOS_PERIODIC_TASK(bBatteryCore, _BATTERY_D_CYCLE);
-#endif  
-
-#if _ERROR_MANAGE_ENABLE
-    BOS_PERIODIC_TASK(bErrorCore, 1000);
-#endif
-
-#if _XMODEM128_ENABLE
-    bXmodem128Timeout();
-#endif
-
-#if _YMODEM_ENABLE
-    bYmodemTimeout();
-#endif
-
-#if _FLEXIBLEBUTTON_ENABLE
-    BOS_PERIODIC_TASK(flex_button_scan, 20);
-#endif
-
-#if _EVENT_MANAGE_ENABLE
-    bEventCore();
-#endif    
-
-#if _QPN_ENABLE
-    BOS_PERIODIC_TASK(bQPN_ISR_TimerCompaVect, QPN_PER_SEC);
-    BOS_PERIODIC_TASK(bQPN_Run, QPN_PER_SEC);
-#endif
-
-#if _UGUI_ENABLE
-    BOS_PERIODIC_TASK(bGUI_TouchExec, 10);
-    UG_Update();
-#endif   
+    bPollingFunc_t *ptmp = pPollingFuncHead;    
     while(ptmp)
     {
         if(ptmp->pPollingFunction)

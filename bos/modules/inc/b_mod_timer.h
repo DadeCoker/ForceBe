@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_mod_sdc.h
+ * \file        b_mod_timer.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/05/16
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,16 +28,17 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_MOD_SDC_H__
-#define __B_MOD_SDC_H__
+#ifndef __B_MOD_TIMER_H__
+#define __B_MOD_TIMER_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
-#if (_SAVE_DATA_ENABLE && _SAVE_DATA_C_ENABLE)
+#include "b_config.h"  
+#if _TIMER_ENABLE
+
 /** 
  * \addtogroup BABYOS
  * \{
@@ -49,57 +50,47 @@
  */
 
 /** 
- * \addtogroup SAVE_DATA
+ * \addtogroup TIMER
  * \{
  */
 
 /** 
- * \defgroup SDC_Exported_TypesDefinitions
+ * \defgroup TIMER_Exported_TypesDefinitions
  * \{
  */
  
-///< |head(1byte)|content|...
-typedef struct
+typedef void (*pTimerHandler)(void); 
+
+typedef struct bSoftTimerStruct
 {
-    uint32_t address;
-    uint32_t size;
-    uint32_t esize;
-    uint32_t usize;  
-}bSDC_Struct_t;
+    uint8_t repeat;
+    uint32_t tick;
+    uint32_t period;
+    pTimerHandler handler;
+    struct bSoftTimerStruct *next;
+}bSoftTimerStruct_t;
 
-
-
-
-typedef struct 
-{
-    uint8_t flag;
-    uint32_t index;
-    uint32_t max_num;
-    bSDC_Struct_t st;
-    uint8_t dev_no;
-}bSDC_Info_t;
-
+typedef bSoftTimerStruct_t      bSoftTimerInstance_t;
 
 /**
  * \}
  */
    
 /** 
- * \defgroup SDC_Exported_Defines
+ * \defgroup TIMER_Exported_Defines
  * \{
  */
 
-
-#define bSDC_HEAD       0XCC
-
-
+#define bTIMER_INSTANCE(name, _period, _repeat)     bSoftTimerInstance_t name = {\
+                                                                .period = _period,\
+                                                                .repeat = _repeat};
 
 /**
  * \}
  */
    
 /** 
- * \defgroup SDC_Exported_Macros
+ * \defgroup TIMER_Exported_Macros
  * \{
  */
    
@@ -108,7 +99,7 @@ typedef struct
  */
    
 /** 
- * \defgroup SDC_Exported_Variables
+ * \defgroup TIMER_Exported_Variables
  * \{
  */
    
@@ -117,16 +108,21 @@ typedef struct
  */
    
 /** 
- * \defgroup SDC_Exported_Functions
+ * \defgroup TIMER_Exported_Functions
  * \{
  */
-int bSDC_Regist(bSDC_Struct_t, uint8_t dev_no);
-int bSDC_Write(int no, uint8_t *pbuf);
-int bSDC_Read(int no, uint32_t index, uint8_t *pbuf);
+///< pTimerInstance \ref bTIMER_INSTANCE
+int bSoftTimerStart(bSoftTimerInstance_t *pTimerInstance, pTimerHandler handler);
+int bSoftTimerStop(bSoftTimerInstance_t *pTimerInstance);
+int bSoftTimerReset(bSoftTimerInstance_t *pTimerInstance);
+int bSoftTimerSetPeriod(bSoftTimerInstance_t *pTimerInstance, uint32_t ms);
 /**
  * \}
  */
  
+/**
+ * \}
+ */ 
 
 /**
  * \}
@@ -136,17 +132,13 @@ int bSDC_Read(int no, uint32_t index, uint8_t *pbuf);
  * \}
  */
 
-/**
- * \}
- */
- 
 #endif
 
 #ifdef __cplusplus
 	}
 #endif
-
+ 
 #endif  
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 

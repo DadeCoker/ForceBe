@@ -68,7 +68,7 @@ typedef struct
     uint8_t dev_no;
 }bSDB_Info_t;
 
-
+typedef bSDB_Info_t     bSDB_Instance_t;
 /**
  * \}
  */
@@ -81,7 +81,11 @@ typedef struct
 
 #define bSDB_HEAD       0XBB
 
-
+#define bSDB_INSTANCE(name, addr, _usize, _dev_no)    bSDB_Instance_t name = {\
+                                                                    .flag = bSDB_HEAD,\
+                                                                    .address = addr,\
+                                                                    .usize = _usize,\
+                                                                    .dev_no = _dev_no};
 
 /**
  * \}
@@ -109,9 +113,9 @@ typedef struct
  * \defgroup SDB_Exported_Functions
  * \{
  */
-int bSDB_Regist(uint32_t address, uint32_t usize, uint8_t dev_no);
-int bSDB_Write(int no, uint8_t *pbuf);
-int bSDB_Read(int no, uint8_t *pbuf);
+///< pSDB_Instance \ref bSDB_INSTANCE
+int bSDB_Write(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf);
+int bSDB_Read(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf);
 /**
  * \}
  */

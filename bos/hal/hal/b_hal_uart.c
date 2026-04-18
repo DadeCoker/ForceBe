@@ -74,11 +74,13 @@
  * \defgroup UART_Private_Variables
  * \{
  */
-static bHalUartRxInfo_t bHalUartRxInfoHead = {
-    .pnext = NULL,
+static bHalUartRxInfo_t *pHalUartRxInfoHead = NULL;
+
+static bPollingFunc_t bHalUartRxPollingFunc = {
+    .pPollingFunction = NULL,
 };
 
-static bPollingFunc_t bHalUartRxPollingFunc;
+
 /**
  * \}
  */
@@ -102,7 +104,7 @@ static bPollingFunc_t bHalUartRxPollingFunc;
 static void _bHalUartDetectIdle()
 {
     uint32_t c_tick = bUtilGetTick();
-    bHalUartRxInfo_t *ptmp = bHalUartRxInfoHead.pnext;
+    bHalUartRxInfo_t *ptmp = pHalUartRxInfoHead;
     
     while(ptmp)
     {
@@ -130,6 +132,7 @@ static void _bHalUartDetectIdle()
                 }
             }
         }
+        ptmp = ptmp->pnext;
     }
 }
 
@@ -167,18 +170,23 @@ int bHalUartRxRegist(bHalUartRxInfo_t *puart_rx)
     {
         return -1;
     }
-    
-    if(bHalUartRxInfoHead.pnext == NULL)
+    if(pHalUartRxInfoHead == NULL)
     {
-        bHalUartRxPollingFunc.pnext = NULL;
+        pHalUartRxInfoHead = puart_rx;
+    }
+    else
+    {
+        puart_rx->pnext = pHalUartRxInfoHead->pnext;
+        pHalUartRxInfoHead->pnext = puart_rx;
+    }
+    
+    if(bHalUartRxPollingFunc.pPollingFunction == NULL)
+    {
         bHalUartRxPollingFunc.pPollingFunction = _bHalUartDetectIdle;
         bRegistPollingFunc(&bHalUartRxPollingFunc);
     }
-    
     puart_rx->index = 0;
     puart_rx->l_index = 0;
-    puart_rx->pnext = bHalUartRxInfoHead.pnext;
-    bHalUartRxInfoHead.pnext = puart_rx;
     return 0;
 }
 
@@ -191,7 +199,7 @@ int bHalUartRxRegist(bHalUartRxInfo_t *puart_rx)
  */ 
 void bHalUartRxIRQ_Handler(uint8_t no, uint8_t dat)
 {
-    bHalUartRxInfo_t *ptmp = bHalUartRxInfoHead.pnext;
+    bHalUartRxInfo_t *ptmp = pHalUartRxInfoHead;
     if(no >= B_HAL_UART_NUMBER)
     {
         return;

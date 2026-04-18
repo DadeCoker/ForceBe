@@ -241,9 +241,9 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
 
-码云：<https://gitee.com/notrynohigh/BabyOS>
+码云（主仓库，开发者提交代码于dev分支，由管理员合并至master）：<https://gitee.com/notrynohigh/BabyOS>
 
-github：<https://github.com/notrynohigh/BabyOS>
+github（由notrynohigh同步）：<https://github.com/notrynohigh/BabyOS>
 
 
 

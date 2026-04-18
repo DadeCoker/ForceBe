@@ -81,8 +81,6 @@
  * \defgroup MODBUS_Private_Variables
  * \{
  */
-static bMB_Info_t bMB_InfoTable[_MODBUS_I_NUMBER];
-static uint32_t bMB_InfoIndex = 0;   
 static uint8_t bMB_SendBuff[_MODBUS_BUF_SIZE];
 
 static const uint8_t aucCRCHi[] = {
@@ -220,30 +218,10 @@ static int _bMB_CheckRTUWriteACK(uint8_t *psrc, uint16_t len)
  * \{
  */
  
-/**
- * \brief Create a MB instance
- * \param sf Pointer to the function to send the bytes
- * \param cb A Callback function to receive the response from the slave device
- * \retval Instance ID
- *          \arg >=0  valid
- *          \arg -1   invalid
- */
-int bMB_Regist(pMB_Send_t sf, pMB_Callback_t cb)
-{
-    if(bMB_InfoIndex >= _MODBUS_I_NUMBER || sf == NULL || cb == NULL)
-    {
-        return -1;    
-    }
-    bMB_InfoTable[bMB_InfoIndex].f = sf;
-    bMB_InfoTable[bMB_InfoIndex].cb = cb;
-    bMB_InfoIndex += 1;
-    return (bMB_InfoIndex - 1);
-}
-
 
 /**
  * \brief Modbus RTU Read Regiter
- * \param no Instance ID \ref bMB_Regist
+ * \param pModbusInstance Pointr to the modbus instance
  * \param addr Device address
  * \param func Function code
  * \param reg  Register address
@@ -252,10 +230,10 @@ int bMB_Regist(pMB_Send_t sf, pMB_Callback_t cb)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bMB_ReadRegs(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
+int bMB_ReadRegs(bModbusInstance_t *pModbusInstance, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
 {
     bMB_RTU_ReadRegs_t wd;
-    if(no < 0 || no >= bMB_InfoIndex)
+    if(pModbusInstance == NULL)
     {
         return -1;
     }
@@ -264,14 +242,14 @@ int bMB_ReadRegs(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
     wd.reg = L2B_B2L_16b(reg);
     wd.num = L2B_B2L_16b(num);
     wd.crc = _bMBCRC16((uint8_t *)&wd, sizeof(bMB_RTU_ReadRegs_t) - sizeof(wd.crc));
-    bMB_InfoTable[no].f((uint8_t *)&wd, sizeof(bMB_RTU_ReadRegs_t));
+    pModbusInstance->f((uint8_t *)&wd, sizeof(bMB_RTU_ReadRegs_t));
     return 0;
 }
 
 
 /**
  * \brief Modbus write regs
- * \param no Instance ID \ref bMB_Regist
+ * \param pModbusInstance Pointr to the modbus instance
  * \param addr Device address
  * \param func Function code
  * \param reg  Register address
@@ -281,7 +259,7 @@ int bMB_ReadRegs(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num)
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bMB_WriteRegs(int no, 
+int bMB_WriteRegs(bModbusInstance_t *pModbusInstance, 
                   uint8_t addr, 
                   uint8_t func, 
                   uint16_t reg, 
@@ -291,7 +269,7 @@ int bMB_WriteRegs(int no,
     bMB_RTU_WriteRegs_t *phead = (bMB_RTU_WriteRegs_t *)bMB_SendBuff;
     int i = 0;
     uint16_t tmp_len = 0;
-    if(no < 0 || no >= bMB_InfoIndex || reg_value == NULL)
+    if(pModbusInstance == NULL || reg_value == NULL)
     {
         return -1;
     }
@@ -307,13 +285,13 @@ int bMB_WriteRegs(int no,
     }
     tmp_len = sizeof(bMB_RTU_WriteRegs_t) - 1 + phead->len;
     ((uint16_t *)&bMB_SendBuff[tmp_len])[0] = _bMBCRC16(bMB_SendBuff, tmp_len);
-    bMB_InfoTable[no].f(bMB_SendBuff, tmp_len + 2);
+    pModbusInstance->f(bMB_SendBuff, tmp_len + 2);
     return 0;
 }
 
 
 
-int bMB_FeedReceivedData(int no, uint8_t *pbuf, uint16_t len)
+int bMB_FeedReceivedData(bModbusInstance_t *pModbusInstance, uint8_t *pbuf, uint16_t len)
 {
     bMB_SlaveDeviceData_t _data;
     int i = 0;
@@ -335,7 +313,7 @@ int bMB_FeedReceivedData(int no, uint8_t *pbuf, uint16_t len)
         {
             _data.result.r_result.reg_value[i] = L2B_B2L_16b(_data.result.r_result.reg_value[i]);
         }
-        bMB_InfoTable[no].cb(&_data);
+        pModbusInstance->cb(&_data);
         retval = 0;
     }
     else if(_bMB_CheckRTUWriteACK(pbuf, len) == 0)
@@ -344,7 +322,7 @@ int bMB_FeedReceivedData(int no, uint8_t *pbuf, uint16_t len)
         _data.result.w_result.func = pw->func;
         _data.result.w_result.reg = L2B_B2L_16b(pw->reg);
         _data.result.w_result.reg_num = L2B_B2L_16b(pw->num);
-        bMB_InfoTable[no].cb(&_data);
+        pModbusInstance->cb(&_data);
         retval = 0;
     }
     return retval;

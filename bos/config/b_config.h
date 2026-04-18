@@ -50,7 +50,7 @@
 #define HW_VERSION                  200310
 
 //<o> Firmware version
-#define FW_VERSION                  30200
+#define FW_VERSION                  30201
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
@@ -84,16 +84,12 @@
 #define _ERROR_Q_LENGTH          	5
 //</e>
 
-//<e> Event Manage Enable/Disable
+//<q> Event Manage Enable/Disable
 #define _EVENT_MANAGE_ENABLE       	0
-//<o> Event Queue Length
-#define _EVENT_Q_LENGTH          	5
-//</e>
+
 
 //<e> Modbus Enable/Disable
 #define _MODBUS_ENABLE           	0
-//<o> Modbus Instance Number
-#define _MODBUS_I_NUMBER          	1
 //<o> Modbus Buffer Size
 #define _MODBUS_BUF_SIZE            200
 //</e>
@@ -108,8 +104,6 @@
 //<1=> 1Byte
 //<2=> 2Bytes
 #define _PROTO_FLEN_SIZE            1 
-//<o> Protocol Instance Number
-#define _PROTO_I_NUMBER             1
 //<e> Encrypt Enable/Disable 
 #define _PROTO_ENCRYPT_ENABLE       0
 //<o> Secret Key 1
@@ -126,35 +120,19 @@
 //<e> Save Data Enable/Disable
 #define _SAVE_DATA_ENABLE         	0
 
-//<e> Save Data ClassA
-#define _SAVE_DATA_A_ENABLE         0
-//<o> ClassA Instance Number
-#define _SAVE_DATA_A_I_NUMBER       1
-//</e>
-//<e> Save Data ClassB
-#define _SAVE_DATA_B_ENABLE         0
-//<o> ClassB Instance Number
-#define _SAVE_DATA_B_I_NUMBER       1
-//</e>
-//<e> Save Data ClassC
-#define _SAVE_DATA_C_ENABLE         0
-//<o> ClassC Instance Number
-#define _SAVE_DATA_C_I_NUMBER       1
-//</e>
-//</e>
+//<q> Save Data ClassA
+#define _SAVE_DATA_A_ENABLE         1
 
+//<q> Save Data ClassB
+#define _SAVE_DATA_B_ENABLE         1
+
+//</e>
 
 //<q> KV Enable/Disable
 #define _KV_ENABLE             	    0
 
-
-
-//<e> FIFO Enable/Disable
+//<q> FIFO Enable/Disable
 #define _FIFO_ENABLE             	0
-//<o> FIFO Instance Number
-#define _FIFO_I_NUMBER              1
-//</e>
-
 
 //<q> XMODEM128 Enable/Disable
 #define _XMODEM128_ENABLE           0
@@ -179,6 +157,9 @@
 #define _EX_HEAP_ADDRESS            0xC0000000
 //</e>
 //</e>
+
+//<q> Soft-timer Enable/Disable
+#define _TIMER_ENABLE               0
 
 
 //</h>

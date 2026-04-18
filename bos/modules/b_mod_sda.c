@@ -84,12 +84,6 @@
  * \{
  */
 
-static bSDA_Info_t bSDA_InfoTable[_SAVE_DATA_A_I_NUMBER];
-static uint8_t bSDA_InfoIndex = 0;
-
-
-static const uint8_t uNumbers[6] = {60, 60, 24, 31, 12, 0xff};
-
 /**
  * \}
  */
@@ -107,117 +101,26 @@ static const uint8_t uNumbers[6] = {60, 60, 24, 31, 12, 0xff};
  * \defgroup SDA_Private_Functions
  * \{
  */
-static int _bSDA_CheckInfo(bSDA_Info_t *pinfo)
+static uint32_t _bSDA_CalAddress(bSDA_Instance_t *pSDA_Instance, uint32_t utc)
 {
-    if(pinfo->base_address >= pinfo->data_address)
-    {
-        return -1;
-    }
-    return 0;
-}
-
-
-static int _bSDA_GetTimeValue(uint8_t unit, uint32_t utc)
-{
-    bUTC_DateTime_t tm;
-    int retval = -1;
-    if(!IS_UNIT_VALID(unit))
-    {
-        return -1;
-    }
+    uint32_t address, num;
+    uint32_t unum = 0, uoff = 0;
     
-    bUTC2Struct( &tm, utc);
-    
-    switch(unit)
+    address = pSDA_Instance->st.fbase_address;
+    num = (utc % pSDA_Instance->st.total_time) / (pSDA_Instance->st.time_interval);
+    if(num == 0)
     {
-        case UNIT_SECOND:
-            retval = tm.second;
-            break;
-        case UNIT_MINUTE:
-            retval = tm.minute;
-            break;
-        case UNIT_HOUR:
-            retval = tm.hour;
-            break;
-        case UNIT_DAY:
-            retval = tm.day - 1;
-            break;
-        case UNIT_MONTH:
-            retval = tm.month - 1;
-            break;
-        case UNIT_YEAR:
-            retval = tm.year;
-            break;
-        default:
-            break;
+        unum = pSDA_Instance->un_number - 1;
+        uoff = pSDA_Instance->n_per_eu - 1;
     }
-    return retval;
-}
-
-
-
-static int _bSDA_CalOffset(bSDA_Info_t *pinfo, uint32_t utc, uint32_t *poffset)
-{
-    uint32_t tmp[UNIT_NUMBER];
-    int retval;
-    int8_t unit;
-    
-    unit = pinfo->st.min_unit;
-    tmp[unit] = pinfo->st.min_size;
-    unit += 1;
-    tmp[unit] = pinfo->un_number * pinfo->st.ferase_size;
-    while(unit != pinfo->st.total_unit)
+    else
     {
-        unit++;
-        tmp[unit] = uNumbers[unit - 1] * tmp[unit - 1];
+        num = num - 1;
+        unum = num / (pSDA_Instance->n_per_eu);
+        uoff = num % (pSDA_Instance->n_per_eu);
     }
-    
-    uint32_t offset = 0;
-    unit--;
-    while(unit >= pinfo->st.min_unit)
-    {
-        retval = _bSDA_GetTimeValue(unit, utc);
-        if(retval < 0)
-        {
-            return -1;
-        }
-		if(unit == pinfo->st.min_unit)
-		{
-			retval = retval / pinfo->st.min_number;
-		}
-        offset += (uint32_t)retval * tmp[unit]; 
-        unit--;
-    }
-    *poffset = offset;
-    return 0;
-}
-
-
-static int _bSDA_CalAddress(bSDA_Info_t *pinfo, uint32_t utc, uint32_t *paddr)
-{
-    uint32_t address;
-    uint32_t per_size = 0, offset = 0;
-    int retval;
-    
-    address = pinfo->data_address;
-    if(pinfo->st.total_number > 1)
-    {
-        per_size = pinfo->total_size / pinfo->st.total_number;
-        retval = _bSDA_GetTimeValue(pinfo->st.total_unit, utc);
-        retval = retval % pinfo->st.total_number;
-        address += retval * per_size;
-    }    
-    
-    if(pinfo->st.total_unit != pinfo->st.min_unit)
-    {
-        if(_bSDA_CalOffset(pinfo, utc, &offset) < 0)
-        {
-            return -1;
-        }
-        address += offset;
-    }
-    *paddr = address;
-    return 0;
+    address += unum * pSDA_Instance->st.fsector_size + uoff * pSDA_Instance->st.data_size;
+    return address;
 }
 
 
@@ -232,101 +135,53 @@ static int _bSDA_CalAddress(bSDA_Info_t *pinfo, uint32_t utc, uint32_t *paddr)
  */
 
 /**
- * \brief Create a SDA instance
- * \param st Information for Creating instance \ref bSDA_Struct_t
- * \param dev_no Device number
- * \retval Instance ID
- *          \arg >=0  valid
- *          \arg -1   invalid
+ * \brief Initialize bSDA instance
+ * \param pSDA_Instance Pointer to the bSDA instance
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
-int bSDA_Regist(bSDA_Struct_t st, uint8_t dev_no)
+int bSDA_Init(bSDA_Instance_t *pSDA_Instance)
 {
-    uint8_t unit = st.min_unit;
-    if(bSDA_InfoIndex >= _SAVE_DATA_A_I_NUMBER || (!IS_UNIT_VALID(st.min_unit)) || (!IS_UNIT_VALID(st.total_unit)))
+    if(pSDA_Instance == NULL)
     {
         return -1;
     }
-    
-    if(st.min_size > st.ferase_size)
+    if(pSDA_Instance->st.data_size > pSDA_Instance->st.fsector_size)
     {
         return -2;
     }
-
-    bSDA_Info_t *pinfo = &bSDA_InfoTable[bSDA_InfoIndex];
-    
-    pinfo->n_per_eu = st.ferase_size / st.min_size;
-    pinfo->un_number = ((uNumbers[st.min_unit] / st.min_number) + (pinfo->n_per_eu - 1)) / pinfo->n_per_eu;
-    
-    if(st.total_unit == st.min_unit)
-    {
-        pinfo->total_size = st.total_number * st.ferase_size;
-    }
-    else if(st.total_unit > st.min_unit)
-    {
-        unit = st.min_unit;
-        pinfo->total_size = pinfo->un_number * st.ferase_size;
-        unit++;
-        while(unit != st.total_unit)
-        {
-            pinfo->total_size = pinfo->total_size * uNumbers[unit];
-            unit++;
-        }
-        pinfo->total_size = pinfo->total_size * st.total_number;
-    }
-    else
-    {
-        return -1;
-    }
-    pinfo->total_size += st.ferase_size;
-    if(pinfo->total_size > st.fsize)
-    {
-        b_log_e("please rearrange total size %d-->%d\r\n", st.fsize, pinfo->total_size);
-        return -1;
-    }
-    pinfo->base_address = st.fbase_address;
-    pinfo->data_address = st.fbase_address + st.ferase_size;
-    pinfo->dev_no = dev_no;
-    pinfo->e_flag = 1;
-    memcpy(&(pinfo->st), &st, sizeof(bSDA_Struct_t));
-    b_log("peu:%d\tunn:%d\tba:%d\tts:%d\r\n", pinfo->n_per_eu, pinfo->un_number, pinfo->base_address, pinfo->total_size);
-    bSDA_InfoIndex += 1;
-    return (bSDA_InfoIndex - 1);
+    pSDA_Instance->n_per_eu = pSDA_Instance->st.fsector_size / pSDA_Instance->st.data_size;
+    pSDA_Instance->un_number = ((pSDA_Instance->st.total_time / pSDA_Instance->st.time_interval) + (pSDA_Instance->n_per_eu - 1)) / pSDA_Instance->n_per_eu;
+    pSDA_Instance->total_size = pSDA_Instance->un_number * pSDA_Instance->st.fsector_size;
+    b_log_e("sda total size %d\r\n", pSDA_Instance->total_size);
+    pSDA_Instance->e_flag = 1;
+    return 0;
 }
 
 
 /**
  * \brief Save data ClassA Write
- * \param no Instance ID \ref bSDA_Regist
+ * \param pSDA_Instance Pointer to the bSDA instance
  * \param utc Current time UTC_2000 (s)
  * \param pbuf Pointer to data buffer
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
+int bSDA_Write(bSDA_Instance_t *pSDA_Instance, uint32_t utc, uint8_t *pbuf)
 {
     uint32_t address = 0;
     int retval = -1;
     
-    if(pbuf == NULL || no >= bSDA_InfoIndex || no < 0)
+    if(pbuf == NULL || pSDA_Instance == NULL)
     {
         return -1;
     }
-    
-    bSDA_Info_t *pinfo = &bSDA_InfoTable[no];
-    
-    if(_bSDA_CheckInfo(pinfo) < 0)
-    {
-        return -1;
-    }
-  
-    if(_bSDA_CalAddress(pinfo, utc, &address) < 0)
-    {
-        return -1;
-    }
+    address = _bSDA_CalAddress(pSDA_Instance, utc);
 
     int d_fd = -1;
-    d_fd = bOpen(pinfo->dev_no, BCORE_FLAG_RW);
+    d_fd = bOpen(pSDA_Instance->dev_no, BCORE_FLAG_RW);
     if(d_fd < 0)
     {
         return -1;
@@ -335,23 +190,14 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
 	bCMD_Struct_t cmd_s;
 	cmd_s.param.erase.addr = address;
 	cmd_s.param.erase.num = 1;
-	
     bLseek(d_fd, address);
-    if(pinfo->st.total_unit == pinfo->st.min_unit)
+
+    if((address % (pSDA_Instance->st.fsector_size) == 0) || pSDA_Instance->e_flag == 1)
     {
         bCtl(d_fd, bCMD_ERASE, &cmd_s);
-        retval = bWrite(d_fd, pbuf, pinfo->st.min_size);
+        pSDA_Instance->e_flag = 0;
     }
-    else 
-    {
-        if((address % (pinfo->st.ferase_size) == 0) || ((address + pinfo->st.min_size) / pinfo->st.ferase_size) != (address / pinfo->st.ferase_size) 
-            || pinfo->e_flag == 1)
-        {
-            bCtl(d_fd, bCMD_ERASE, &cmd_s);
-            pinfo->e_flag = 0;
-        }
-        retval = bWrite(d_fd, pbuf, pinfo->st.min_size);
-    }
+    retval = bWrite(d_fd, pbuf, pSDA_Instance->st.data_size);
     bClose(d_fd);
     return retval;
 }
@@ -359,77 +205,60 @@ int bSDA_Write(int no, uint32_t utc, uint8_t *pbuf)
 
 /**
  * \brief Save data ClassA Read
- * \param no Instance ID \ref bSDA_Regist
+ * \param pSDA_Instance Pointer to the bSDA instance
  * \param utc Current time UTC_2000 (s)
  * \param pbuf Pointer to data buffer
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bSDA_Read(int no, uint32_t utc, uint8_t *pbuf)
+int bSDA_Read(bSDA_Instance_t *pSDA_Instance, uint32_t utc, uint8_t *pbuf)
 {
     uint32_t address = 0;
     int retval = -1;
     
-    if(pbuf == NULL || no >= bSDA_InfoIndex || no < 0)
+    if(pbuf == NULL || pSDA_Instance == NULL)
     {
         return -1;
     }
-    
-    bSDA_Info_t *pinfo = &bSDA_InfoTable[no];
-    if(_bSDA_CheckInfo(pinfo) < 0)
-    {
-        return -1;
-    }
-    
-    if(_bSDA_CalAddress(pinfo, utc, &address) < 0)
-    {
-        return -1;
-    }
-    
+    address = _bSDA_CalAddress(pSDA_Instance, utc);
     int d_fd = -1;
-    d_fd = bOpen(pinfo->dev_no, BCORE_FLAG_R);
+    d_fd = bOpen(pSDA_Instance->dev_no, BCORE_FLAG_R);
     if(d_fd < 0)
     {
         return -1;
     }
     bLseek(d_fd, address);
-    retval = bRead(d_fd, pbuf, pinfo->st.min_size);
+    retval = bRead(d_fd, pbuf, pSDA_Instance->st.data_size);
     bClose(d_fd);
     return retval;
 }
 
 /**
  * \brief Call this function after setting time
- * \param no Instance ID \ref bSDA_Regist
+ * \param pSDA_Instance Pointer to the bSDA instance
  * \param o_utc old UTC
  * \param n_utc new UTC
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bSDA_TimeChanged(int no, uint32_t o_utc, uint32_t n_utc)
+int bSDA_TimeChanged(bSDA_Instance_t *pSDA_Instance, uint32_t o_utc, uint32_t n_utc)
 {
     uint32_t address_o, address_n;
     
-    if(no >= bSDA_InfoIndex || no < 0)
+    if(pSDA_Instance == NULL)
     {
         return -1;
     }
-    bSDA_Info_t *pinfo = &bSDA_InfoTable[no];
-    if(_bSDA_CalAddress(pinfo, o_utc, &address_o) < 0)
-    {
-        return -1;
-    }
+
+    address_o = _bSDA_CalAddress(pSDA_Instance, o_utc);
+    address_n = _bSDA_CalAddress(pSDA_Instance, n_utc);
     
-    if(_bSDA_CalAddress(pinfo, n_utc, &address_n) < 0)
+
+    if(address_o / pSDA_Instance->st.fsector_size != address_n / pSDA_Instance->st.fsector_size)
     {
-        return -1;
-    }
-    
-    if(address_o / pinfo->st.ferase_size != address_n / pinfo->st.ferase_size)
-    {
-        pinfo->e_flag = 1;
+        pSDA_Instance->e_flag = 1;
     }
     return 0;
 }

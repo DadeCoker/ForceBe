@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -592,11 +593,6 @@
               <FilePath>..\bos\modules\b_mod_sdb.c</FilePath>
             </File>
             <File>
-              <FileName>b_mod_sdc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\modules\b_mod_sdc.c</FilePath>
-            </File>
-            <File>
               <FileName>b_mod_shell.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\modules\b_mod_shell.c</FilePath>
@@ -631,6 +627,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\modules\b_mod_qpn.c</FilePath>
             </File>
+            <File>
+              <FileName>b_mod_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\modules\b_mod_timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -648,6 +649,11 @@
               <FileName>b_hal_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\b_hal_gpio.c</FilePath>
             </File>
           </Files>
         </Group>

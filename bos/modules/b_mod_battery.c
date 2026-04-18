@@ -31,6 +31,7 @@
   
 /*Includes ----------------------------------------------*/ 
 #include "b_mod_battery.h" 
+#include "b_utils.h"
 #if _BATTERY_ENABLE
 /** 
  * \addtogroup BABYOS
@@ -79,9 +80,13 @@
  * \defgroup BATTERY_Private_Variables
  * \{
  */
-static uint16_t bLowThreshold = _BATTERY_THRESHOLD;  
-static uint8_t bBatteryStatus = BATTERY_STA_NORMAL;
+static uint8_t bBatteryStatus = BATTERY_STA_LOW;
 static uint16_t bBatteryVoltage = 0;
+
+static pBatteryGetmV_t bpBatteryGetmV = NULL; 
+static bPollingFunc_t BatteryPollFunc = {
+    .pPollingFunction = NULL,
+};
 /**
  * \}
  */
@@ -99,7 +104,44 @@ static uint16_t bBatteryVoltage = 0;
  * \defgroup BATTERY_Private_Functions
  * \{
  */
-   
+static void _bBatteryCalculate()
+{
+    uint32_t mv = 0;
+    uint16_t min_tmp = 0xffff, max_tmp = 0, tmp = 0, i;
+    static uint32_t tick = (uint32_t)(0 - MS2TICKS(_BATTERY_D_CYCLE));
+    if(bUtilGetTick() - tick >= MS2TICKS(_BATTERY_D_CYCLE))
+    {
+        tick = bUtilGetTick();
+        for(i = 0;i < 5;i++)
+        {
+            if(bpBatteryGetmV)
+            {
+                tmp = bpBatteryGetmV();
+            }
+            mv += tmp;
+            if(tmp > max_tmp)
+            {
+                max_tmp = tmp;
+            }
+            if(tmp < min_tmp)
+            {
+                min_tmp = tmp;
+            }
+        }
+        tmp = (mv - min_tmp - max_tmp) / 3;
+
+        if(tmp >= _BATTERY_THRESHOLD)
+        {
+            bBatteryStatus = BATTERY_STA_NORMAL;
+        }
+        else
+        {
+            bBatteryStatus = BATTERY_STA_LOW;
+        }
+        bBatteryVoltage = tmp;
+    }
+} 
+
 /**
  * \}
  */
@@ -108,63 +150,18 @@ static uint16_t bBatteryVoltage = 0;
  * \addtogroup BATTERY_Exported_Functions
  * \{
  */
-/**
- * \brief Get Voltage (mV)
- * \param pmV Pointer to value
- * \retval Result
- *          \arg 0  OK
- *          \arg -1 ERR
- */ 
-#if __GNUC__ 
-int __attribute__((weak)) bBatteryGetmV(uint16_t *pmV)
-#else
-__weak int bBatteryGetmV(uint16_t *pmV)
-#endif
+int bBatteryInit(pBatteryGetmV_t f)
 {
-    if(pmV == NULL)
+    bpBatteryGetmV = f;
+    if(BatteryPollFunc.pPollingFunction == NULL)
     {
-        return -1;    
-	}
-    *pmV = bLowThreshold;
+        BatteryPollFunc.pPollingFunction = _bBatteryCalculate;
+        bRegistPollingFunc(&BatteryPollFunc);
+    }
     return 0;
 }
 
-/**
- * \brief Read V and compare with bLowThreshold \ref _BATTERY_THRESHOLD
- */
-void bBatteryCore()
-{
-    uint32_t mv = 0;
-    uint16_t min_tmp = 0xffff, max_tmp = 0, tmp, i;
-    
-    for(i = 0;i < 5;i++)
-    {
-        if(bBatteryGetmV(&tmp) < 0)
-        {
-            return;
-        }
-        mv += tmp;
-        if(tmp > max_tmp)
-        {
-            max_tmp = tmp;
-        }
-        if(tmp < min_tmp)
-        {
-            min_tmp = tmp;
-        }
-    }
-    tmp = (mv - min_tmp - max_tmp) / 3;
 
-    if(tmp >= bLowThreshold)
-    {
-        bBatteryStatus = BATTERY_STA_NORMAL;
-    }
-    else
-    {
-        bBatteryStatus = BATTERY_STA_LOW;
-    }
-    bBatteryVoltage = tmp;
-}
 
 
 /**

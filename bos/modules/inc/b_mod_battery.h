@@ -59,7 +59,7 @@
  * \defgroup BATTERY_Exported_TypesDefinitions
  * \{
  */
-   
+typedef uint16_t (*pBatteryGetmV_t)(void);
 /**
  * \}
  */
@@ -109,14 +109,9 @@
  * \{
  */
  
-int bBatteryGetmV(uint16_t *pval);
+int bBatteryInit(pBatteryGetmV_t f);
 uint8_t bBatGetStatus(void);
 uint16_t bBatGetVoltageValue(void);
-
-
-
-///<Called in bExec()
-void bBatteryCore(void);
 
 /**
  * \}

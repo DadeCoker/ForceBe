@@ -137,10 +137,10 @@ typedef struct
  * \defgroup PROTOCOL_Exported_Functions
  * \{
  */
-int bProtocolRegist(bProtoID_t id, pdispatch f);
-int bProtocolSetID(int no, bProtoID_t id);
-int bProtocolParse(int no, uint8_t *pbuf, bProtoLen_t len);
-int bProtocolPack(int no, uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *pbuf);
+int bProtocolInit(bProtoID_t id, pdispatch f);
+int bProtocolSetID(bProtoID_t id);
+int bProtocolParse(uint8_t *pbuf, bProtoLen_t len);
+int bProtocolPack(uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *pbuf);
 /**
  * \}
  */

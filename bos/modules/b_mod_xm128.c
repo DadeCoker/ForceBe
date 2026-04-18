@@ -89,6 +89,11 @@ static psend pSendByte = NULL;
 static uint8_t Xmodem128Stat = XM_S_NULL;
 static uint32_t XmTick = 0;
 
+static bPollingFunc_t XmodemPollFunc = {
+    .pPollingFunction = NULL,
+};
+
+
 /**
  * \}
  */
@@ -138,6 +143,33 @@ static int _bXmodem128ISValid(uint8_t *pbuf, uint8_t len)
     return 0;
 }
 
+static void _bXmodem128Timeout()
+{
+    static uint8_t s_count = 0;
+    if(Xmodem128Stat == XM_S_NULL)
+    {
+        return;
+    }
+    if(bUtilGetTick() - XmTick > MS2TICKS(3000))
+    {
+        XmTick = bUtilGetTick();
+        if(Xmodem128Stat == XM_S_WAIT_START && s_count < 3)
+        {
+            Xmodem128Stat = XM_S_NULL;
+            bXmodem128Start();
+            s_count += 1;
+        }
+        else
+        {
+            if(pCallback != NULL)
+            {
+                pCallback(0, NULL);
+            }
+            s_count = 0;
+            Xmodem128Stat = XM_S_NULL;
+        }
+    }
+}
 
 
 /**
@@ -158,6 +190,11 @@ int bXmodem128Init(pcb_t fcb, psend fs)
     pCallback = fcb;
     pSendByte = fs;
     Xmodem128Stat = XM_S_NULL;
+    if(XmodemPollFunc.pPollingFunction == NULL)
+    {
+        XmodemPollFunc.pPollingFunction = _bXmodem128Timeout;
+        bRegistPollingFunc(&XmodemPollFunc);
+    }
     return 0;
 }
 
@@ -249,35 +286,6 @@ int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
     }
     return 0;
 }
-
-void bXmodem128Timeout()
-{
-    static uint8_t s_count = 0;
-    if(Xmodem128Stat == XM_S_NULL)
-    {
-        return;
-    }
-    if(bUtilGetTick() - XmTick > MS2TICKS(3000))
-    {
-        XmTick = bUtilGetTick();
-        if(Xmodem128Stat == XM_S_WAIT_START && s_count < 3)
-        {
-            Xmodem128Stat = XM_S_NULL;
-            bXmodem128Start();
-            s_count += 1;
-        }
-        else
-        {
-            if(pCallback != NULL)
-            {
-                pCallback(0, NULL);
-            }
-            s_count = 0;
-            Xmodem128Stat = XM_S_NULL;
-        }
-    }
-}
-
 
 
 /**

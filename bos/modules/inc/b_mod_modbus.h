@@ -143,7 +143,8 @@ typedef struct
     pMB_Send_t f;
     pMB_Callback_t cb;
 }bMB_Info_t;
-   
+
+typedef bMB_Info_t    bModbusInstance_t;
 /**
  * \}
  */
@@ -152,9 +153,10 @@ typedef struct
  * \defgroup MODBUS_Exported_Defines
  * \{
  */
-#ifndef NULL
-#define NULL ((void *)0)   
-#endif
+
+#define bMODBUS_INSTANCE(name, pSendData, pCallback)       bModbusInstance_t name = {\
+                                                                                    .f = pSendData,\
+                                                                                    .cb = pCallback};
 
 /**
  * \}
@@ -182,15 +184,15 @@ typedef struct
  * \defgroup MODBUS_Exported_Functions
  * \{
  */
-int bMB_Regist(pMB_Send_t sf, pMB_Callback_t cb);
-int bMB_ReadRegs(int no, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num);
-int bMB_WriteRegs(int no, 
+///< pModbusInstance \ref  bMODBUS_INSTANCE
+int bMB_ReadRegs(bModbusInstance_t *pModbusInstance, uint8_t addr, uint8_t func, uint16_t reg, uint16_t num);
+int bMB_WriteRegs(bModbusInstance_t *pModbusInstance, 
                   uint8_t addr, 
                   uint8_t func, 
                   uint16_t reg, 
                   uint16_t num, 
                   uint16_t *reg_value);
-int bMB_FeedReceivedData(int no, uint8_t *pbuf, uint16_t len);
+int bMB_FeedReceivedData(bModbusInstance_t *pModbusInstance, uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */

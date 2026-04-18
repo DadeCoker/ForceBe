@@ -31,6 +31,7 @@
    
 /*Includes ----------------------------------------------*/
 #include "b_mod_error.h"
+#include "b_utils.h"
 #if _ERROR_MANAGE_ENABLE
 /** 
  * \addtogroup BABYOS
@@ -80,9 +81,11 @@
  */
 static bErrorInfo_t bErrorRecordL0[_ERROR_Q_LENGTH];   
 static bErrorInfo_t bErrorRecordL1[_ERROR_Q_LENGTH];
-
-static uint32_t bErrorTick = 0;
 static pecb bFcb = NULL; 
+
+static bPollingFunc_t ErrorPollFunc = {
+    .pPollingFunction = NULL,
+};
 /**
  * \}
  */
@@ -100,7 +103,44 @@ static pecb bFcb = NULL;
  * \defgroup ERROR_Private_Functions
  * \{
  */
-   
+
+/**
+ * \brief Find out an error that should be handled
+ */
+static void _bErrorCore()
+{
+    uint32_t i = 0;
+    static uint32_t tick = 0;
+    if(bUtilGetTick() - tick >= 1000)
+    {
+        tick = bUtilGetTick();
+        for(i = 0;i < _ERROR_Q_LENGTH;i++)
+        {
+            if(bErrorRecordL0[i].err != INVALID_ERR && bErrorRecordL0[i].s_tick == 0)
+            {
+                bErrorRecordL0[i].s_tick = tick;
+                if(bFcb != NULL)
+                {
+                    bFcb(&bErrorRecordL0[i]);
+                }
+            }
+            
+            if(bErrorRecordL1[i].err != INVALID_ERR)
+            {
+                if(bErrorRecordL1[i].s_tick == 0
+                    || ((tick - bErrorRecordL1[i].s_tick) > bErrorRecordL1[i].d_tick))
+                {
+                    bErrorRecordL1[i].s_tick = tick;
+                    if(bFcb != NULL)
+                    {
+                        bFcb(&bErrorRecordL1[i]);
+                    }
+                }
+            } 
+        } 
+    }
+}
+
 /**
  * \}
  */
@@ -122,6 +162,11 @@ int bErrorInit(pecb cb)
     {
     	bErrorRecordL0[i].err = INVALID_ERR;
         bErrorRecordL1[i].err = INVALID_ERR;
+    }
+    if(ErrorPollFunc.pPollingFunction == NULL)
+    {
+        ErrorPollFunc.pPollingFunction = _bErrorCore;
+        bRegistPollingFunc(&ErrorPollFunc);
     }
     return 0;
 }
@@ -152,7 +197,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
         {
             if(bErrorRecordL0[i].err == err)
             {
-                tick = bErrorTick - bErrorRecordL0[i].s_tick;
+                tick = bUtilGetTick() - bErrorRecordL0[i].s_tick;
                 if(tick > bErrorRecordL0[i].d_tick)
                 {
                     bErrorRecordL0[i].s_tick = 0;
@@ -165,7 +210,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
         {
             bErrorRecordL0[index].err = err;
             bErrorRecordL0[index].utc = utc;
-            bErrorRecordL0[index].d_tick = interval;
+            bErrorRecordL0[index].d_tick = MS2TICKS(interval * 1000);
             bErrorRecordL0[index].s_tick = 0;
             index = (index + 1) % _ERROR_Q_LENGTH;
         }
@@ -188,7 +233,7 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
             if(valid_index < _ERROR_Q_LENGTH)
             {
                 bErrorRecordL1[valid_index].err = err;
-                bErrorRecordL1[valid_index].d_tick = interval;
+                bErrorRecordL1[valid_index].d_tick = MS2TICKS(interval * 1000);
                 bErrorRecordL1[valid_index].s_tick = 0;
                 bErrorRecordL1[valid_index].utc = utc;
             }
@@ -205,41 +250,6 @@ int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
     return 0;
 }    
 
-/**
- * \brief Find out an error that should be handled
- */
-void bErrorCore()
-{
-    uint32_t i = 0;
-    uint32_t tick = 0;
-
-    bErrorTick++;
-    for(i = 0;i < _ERROR_Q_LENGTH;i++)
-    {
-        if(bErrorRecordL0[i].err != INVALID_ERR && bErrorRecordL0[i].s_tick == 0)
-        {
-            bErrorRecordL0[i].s_tick = bErrorTick;
-            if(bFcb != NULL)
-            {
-                bFcb(&bErrorRecordL0[i]);
-            }
-        }
-        
-        if(bErrorRecordL1[i].err != INVALID_ERR)
-        {
-            tick = bErrorTick - bErrorRecordL1[i].s_tick;
-            if(bErrorRecordL1[i].s_tick == 0
-                || (tick > bErrorRecordL1[i].d_tick))
-            {
-                bErrorRecordL1[i].s_tick = bErrorTick;
-                if(bFcb != NULL)
-                {
-                    bFcb(&bErrorRecordL1[i]);
-                }
-            }
-        } 
-    } 
-}
 
 /**
  * \brief Remove error from queue

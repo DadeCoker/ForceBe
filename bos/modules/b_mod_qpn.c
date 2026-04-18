@@ -32,6 +32,7 @@
   
 /*Includes ----------------------------------------------*/ 
 #include "b_mod_qpn.h"
+#include "b_utils.h"
 #if _QPN_ENABLE
 /*Includes AO -------------------------------------------*/
 #include "blinky.h"    //blinky  Examples/qpn/
@@ -95,6 +96,10 @@ static const AO_InitFunc_t AO_InitFuncTable[] = {
     NULL,
 };
 
+static bPollingFunc_t QPN_CorePollFunc = {
+    .pPollingFunction = NULL,
+};
+
 /**
  * \}
  */
@@ -112,7 +117,17 @@ static const AO_InitFunc_t AO_InitFuncTable[] = {
  * \defgroup QPN_Private_Functions
  * \{
  */
-   
+static void _bQPN_Run() 
+{
+    static uint32_t tick = 0;
+    if(bUtilGetTick() - tick >= QPN_PER_SEC)
+    {
+        tick = bUtilGetTick();
+        QF_tickXISR(0U); /* process time events for rate 0 */
+        QF_run(); /* transfer control to QF-nano */
+    }
+}
+
 /**
  * \}
  */
@@ -129,20 +144,17 @@ void bQPN_Init()
         AO_InitFuncTable[i]();
         i++;
     }
+    if(QPN_CorePollFunc.pPollingFunction == NULL)
+    {
+        QPN_CorePollFunc.pPollingFunction = _bQPN_Run;
+        bRegistPollingFunc(&QPN_CorePollFunc);
+    }    
 	QF_init(Q_DIM(QF_active));      /* initialize the QF-nano framework */
 	QF_Ready_run();
 }
 
 
-int bQPN_Run() 
-{
-    return QF_run(); /* transfer control to QF-nano */
-}
 
-void bQPN_ISR_TimerCompaVect()
-{
-	QF_tickXISR(0U); /* process time events for rate 0 */
-}
 
 /**
  * \}

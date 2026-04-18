@@ -84,8 +84,7 @@ const static uint32_t Keys[4] = {_SECRET_KEY1, _SECRET_KEY2, _SECRET_KEY3, _SECR
  * \{
  */
 
-static bProtocolInfo_t  bProtocolInfo[_PROTO_I_NUMBER];
-static uint8_t bProtocolInfoIndex = 0;
+static bProtocolInfo_t  bProtocolInfo;
 /**
  * \}
  */
@@ -191,48 +190,46 @@ static void _bProtocolDecrypt(uint8_t *text, uint32_t size)
  */
 
 /**
- * \brief Create a protocol instance
+ * \brief Initialize protocol instance
  * \param id system id
  * \param f Dispatch Function \ref pdispatch
- * \retval Instance ID
- *          \arg >=0  valid
- *          \arg -1   invalid
+ * \retval Result
+ *          \arg 0  OK
+ *          \arg -1 ERR
  */
-int bProtocolRegist(bProtoID_t id, pdispatch f)
+int bProtocolInit(bProtoID_t id, pdispatch f)
 {
-    if(bProtocolInfoIndex >= _PROTO_I_NUMBER || f == NULL)
+    if(f == NULL)
     {
         return -1;
     }
-    bProtocolInfo[bProtocolInfoIndex].id = id;
-    bProtocolInfo[bProtocolInfoIndex].f = f;
-    bProtocolInfoIndex += 1;
-    return (bProtocolInfoIndex - 1);
+    bProtocolInfo.id = id;
+    bProtocolInfo.f = f;
+    return 0;
 }
 
 
 /**
  * \brief Check ID and call dispatch function
- * \param no Protocol instance \ref bProtocolRegist
  * \param pbuf Pointer to data buffer
  * \param len Amount of data
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolParse(int no, uint8_t *pbuf, bProtoLen_t len)
+int bProtocolParse(uint8_t *pbuf, bProtoLen_t len)
 {
     bProtocolHead_t *phead = (bProtocolHead_t *)pbuf;
     int length;
     uint8_t crc;
-    if(pbuf == NULL || len < (sizeof(bProtocolHead_t) + 1) || no >= bProtocolInfoIndex || no < 0)
+    if(pbuf == NULL || len < (sizeof(bProtocolHead_t) + 1))
     {
         return -1;
     }
 #if _PROTO_ENCRYPT_ENABLE
     _bProtocolDecrypt(pbuf, len);
 #endif    
-    if(phead->head != PROTOCOL_HEAD || (phead->device_id != bProtocolInfo[no].id && (phead->device_id != INVALID_ID) && (bProtocolInfo[no].id != INVALID_ID)))
+    if(phead->head != PROTOCOL_HEAD || (phead->device_id != bProtocolInfo.id && (phead->device_id != INVALID_ID) && (bProtocolInfo.id != INVALID_ID)))
     {
         return -1;
     }
@@ -248,26 +245,21 @@ int bProtocolParse(int no, uint8_t *pbuf, bProtoLen_t len)
         b_log_e("crc error!%d %d", crc, pbuf[length - 1]);
         return -1;
     }
-    return bProtocolInfo[no].f(phead->cmd, &pbuf[sizeof(bProtocolHead_t)], phead->len - 1);
+    return bProtocolInfo.f(phead->cmd, &pbuf[sizeof(bProtocolHead_t)], phead->len - 1);
 }
 
 
 
 /**
- * \brief Call this function after system ID is changed
- * \param no Protocol instance \ref bProtocolRegist
+ * \brief Call this function after system ID changed
  * \param id System ID
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bProtocolSetID(int no, bProtoID_t id)
+int bProtocolSetID(bProtoID_t id)
 {
-    if(no >= bProtocolInfoIndex || no < 0)
-    {
-        return -1;
-    }
-    bProtocolInfo[no].id = id;
+    bProtocolInfo.id = id;
     return 0;
 }
 
@@ -275,7 +267,6 @@ int bProtocolSetID(int no, bProtoID_t id)
 
 /**
  * \brief pack and start a TX request
- * \param no Protocol instance \ref bProtocolRegist
  * \param cmd Protocol command
  * \param param Pointer to the command param
  * \param param_size size of the param
@@ -284,18 +275,18 @@ int bProtocolSetID(int no, bProtoID_t id)
  *          \arg >0 Amount of data in the pbuf
  *          \arg -1 ERR
  */
-int bProtocolPack(int no, uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *pbuf)
+int bProtocolPack(uint8_t cmd, uint8_t *param, bProtoLen_t param_size, uint8_t *pbuf)
 {
     int length = 0;
     bProtocolHead_t *phead;
 
-    if((param == NULL && param_size > 0) || no >= bProtocolInfoIndex || no < 0 || pbuf == NULL)
+    if((param == NULL && param_size > 0) || pbuf == NULL)
     {
         return -1;
     }
     phead = (bProtocolHead_t *)pbuf;
     phead->head = PROTOCOL_HEAD;
-    phead->device_id = bProtocolInfo[no].id;
+    phead->device_id = bProtocolInfo.id;
     phead->cmd = cmd;
     phead->len = 1 + param_size;
     memcpy(&pbuf[sizeof(bProtocolHead_t)], param, param_size);

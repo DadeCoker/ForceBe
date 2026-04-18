@@ -65,6 +65,8 @@ typedef struct
     volatile uint16_t r_index;
     volatile uint16_t w_index;
 }bFIFO_Info_t;
+
+typedef bFIFO_Info_t     bFIFO_Instance_t;
 /**
  * \}
  */
@@ -73,7 +75,11 @@ typedef struct
  * \defgroup FIFO_Exported_Defines
  * \{
  */
-
+#define bFIFO_INSTANCE(name, _pbuf, _size)          bFIFO_Instance_t name = {\
+                                                                        .pbuf = _pbuf,\
+                                                                        .size = _size,\
+                                                                        .r_index = 0,\
+                                                                        .w_index = 0};
 
 /**
  * \}
@@ -101,11 +107,11 @@ typedef struct
  * \defgroup FIFO_Exported_Functions
  * \{
  */
-int bFIFO_Regist(uint8_t *pbuf, uint16_t size);
-int bFIFO_Length(int no, uint16_t *plen);
-int bFIFO_Flush(int no);
-int bFIFO_Write(int no, uint8_t *pbuf, uint16_t size);
-int bFIFO_Read(int no, uint8_t *pbuf, uint16_t size);
+///< pFIFO_Instance \ref bFIFO_INSTANCE
+int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen);
+int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance);
+int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
+int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size);
 /**
  * \}
  */

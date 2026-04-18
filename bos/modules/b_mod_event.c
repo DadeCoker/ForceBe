@@ -78,7 +78,12 @@
  * \defgroup EVENT_Private_Variables
  * \{
  */
-static bEventInfo_t bEventInfoTable[_EVENT_Q_LENGTH];   
+static bEventInstance_t *pEventInstanceHead = NULL;  
+
+static bPollingFunc_t EventPollFunc = {
+    .pPollingFunction = NULL,
+};
+
 /**
  * \}
  */
@@ -96,7 +101,20 @@ static bEventInfo_t bEventInfoTable[_EVENT_Q_LENGTH];
  * \defgroup EVENT_Private_Functions
  * \{
  */
-   
+
+static void _bEventCore()
+{
+    bEventInfo_t *ptmp = pEventInstanceHead;
+    while(ptmp)
+    {
+        if(ptmp->trigger)
+        {
+            ptmp->trigger = 0;
+            ptmp->phandler();
+        }
+        ptmp = ptmp->pnext;
+    }
+} 
 /**
  * \}
  */
@@ -107,93 +125,69 @@ static bEventInfo_t bEventInfoTable[_EVENT_Q_LENGTH];
  */
  
 /**
- * \brief Register an event
- * \param number Event number same as priority
- * \param phandler The Callback function
+ * \brief Initialize event instance
+ * \param pInstance Pointer to the event instance
+ * \param handler The Callback function
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */ 
-int bEventRegist(uint8_t number, pEventHandler_t phandler)
-{
-    static uint8_t init = 0;
-    uint8_t i = 0;
-    
-    if(number >= _EVENT_Q_LENGTH || phandler == NULL)
+int bEventInit(bEventInstance_t *pInstance, pEventHandler_t handler)
+{ 
+    if(handler == NULL || pInstance == NULL)
     {
         return -1;
     }
-    
-    if(init == 0)
+    pInstance->pnext = NULL;
+    if(pEventInstanceHead == NULL)
     {
-        for(i = 0;i < _EVENT_Q_LENGTH;i++)
-        {
-            bEventInfoTable[i].enable = 0;
-        }
-        init = 1;
+        pEventInstanceHead = pInstance;
+    }
+    else
+    {
+        pInstance->pnext = pEventInstanceHead->pnext;
+        pEventInstanceHead->pnext = pInstance;
     }
     
-    if(bEventInfoTable[number].enable == 1)
+    if(EventPollFunc.pPollingFunction == NULL)
     {
-        return -1;
+        EventPollFunc.pPollingFunction = _bEventCore;
+        bRegistPollingFunc(&EventPollFunc);
     }
-    
-    bEventInfoTable[number].enable = 1;
-    bEventInfoTable[number].trigger = 0;
-    bEventInfoTable[number].phandler = phandler;
+    pInstance->trigger = 0;
+    pInstance->phandler = handler;
     return 0;
 } 
 
 
 /**
  * \brief Call this function after the event is generated
- * \param number Event number
+ * \param pInstance Pointer to the event instance
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bEventTrigger(uint8_t number)
+int bEventTrigger(bEventInstance_t *pInstance)
 {
-    if(number >= _EVENT_Q_LENGTH)
+    if(pInstance == NULL)
     {
         return -1;
     }  
-    
-    if(bEventInfoTable[number].enable == 0)
-    {
-        return -1;
-    }
-    
-    bEventInfoTable[number].trigger = 1;
+    pInstance->trigger = 1;
     return 0;
-}
-
-/**
- * \brief check and run callback
- */
-void bEventCore()
-{
-    uint8_t i = 0;
-    for(i = 0;i < _EVENT_Q_LENGTH;i++)
-    {
-        if(bEventInfoTable[i].trigger == 1 && bEventInfoTable[i].enable == 1)
-        {
-            bEventInfoTable[i].phandler();
-            bEventInfoTable[i].trigger = 0;
-        }
-    }
 }
 
 
 int bEventIsIdle()
 {
-    uint8_t i = 0;
-    for(i = 0;i < _EVENT_Q_LENGTH;i++)
+    bEventInfo_t *ptmp = pEventInstanceHead;
+    while(ptmp)
     {
-        if(bEventInfoTable[i].trigger == 1 && bEventInfoTable[i].enable == 1)
+        if(ptmp->trigger)
         {
             return -1;
         }
+        ptmp = ptmp->pnext;
     }
     return 0;  
 }

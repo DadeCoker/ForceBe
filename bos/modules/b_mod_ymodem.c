@@ -91,6 +91,9 @@ static pymsend pSendByte = NULL;
 static uint8_t YmodemStat = YM_S_NULL;
 static uint32_t YmTick = 0;
 
+static bPollingFunc_t YmodemPollFunc = {
+    .pPollingFunction = NULL,
+};
 /**
  * \}
  */
@@ -180,6 +183,48 @@ static int _bYmodemEnd()
     return 0;
 }
 
+static void _bYmodemTimeout()
+{
+    static uint8_t n_count = 0;
+    static uint8_t s_count = 0;
+    static uint8_t e_count = 0;
+    if(YmodemStat == YM_S_NULL)
+    {
+        return;
+    }
+    if(bUtilGetTick() - YmTick > MS2TICKS(2000))
+    {
+        YmTick = bUtilGetTick();
+        if(YmodemStat == YM_S_WAIT_NAME && n_count < 3)
+        {
+            YmodemStat = YM_S_NULL;
+            bYmodemStart();
+            n_count += 1;
+        }
+        else if(YmodemStat == YM_S_WAIT_START && s_count < 3)
+        {
+            _bYmodemStart();
+            s_count += 1;
+        }
+        else if(YmodemStat == YM_S_WAIT_END && e_count < 3)
+        {
+            _bYmodemEnd();
+            e_count += 1;
+        }
+        else
+        {
+            if(pCallback != NULL)
+            {
+                pCallback(0, 0, NULL, 0);
+            }
+            s_count = 0;
+            n_count = 0;
+            e_count = 0;
+            YmodemStat = YM_S_NULL;
+        }
+    }
+}
+
 
 /**
  * \}
@@ -199,6 +244,11 @@ int bYmodemInit(pymcb_t fcb, pymsend fs)
     pCallback = fcb;
     pSendByte = fs;
     YmodemStat = YM_S_NULL;
+    if(YmodemPollFunc.pPollingFunction == NULL)
+    {
+        YmodemPollFunc.pPollingFunction = _bYmodemTimeout;
+        bRegistPollingFunc(&YmodemPollFunc);
+    }
     return 0;
 }
 
@@ -317,47 +367,6 @@ int bYmodemParse(uint8_t *pbuf, uint16_t len)
     return 0;
 }
 
-void bYmodemTimeout()
-{
-    static uint8_t n_count = 0;
-    static uint8_t s_count = 0;
-    static uint8_t e_count = 0;
-    if(YmodemStat == YM_S_NULL)
-    {
-        return;
-    }
-    if(bUtilGetTick() - YmTick > MS2TICKS(2000))
-    {
-        YmTick = bUtilGetTick();
-        if(YmodemStat == YM_S_WAIT_NAME && n_count < 3)
-        {
-            YmodemStat = YM_S_NULL;
-            bYmodemStart();
-            n_count += 1;
-        }
-        else if(YmodemStat == YM_S_WAIT_START && s_count < 3)
-        {
-            _bYmodemStart();
-            s_count += 1;
-        }
-        else if(YmodemStat == YM_S_WAIT_END && e_count < 3)
-        {
-            _bYmodemEnd();
-            e_count += 1;
-        }
-        else
-        {
-            if(pCallback != NULL)
-            {
-                pCallback(0, 0, NULL, 0);
-            }
-            s_count = 0;
-            n_count = 0;
-            e_count = 0;
-            YmodemStat = YM_S_NULL;
-        }
-    }
-}
 
 
 

@@ -99,11 +99,6 @@ typedef void (*AO_InitFunc_t)(void);
  * \{
  */
 void bQPN_Init(void);
-
-
-///<Called in bExec()
-int bQPN_Run(void);
-void bQPN_ISR_TimerCompaVect(void);
 /**
  * \}
  */

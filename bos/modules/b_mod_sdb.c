@@ -83,8 +83,7 @@
  * \{
  */
 
-static bSDB_Info_t bSDB_InfoTable[_SAVE_DATA_B_I_NUMBER];
-static uint32_t bSDB_InfoIndex = 0;
+
 
 /**
  * \}
@@ -125,76 +124,52 @@ static uint8_t _bSDB_CalSUM(uint8_t *pbuf, uint32_t len)
  * \{
  */
 
-/**
- * \brief Create a SDB instance
- * \param address Specify base address
- * \param usize Size of saved data
- * \param dev_no Device number
- * \retval Instance ID
- *          \arg >=0  valid
- *          \arg -1   invalid
- */
-int bSDB_Regist(uint32_t address, uint32_t usize, uint8_t dev_no)
-{
-    if(bSDB_InfoIndex >= _SAVE_DATA_B_I_NUMBER || usize == 0)
-    {
-        return -1;    
-    }
-    bSDB_InfoTable[bSDB_InfoIndex].flag = bSDB_HEAD;
-    bSDB_InfoTable[bSDB_InfoIndex].usize = usize;
-    bSDB_InfoTable[bSDB_InfoIndex].address = address;
-    bSDB_InfoTable[bSDB_InfoIndex].dev_no = dev_no;
-    bSDB_InfoIndex += 1;
-    return (bSDB_InfoIndex - 1);
-}
-
-
 
 /**
  * \brief Save data ClassB Write
- * \param no Instance ID \ref bSDB_Regist
+ * \param pSDB_Instance Pointer to the SDB instance
  * \param pbuf Pointer to data buffer
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bSDB_Write(int no, uint8_t *pbuf)
+int bSDB_Write(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf)
 {
     uint8_t head = bSDB_HEAD, sum = 0;
     int retval = 0;
              
-    if(pbuf == NULL || no >= bSDB_InfoIndex || no < 0)
+    if(pbuf == NULL || pSDB_Instance == NULL)
     {
         return -1;
     }
     
-    if(bSDB_InfoTable[no].flag != bSDB_HEAD)
+    if(pSDB_Instance->flag != bSDB_HEAD)
     {
         return -1;
     }
 
     int d_fd = -1;
-    d_fd = bOpen(bSDB_InfoTable[no].dev_no, BCORE_FLAG_RW);
+    d_fd = bOpen(pSDB_Instance->dev_no, BCORE_FLAG_RW);
     if(d_fd < 0)
     {
         return -1;
     }
 
 	bCMD_Struct_t cmd_s;
-	cmd_s.param.erase.addr = bSDB_InfoTable[no].address;
+	cmd_s.param.erase.addr = pSDB_Instance->address;
 	cmd_s.param.erase.num = 1;
 
     retval = bCtl(d_fd, bCMD_ERASE, &cmd_s);
     if(retval >= 0)
     {
-        bLseek(d_fd, bSDB_InfoTable[no].address);
+        bLseek(d_fd, pSDB_Instance->address);
         retval = bWrite(d_fd, &head, 1);
     }
-    sum = _bSDB_CalSUM(pbuf, bSDB_InfoTable[no].usize);
+    sum = _bSDB_CalSUM(pbuf, pSDB_Instance->usize);
     
     if(retval >= 0)
     {
-        retval = bWrite(d_fd, pbuf, bSDB_InfoTable[no].usize);
+        retval = bWrite(d_fd, pbuf, pSDB_Instance->usize);
     }
 
     if(retval >= 0)
@@ -210,35 +185,35 @@ int bSDB_Write(int no, uint8_t *pbuf)
 
 /**
  * \brief Save data ClassB Read
- * \param no Instance ID \ref bSDB_Regist
+ * \param pSDB_Instance Pointer to the SDB instance
  * \param pbuf Pointer to data buffer
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */
-int bSDB_Read(int no, uint8_t *pbuf)
+int bSDB_Read(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf)
 {
     uint8_t head = 0, sum = 0, r_sum = 0;
     int retval = 0;
             
-    if(pbuf == NULL || no >= bSDB_InfoIndex || no < 0)
+    if(pbuf == NULL || pSDB_Instance == NULL)
     {
         return -1;
     }
     
-    if(bSDB_InfoTable[no].flag != bSDB_HEAD)
+    if(pSDB_Instance->flag != bSDB_HEAD)
     {
         return -1;
     }
 
     int d_fd = -1;
-    d_fd = bOpen(bSDB_InfoTable[no].dev_no, BCORE_FLAG_R);
+    d_fd = bOpen(pSDB_Instance->dev_no, BCORE_FLAG_R);
     if(d_fd < 0)
     {
         return -1;
     }
 
-    bLseek(d_fd, bSDB_InfoTable[no].address);
+    bLseek(d_fd, pSDB_Instance->address);
     
     retval = bRead(d_fd, &head, 1);
     if(head != bSDB_HEAD)
@@ -248,8 +223,8 @@ int bSDB_Read(int no, uint8_t *pbuf)
     
     if(retval >= 0)
     {
-        retval = bRead(d_fd, pbuf, bSDB_InfoTable[no].usize);
-        sum = _bSDB_CalSUM(pbuf, bSDB_InfoTable[no].usize);
+        retval = bRead(d_fd, pbuf, pSDB_Instance->usize);
+        sum = _bSDB_CalSUM(pbuf, pSDB_Instance->usize);
     }
 
     if(retval >= 0)

@@ -114,10 +114,6 @@ int bErrorClear(uint8_t e_no);
 int bErrorIS_Exist(uint8_t e_no);
 int bErrorIS_Empty(void);
 
-
-
-///<Called in bExec()
-void bErrorCore(void);
 /**
  * \}
  */

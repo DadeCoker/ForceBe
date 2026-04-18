@@ -78,8 +78,7 @@
  * \defgroup FIFO_Private_Variables
  * \{
  */
-static bFIFO_Info_t  bFIFO_Info[_FIFO_I_NUMBER];
-static uint8_t bFIFO_InfoIndex = 0;   
+   
 /**
  * \}
  */
@@ -106,79 +105,63 @@ static uint8_t bFIFO_InfoIndex = 0;
  * \addtogroup FIFO_Exported_Functions
  * \{
  */
- 
-int bFIFO_Regist(uint8_t *pbuf, uint16_t size)
+  
+int bFIFO_Length(bFIFO_Instance_t *pFIFO_Instance, uint16_t *plen)
 {
-    if(pbuf == NULL || size == 0 || bFIFO_InfoIndex >= _FIFO_I_NUMBER)
-    {
-        return -1;
-    }
-    bFIFO_Info[bFIFO_InfoIndex].pbuf = pbuf;
-    bFIFO_Info[bFIFO_InfoIndex].r_index = 0;
-    bFIFO_Info[bFIFO_InfoIndex].w_index = 0;
-    bFIFO_Info[bFIFO_InfoIndex].size = size;
-    bFIFO_InfoIndex += 1;
-    return (bFIFO_InfoIndex - 1);
-}    
-
-
-
-int bFIFO_Length(int no, uint16_t *plen)
-{
-    if(no < 0 || no >= bFIFO_InfoIndex || plen == NULL)
+    if(pFIFO_Instance == NULL || plen == NULL)
     {
         return -1;
     } 
-    *plen = FIFO_LEN(bFIFO_Info[no].w_index, bFIFO_Info[no].r_index, bFIFO_Info[no].size);
+    *plen = FIFO_LEN(pFIFO_Instance->w_index, pFIFO_Instance->r_index, pFIFO_Instance->size);
     return 0;
 }
 
 
-int bFIFO_Flush(int no)
+int bFIFO_Flush(bFIFO_Instance_t *pFIFO_Instance)
 {
-    if(no < 0 || no >= bFIFO_InfoIndex)
+    if(pFIFO_Instance == NULL)
     {
         return -1;
     } 
-    bFIFO_Info[no].r_index = bFIFO_Info[no].w_index = 0;
+    pFIFO_Instance->r_index = pFIFO_Instance->w_index = 0;
     return 0;
 }
 
-int bFIFO_Write(int no, uint8_t *pbuf, uint16_t size)
+int bFIFO_Write(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size)
 {
     uint16_t fifo_len, valid_len, index;
-    if(no < 0 || no >= bFIFO_InfoIndex || pbuf == NULL)
+    if(pFIFO_Instance == NULL || pbuf == NULL)
     {
         return -1;
     }
-    fifo_len = FIFO_LEN(bFIFO_Info[no].w_index, bFIFO_Info[no].r_index, bFIFO_Info[no].size);
-    valid_len = bFIFO_Info[no].size - fifo_len;
+    fifo_len = FIFO_LEN(pFIFO_Instance->w_index, pFIFO_Instance->r_index, pFIFO_Instance->size);
+    valid_len = pFIFO_Instance->size - fifo_len;
     size = (size <= valid_len) ? size : valid_len;
     index = 0;
     while(index < size)
     {
-        bFIFO_Info[no].pbuf[bFIFO_Info[no].w_index] = pbuf[index];
-        bFIFO_Info[no].w_index = (bFIFO_Info[no].w_index + 1) % bFIFO_Info[no].size;
+        pFIFO_Instance->pbuf[pFIFO_Instance->w_index] = pbuf[index];
+        pFIFO_Instance->w_index = (pFIFO_Instance->w_index + 1) % pFIFO_Instance->size;
         index += 1;
     }
     return size;
 }
 
 
-int bFIFO_Read(int no, uint8_t *pbuf, uint16_t size)
+int bFIFO_Read(bFIFO_Instance_t *pFIFO_Instance, uint8_t *pbuf, uint16_t size)
 {
     uint16_t fifo_len, index;
-    if(no < 0 || no >= bFIFO_InfoIndex || pbuf == NULL)
+    if(pFIFO_Instance == NULL || pbuf == NULL)
     {
         return -1;
     }
-    fifo_len = FIFO_LEN(bFIFO_Info[no].w_index, bFIFO_Info[no].r_index, bFIFO_Info[no].size);
+    fifo_len = FIFO_LEN(pFIFO_Instance->w_index, pFIFO_Instance->r_index, pFIFO_Instance->size);
     size = (size <= fifo_len) ? size : fifo_len;
     index = 0;
     while(index < size)
     {
-        pbuf[index] = bFIFO_Info[no].pbuf[bFIFO_Info[no].r_index];
-        bFIFO_Info[no].r_index = (bFIFO_Info[no].r_index + 1) % bFIFO_Info[no].size;
+        pbuf[index] = pFIFO_Instance->pbuf[pFIFO_Instance->r_index];
+        pFIFO_Instance->r_index = (pFIFO_Instance->r_index + 1) % pFIFO_Instance->size;
         index += 1;
     }
     return size;

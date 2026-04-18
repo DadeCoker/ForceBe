@@ -33,6 +33,7 @@
 #include "b_mod_gui.h"
 #if _UGUI_ENABLE
 #include "b_core.h"
+#include "b_utils.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -58,6 +59,10 @@ static bGUI_Info_t GUI_Info = {
 };  
 
 static UG_GUI bGUI_Handle;
+
+static bPollingFunc_t GUIPollFunc = {
+    .pPollingFunction = NULL,
+};
 
 /**
  * \}
@@ -126,38 +131,8 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
     bWrite(fd, (uint8_t *)&c, sizeof(UG_COLOR));
     bClose(fd);
 }
-/**
- * \}
- */
-   
-/** 
- * \addtogroup GUI_Exported_Functions
- * \{
- */
 
-
-int bGUI_Init(int lcd, int touch)
-{
-    if(lcd < 0)
-    {
-        return -1;
-    }
-    GUI_Info.lcd_id = lcd;
-    GUI_Info.touch_id = touch;
-#if (_LCD_DISP_MODE == 0)
-    UG_Init( &bGUI_Handle, _LCD_SetColorPixel, _LCD_Y_SIZE, _LCD_X_SIZE);
-#else    
-    UG_Init( &bGUI_Handle, _LCD_SetColorPixel, _LCD_X_SIZE, _LCD_Y_SIZE);
-#endif
-    UG_SelectGUI(&bGUI_Handle);
-    UG_SetForecolor(C_WHITE);
-    UG_SetBackcolor(C_BLACK);
-    UG_FontSelect(&FONT_8X12);
-    return 0;
-}
-
-
-void bGUI_TouchExec()
+static void _bGUI_TouchExec()
 {
     int fd = -1;
     uint16_t xy[2];
@@ -192,6 +167,56 @@ void bGUI_TouchExec()
         UG_TouchUpdate( xy[0], xy[1], TOUCH_STATE_PRESSED);
     }
 }
+
+static void _bGUI_Core()
+{
+    static uint32_t tick = 0;
+    if(bUtilGetTick() - tick > MS2TICKS(10))
+    {
+        tick = bUtilGetTick();
+        _bGUI_TouchExec();
+    }
+    UG_Update();
+}
+
+/**
+ * \}
+ */
+   
+/** 
+ * \addtogroup GUI_Exported_Functions
+ * \{
+ */
+
+
+int bGUI_Init(int lcd, int touch)
+{
+    if(lcd < 0)
+    {
+        return -1;
+    }
+
+    if(GUIPollFunc.pPollingFunction == NULL)
+    {
+        GUIPollFunc.pPollingFunction = _bGUI_Core;
+        bRegistPollingFunc(&GUIPollFunc);
+    }    
+    GUI_Info.lcd_id = lcd;
+    GUI_Info.touch_id = touch;
+#if (_LCD_DISP_MODE == 0)
+    UG_Init( &bGUI_Handle, _LCD_SetColorPixel, _LCD_Y_SIZE, _LCD_X_SIZE);
+#else    
+    UG_Init( &bGUI_Handle, _LCD_SetColorPixel, _LCD_X_SIZE, _LCD_Y_SIZE);
+#endif
+    UG_SelectGUI(&bGUI_Handle);
+    UG_SetForecolor(C_WHITE);
+    UG_SetBackcolor(C_BLACK);
+    UG_FontSelect(&FONT_8X12);
+    return 0;
+}
+
+
+
 
 /**
  * \}

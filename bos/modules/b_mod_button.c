@@ -34,6 +34,7 @@
 #include <string.h>
 #if _FLEXIBLEBUTTON_ENABLE
 #include "b_hal.h"
+#include "b_utils.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -82,6 +83,10 @@
  */
 static flex_button_t bButtonList[FLEX_BTN_NUMBER]; 
 const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
+
+static bPollingFunc_t ButtonPollFunc = {
+    .pPollingFunction = NULL,
+};
 /**
  * \}
  */
@@ -100,11 +105,22 @@ const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
  * \{
  */
 
-static uint8_t bButtonRead(void *p)
+static uint8_t _bButtonRead(void *p)
 {
     flex_button_t *btn = (flex_button_t *)p;
     return bHalGPIO_ReadPin(bButtonInfo[btn->id].port, bButtonInfo[btn->id].pin);
 }
+
+static void _bButtonCore()
+{
+    static uint32_t tick = 0;
+    if(bUtilGetTick() - tick > MS2TICKS(1000 / FLEX_BTN_SCAN_FREQ_HZ))
+    {
+        tick = bUtilGetTick();
+        flex_button_scan();
+    }
+}
+
 /**
  * \}
  */
@@ -122,12 +138,17 @@ int bButtonInit()
     {
         bButtonList[i].id = i;
         bButtonList[i].pressed_logic_level = bButtonInfo[i].logic_level;
-        bButtonList[i].usr_button_read = bButtonRead;
+        bButtonList[i].usr_button_read = _bButtonRead;
         bButtonList[i].cb = bButtonCallback;
         bButtonList[i].short_press_start_tick = FLEX_MS_TO_SCAN_CNT(1500);
         bButtonList[i].long_press_start_tick = FLEX_MS_TO_SCAN_CNT(3000);
         bButtonList[i].long_hold_start_tick = FLEX_MS_TO_SCAN_CNT(4500);
         flex_button_register(&bButtonList[i]);
+    }
+    if(ButtonPollFunc.pPollingFunction == NULL)
+    {
+        ButtonPollFunc.pPollingFunction = _bButtonCore;
+        bRegistPollingFunc(&ButtonPollFunc);
     }
     return 0;
 }

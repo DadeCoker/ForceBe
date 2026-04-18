@@ -59,13 +59,15 @@
  */
 typedef void (*pEventHandler_t)(void);  
 
-typedef struct
+typedef struct bEventInfo
 {
-    uint8_t enable;
     volatile uint8_t trigger;
     pEventHandler_t phandler;
+    struct bEventInfo *pnext;
 }bEventInfo_t;
 
+
+typedef bEventInfo_t  bEventInstance_t;   
 
 /**
  * \}
@@ -75,7 +77,7 @@ typedef struct
  * \defgroup EVENT_Exported_Defines
  * \{
  */
-
+#define bEVENT_INSTANCE(name)       bEventInstance_t name;
 /**
  * \}
  */
@@ -102,14 +104,11 @@ typedef struct
  * \defgroup EVENT_Exported_Functions
  * \{
  */
+
+///< pInstance \ref bEVENT_INSTANCE
+int bEventInit(bEventInstance_t *pInstance, pEventHandler_t handler);
+int bEventTrigger(bEventInstance_t *pInstance);
 int bEventIsIdle(void); 
-int bEventTrigger(uint8_t number);
-int bEventRegist(uint8_t number, pEventHandler_t phandler);
-
-
-///<Called in bExec()
-void bEventCore(void);
-
 /**
  * \}
  */

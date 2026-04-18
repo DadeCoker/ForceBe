@@ -1,13 +1,13 @@
 /**
  *!
  * \file        b_mod_sda.h
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.0.2
+ * \date        2020/05/16
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,37 +61,26 @@
  
 typedef struct
 {
-    uint8_t min_unit;       
-    uint8_t min_number;
-    uint32_t min_size;
-    uint8_t total_unit;
-    uint8_t total_number;
-    
+    uint32_t time_interval;    //s
+    uint32_t total_time;       //s
+    uint32_t data_size;
     uint32_t fbase_address;
-    uint32_t fsize;
-    uint32_t ferase_size;
+    uint32_t fsector_size;
 }bSDA_Struct_t;
 
 
 typedef struct
 {
+    uint8_t dev_no;
     uint8_t e_flag;
     uint16_t n_per_eu;
     uint16_t un_number;
     uint32_t total_size;
-    uint32_t base_address;
-    uint32_t data_address;
     bSDA_Struct_t st;
-    uint8_t dev_no;
 }bSDA_Info_t;
 
 
-typedef struct
-{
-    uint32_t utc;
-}bSDA_InitInfo_t;
-
-
+typedef bSDA_Info_t     bSDA_Instance_t;
 
 /**
  * \}
@@ -102,17 +91,13 @@ typedef struct
  * \{
  */
 
-#define UNIT_SECOND         0
-#define UNIT_MINUTE         1
-#define UNIT_HOUR           2
-#define UNIT_DAY            3
-#define UNIT_MONTH          4
-#define UNIT_YEAR           5
-#define UNIT_NUMBER         6
-
-#ifndef NULL
-#define NULL    ((void *)0)
-#endif
+#define bSDA_INSTANCE(name, _time_interval, _total_time, _data_size, _fbase_addr, _fsector_size, _dev_no)         bSDA_Instance_t name = {\
+                                                                                                                        .st.time_interval = _time_interval,\
+                                                                                                                        .st.total_time = _total_time,\
+                                                                                                                        .st.data_size = _data_size,\
+                                                                                                                        .st.fbase_addr = _fbase_addr,\
+                                                                                                                        .st.fsector_size = _fsector_size,\
+                                                                                                                        .dev_no = _dev_no};
 
 /**
  * \}
@@ -122,10 +107,6 @@ typedef struct
  * \defgroup SDA_Exported_Macros
  * \{
  */
-#define IS_UNIT_VALID(n)        ((n) == UNIT_SECOND || (n) == UNIT_MINUTE || (n) == UNIT_HOUR  \
-                                    || (n) == UNIT_DAY || (n) == UNIT_MONTH || (n) == UNIT_YEAR) 
-
-
 
 /**
  * \}
@@ -144,11 +125,11 @@ typedef struct
  * \defgroup SDA_Exported_Functions
  * \{
  */
-
-int bSDA_Regist(bSDA_Struct_t , uint8_t dev_no);
-int bSDA_Write(int, uint32_t utc, uint8_t *pbuf);
-int bSDA_Read(int, uint32_t utc, uint8_t *pbuf);
-int bSDA_TimeChanged(int, uint32_t o_utc, uint32_t n_utc);
+///< pSDA_Instance \ref bSDA_INSTANCE
+int bSDA_Init(bSDA_Instance_t *pSDA_Instance);
+int bSDA_Write(bSDA_Instance_t *pSDA_Instance, uint32_t utc, uint8_t *pbuf);
+int bSDA_Read(bSDA_Instance_t *pSDA_Instance, uint32_t utc, uint8_t *pbuf);
+int bSDA_TimeChanged(bSDA_Instance_t *pSDA_Instance, uint32_t o_utc, uint32_t n_utc);
 
 /**
  * \}
@@ -174,5 +155,5 @@ int bSDA_TimeChanged(int, uint32_t o_utc, uint32_t n_utc);
 
 #endif  
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
