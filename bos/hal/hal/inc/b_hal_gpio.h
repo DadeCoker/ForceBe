@@ -148,15 +148,15 @@ typedef struct bHalGPIO_EXTI_Struct
  * \{
  */
 
-void bHalGPIO_Config(uint8_t port, uint8_t pin, uint8_t mode, uint8_t pull);
-void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s);
-uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin);
-void bHalGPIO_Write(uint8_t port, uint16_t dat);
-uint16_t bHalGPIO_Read(uint8_t port);
+void bHalGPIO_Config(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t mode, uint8_t pull);
+void bHalGPIO_WritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
+uint8_t bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin);
+void bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat);
+uint16_t bHalGPIO_Read(bHalGPIOPort_t port);
 int bHalGPIO_EXTI_Regist(bHalGPIO_EXTI_t *pexti);
 
 
-void bHalGPIO_EXTI_IRQHandler(uint8_t pin);
+void bHalGPIO_EXTI_IRQHandler(bHalGPIOPin_t pin);
 
 /**
  * \}

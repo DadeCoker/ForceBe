@@ -3,7 +3,7 @@
  * \file        b_hal_sccb.c
  * \version     v0.0.1
  * \date        2020/03/25
- * \author      Bean(notrynohigh@outlook.com)
+ * \author      Bean(sccbtrysccbhigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
@@ -16,7 +16,7 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice shall be included in all
+ * The above copyright sccbtice and this permission sccbtice shall be included in all
  * copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -125,78 +125,78 @@ static void _SCCB_Delay()
  * \{
  */
 
-void SCCB_Start(uint8_t no)
+void SCCB_Start(bHalSCCBNumber_t sccb)
 {
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 1);
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 1);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 1);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 1);
     _SCCB_Delay();
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 0);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 0);
     _SCCB_Delay();
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 0);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 0);
 }    
 
-void SCCB_Stop(uint8_t no)
+void SCCB_Stop(bHalSCCBNumber_t sccb)
 {
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 0);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 0);
     _SCCB_Delay();
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 1);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 1);
     _SCCB_Delay();
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 1);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 1);
     _SCCB_Delay();
 }
 
-void SCCB_NoAck(uint8_t no)
+void SCCB_NoAck(bHalSCCBNumber_t sccb)
 {
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 1);
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 1);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 1);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 1);
     _SCCB_Delay();
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 0);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 0);
     _SCCB_Delay();
-    bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 0);
+    bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 0);
 }
 
-void SCCB_SendByte(uint8_t no, uint8_t dat)
+void SCCB_SendByte(bHalSCCBNumber_t sccb, uint8_t dat)
 {
 	uint8_t j;	 
 	for(j = 0;j < 8;j++) 
 	{
 		if(dat & 0x80)
         {
-            bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 1);	
+            bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 1);	
         }
 		else 
         {
-            bHalGPIO_WritePin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, 0);
+            bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, 0);
         }
 		dat <<= 1;
         _SCCB_Delay();
-		bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 1);
+		bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 1);
         _SCCB_Delay();
-		bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 0);		   
+		bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 0);		   
 	}			 
-	bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 1);
+	bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 1);
     _SCCB_Delay();
-	bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 0);	 
+	bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 0);	 
 }	
 
 
-uint8_t SCCB_ReceiveByte(uint8_t no)
+uint8_t SCCB_ReceiveByte(bHalSCCBNumber_t sccb)
 {
 	uint8_t temp=0,j;    
-	bHalGPIO_Config(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
+	bHalGPIO_Config(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, B_HAL_GPIO_INPUT, B_HAL_GPIO_NOPULL);
 	for(j = 8;j > 0;j--) 
 	{		     	  
         _SCCB_Delay();
-		bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 1);
+		bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 1);
 		temp = temp << 1;
-		if(bHalGPIO_ReadPin(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin))
+		if(bHalGPIO_ReadPin(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin))
         {
             temp++;
         }            
         _SCCB_Delay();
-		bHalGPIO_WritePin(SCCB_GPIO_Instance[no].scl.port, SCCB_GPIO_Instance[no].scl.pin, 0);
+		bHalGPIO_WritePin(SCCB_GPIO_Instance[sccb].scl.port, SCCB_GPIO_Instance[sccb].scl.pin, 0);
 	}	
-	bHalGPIO_Config(SCCB_GPIO_Instance[no].sda.port, SCCB_GPIO_Instance[no].sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);  
+	bHalGPIO_Config(SCCB_GPIO_Instance[sccb].sda.port, SCCB_GPIO_Instance[sccb].sda.pin, B_HAL_GPIO_OUTPUT, B_HAL_GPIO_NOPULL);  
 	return temp;
 }
 

@@ -54,7 +54,12 @@
  * \defgroup BUTTON_Private_TypesDefinitions
  * \{
  */
-  
+typedef struct
+{
+    bHalGPIOPort_t port;
+    bHalGPIOPin_t pin;
+    uint8_t logic_level;
+}bButtonInfo_t;
 /**
  * \}
  */

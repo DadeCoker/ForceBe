@@ -101,10 +101,10 @@
  * \{
  */
 
-uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
+uint8_t bHalSPI_SendReceiveByte(bHalSPINumber_t spi, uint8_t dat)
 {
     uint8_t tmp;
-    switch(no)
+    switch(spi)
     {
         case B_HAL_SPI_1:
 
@@ -121,13 +121,13 @@ uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
     return tmp;
 }
 
-int bHalSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
     {
         return -1;
     }
-    switch(no)
+    switch(spi)
     {
         case B_HAL_SPI_1:
 
@@ -144,13 +144,13 @@ int bHalSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
     return 0;
 }
 
-int bHalSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
     {
         return -1;
     }
-    switch(no)
+    switch(spi)
     {
         case B_HAL_SPI_1:
 

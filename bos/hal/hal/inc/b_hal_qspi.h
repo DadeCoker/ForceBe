@@ -94,15 +94,15 @@ typedef enum
  * \defgroup QSPI_Exported_Functions
  * \{
  */
-int bHalQSPI_Command(uint8_t no,
+int bHalQSPI_Command(bHalQSPINumber_t qspi,
                      uint32_t cmd, 
                      uint32_t addr, 
                      uint32_t addr_mode, 
                      uint32_t addr_size_bit, 
                      uint32_t data_mode, 
                      uint32_t nb_data);
-int bHalQSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len);
-int bHalQSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len);
+int bHalQSPI_Send(bHalQSPINumber_t qspi, uint8_t *pbuf, uint16_t len);
+int bHalQSPI_Receive(bHalQSPINumber_t qspi, uint8_t *pbuf, uint16_t len);
 /**
  * \}
  */

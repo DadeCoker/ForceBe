@@ -117,7 +117,7 @@ static bHalGPIO_EXTI_t *pHalGPIO_EXTI_Head = NULL;
  *         \arg B_HAL_GPIO_PULLUP pull-up mode 
  *         \arg B_HAL_GPIO_PULLDOWN pull-down mode 
  */ 
-void bHalGPIO_Config(uint8_t port, uint8_t pin, uint8_t mode, uint8_t pull)
+void bHalGPIO_Config(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t mode, uint8_t pull)
 {
     GPIO_InitTypeDef GPIO_InitType;
     GPIO_InitType.Mode = (mode == B_HAL_GPIO_OUTPUT) ? GPIO_MODE_OUTPUT_PP : GPIO_MODE_INPUT;
@@ -128,13 +128,13 @@ void bHalGPIO_Config(uint8_t port, uint8_t pin, uint8_t mode, uint8_t pull)
 }
 
 
-void bHalGPIO_WritePin(uint8_t port, uint8_t pin, uint8_t s)
+void bHalGPIO_WritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
 {
     GPIO_PinState sta = (s) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     HAL_GPIO_WritePin(GPIO_PortTable[port], GPIO_PinTable[pin], sta);
 }
 
-uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin)
+uint8_t bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 {
     if(HAL_GPIO_ReadPin(GPIO_PortTable[port], GPIO_PinTable[pin]) == GPIO_PIN_SET)
     {
@@ -143,12 +143,12 @@ uint8_t bHalGPIO_ReadPin(uint8_t port, uint8_t pin)
     return 0;
 }
 
-void bHalGPIO_Write(uint8_t port, uint16_t dat)
+void bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat)
 {
     GPIO_PortTable[port]->ODR = dat;
 }
 
-uint16_t bHalGPIO_Read(uint8_t port)
+uint16_t bHalGPIO_Read(bHalGPIOPort_t port)
 {
     return GPIO_PortTable[port]->IDR;
 }
@@ -183,7 +183,7 @@ int bHalGPIO_EXTI_Regist(bHalGPIO_EXTI_t *pexti)
  * \brief This function handles EXTI interrupts.
  * \param pin Specifies the pins connected EXTI line \ref bHalGPIOPin_t
  */ 
-void bHalGPIO_EXTI_IRQHandler(uint8_t pin)
+void bHalGPIO_EXTI_IRQHandler(bHalGPIOPin_t pin)
 {
     bHalGPIO_EXTI_t *ptmp = pHalGPIO_EXTI_Head;
     if(pin >= B_HAL_PINAll)

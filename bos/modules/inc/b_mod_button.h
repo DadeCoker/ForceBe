@@ -58,12 +58,7 @@
  * \defgroup BUTTON_Exported_TypesDefinitions
  * \{
  */
-typedef struct
-{
-    uint8_t port;
-    uint8_t pin;
-    uint8_t logic_level;
-}bButtonInfo_t;
+
 
 /**
  * \}

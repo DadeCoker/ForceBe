@@ -101,13 +101,13 @@
  * \{
  */
 
-int bHalQSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalQSPI_Send(bHalQSPINumber_t qspi, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
     {
         return -1;
     }
-    switch(no)
+    switch(qspi)
     {
         case B_HAL_QSPI_1:
 //            HAL_QSPI_Transmit(&hqspi, pbuf, 0xffff);
@@ -118,13 +118,13 @@ int bHalQSPI_Send(uint8_t no, uint8_t *pbuf, uint16_t len)
     return 0;
 }
 
-int bHalQSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len)
+int bHalQSPI_Receive(bHalQSPINumber_t qspi, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
     {
         return -1;
     }
-    switch(no)
+    switch(qspi)
     {
         case B_HAL_QSPI_1:
 //            HAL_QSPI_Receive(&hqspi, pbuf, 0xffff);
@@ -135,7 +135,7 @@ int bHalQSPI_Receive(uint8_t no, uint8_t *pbuf, uint16_t len)
     return 0;
 }
 
-int bHalQSPI_Command(uint8_t no,
+int bHalQSPI_Command(bHalQSPINumber_t qspi,
                      uint32_t cmd, 
                      uint32_t addr, 
                      uint32_t addr_mode, 
@@ -164,7 +164,7 @@ int bHalQSPI_Command(uint8_t no,
 //    QSPI_Command.DdrMode = QSPI_DDR_MODE_DISABLE;          
 //    QSPI_Command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
 //    QSPI_Command.NbData = nb_data;
-    switch(no)
+    switch(qspi)
     {
         case B_HAL_QSPI_1:
 //            HAL_QSPI_Command(&hqspi, &QSPI_Command, 0xffff);

@@ -81,6 +81,9 @@ typedef struct bHalUartRxStruct
 
 
 
+typedef bHalUartRxInfo_t        bHalUartRxInstance_t;
+
+
 /**
  * \}
  */
@@ -89,7 +92,12 @@ typedef struct bHalUartRxStruct
  * \defgroup UART_Exported_Defines
  * \{
  */
-
+#define bHAL_UART_RX_INSTANCE(name, _uart, _pbuf, _len, _idle_ms, _idle_cb)      bHalUartRxInstance_t name = {\
+                                                                                      .uart = _uart,\
+                                                                                      .pbuf = _pbuf,\
+                                                                                      .buf_len = _len,\
+                                                                                      .idle_threshold = _idle_ms,\
+                                                                                      .cb = _idle_cb};
 /**
  * \}
  */
@@ -117,14 +125,11 @@ typedef struct bHalUartRxStruct
  * \defgroup UART_Exported_Functions
  * \{
  */
-
-void bHalUartSend(uint8_t no, uint8_t *pbuf, uint16_t len);
-int bHalUartRxRegist(bHalUartRxInfo_t *puart_rx);
-
-
-
-void bHalUartRxIRQ_Handler(uint8_t no, uint8_t dat);
-
+ 
+///<  pHalUartRxInstance \ref bHAL_UART_RX_INSTANCE
+int bHalUartRxRegist(bHalUartRxInstance_t *pHalUartRxInstance);
+void bHalUartSend(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
+void bHalUartRxIRQ_Handler(bHalUartNumber_t uart, uint8_t dat);
 /**
  * \}
  */

@@ -73,10 +73,7 @@
  * \defgroup I2C_Private_Variables
  * \{
  */
-static bUtilI2C_t I2C_IO_3 = {
-    .sda = {B_HAL_GPIOB, B_HAL_PIN7},
-    .clk = {B_HAL_GPIOB, B_HAL_PIN6}
-};
+
 /**
  * \}
  */
@@ -105,9 +102,9 @@ static bUtilI2C_t I2C_IO_3 = {
  * \{
  */
 
-void bHalI2C_SendByte(uint8_t no, uint8_t dev_addr, uint8_t dat)
+void bHalI2C_SendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat)
 {
-    switch(no)
+    switch(i2c)
     {
         case B_HAL_I2C_1:
             
@@ -121,10 +118,10 @@ void bHalI2C_SendByte(uint8_t no, uint8_t dev_addr, uint8_t dat)
     }
 }
 
-uint8_t bHalI2C_ReceiveByte(uint8_t no, uint8_t dev_addr)
+uint8_t bHalI2C_ReceiveByte(bHalI2CNumber_t i2c, uint8_t dev_addr)
 {
     uint8_t tmp;
-    switch(no)
+    switch(i2c)
     {
         case B_HAL_I2C_1:
             
@@ -139,11 +136,10 @@ uint8_t bHalI2C_ReceiveByte(uint8_t no, uint8_t dev_addr)
 }
 
 
-int bHalI2C_MemWrite(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+int bHalI2C_MemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
 {
     int retval = 0;
-    int i = 0;
-    switch(no)
+    switch(i2c)
     {
         case B_HAL_I2C_1:
 
@@ -152,11 +148,7 @@ int bHalI2C_MemWrite(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *p
             
             break;
         case B_HAL_I2C_3:
-            for(i = 0;i < len;i++)
-            {
-                bUtilI2C_WriteData(I2C_IO_3, dev_addr, mem_addr + i, pbuf[i]);
-                bUtilDelayMS(5);
-            }
+
             break;        
         default:
             break;
@@ -165,11 +157,10 @@ int bHalI2C_MemWrite(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *p
 }
 
 
-int bHalI2C_MemRead(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
+int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len)
 {
     int retval = 0;
-    int i = 0;
-    switch(no)
+    switch(i2c)
     {
         case B_HAL_I2C_1:
  
@@ -178,10 +169,7 @@ int bHalI2C_MemRead(uint8_t no, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pb
             
             break;
         case B_HAL_I2C_3:
-            for(i = 0;i < len;i++)
-            {
-                pbuf[i] = bUtilI2C_ReadData(I2C_IO_3, dev_addr, mem_addr + i);
-            }
+
             break;        
         default:
             break;

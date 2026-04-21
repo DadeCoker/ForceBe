@@ -97,11 +97,11 @@ typedef enum
  * \{
  */
 
-void SCCB_Start(uint8_t no);
-void SCCB_Stop(uint8_t no);
-void SCCB_NoAck(uint8_t no);
-void SCCB_SendByte(uint8_t no, uint8_t dat);
-uint8_t SCCB_ReceiveByte(uint8_t no);
+void SCCB_Start(bHalSCCBNumber_t sccb);
+void SCCB_Stop(bHalSCCBNumber_t sccb);
+void SCCB_NoAck(bHalSCCBNumber_t sccb);
+void SCCB_SendByte(bHalSCCBNumber_t sccb, uint8_t dat);
+uint8_t SCCB_ReceiveByte(bHalSCCBNumber_t sccb);
     
 /**
  * \}
