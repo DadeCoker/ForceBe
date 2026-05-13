@@ -45,6 +45,12 @@
 
 #include "algo_hmac_sha1.h"
 #include "algo_base64.h"
+#include "algo_gps.h"
+#include "algo_kalman.h"
+#include "algo_matrix.h"
+#include "algo_speedpid.h"
+
+
 
 
 /**

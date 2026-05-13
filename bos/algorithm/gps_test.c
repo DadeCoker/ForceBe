@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "gps.h"
+#include "algo_gps.h"
 
 
 int main(int argc, char *argv[]) {

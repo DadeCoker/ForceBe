@@ -93,6 +93,8 @@ bos/hal/utils/    底层实用代码，全部添加至工程
 
 bos/modules/   功能模块，全部添加至工程
 
+bos/algorithm/ 实用算法，选择需要的添加至工程
+
 bos/thirdparty/ 第三方开源代码，将需要的添加至工程
 
 ### 增加系统定时器
@@ -237,13 +239,15 @@ https://github.com/notrynohigh/BabyOS/wiki
 
 ## Baby如何成长
 
-之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。
+之所以称之为BabyOS，从上面的介绍可以看出，她如果能在项目中发挥大的作用就需要有足够的功能模块以及驱动代码。希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
 
-希望借助广大网友的力量，一起“喂养”她，是她成为MCU裸机开发中不可缺少的一部分。
+**码云**（主仓库，开发者提交代码于dev分支，由管理员合并至master分支）：
 
-码云（主仓库，开发者提交代码于dev分支，由管理员合并至master）：<https://gitee.com/notrynohigh/BabyOS>
+<https://gitee.com/notrynohigh/BabyOS>
 
-github（由notrynohigh同步）：<https://github.com/notrynohigh/BabyOS>
+**github**（由notrynohigh同步）：
+
+<https://github.com/notrynohigh/BabyOS>
 
 
 
