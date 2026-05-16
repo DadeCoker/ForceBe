@@ -82,12 +82,15 @@
  * \defgroup XMODEM128_Private_Variables
  * \{
  */
-
-static pcb_t pCallback = NULL;
-static psend pSendByte = NULL;
-
-static uint8_t Xmodem128Stat = XM_S_NULL;
-static uint32_t XmTick = 0;
+static bXmodem128Info_t bXmodem128Info = {
+    .cb = NULL,
+    .send_f = NULL,
+    .statu = XM_S_NULL,
+    .tt_count = 0,
+    .next_number = 0,
+    .frame_number = 0,
+    .tick = 0
+};
 
 static bPollingFunc_t XmodemPollFunc = {
     .pPollingFunction = NULL,
@@ -123,9 +126,9 @@ static uint8_t _bXmodem128CalCheck(uint8_t *pbuf, uint8_t len)
 
 static int _bXmodem128ISValid(uint8_t *pbuf, uint8_t len)
 {
-    bXmodem128Info_t *ptmp = (bXmodem128Info_t *)pbuf;
+    bXmodem128Struct_t *ptmp = (bXmodem128Struct_t *)pbuf;
     uint8_t check;
-    if(pbuf == NULL || len != sizeof(bXmodem128Info_t))
+    if(pbuf == NULL || len != sizeof(bXmodem128Struct_t))
     {
         return -1;
     }
@@ -145,28 +148,26 @@ static int _bXmodem128ISValid(uint8_t *pbuf, uint8_t len)
 
 static void _bXmodem128Timeout()
 {
-    static uint8_t s_count = 0;
-    if(Xmodem128Stat == XM_S_NULL)
+    if(bXmodem128Info.statu == XM_S_NULL)
     {
         return;
     }
-    if(bUtilGetTick() - XmTick > MS2TICKS(3000))
+    if(bUtilGetTick() - bXmodem128Info.tick >= MS2TICKS(1000))
     {
-        XmTick = bUtilGetTick();
-        if(Xmodem128Stat == XM_S_WAIT_START && s_count < 3)
+        bXmodem128Info.tick = bUtilGetTick();
+        if(bXmodem128Info.tt_count >= 10)
         {
-            Xmodem128Stat = XM_S_NULL;
-            bXmodem128Start();
-            s_count += 1;
+            bXmodem128Info.tt_count = 0;
+            bXmodem128Info.statu = XM_S_NULL;
+            if(bXmodem128Info.cb)
+            {
+                bXmodem128Info.cb(0, NULL);
+            }
         }
         else
         {
-            if(pCallback != NULL)
-            {
-                pCallback(0, NULL);
-            }
-            s_count = 0;
-            Xmodem128Stat = XM_S_NULL;
+            bXmodem128Info.send_f(XMODEM128_NAK);
+            bXmodem128Info.tt_count += 1;
         }
     }
 }
@@ -187,9 +188,9 @@ int bXmodem128Init(pcb_t fcb, psend fs)
     {
         return -1;
     }
-    pCallback = fcb;
-    pSendByte = fs;
-    Xmodem128Stat = XM_S_NULL;
+    bXmodem128Info.cb = fcb;
+    bXmodem128Info.send_f = fs;
+    bXmodem128Info.statu = XM_S_NULL;
     if(XmodemPollFunc.pPollingFunction == NULL)
     {
         XmodemPollFunc.pPollingFunction = _bXmodem128Timeout;
@@ -201,29 +202,31 @@ int bXmodem128Init(pcb_t fcb, psend fs)
 
 int bXmodem128Start()
 {
-    if(pSendByte == NULL)
+    if(bXmodem128Info.send_f == NULL)
     {
         return -1;
     }
-    if(Xmodem128Stat == XM_S_NULL)
+    if(bXmodem128Info.statu == XM_S_NULL)
     {
-        pSendByte(XMODEM128_NAK);
-        XmTick = bUtilGetTick();
-        Xmodem128Stat = XM_S_WAIT_START;
+        bXmodem128Info.send_f(XMODEM128_NAK);
+        bXmodem128Info.tick = bUtilGetTick();
+        bXmodem128Info.next_number = 0;
+        bXmodem128Info.frame_number = 0;
+        bXmodem128Info.statu = XM_S_WAIT_START;
     }
     return 0;
 }
 
 int bXmodem128Stop()
 {
-    if(pSendByte == NULL)
+    if(bXmodem128Info.send_f == NULL)
     {
         return -1;
     }    
-    if(Xmodem128Stat != XM_S_NULL)
+    if(bXmodem128Info.statu != XM_S_NULL)
     {
-        pSendByte(XMODEM128_CAN);
-        Xmodem128Stat = XM_S_NULL;
+        bXmodem128Info.send_f(XMODEM128_CAN);
+        bXmodem128Info.statu = XM_S_NULL;
     }
     return 0; 
 }
@@ -232,56 +235,54 @@ int bXmodem128Stop()
 
 int bXmodem128Parse(uint8_t *pbuf, uint8_t len)
 {
-    static uint8_t num = 0;
-    static uint16_t f_num = 0;
-    bXmodem128Info_t *pxm = (bXmodem128Info_t *)pbuf;
-    if(pbuf == NULL || pCallback == NULL || pSendByte == NULL || Xmodem128Stat == XM_S_NULL)
+    bXmodem128Struct_t *pxm = (bXmodem128Struct_t *)pbuf;
+    if(pbuf == NULL || bXmodem128Info.cb == NULL || bXmodem128Info.send_f == NULL || bXmodem128Info.statu == XM_S_NULL)
     {
         return -1;
     }
-    XmTick = bUtilGetTick();
+    bXmodem128Info.tick = bUtilGetTick();
+    bXmodem128Info.tt_count = 0;
     
-    if(Xmodem128Stat == XM_S_WAIT_START)
+    if(bXmodem128Info.statu == XM_S_WAIT_START)
     {
         if(_bXmodem128ISValid(pbuf, len) == 0)
         {
             if(pxm->number == 1)
             {
-                Xmodem128Stat = XM_S_WAIT_DATA;
-                num = 1;
-                f_num = 0;
+                bXmodem128Info.statu = XM_S_WAIT_DATA;
+                bXmodem128Info.next_number = 1;
+                bXmodem128Info.frame_number = 0;
             }
         }
     }
     
-    if(Xmodem128Stat == XM_S_WAIT_DATA)
+    if(bXmodem128Info.statu == XM_S_WAIT_DATA)
     {
         if(_bXmodem128ISValid(pbuf, len) == 0)
         {
-            if(pxm->number == num)
+            if(pxm->number == bXmodem128Info.next_number)
             {
-                pCallback(f_num, pxm->dat);
-                pSendByte(XMODEM128_ACK);
-                num += 1;
-                f_num += 1;
+                bXmodem128Info.cb(bXmodem128Info.frame_number, pxm->dat);
+                bXmodem128Info.next_number += 1;
+                bXmodem128Info.frame_number += 1;
+                bXmodem128Info.send_f(XMODEM128_ACK);
+            }
+            else if(pxm->number > bXmodem128Info.next_number)
+            {
+                bXmodem128Info.cb(0, NULL);
+                bXmodem128Info.statu = XM_S_NULL;
+                bXmodem128Info.send_f(XMODEM128_CAN);
             }
             else
             {
-                pCallback(0, NULL);
-                pSendByte(XMODEM128_CAN);
-                Xmodem128Stat = XM_S_NULL;
-                return -1;
+                bXmodem128Info.send_f(XMODEM128_ACK);
             }
         }
         else if(len == 1 && *pbuf == XMODEM128_EOT)
         {
-            pCallback(f_num, NULL);
-            pSendByte(XMODEM128_ACK);
-            Xmodem128Stat = XM_S_NULL;
-        }
-        else
-        {
-            pSendByte(XMODEM128_NAK);
+            bXmodem128Info.cb(bXmodem128Info.frame_number, NULL);
+            bXmodem128Info.statu = XM_S_NULL;
+            bXmodem128Info.send_f(XMODEM128_ACK);
         }
     }
     return 0;
