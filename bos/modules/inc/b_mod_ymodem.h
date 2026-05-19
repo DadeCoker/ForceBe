@@ -67,7 +67,7 @@ typedef struct
     uint8_t dat[128];
     uint8_t crc_h;
     uint8_t crc_l;
-}bYmodem128Info_t;
+}bYmodem128Struct_t;
 
 
 typedef struct
@@ -78,12 +78,24 @@ typedef struct
     uint8_t dat[1024];
     uint8_t crc_h;
     uint8_t crc_l;
-}bYmodem1kInfo_t;
+}bYmodem1kStruct_t;
 
 
 
-typedef void (*pymcb_t)(uint8_t t, uint16_t number, uint8_t *pbuf, uint16_t len); 
+typedef void (*pymcb_t)(uint8_t t, uint8_t *pbuf, uint16_t len); 
 typedef void (*pymsend)(uint8_t cmd);
+
+typedef struct
+{
+    pymcb_t cb;
+    pymsend send_f;
+    uint8_t statu;
+    uint8_t tt_count;
+    uint8_t next_number;
+    uint32_t tick;
+}bYmodemInfo_t;
+
+
 
 /**
  * \}

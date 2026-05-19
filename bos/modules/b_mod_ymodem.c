@@ -84,12 +84,14 @@
  * \defgroup YMODEM_Private_Variables
  * \{
  */
-
-static pymcb_t pCallback = NULL;
-static pymsend pSendByte = NULL;
-
-static uint8_t YmodemStat = YM_S_NULL;
-static uint32_t YmTick = 0;
+static bYmodemInfo_t bYmodemInfo = {
+    .cb = NULL,
+    .send_f = NULL,
+    .statu = YM_S_NULL,
+    .tt_count = 0,
+    .next_number = 0,
+    .tick = 0,
+};
 
 static bPollingFunc_t YmodemPollFunc = {
     .pPollingFunction = NULL,
@@ -137,10 +139,10 @@ static uint16_t _bYmodemCalCheck(uint8_t *pbuf, uint16_t len)
 
 static int _bYmodemISValid(uint8_t *pbuf, uint16_t len)
 {
-    bYmodem128Info_t *ptmp = (bYmodem128Info_t *)pbuf;
+    bYmodem128Struct_t *ptmp = (bYmodem128Struct_t *)pbuf;
     static uint16_t check;
     
-    if(pbuf == NULL || (len != sizeof(bYmodem128Info_t) && len != sizeof(bYmodem1kInfo_t)))
+    if(pbuf == NULL || (len != sizeof(bYmodem128Struct_t) && len != sizeof(bYmodem1kStruct_t)))
     {
         return -1;
     }
@@ -159,68 +161,41 @@ static int _bYmodemISValid(uint8_t *pbuf, uint16_t len)
 }
 
 
-static int _bYmodemStart()
-{
-    if(pSendByte == NULL)
-    {
-        return -1;
-    }
-    pSendByte(YMODEM_C);
-    YmTick = bUtilGetTick();
-    YmodemStat = YM_S_WAIT_START;
-    return 0;
-}
-
-static int _bYmodemEnd()
-{
-    if(pSendByte == NULL)
-    {
-        return -1;
-    }
-    pSendByte(YMODEM_C);
-    YmTick = bUtilGetTick();
-    YmodemStat = YM_S_WAIT_END;
-    return 0;
-}
 
 static void _bYmodemTimeout()
 {
-    static uint8_t n_count = 0;
-    static uint8_t s_count = 0;
-    static uint8_t e_count = 0;
-    if(YmodemStat == YM_S_NULL)
+    if(bYmodemInfo.statu == YM_S_NULL)
     {
         return;
     }
-    if(bUtilGetTick() - YmTick > MS2TICKS(2000))
+    if(bUtilGetTick() - bYmodemInfo.tick >= MS2TICKS(2000))
     {
-        YmTick = bUtilGetTick();
-        if(YmodemStat == YM_S_WAIT_NAME && n_count < 3)
+        bYmodemInfo.tick = bUtilGetTick();
+        
+        if(bYmodemInfo.tt_count >= 10)
         {
-            YmodemStat = YM_S_NULL;
-            bYmodemStart();
-            n_count += 1;
-        }
-        else if(YmodemStat == YM_S_WAIT_START && s_count < 3)
-        {
-            _bYmodemStart();
-            s_count += 1;
-        }
-        else if(YmodemStat == YM_S_WAIT_END && e_count < 3)
-        {
-            _bYmodemEnd();
-            e_count += 1;
-        }
-        else
-        {
-            if(pCallback != NULL)
+            bYmodemInfo.tt_count = 0;
+            if(bYmodemInfo.cb)
             {
-                pCallback(0, 0, NULL, 0);
+                bYmodemInfo.cb(0, NULL, 0);
             }
-            s_count = 0;
-            n_count = 0;
-            e_count = 0;
-            YmodemStat = YM_S_NULL;
+            bYmodemInfo.statu = YM_S_NULL;
+            return;
+        }
+        bYmodemInfo.tt_count++;
+        
+        switch(bYmodemInfo.statu)
+        {
+            case YM_S_WAIT_NAME:
+            case YM_S_WAIT_START:
+                bYmodemInfo.send_f(YMODEM_C);
+                break;
+            case YM_S_WAIT_DATA:
+            case YM_S_WAIT_END:
+                bYmodemInfo.send_f(YMODEM_NAK);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -241,9 +216,9 @@ int bYmodemInit(pymcb_t fcb, pymsend fs)
     {
         return -1;
     }
-    pCallback = fcb;
-    pSendByte = fs;
-    YmodemStat = YM_S_NULL;
+    bYmodemInfo.cb = fcb;
+    bYmodemInfo.send_f = fs;
+    bYmodemInfo.statu = YM_S_NULL;
     if(YmodemPollFunc.pPollingFunction == NULL)
     {
         YmodemPollFunc.pPollingFunction = _bYmodemTimeout;
@@ -255,29 +230,31 @@ int bYmodemInit(pymcb_t fcb, pymsend fs)
 
 int bYmodemStart()
 {
-    if(pSendByte == NULL)
+    if(bYmodemInfo.send_f == NULL)
     {
         return -1;
     }
-    if(YmodemStat == YM_S_NULL)
+    if(bYmodemInfo.statu == YM_S_NULL)
     {
-        pSendByte(YMODEM_C);
-        YmTick = bUtilGetTick();
-        YmodemStat = YM_S_WAIT_NAME;
+        bYmodemInfo.send_f(YMODEM_C);
+        bYmodemInfo.tick = bUtilGetTick();
+        bYmodemInfo.statu = YM_S_WAIT_NAME;
+        bYmodemInfo.next_number = 0;
+        bYmodemInfo.tt_count = 0;
     }
     return 0;
 }
 
 int bYmodemStop()
 {
-    if(pSendByte == NULL)
+    if(bYmodemInfo.send_f == NULL)
     {
         return -1;
     }    
-    if(YmodemStat != YM_S_NULL)
+    if(bYmodemInfo.statu != YM_S_NULL)
     {
-        pSendByte(YMODEM_CAN);
-        YmodemStat = YM_S_NULL;
+        bYmodemInfo.send_f(YMODEM_CAN);
+        bYmodemInfo.statu = YM_S_NULL;
     }
     return 0; 
 }
@@ -286,83 +263,93 @@ int bYmodemStop()
 
 int bYmodemParse(uint8_t *pbuf, uint16_t len)
 {
-    static uint8_t num = 0;
-    static uint16_t f_num = 0;
     int t;
-    bYmodem128Info_t *pxm = (bYmodem128Info_t *)pbuf;
-    
-    if(pbuf == NULL || pCallback == NULL || pSendByte == NULL || YmodemStat == YM_S_NULL)
+    bYmodem128Struct_t *pxm = (bYmodem128Struct_t *)pbuf;
+    if(pbuf == NULL || bYmodemInfo.cb == NULL || bYmodemInfo.send_f == NULL || bYmodemInfo.statu == YM_S_NULL)
     {
         return -1;
     }
-    YmTick = bUtilGetTick();
+    bYmodemInfo.tick = bUtilGetTick();
+    bYmodemInfo.tt_count = 0;
     
-    
-    if(YmodemStat == YM_S_WAIT_NAME)
+    if(bYmodemInfo.statu == YM_S_WAIT_NAME)
     {
         if(_bYmodemISValid(pbuf, len) == YMODEM_SOH)
         {
             if(pxm->number == 0)
             {
-                pCallback(YMODEM_FILENAME, 0, pxm->dat, strlen((const char *)pxm->dat));
-                pSendByte(YMODEM_ACK);
-                YmodemStat = YM_S_WAIT_START;
+                if(pxm->dat[0] == 0)
+                {
+                    bYmodemInfo.send_f(YMODEM_ACK);
+                    bYmodemInfo.cb(YMODEM_FILEDATA, NULL, 0); 
+                    bYmodemInfo.statu = YM_S_NULL;
+                }
+                else
+                {
+                    bYmodemInfo.cb(YMODEM_FILENAME, pxm->dat, 128);   // [%s %s] [name file_size]
+                    bYmodemInfo.send_f(YMODEM_ACK);
+                    bYmodemInfo.send_f(YMODEM_C);
+                    bYmodemInfo.statu = YM_S_WAIT_START;
+                }
             }
         }
+        else
+        {
+            bYmodemInfo.send_f(YMODEM_ACK);
+            bYmodemInfo.cb(YMODEM_FILEDATA, NULL, 0); 
+            bYmodemInfo.statu = YM_S_NULL;
+        }
     }
-    else if(YmodemStat == YM_S_WAIT_START)
+    else if(bYmodemInfo.statu == YM_S_WAIT_START)
     {
         t = _bYmodemISValid(pbuf, len);
         if(t > 0 && pxm->number == 1)
         {
-            YmodemStat = YM_S_WAIT_DATA;
-            num = 1;
-            f_num = 0;
+            bYmodemInfo.statu = YM_S_WAIT_DATA;
+            bYmodemInfo.next_number = 1;
         }
     }
     
-    if(YmodemStat == YM_S_WAIT_DATA)
+    if(bYmodemInfo.statu == YM_S_WAIT_DATA)
     {
         t = _bYmodemISValid(pbuf, len);
         if(t > 0)
         {
-            if(pxm->number == num)
+            if(pxm->number == bYmodemInfo.next_number)
             {
                 if(t == YMODEM_SOH)
                 {
-                    pCallback(YMODEM_FILEDATA, f_num, pxm->dat, 128);
+                    bYmodemInfo.cb(YMODEM_FILEDATA, pxm->dat, 128);
                 }
                 else if(t == YMODEM_STX)
                 {
-                    pCallback(YMODEM_FILEDATA, f_num, pxm->dat, 1024);
+                    bYmodemInfo.cb(YMODEM_FILEDATA, pxm->dat, 1024);
                 }
-                num += 1;
-                f_num += 1;
-                pSendByte(YMODEM_ACK);
+                bYmodemInfo.next_number += 1;
+                bYmodemInfo.send_f(YMODEM_ACK);
             }
-            else
+            else if(pxm->number > bYmodemInfo.next_number)
             {
-                pCallback(0, 0, NULL, 0);
-                pSendByte(YMODEM_CAN);
-                YmodemStat = YM_S_NULL;
+                bYmodemInfo.cb(0, NULL, 0);
+                bYmodemInfo.statu = YM_S_NULL;
+                bYmodemInfo.send_f(YMODEM_CAN);
                 return -1;
             }
         }
         else if(len == 1 && *pbuf == YMODEM_EOT)
         {
-            pSendByte(YMODEM_ACK);
-            YmodemStat = YM_S_WAIT_END;
-        }
-        else
-        {
-            pSendByte(YMODEM_NAK);
+            bYmodemInfo.send_f(YMODEM_NAK);
+            bYmodemInfo.statu = YM_S_WAIT_END;
         }
     }
-    else if(YmodemStat == YM_S_WAIT_END)
+    else if(bYmodemInfo.statu == YM_S_WAIT_END)
     {
-        pCallback(YMODEM_FILEDATA, f_num, NULL, 0);
-        pSendByte(YMODEM_ACK);
-        YmodemStat = YM_S_NULL;
+        if(len == 1 && *pbuf == YMODEM_EOT)
+        {
+            bYmodemInfo.send_f(YMODEM_ACK);
+            bYmodemInfo.send_f(YMODEM_C);
+            bYmodemInfo.statu = YM_S_WAIT_NAME;
+        }
     }
     return 0;
 }
