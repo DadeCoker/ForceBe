@@ -80,6 +80,19 @@ void TestLog()
 {
     b_log_i("hello world\r\n");
 }
+
+void SortTest()
+{
+    int i = 0;
+    uint8_t table[10] = {5,8,9,1,4,2,6,8,5,2};
+    BubbleSort(table, 10, _ALGO_SORT_U8);
+    for(i = 0;i < 10;i++)
+    {
+        b_log("%d ", table[i]);
+    }
+    b_log("\r\n");
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -124,6 +137,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   bInit();
+  SortTest();
   while (1)
   {
       bExec();

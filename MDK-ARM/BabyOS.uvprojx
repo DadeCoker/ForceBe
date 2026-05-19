@@ -775,6 +775,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\algorithm\algo_base64.c</FilePath>
             </File>
+            <File>
+              <FileName>algo_sort.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\algorithm\algo_sort.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

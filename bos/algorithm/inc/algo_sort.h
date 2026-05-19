@@ -1,6 +1,6 @@
 /**
  *!
- * \file        algorithm.h
+ * \file        algo_sort.h
  * \version     v0.0.1
  * \date        2020/04/27
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,14 +28,15 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_ALGORITHM_H__
-#define __B_ALGORITHM_H__
+#ifndef __B_ALGO_SORT_H__
+#define __B_ALGO_SORT_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
+#include "b_config.h" 
 
 
 /** 
@@ -43,15 +44,71 @@
  * \{
  */
 
-#include "algo_hmac_sha1.h"
-#include "algo_base64.h"
-#include "algo_gps.h"
-#include "algo_kalman.h"
-#include "algo_matrix.h"
-#include "algo_speedpid.h"
-#include "algo_sort.h"
+/** 
+ * \addtogroup SORT
+ * \{
+ */
+
+/** 
+ * \defgroup SORT_Exported_TypesDefinitions
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SORT_Exported_Defines
+ * \{
+ */
+
+#define _ALGO_SORT_I8       0
+#define _ALGO_SORT_U8       1
+#define _ALGO_SORT_I16       2
+#define _ALGO_SORT_U16       3
+#define _ALGO_SORT_I32       4
+#define _ALGO_SORT_U32       5
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SORT_Exported_Macros
+ * \{
+ */
 
 
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SORT_Exported_Variables
+ * \{
+ */
+   
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SORT_Exported_Functions
+ * \{
+ */
+
+void BubbleSort(void *arr, int size, uint8_t type);
+void SelectionSort(void *arr, int size, uint8_t type);
+void InsertionSort(void *arr, int size, uint8_t type);
+
+/**
+ * \}
+ */
+
+/**
+ * \}
+ */
 
 /**
  * \}
