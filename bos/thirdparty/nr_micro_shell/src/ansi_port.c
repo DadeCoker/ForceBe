@@ -38,6 +38,14 @@
 #include <string.h>
 
 #if _NR_MICRO_SHELL_ENABLE
+#include "b_hal.h"
+
+void ansi_show_char(char ch)
+{
+#if NR_SHELL_ECHO_ENABLE
+    bHalUartSend(HAL_LOG_UART, (uint8_t *)&ch, 1);
+#endif
+}
 
 // show string
 void ansi_show_str(char *str, unsigned int len)
@@ -181,8 +189,8 @@ void nr_ansi_in_right(ansi_st *ansi)
 // tab key processing
 void nr_ansi_in_tab(ansi_st *ansi)
 {
-    unsigned char i;
     char *cmd;
+    static_cmd_st *ptmp = bShellHead;
     cmd = shell_cmd_complete(&nr_shell, ansi->current_line);
     if (cmd != NULL)
     {
@@ -190,12 +198,12 @@ void nr_ansi_in_tab(ansi_st *ansi)
         if (ansi->counter == 0)
         {
             shell_printf("\r\n");
-            for (i = 0; nr_cmd_start_add[i].fp != NULL; i++)
+            while(ptmp)
             {
-                shell_printf(nr_cmd_start_add[i].cmd);
+                shell_printf(ptmp->cmd);
                 shell_printf("\r\n");
+                ptmp = ptmp->pnext;
             }
-
             shell_printf(nr_shell.user_name);
         }
         else

@@ -181,18 +181,15 @@
 //<o> Maximum username length
 #define NR_SHELL_USER_NAME_MAX_LENGTH       30
 
-//<o> Maximum command name length
-#define NR_SHELL_CMD_NAME_MAX_LENGTH        10
-
 //<o> Maximum number of parameters in a command
 #define NR_SHELL_CMD_PARAS_MAX_NUM          10
 
 //<o> History commands
 //<0-3>
-#define NR_SHELL_MAX_CMD_HISTORY_NUM        3
+#define NR_SHELL_MAX_CMD_HISTORY_NUM        1
 
 //<o> History command cache length
-#define NR_SHELL_CMD_HISTORY_BUF_LENGTH     253
+#define NR_SHELL_CMD_HISTORY_BUF_LENGTH     100
 
 
 //<o> End of line
@@ -205,7 +202,7 @@
 #define NR_SHLL_FULL_ANSI                   1
 
 //<q> Show logo enable/disable
-#define NR_SHELL_SHOW_LOG                   1
+#define NR_SHELL_SHOW_LOG                   0
 
 //<q> Echo enable/disable
 #define NR_SHELL_ECHO_ENABLE                1
@@ -213,13 +210,6 @@
 
 #if _DEBUG_ENABLE
 #define shell_printf(fmt, args...)          b_log(fmt, ##args);
-
-#if NR_SHELL_ECHO_ENABLE
-#define ansi_show_char(x)                   b_log("%c", x)
-#else
-#define ansi_show_char(x)
-#endif
-
 #endif
 //</e>
 

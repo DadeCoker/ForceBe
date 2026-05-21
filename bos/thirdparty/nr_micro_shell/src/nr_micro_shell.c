@@ -44,9 +44,9 @@ NR_SHELL_CMD_EXPORT_END("/0", NULL);
 #endif
 
 shell_st nr_shell =
-	{
+{
 		.user_name = NR_SHELL_USER_NAME,
-		.static_cmd = nr_cmd_start_add,
+		.static_cmd = NULL,
 };
 
 static char *nr_shell_strtok(char *string_org, const char *demial)
@@ -110,6 +110,7 @@ void _shell_init(shell_st *shell)
 #endif
 
 	shell_printf(shell->user_name);
+    shell->static_cmd = bShellHead;
 	shell_his_queue_init(&shell->cmd_his);
 	shell_his_queue_add_cmd(&shell->cmd_his, "ls cmd");
 	shell->cmd_his.index = 1;
@@ -117,16 +118,18 @@ void _shell_init(shell_st *shell)
 
 shell_fun_t shell_search_cmd(shell_st *shell, char *str)
 {
-	unsigned int i = 0;
-	while (shell->static_cmd[i].fp != NULL)
-	{
-		if (!strcmp(str, shell->static_cmd[i].cmd))
-		{
-			return shell->static_cmd[i].fp;
-		}
-		i++;
-	}
-
+    static_cmd_st *ptmp = shell->static_cmd;
+    while(ptmp)
+    {
+        if(ptmp->fp != NULL)
+        {
+            if (!strcmp(str, ptmp->cmd))
+            {
+                return ptmp->fp;
+            }
+        }
+        ptmp = ptmp->pnext;
+    }
 	return NULL;
 }
 
@@ -190,25 +193,25 @@ void shell_parser(shell_st *shell, char *str)
 char *shell_cmd_complete(shell_st *shell, char *str)
 {
 	char *temp = NULL;
-	unsigned char i;
 	char *best_matched = NULL;
 	unsigned char min_position = 255;
-
-	for (i = 0; shell->static_cmd[i].cmd[0] != '\0'; i++)
-	{
-		temp = NULL;
-		temp = strstr(shell->static_cmd[i].cmd, str);
-		if (temp != NULL && ((unsigned int)temp - (unsigned int)(&shell->static_cmd[i]) < min_position))
+    static_cmd_st *ptmp = shell->static_cmd;
+    
+    while(ptmp)
+    {
+        temp = NULL;
+        temp = strstr(ptmp->cmd, str);
+		if (temp != NULL && ((unsigned int)temp - (unsigned int)(ptmp->cmd) < min_position))
 		{
-			min_position = (unsigned int)temp - (unsigned int)(&shell->static_cmd[i]);
-			best_matched = (char *)&shell->static_cmd[i];
+			min_position = (unsigned int)temp - (unsigned int)(ptmp->cmd);
+			best_matched = (char *)ptmp->cmd;
 			if (min_position == 0)
 			{
 				break;
 			}
 		}
-	}
-
+        ptmp = ptmp->pnext;
+    }
 	return best_matched;
 }
 

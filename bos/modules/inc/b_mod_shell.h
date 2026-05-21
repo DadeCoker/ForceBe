@@ -59,7 +59,7 @@
  * \{
  */
 
-
+typedef static_cmd_st       bShellInstance_t;
 /**
  * \}
  */
@@ -68,7 +68,9 @@
  * \defgroup SHELL_Exported_Defines
  * \{
  */
-
+#define bSHELL_INSTANCE(instance_name, cmd_name, cmd_handler)           bShellInstance_t instance_name = {.cmd = cmd_name,\
+                                                                                            .fp = cmd_handler,\
+                                                                                            .pnext = NULL};      
 /**
  * \}
  */
@@ -95,7 +97,8 @@
  * \defgroup SHELL_Exported_Functions
  * \{
  */
-int bShellStart(void);
+///< pbShellInstance \ref bSHELL_INSTANCE
+int bShellRegistCmd(bShellInstance_t *pbShellInstance);
 int bShellParse(uint8_t *pbuf, uint16_t len);
 /**
  * \}

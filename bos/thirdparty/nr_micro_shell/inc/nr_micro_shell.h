@@ -54,10 +54,10 @@ typedef void (*shell_fun_t)(char, char *);
 
 typedef struct static_cmd_function_struct
 {
-    char cmd[NR_SHELL_CMD_NAME_MAX_LENGTH];
+    const char *cmd;
     void (*fp)(char argc, char *argv);
-    char *description;
-} static_cmd_st;
+    struct static_cmd_function_struct *pnext;
+}static_cmd_st;
 
 typedef struct shell_history_queue_struct
 {
@@ -79,9 +79,9 @@ typedef struct shell_history_queue_struct
 typedef struct nr_shell
 {
     char user_name[NR_SHELL_USER_NAME_MAX_LENGTH];
-    const static_cmd_st *static_cmd;
+    static_cmd_st *static_cmd;
     shell_his_queue_st cmd_his;
-} shell_st;
+}shell_st;
 
 void _shell_init(shell_st *shell);
 void shell_parser(shell_st *shell, char *str);
@@ -118,35 +118,7 @@ extern shell_st nr_shell;
     int rt_nr_shell_system_init(void);
 #endif
 
-#ifdef NR_SHELL_USING_EXPORT_CMD
-
-/* Compiler Check */
-#if defined(__CC_ARM) || defined(__CLANG_ARM) || defined(__GNUC__) || defined(__ADSPBLACKFIN__)
-#define NR_SECTION(x) __attribute__((section(x)))
-#define NR_USED __attribute__((used))
-#elif defined(__IAR_SYSTEMS_ICC__) /* for IAR Compiler */
-#define NR_SECTION(x) @x
-#define NR_USED __root
-#else
-#error NR_CMD_EXPORT not supported tool chain.
-#endif
-
-#define NR_CMD_SECTION(x) NR_SECTION(".rodata.nr_shell_cmd." x)
-#define NR_SHELL_CMD_EXPORT_START(cmd, func) \
-NR_USED const static_cmd_st _nr_cmd_start_ NR_CMD_SECTION("0.end") = {#cmd, NULL}
-#define NR_SHELL_CMD_EXPORT(cmd, func) \
-NR_USED const static_cmd_st _nr_cmd_##cmd NR_CMD_SECTION("1") = {#cmd, func}
-#define NR_SHELL_CMD_EXPORT_END(cmd, func) \
-NR_USED const static_cmd_st _nr_cmd_end_ NR_CMD_SECTION("1.end") = {#cmd, NULL}
-
-extern const static_cmd_st _nr_cmd_start_;
-#define nr_cmd_start_add (&_nr_cmd_start_ + 1)
-
-#else
-extern const static_cmd_st static_cmd[];
-#define nr_cmd_start_add static_cmd
-#endif
-
+extern static_cmd_st *bShellHead;
 
 #endif
 
