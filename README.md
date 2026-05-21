@@ -137,18 +137,38 @@ b_hal.h中取消如下部分的注释，并根据实际连接图修改GPIO和SPI
 修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台，使用STM32 HAL库为例）
 
 ```C
-uint8_t bHalSPI_SendReceiveByte(uint8_t no, uint8_t dat)
+int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 {
-    uint8_t tmp;
-    switch(no)
+    if(pbuf == NULL)
     {
-        case B_HAL_SPI_2:
-            HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xff);
-            break;
+        return -1;
+    }
+    switch(spi)
+    {
+        case B_HAL_SPI_1:
+            HAL_SPI_Transmit(&hspi1, pbuf, len, 0xfff);
+            break;        
         default:
             break;
     }
-    return tmp;
+    return 0;
+}
+
+int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
+{
+    if(pbuf == NULL)
+    {
+        return -1;
+    }
+    switch(spi)
+    {
+        case B_HAL_SPI_1:
+            HAL_SPI_Receive(&hspi1, pbuf, len, 0xfff);
+            break;        
+        default:
+            break;
+    }
+    return 0;
 }
 ```
 
