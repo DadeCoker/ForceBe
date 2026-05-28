@@ -30,8 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_touch.h"
 #include "b_drv_xpt2046.h"
-#include "b_hal.h"
 
 /** 
  * \addtogroup BABYOS

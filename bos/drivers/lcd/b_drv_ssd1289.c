@@ -30,8 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_lcd.h"
 #include "b_drv_ssd1289.h"
-#include "b_hal.h"
 
 /** 
  * \addtogroup BABYOS
@@ -163,10 +163,8 @@ static int _bSSD1289Ctl(uint8_t cmd, void * param)
     {
         case bCMD_FILL_FRAME:
             {
-                bCMD_Struct_t *p = (bCMD_Struct_t *)param;
-                _bSSD1289FillFrame(p->param.fill_frame.x1, p->param.fill_frame.y1
-                                ,p->param.fill_frame.x2, p->param.fill_frame.y2
-                                ,p->param.fill_frame.color);
+                bCMD_FillFrame_t *p = (bCMD_FillFrame_t *)param;
+                _bSSD1289FillFrame(p->x1, p->y1 ,p->x2, p->y2 ,p->color);
             }
             break;
     }

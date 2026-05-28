@@ -30,9 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_camera.h"
 #include "b_drv_ov5640.h"
-#include "b_hal.h"
-#include "b_utils.h"
 #include "b_drv_ov5640cfg.h"
 #include "b_drv_ov5640af.h"
 /** 

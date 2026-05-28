@@ -30,9 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_flash.h"
 #include "b_drv_w25x.h"
-#include "b_utils.h"
-#include "b_hal.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -403,14 +402,14 @@ static int _bW25X_Ctl(uint8_t cmd, void * param)
     
     switch(cmd)
     {
-        case bCMD_ERASE:
+        case bCMD_ERASE_SECTOR:
             {
                 if(param == NULL)
                 {
                     return -1;
                 }
-                bCMD_Struct_t *p = (bCMD_Struct_t *)param;
-                retval = _bW25X_Erase(p->param.erase.addr, p->param.erase.num);
+                bCMD_Erase_t *p = (bCMD_Erase_t *)param;
+                retval = _bW25X_Erase(p->addr, p->num);
             }
             break;
         default:

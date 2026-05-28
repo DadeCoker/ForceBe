@@ -30,9 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_flash.h"
 #include "b_drv_24cxx.h"
-#include "b_hal.h"
-#include "b_utils.h"
 /** 
  * \addtogroup B_DRIVER
  * \{

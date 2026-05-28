@@ -30,9 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_lcd.h"
 #include "b_drv_oled.h"
-#include "b_hal.h"
-#include "b_utils.h"
 #include <string.h>
 /** 
  * \addtogroup BABYOS

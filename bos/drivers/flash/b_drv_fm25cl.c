@@ -30,8 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_flash.h"
 #include "b_drv_fm25cl.h"
-#include "b_hal.h"
 /** 
  * \addtogroup BABYOS
  * \{

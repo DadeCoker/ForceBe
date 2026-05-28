@@ -30,8 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_io_expander.h"
 #include "b_drv_pcf8574.h"
-#include "b_hal.h"
 /** 
  * \addtogroup B_DRIVER
  * \{

@@ -30,9 +30,8 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_lcd.h"
 #include "b_drv_ili9320.h"
-#include "b_hal.h"
-#include "b_utils.h"
 
 /** 
  * \addtogroup BABYOS

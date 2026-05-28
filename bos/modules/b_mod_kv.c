@@ -33,7 +33,7 @@
 #include "b_mod_kv.h"
 #if _KV_ENABLE
 #include "b_core.h"
-#include "b_device.h"
+#include "b_driver.h"
 #include <string.h>
 
 /** 
@@ -174,7 +174,7 @@ static int _bKV_ISFirstTime(int fd)
 
 static int _bKV_ClearSector(int fd, uint8_t t)
 {
-    bCMD_Struct_t cmd;
+    bCMD_Erase_t cmd;
     int retval = -1;
     if(bKV_Info.e_size == 0)
     {
@@ -183,27 +183,27 @@ static int _bKV_ClearSector(int fd, uint8_t t)
 
     if(t & bKV_SECTOR_T1)
     {
-        cmd.param.erase.addr = bKV_Info.ts_address;
-        cmd.param.erase.num = 1;
-        retval = bCtl(fd, bCMD_ERASE, &cmd); 
+        cmd.addr = bKV_Info.ts_address;
+        cmd.num = 1;
+        retval = bCtl(fd, bCMD_ERASE_SECTOR, &cmd); 
     }
     if(t & bKV_SECTOR_T2)
     {
-        cmd.param.erase.addr = bKV_Info.ts_address + bKV_Info.e_size;
-        cmd.param.erase.num = 1;
-        retval = bCtl(fd, bCMD_ERASE, &cmd); 
+        cmd.addr = bKV_Info.ts_address + bKV_Info.e_size;
+        cmd.num = 1;
+        retval = bCtl(fd, bCMD_ERASE_SECTOR, &cmd); 
     }
     if(t & bKV_SECTOR_D1)
     {
-        cmd.param.erase.addr = bKV_Info.ds_address;
-        cmd.param.erase.num = bKV_Info.d_size / bKV_Info.e_size;
-        retval = bCtl(fd, bCMD_ERASE, &cmd); 
+        cmd.addr = bKV_Info.ds_address;
+        cmd.num = bKV_Info.d_size / bKV_Info.e_size;
+        retval = bCtl(fd, bCMD_ERASE_SECTOR, &cmd); 
     }
     if(t & bKV_SECTOR_D2)
     {
-        cmd.param.erase.addr = bKV_Info.ds_address + bKV_Info.d_size;
-        cmd.param.erase.num = bKV_Info.d_size / bKV_Info.e_size;
-        retval = bCtl(fd, bCMD_ERASE, &cmd); 
+        cmd.addr = bKV_Info.ds_address + bKV_Info.d_size;
+        cmd.num = bKV_Info.d_size / bKV_Info.e_size;
+        retval = bCtl(fd, bCMD_ERASE_SECTOR, &cmd); 
     }
     return retval;
 }

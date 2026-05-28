@@ -33,7 +33,7 @@
 #include "b_mod_sdb.h"
 #if (_SAVE_DATA_ENABLE && _SAVE_DATA_B_ENABLE)
 #include "b_core.h"
-#include "b_device.h"
+#include "b_driver.h"
 #include <string.h>
 /** 
  * \addtogroup BABYOS
@@ -155,11 +155,11 @@ int bSDB_Write(bSDB_Instance_t *pSDB_Instance, uint8_t *pbuf)
         return -1;
     }
 
-	bCMD_Struct_t cmd_s;
-	cmd_s.param.erase.addr = pSDB_Instance->address;
-	cmd_s.param.erase.num = 1;
+	bCMD_Erase_t cmd_s;
+	cmd_s.addr = pSDB_Instance->address;
+	cmd_s.num = 1;
 
-    retval = bCtl(d_fd, bCMD_ERASE, &cmd_s);
+    retval = bCtl(d_fd, bCMD_ERASE_SECTOR, &cmd_s);
     if(retval >= 0)
     {
         bLseek(d_fd, pSDB_Instance->address);

@@ -32,17 +32,31 @@
 #define __B_DRIVER_H__
 
 
+#include "../camera/b_drv_camera.h"
+#include "b_drv_ov5640.h"
 
+#include "../flash/b_drv_flash.h"
 #include "b_drv_w25x.h"
-#include "b_drv_xpt2046.h"
-#include "b_drv_ssd1289.h"
-#include "b_drv_f8l10d.h"
-#include "b_drv_fm25cl.h"
-#include "b_drv_ili9341.h"
-#include "b_drv_pcf8574.h"
 #include "b_drv_24cxx.h"
+#include "b_drv_fm25cl.h"
+
+#include "../lcd/b_drv_lcd.h"
 #include "b_drv_oled.h"
 #include "b_drv_ili9320.h"
+#include "b_drv_ili9341.h"
+#include "b_drv_ssd1289.h"
+
+#include "../touch/b_drv_touch.h"
+#include "b_drv_xpt2046.h"
+
+#include "../lora/b_drv_lora.h"
+#include "b_drv_f8l10d.h"
+
+#include "../io-expander/b_drv_io_expander.h"
+#include "b_drv_pcf8574.h"
+
+
+
 
 //Flash IC
 extern bDriverInterface_t   bW25X_Driver;

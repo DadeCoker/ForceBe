@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_device.h
+ * \file        b_drv_camera.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/05/24
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,118 +28,55 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DEVICE_H__
-#define __B_DEVICE_H__
+#ifndef __B_DRV_CAMERA_H__
+#define __B_DRV_CAMERA_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"  
+#include "b_hal.h"
+#include "b_utils.h"
 /** 
- * \addtogroup BABYOS
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup CORE
+ * \defgroup CAMERA_Exported_TypesDefinitions
  * \{
  */
-
-/** 
- * \addtogroup DEVICE
- * \{
- */
-
-/** 
- * \defgroup DEVICE_Exported_TypesDefinitions
- * \{
- */
-typedef struct bDriverInterface
+typedef struct
 {
-    int (*init)(void);
-    int (*open)(void);
-    int (*close)(void);
-    int (*ctl)(uint8_t cmd, void *param);
-    int (*write)(uint32_t addr, uint8_t *pbuf, uint16_t len);
-    int (*read)(uint32_t addr, uint8_t *pbuf, uint16_t len);
-    void *_private;
-}bDriverInterface_t; 
-
-
-#define B_DEVICE_REG(dev, driver, desc)
-#include "b_device_list.h"
-
-
-typedef enum
-{
-    #define B_DEVICE_REG(dev, driver, desc)    dev,
-    #include "b_device_list.h"
-    bDEV_MAX_NUM
-}bDeviceName_t;
-
-
-
-
-
+    union
+    {
+        uint32_t value;    // bCMD_CONF_LIGHTMODE ~ bCMD_CONF_FLASH
+        uint16_t size[4];  //bCMD_CONF_OUTSIZE x-off y-off x-size y-size
+    }config;
+}bCMD_CameraConfig_t; 
 /**
  * \}
  */
    
 /** 
- * \defgroup DEVICE_Exported_Defines
+ * \defgroup CAMERA_Exported_Defines
  * \{
  */
+#define bCMD_CONF_LIGHTMODE     0x0
+#define bCMD_CONF_COLOR_SAT     0x1            
+#define bCMD_CONF_BRIGHTNESS    0x2
+#define bCMD_CONF_CONTRAST      0x3
+#define bCMD_CONF_SHARPNESS     0x4
+#define bCMD_CONF_FLASH         0x5
+#define bCMD_CONF_OUTSIZE       0x6
 
-#define BDEVICE_ERROR       1
+/**
+ * \}
+ */
+   
 
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup DEVICE_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup DEVICE_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup DEVICE_Exported_Functions
- * \{
- */
-int bDeviceInit(void);
-int bDeviceOpen(uint8_t no);
-int bDeviceRead(int no, uint32_t address, uint8_t *pdata, uint16_t len);
-int bDeviceWrite(int no, uint32_t address, uint8_t *pdata, uint16_t len);
-int bDeviceClose(int no);
-int bDeviceCtl(int no, uint8_t cmd, void *param);
-int bDeviceISNormal(uint8_t no);
-/**
- * \}
- */
  
-/**
- * \}
- */ 
-
-/**
- * \}
- */
-
 /**
  * \}
  */
@@ -148,9 +85,13 @@ int bDeviceISNormal(uint8_t no);
 	}
 #endif
  
-#endif  
+#endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
+
+
 
 
 

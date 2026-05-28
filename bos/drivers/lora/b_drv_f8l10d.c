@@ -30,12 +30,11 @@
  */
    
 /*Includes ----------------------------------------------*/
+#include "b_drv_lora.h"
 #include "b_drv_f8l10d.h"
 
 #include <string.h>
 #include <stdio.h>
-#include "b_utils.h"
-#include "b_hal.h"
 
 /** 
  * \addtogroup BABYOS

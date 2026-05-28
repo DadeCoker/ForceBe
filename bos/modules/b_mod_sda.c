@@ -34,7 +34,7 @@
 #if (_SAVE_DATA_ENABLE && _SAVE_DATA_A_ENABLE)
 #include "b_mod_utc.h"
 #include "b_core.h"
-#include "b_device.h"
+#include "b_driver.h"
 #include <string.h>
 /** 
  * \addtogroup BABYOS
@@ -187,14 +187,14 @@ int bSDA_Write(bSDA_Instance_t *pSDA_Instance, uint32_t utc, uint8_t *pbuf)
         return -1;
     }
     
-	bCMD_Struct_t cmd_s;
-	cmd_s.param.erase.addr = address;
-	cmd_s.param.erase.num = 1;
+	bCMD_Erase_t cmd_s;
+	cmd_s.addr = address;
+	cmd_s.num = 1;
     bLseek(d_fd, address);
 
     if((address % (pSDA_Instance->st.fsector_size) == 0) || pSDA_Instance->e_flag == 1)
     {
-        bCtl(d_fd, bCMD_ERASE, &cmd_s);
+        bCtl(d_fd, bCMD_ERASE_SECTOR, &cmd_s);
         pSDA_Instance->e_flag = 0;
     }
     retval = bWrite(d_fd, pbuf, pSDA_Instance->st.data_size);
