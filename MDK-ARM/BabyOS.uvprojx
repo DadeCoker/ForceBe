@@ -632,6 +632,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\modules\b_mod_timer.c</FilePath>
             </File>
+            <File>
+              <FileName>b_mod_param.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\modules\b_mod_param.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
