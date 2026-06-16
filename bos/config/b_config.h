@@ -81,7 +81,7 @@
 //<e> Error Manage Enable/Disable
 #define _ERROR_MANAGE_ENABLE       	0
 //<o> Error Queue Length
-#define _ERROR_Q_LENGTH          	5
+#define _ERROR_Q_LENGTH          	10
 //</e>
 
 //<q> Event Manage Enable/Disable

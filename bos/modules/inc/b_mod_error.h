@@ -61,6 +61,8 @@
 typedef struct
 {
     uint8_t err;
+    uint8_t ack;
+    uint8_t type;
     uint32_t utc;
     uint32_t s_tick;
     uint32_t d_tick;
@@ -110,10 +112,10 @@ typedef void (*pecb)(bErrorInfo_t *);
  */
 int bErrorInit(pecb cb);
 int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level);
+int bErrorAck(uint8_t e_no);
 int bErrorClear(uint8_t e_no);
 int bErrorIS_Exist(uint8_t e_no);
 int bErrorIS_Empty(void);
-
 /**
  * \}
  */

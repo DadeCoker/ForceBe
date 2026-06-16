@@ -79,10 +79,8 @@
  * \defgroup ERROR_Private_Variables
  * \{
  */
-static bErrorInfo_t bErrorRecordL0[_ERROR_Q_LENGTH];   
-static bErrorInfo_t bErrorRecordL1[_ERROR_Q_LENGTH];
+static bErrorInfo_t bErrorRecord[_ERROR_Q_LENGTH];   
 static pecb bFcb = NULL; 
-
 static bPollingFunc_t ErrorPollFunc = {
     .pPollingFunction = NULL,
 };
@@ -110,35 +108,26 @@ static bPollingFunc_t ErrorPollFunc = {
 static void _bErrorCore()
 {
     uint32_t i = 0;
-    static uint32_t tick = 0;
-    if(bUtilGetTick() - tick >= 1000)
+    uint32_t tick = 0;
+    tick = bUtilGetTick();
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
-        tick = bUtilGetTick();
-        for(i = 0;i < _ERROR_Q_LENGTH;i++)
+        if(bErrorRecord[i].err == INVALID_ERR)
         {
-            if(bErrorRecordL0[i].err != INVALID_ERR && bErrorRecordL0[i].s_tick == 0)
+            continue;
+        }
+        if(bErrorRecord[i].s_tick == 0 || 
+            (bErrorRecord[i].type == BERROR_LEVEL_1 
+             && bErrorRecord[i].ack == 0 
+             && (tick - bErrorRecord[i].s_tick > bErrorRecord[i].d_tick)))
+        {
+            bErrorRecord[i].s_tick = tick;
+            if(bFcb != NULL)
             {
-                bErrorRecordL0[i].s_tick = tick;
-                if(bFcb != NULL)
-                {
-                    bFcb(&bErrorRecordL0[i]);
-                }
+                bFcb(&bErrorRecord[i]);
             }
-            
-            if(bErrorRecordL1[i].err != INVALID_ERR)
-            {
-                if(bErrorRecordL1[i].s_tick == 0
-                    || ((tick - bErrorRecordL1[i].s_tick) > bErrorRecordL1[i].d_tick))
-                {
-                    bErrorRecordL1[i].s_tick = tick;
-                    if(bFcb != NULL)
-                    {
-                        bFcb(&bErrorRecordL1[i]);
-                    }
-                }
-            } 
-        } 
-    }
+        }
+    } 
 }
 
 /**
@@ -160,8 +149,7 @@ int bErrorInit(pecb cb)
     bFcb = cb;
     for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
-    	bErrorRecordL0[i].err = INVALID_ERR;
-        bErrorRecordL1[i].err = INVALID_ERR;
+    	bErrorRecord[i].err = INVALID_ERR;
     }
     if(ErrorPollFunc.pPollingFunction == NULL)
     {
@@ -188,66 +176,40 @@ int bErrorInit(pecb cb)
 int bErrorRegist(uint8_t err, uint32_t utc, uint32_t interval, uint32_t level)
 {
     static uint8_t index = 0;
-    uint32_t i = 0, valid_index = _ERROR_Q_LENGTH;
+    uint32_t i = 0;
     uint32_t tick = 0;
     
-    if(level == BERROR_LEVEL_0)
-    {
-        for(i = 0;i < _ERROR_Q_LENGTH;i++)
-        {
-            if(bErrorRecordL0[i].err == err)
-            {
-                tick = bUtilGetTick() - bErrorRecordL0[i].s_tick;
-                if(tick > bErrorRecordL0[i].d_tick)
-                {
-                    bErrorRecordL0[i].s_tick = 0;
-                    bErrorRecordL0[i].utc = utc;
-                    break;
-                }
-            }
-        }
-        if(i >= _ERROR_Q_LENGTH)
-        {
-            bErrorRecordL0[index].err = err;
-            bErrorRecordL0[index].utc = utc;
-            bErrorRecordL0[index].d_tick = MS2TICKS(interval * 1000);
-            bErrorRecordL0[index].s_tick = 0;
-            index = (index + 1) % _ERROR_Q_LENGTH;
-        }
-    }
-    else if(level == BERROR_LEVEL_1)
-    {
-        for(i = 0;i < _ERROR_Q_LENGTH;i++)
-        {
-            if(bErrorRecordL1[i].err == err)
-            {
-                break;
-            }
-            else if(bErrorRecordL1[i].err == INVALID_ERR)
-            {
-                valid_index = i;
-            }
-        }
-        if(i >= _ERROR_Q_LENGTH)
-        {
-            if(valid_index < _ERROR_Q_LENGTH)
-            {
-                bErrorRecordL1[valid_index].err = err;
-                bErrorRecordL1[valid_index].d_tick = MS2TICKS(interval * 1000);
-                bErrorRecordL1[valid_index].s_tick = 0;
-                bErrorRecordL1[valid_index].utc = utc;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-    }
-    else
+    if(level != BERROR_LEVEL_0 && level != BERROR_LEVEL_1)
     {
         return -1;
     }
-    return 0;
+    
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
+    {
+        if(bErrorRecord[i].err == err)
+        {
+            tick = bUtilGetTick() - bErrorRecord[i].s_tick;
+            if(tick > bErrorRecord[i].d_tick)
+            {
+                bErrorRecord[i].s_tick = 0;
+                bErrorRecord[i].utc = utc;
+                bErrorRecord[i].type = level;
+                bErrorRecord[i].ack = 0;
+            }
+            break;
+        }
+    }
+    if(i >= _ERROR_Q_LENGTH)
+    {
+        bErrorRecord[index].err = err;
+        bErrorRecord[index].utc = utc;
+        bErrorRecord[index].d_tick = MS2TICKS(interval * 1000);
+        bErrorRecord[index].s_tick = 0;
+        bErrorRecord[index].type = level;
+        bErrorRecord[index].ack = 0;
+        index = (index + 1) % _ERROR_Q_LENGTH;
+    }
+    return 0;    
 }    
 
 
@@ -267,15 +229,10 @@ int bErrorClear(uint8_t e_no)
     }
     for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
-        if(bErrorRecordL0[i].err == e_no)
+        if(bErrorRecord[i].err == e_no)
         {
-            bErrorRecordL0[i].err = INVALID_ERR;
+            bErrorRecord[i].err = INVALID_ERR;
         }
-        
-        if(bErrorRecordL1[i].err == e_no)
-        {
-            bErrorRecordL1[i].err = INVALID_ERR;
-        } 
     }
     return 0;
 }
@@ -296,7 +253,7 @@ int bErrorIS_Exist(uint8_t e_no)
     }
     for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
-        if(bErrorRecordL0[i].err == e_no || bErrorRecordL1[i].err == e_no)
+        if(bErrorRecord[i].err == e_no)
         {
             return 0;
         }
@@ -310,7 +267,7 @@ int bErrorIS_Empty()
     int i = 0;
     for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
-        if(bErrorRecordL0[i].err != INVALID_ERR || bErrorRecordL1[i].err != INVALID_ERR)
+        if(bErrorRecord[i].err != INVALID_ERR)
         {
             return -1;
         }
@@ -318,6 +275,18 @@ int bErrorIS_Empty()
     return 0;
 }
 
+int bErrorAck(uint8_t e_no)
+{
+    int i;
+    for(i = 0;i < _ERROR_Q_LENGTH;i++)
+    {
+        if(bErrorRecord[i].err == e_no)
+        {
+            bErrorRecord[i].ack = 1;
+        }
+    }
+    return 0;
+}
 
 
 /**
