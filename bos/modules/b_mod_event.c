@@ -125,14 +125,14 @@ static void _bEventCore()
  */
  
 /**
- * \brief Initialize event instance
+ * \brief Regist event instance
  * \param pInstance Pointer to the event instance
  * \param handler The Callback function
  * \retval Result
  *          \arg 0  OK
  *          \arg -1 ERR
  */ 
-int bEventInit(bEventInstance_t *pInstance, pEventHandler_t handler)
+int bEventRegist(bEventInstance_t *pInstance, pEventHandler_t handler)
 { 
     if(handler == NULL || pInstance == NULL)
     {

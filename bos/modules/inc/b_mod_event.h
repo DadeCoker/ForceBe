@@ -106,7 +106,7 @@ typedef bEventInfo_t  bEventInstance_t;
  */
 
 ///< pInstance \ref bEVENT_INSTANCE
-int bEventInit(bEventInstance_t *pInstance, pEventHandler_t handler);
+int bEventRegist(bEventInstance_t *pInstance, pEventHandler_t handler);
 int bEventTrigger(bEventInstance_t *pInstance);
 int bEventIsIdle(void); 
 /**
