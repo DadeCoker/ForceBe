@@ -154,7 +154,22 @@ void bQPN_Init()
 }
 
 
+/* QF callbacks ============================================================*/
+void QF_onStartup(void) {
+}
+/*..........................................................................*/
+void QF_onCleanup(void) {
+}
 
+/*..........................................................................*/
+void QV_onIdle(void) {   /* called with interrupts DISABLED, see NOTE1 */
+}
+/*..........................................................................*/
+void Q_onAssert(char const Q_ROM * const file, int line) {
+    /* implement the error-handling policy for your application!!! */
+    QF_INT_DISABLE(); /* disable all interrupts */
+    QF_RESET();  /* reset the CPU */
+}
 
 /**
  * \}
