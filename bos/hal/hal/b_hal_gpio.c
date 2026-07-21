@@ -120,6 +120,10 @@ static bHalGPIO_EXTI_t *pHalGPIO_EXTI_Head = NULL;
 void bHalGPIO_Config(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t mode, uint8_t pull)
 {
     GPIO_InitTypeDef GPIO_InitType;
+    if(!B_HAL_GPIO_ISVALID(port, pin))
+    {
+        return;
+    }
     GPIO_InitType.Mode = (mode == B_HAL_GPIO_OUTPUT) ? GPIO_MODE_OUTPUT_PP : GPIO_MODE_INPUT;
     GPIO_InitType.Pull = (pull == B_HAL_GPIO_NOPULL) ? GPIO_NOPULL : ((pull == B_HAL_GPIO_PULLUP) ? GPIO_PULLUP : GPIO_PULLDOWN);
     GPIO_InitType.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -130,12 +134,20 @@ void bHalGPIO_Config(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t mode, uint8
 
 void bHalGPIO_WritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s)
 {
+    if(!B_HAL_GPIO_ISVALID(port, pin))
+    {
+        return;
+    }
     GPIO_PinState sta = (s) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     HAL_GPIO_WritePin(GPIO_PortTable[port], GPIO_PinTable[pin], sta);
 }
 
 uint8_t bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 {
+    if(!B_HAL_GPIO_ISVALID(port, pin))
+    {
+        return 0;
+    }
     if(HAL_GPIO_ReadPin(GPIO_PortTable[port], GPIO_PinTable[pin]) == GPIO_PIN_SET)
     {
         return 1;
@@ -145,11 +157,19 @@ uint8_t bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 
 void bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat)
 {
+    if(port == B_HAL_GPIO_NULL)
+    {
+        return;
+    }
     GPIO_PortTable[port]->ODR = dat;
 }
 
 uint16_t bHalGPIO_Read(bHalGPIOPort_t port)
 {
+    if(port == B_HAL_GPIO_NULL)
+    {
+        return 0;
+    }
     return GPIO_PortTable[port]->IDR;
 }
 

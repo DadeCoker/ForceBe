@@ -62,6 +62,7 @@ typedef enum
     B_HAL_GPIOE,
     B_HAL_GPIOF,
     B_HAL_GPIOG,
+    B_HAL_GPIO_NULL,   
 }bHalGPIOPort_t;
 
 typedef enum
@@ -82,7 +83,8 @@ typedef enum
     B_HAL_PIN13,
     B_HAL_PIN14,
     B_HAL_PIN15,
-    B_HAL_PINAll,     
+    B_HAL_PINAll, 
+    B_HAL_PIN_NULL,    
 }bHalGPIOPin_t;  
 
 
@@ -120,6 +122,7 @@ typedef struct bHalGPIO_EXTI_Struct
 #define B_HAL_GPIO_NOPULL       0
 #define B_HAL_GPIO_PULLUP       1
 #define B_HAL_GPIO_PULLDOWN     2
+
 /**
  * \}
  */
@@ -128,7 +131,8 @@ typedef struct bHalGPIO_EXTI_Struct
  * \defgroup GPIO_Exported_Macros
  * \{
  */
-
+ 
+#define B_HAL_GPIO_ISVALID(port, pin)       (port != B_HAL_GPIO_NULL && pin != B_HAL_PIN_NULL)
 
 /**
  * \}

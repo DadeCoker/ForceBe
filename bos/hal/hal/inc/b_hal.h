@@ -100,12 +100,7 @@
 
 /**                           Flash IC                                 */
 ///< W25X
-//#define HAL_W25X_SPI                    B_HAL_SPI_2
-//#define HAL_W25X_CS_PORT                B_HAL_GPIOB             
-//#define HAL_W25X_CS_PIN                 B_HAL_PIN12
-
-///<W25X QSPI
-//#define HAL_W25X_QSPI                   B_HAL_QSPI_1
+#define HAL_W25X_IF                     {{0, .xspi.spi = B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}
 
 ///< FM25CL
 //#define HAL_FM25CL_SPI                  B_HAL_SPI_2

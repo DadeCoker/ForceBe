@@ -1,13 +1,13 @@
 /**
  *!
  * \file        b_drv_w25x.c
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.0.2
+ * \date        2020/05/08
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_drv_flash.h"
+
 #include "b_drv_w25x.h"
 /** 
  * \addtogroup BABYOS
@@ -97,13 +97,12 @@ static const bW25X_Info_t bW25X_Info[] =
     {W25Q256,0X02000000, "w25q256"},     
 }; 
 
-
-static uint16_t bW25X_ID = 0;
 static uint32_t bW25X_UserCount = 0;
 
-bW25X_Driver_t bW25X_Driver = {
-    .init = bW25X_Init,
-};
+
+static const bW25X_HalIf_t bW25X_HalIfTable[] = HAL_W25X_IF;
+
+bW25X_Driver_t bW25X_Driver[sizeof(bW25X_HalIfTable) / sizeof(bW25X_HalIf_t)];
 
 /**
  * \}
@@ -122,75 +121,78 @@ bW25X_Driver_t bW25X_Driver = {
  * \defgroup W25X_Private_Functions
  * \{
  */
-#ifdef HAL_W25X_CS_PORT
-#define W25X_CS_SET()       bHalGPIO_WritePin(HAL_W25X_CS_PORT, HAL_W25X_CS_PIN, 1)
-#define W25X_CS_RESET()     bHalGPIO_WritePin(HAL_W25X_CS_PORT, HAL_W25X_CS_PIN, 0)
-#else
-#define W25X_CS_SET()       
-#define W25X_CS_RESET()     
-#endif
-
-
-
-static int _bW25X_SPI_R(uint8_t *pbuf, uint16_t len)
+static int _bW25X_SPI_R(bW25X_HalIf_t *_if, uint8_t *pbuf, uint16_t len)
 {
-#ifdef HAL_W25X_SPI
-    return bHalSPI_Receive(HAL_W25X_SPI, pbuf, len);
-#else    
-	return bHalQSPI_Receive(HAL_W25X_QSPI, pbuf, len);
-#endif    
+    int retval = 0;
+    if(_if->type == 0)
+    {
+        retval = bHalSPI_Receive(_if->xspi.spi, pbuf, len);
+    }
+    else
+    {
+        retval = bHalQSPI_Receive(_if->xspi.qspi, pbuf, len);
+    }
+    return retval;
 }
 
-static int _bW25X_SPI_W(uint8_t *pbuf, uint16_t len)
+static int _bW25X_SPI_W(bW25X_HalIf_t *_if, uint8_t *pbuf, uint16_t len)
 {
-#ifdef HAL_W25X_SPI    
-	return bHalSPI_Send(HAL_W25X_SPI, pbuf, len);
-#else
-    return bHalSPI_Send(HAL_W25X_QSPI, pbuf, len);
-#endif    
+    int retval = 0;
+    if(_if->type == 0)
+    {
+        retval = bHalSPI_Send(_if->xspi.spi, pbuf, len);
+    }
+    else
+    {
+        retval = bHalQSPI_Send(_if->xspi.qspi, pbuf, len);
+    }
+    return retval;      
 }
 
-static int _bW25X_WriteCmd(uint8_t cmd, uint32_t addr, uint32_t addr_mode, uint32_t addr_size_bit, uint32_t data_mode, uint16_t nb_data)
+static int _bW25X_WriteCmd(bW25X_HalIf_t *_if, uint8_t cmd, uint32_t addr, uint32_t addr_mode, uint32_t addr_size_bit, uint32_t data_mode, uint16_t nb_data)
 {
-#ifdef HAL_W25X_SPI   
     uint8_t cmd_table[5], i = 0, bytes = addr_size_bit / 8;
     int j = 0;
-    cmd_table[i++] = cmd;
-    if(addr_mode)
+    if(_if->type == 0)
     {
-        for(j = (bytes - 1);j >= 0;j--)
+        cmd_table[i++] = cmd;
+        if(addr_mode)
         {
-            cmd_table[i++] = (addr >> (j * 8)) & 0xff;
+            for(j = (bytes - 1);j >= 0;j--)
+            {
+                cmd_table[i++] = (addr >> (j * 8)) & 0xff;
+            }
         }
+        bHalSPI_Send(_if->xspi.spi, cmd_table, i);
     }
-    bHalSPI_Send(HAL_W25X_SPI, cmd_table, i);
-#else
-    bHalQSPI_Command(HAL_W25X_QSPI, cmd, addr, addr_mode, addr_size_bit, data_mode, nb_data);
-#endif    
+    else
+    {
+        bHalQSPI_Command(_if->xspi.qspi, cmd, addr, addr_mode, addr_size_bit, data_mode, nb_data);
+    }
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-static void _bW25X_WriteEnable()    
+static void _bW25X_WriteEnable(bW25X_HalIf_t *_if)    
 {
-    W25X_CS_RESET();
-    _bW25X_WriteCmd(W25X_WRITEENABLE, 0, 0, 0, 0, 0);
-    W25X_CS_SET();
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    _bW25X_WriteCmd(_if, W25X_WRITEENABLE, 0, 0, 0, 0, 0);
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
 }
 
 
-static void _bW25X_WaitEnd()    
+static void _bW25X_WaitEnd(bW25X_HalIf_t *_if)    
 {
     uint8_t status = 0;
     uint16_t err_count = 0;
     do 
     {
         bUtilDelayUS(5000);
-        W25X_CS_RESET();
-        _bW25X_WriteCmd(W25X_READSTATUSREG, 0, 0, 0, 1, 1);
-        _bW25X_SPI_R(&status, 1); 
-        W25X_CS_SET();
+        bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);  
+        _bW25X_WriteCmd(_if, W25X_READSTATUSREG, 0, 0, 0, 1, 1);
+        _bW25X_SPI_R(_if, &status, 1); 
+        bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);  
         err_count++;
     }
     while((status & WIP_FLAG) == 1 && err_count < 400);
@@ -198,39 +200,40 @@ static void _bW25X_WaitEnd()
 
 
 
-static void _bW25X_EraseSector(uint32_t addr)    
+static void _bW25X_EraseSector(bW25X_Driver_t *pdrv, uint32_t addr)    
 {    
-    _bW25X_WriteEnable();
-    _bW25X_WaitEnd();
-    W25X_CS_RESET();    
-    if(bW25X_ID == W25Q256)         
+    bDRV_GET_HALIF(_if, bW25X_HalIf_t, pdrv);
+    _bW25X_WriteEnable(_if);
+    _bW25X_WaitEnd(_if);
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);    
+    if(pdrv->_private.v == W25Q256)         
     {
-        _bW25X_WriteCmd(W25X_SECTORERASE, addr, 1, 32, 0, 0);  
+        _bW25X_WriteCmd(_if, W25X_SECTORERASE, addr, 1, 32, 0, 0);  
     } 
     else
     {
-        _bW25X_WriteCmd(W25X_SECTORERASE, addr, 1, 24, 0, 0); 
+        _bW25X_WriteCmd(_if, W25X_SECTORERASE, addr, 1, 24, 0, 0); 
     }
-    W25X_CS_SET();
-    _bW25X_WaitEnd();
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
+    _bW25X_WaitEnd(_if);
 }
 
 
 
 
-static uint16_t _bW25X_ReadID()
+static uint16_t _bW25X_ReadID(bW25X_HalIf_t *_if)
 {
     uint16_t tmp = 0;	  
-    W25X_CS_RESET();
-    _bW25X_WriteCmd(W25X_MANUFACTDEVICEID, 0, 1, 24, 1, 2); 
-    _bW25X_SPI_R((uint8_t *)&tmp, 2); 
-    W25X_CS_SET();
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    _bW25X_WriteCmd(_if, W25X_MANUFACTDEVICEID, 0, 1, 24, 1, 2); 
+    _bW25X_SPI_R(_if, (uint8_t *)&tmp, 2); 
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
     return ((tmp & 0xff00) >> 8);
 }
 
 
 
-static void _bW25X_Sleep()
+static void _bW25X_Sleep(bW25X_HalIf_t *_if)
 {
     bHalEnterCritical();
     if(bW25X_UserCount > 0)
@@ -238,9 +241,9 @@ static void _bW25X_Sleep()
         bW25X_UserCount--;
         if(bW25X_UserCount == 0)
         {
-            W25X_CS_RESET();
-            _bW25X_WriteCmd(W25X_POWERDOWN, 0, 0, 0, 0, 0); 
-            W25X_CS_SET();
+            bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+            _bW25X_WriteCmd(_if, W25X_POWERDOWN, 0, 0, 0, 0, 0); 
+            bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
             bUtilDelayUS(10);  
         }
     }
@@ -248,28 +251,28 @@ static void _bW25X_Sleep()
 }
 
 
-static void _bW25X_Wakeup()    
+static void _bW25X_Wakeup(bW25X_HalIf_t *_if)    
 {
     bHalEnterCritical();
     if(bW25X_UserCount == 0)
     {
-        W25X_CS_RESET();
-        _bW25X_WriteCmd(W25X_RELEASEPOWERDOWN, 0, 0, 0, 0, 0); 
-        W25X_CS_SET();
+        bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+        _bW25X_WriteCmd(_if, W25X_RELEASEPOWERDOWN, 0, 0, 0, 0, 0); 
+        bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
         bUtilDelayUS(50);
     }
     bW25X_UserCount++;
     bHalExitCritical();
 }
 
-static int _bW25X_Erase(uint32_t addr, uint32_t s_num)
+static int _bW25X_Erase(bW25X_Driver_t *pdrv, uint32_t addr, uint32_t s_num)
 {
     uint32_t i = 0;    
     bHalEnterCritical();
     addr = addr & 0xfffff000;
     for(i = 0;i < s_num;i++)
     {       
-        _bW25X_EraseSector(addr);
+        _bW25X_EraseSector(pdrv, addr);
         addr += W25X_SECTOR_SIZE;
     }
     bHalExitCritical();   
@@ -277,29 +280,30 @@ static int _bW25X_Erase(uint32_t addr, uint32_t s_num)
 }
 
 
-static void _bW25X_WritePage(uint8_t * pbuf, uint32_t addr, uint16_t len)
+static void _bW25X_WritePage(bW25X_Driver_t *pdrv, uint8_t * pbuf, uint32_t addr, uint16_t len)
 {
+    bDRV_GET_HALIF(_if, bW25X_HalIf_t, pdrv);
     if (len > W25X_PAGE_SIZE)
     {
         len = W25X_PAGE_SIZE;
     }
-    _bW25X_WriteEnable();
-    W25X_CS_RESET();
+    _bW25X_WriteEnable(_if);
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
 
-    if(bW25X_ID == W25Q256)         
+    if(pdrv->_private.v == W25Q256)         
     {
-        _bW25X_WriteCmd(W25X_PAGEPROGRAM, addr, 1, 32, 1, len);    
+        _bW25X_WriteCmd(_if, W25X_PAGEPROGRAM, addr, 1, 32, 1, len);    
     }   
     else
     {
-        _bW25X_WriteCmd(W25X_PAGEPROGRAM, addr, 1, 24, 1, len); 
+        _bW25X_WriteCmd(_if, W25X_PAGEPROGRAM, addr, 1, 24, 1, len); 
     }
-    _bW25X_SPI_W(pbuf, len);
-    W25X_CS_SET();
-    _bW25X_WaitEnd();
+    _bW25X_SPI_W(_if, pbuf, len);
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
+    _bW25X_WaitEnd(_if);
 }
 
-static uint8_t _bW25X_ReadSR(uint8_t regno)   
+static uint8_t _bW25X_ReadSR(bW25X_HalIf_t *_if, uint8_t regno)   
 {  
 	uint8_t byte=0,command=0; 
     switch(regno)
@@ -317,41 +321,56 @@ static uint8_t _bW25X_ReadSR(uint8_t regno)
             command=W25X_ReadStatusReg1;    
             break;
     }    
-	W25X_CS_RESET(); 
-    _bW25X_WriteCmd(command, 0, 0, 0, 1, 1); 
-    _bW25X_SPI_R(&byte, 1);    
-	W25X_CS_SET();                        
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    _bW25X_WriteCmd(_if, command, 0, 0, 0, 1, 1); 
+    _bW25X_SPI_R(_if, &byte, 1);    
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);                     
 	return byte;   
 }
 
-/*********************************************************************************driver interface******/
-static int _bW25X_Open()
-{   
-    _bW25X_Wakeup();
-    return 0;
-}
-
-static int _bW25X_Close()
-{   
-    _bW25X_Sleep();
-    return 0;
-}
-
-
-static int _bW25X_ReadBuf(uint32_t addr, uint8_t * pbuf, uint16_t len)    
-{   
-    bHalEnterCritical();
-    W25X_CS_RESET();
-    if(bW25X_ID == W25Q256)         
+static void _bW25X_32bitAddr(bW25X_HalIf_t *_if)
+{
+    uint8_t tmp;
+    tmp = _bW25X_ReadSR(_if, 3);
+    if((tmp & 0X01) == 0)			      
     {
-        _bW25X_WriteCmd(W25X_READDATA, addr, 1, 32, 1, len);   
+        bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0); 
+        _bW25X_WriteCmd(_if, W25X_Enable4ByteAddr, 0, 0, 0, 0, 0);  
+        bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);  
+    }
+}    
+
+
+
+/*********************************************************************************driver interface******/
+static int _bW25X_Open(bW25X_Driver_t *pdrv)
+{   
+    _bW25X_Wakeup(pdrv->_hal_if);
+    return 0;
+}
+
+static int _bW25X_Close(bW25X_Driver_t *pdrv)
+{   
+    _bW25X_Sleep(pdrv->_hal_if);
+    return 0;
+}
+
+
+static int _bW25X_ReadBuf(bW25X_Driver_t *pdrv, uint32_t addr, uint8_t * pbuf, uint16_t len)    
+{   
+    bDRV_GET_HALIF(_if, bW25X_HalIf_t, pdrv);
+    bHalEnterCritical();
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    if(pdrv->_private.v == W25Q256)         
+    {
+        _bW25X_WriteCmd(pdrv->_hal_if, W25X_READDATA, addr, 1, 32, 1, len);   
     }   
     else
     {
-        _bW25X_WriteCmd(W25X_READDATA, addr, 1, 24, 1, len);
+        _bW25X_WriteCmd(pdrv->_hal_if, W25X_READDATA, addr, 1, 24, 1, len);
     }        
-    _bW25X_SPI_R(pbuf, len);
-    W25X_CS_SET();
+    _bW25X_SPI_R(pdrv->_hal_if, pbuf, len);
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
     bHalExitCritical();
     return len;
 }
@@ -359,7 +378,7 @@ static int _bW25X_ReadBuf(uint32_t addr, uint8_t * pbuf, uint16_t len)
 
 
 
-static int _bW25X_WriteBuf(uint32_t addr, uint8_t * pbuf, uint16_t len) 
+static int _bW25X_WriteBuf(bW25X_Driver_t *pdrv, uint32_t addr, uint8_t * pbuf, uint16_t len) 
 {
     uint16_t first_page_number = W25X_PAGE_SIZE - (uint16_t)(addr % W25X_PAGE_SIZE);
     uint16_t pages, i = 0;
@@ -368,25 +387,25 @@ static int _bW25X_WriteBuf(uint32_t addr, uint8_t * pbuf, uint16_t len)
     bHalEnterCritical();
     if(len > first_page_number)
     {
-        _bW25X_WritePage(pbuf, addr, first_page_number);
+        _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, first_page_number);
         addr += first_page_number;
         pbuf += first_page_number;
         pages = (len - first_page_number) / W25X_PAGE_SIZE;
         last_page_number = (len - first_page_number) % W25X_PAGE_SIZE;
         for( i = 0;i < pages;i++)
         {
-            _bW25X_WritePage(pbuf, addr, W25X_PAGE_SIZE);
+            _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, W25X_PAGE_SIZE);
             addr += W25X_PAGE_SIZE;
             pbuf += W25X_PAGE_SIZE;
         }
         if(last_page_number != 0)
         {
-            _bW25X_WritePage(pbuf, addr, last_page_number);
+            _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, last_page_number);
         }
     }
     else
     {
-        _bW25X_WritePage(pbuf, addr, len);
+        _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, len);
     } 
     bHalExitCritical();
     return 0;
@@ -396,7 +415,7 @@ static int _bW25X_WriteBuf(uint32_t addr, uint8_t * pbuf, uint16_t len)
 
 
 
-static int _bW25X_Ctl(uint8_t cmd, void * param)
+static int _bW25X_Ctl(bW25X_Driver_t *pdrv, uint8_t cmd, void * param)
 {
     int retval = -1;    
     
@@ -409,7 +428,7 @@ static int _bW25X_Ctl(uint8_t cmd, void * param)
                     return -1;
                 }
                 bCMD_Erase_t *p = (bCMD_Erase_t *)param;
-                retval = _bW25X_Erase(p->addr, p->num);
+                retval = _bW25X_Erase(pdrv->_hal_if, p->addr, p->num);
             }
             break;
         default:
@@ -430,37 +449,41 @@ static int _bW25X_Ctl(uint8_t cmd, void * param)
  */
 int bW25X_Init()
 {
-    uint8_t tmp;
-    _bW25X_Wakeup();
-    bW25X_ID = _bW25X_ReadID();   
-    if(bW25X_ID_IS_VALID(bW25X_ID))
+    uint8_t i = 0, num_drv = sizeof(bW25X_HalIfTable) / sizeof(bW25X_HalIf_t);
+    uint16_t id;
+    
+    for(i = 0;i < num_drv;i++)
     {
-        if(bW25X_ID == W25Q256)
+        bW25X_Driver[i]._hal_if = (void *)&bW25X_HalIfTable[i];
+        _bW25X_Wakeup(bW25X_Driver[i]._hal_if);
+        id = _bW25X_ReadID(bW25X_Driver[i]._hal_if);
+        if(bW25X_ID_IS_VALID(id))
         {
-            tmp = _bW25X_ReadSR(3);              
-            if((tmp & 0X01) == 0)			      
+            if(id == W25Q256)
             {
-                W25X_CS_RESET(); 
-                _bW25X_WriteCmd(W25X_Enable4ByteAddr, 0, 0, 0, 0, 0);  
-                W25X_CS_SET();  
+                _bW25X_32bitAddr(bW25X_Driver[i]._hal_if);
             }
+            bW25X_Driver[i].status = 0;
+            bW25X_Driver[i]._private.v = id;
+            bW25X_Driver[i].open = _bW25X_Open;
+            bW25X_Driver[i].close = _bW25X_Close;
+            bW25X_Driver[i].ctl = _bW25X_Ctl;
+            bW25X_Driver[i].read = _bW25X_ReadBuf;
+            bW25X_Driver[i].write = _bW25X_WriteBuf;
         }
-        bW25X_Driver.open = _bW25X_Open;
-        bW25X_Driver.close = _bW25X_Close;
-        bW25X_Driver.ctl = _bW25X_Ctl;
-        bW25X_Driver.read = _bW25X_ReadBuf;
-        bW25X_Driver.write = _bW25X_WriteBuf;
-        _bW25X_Sleep();
-        b_log("id:%d, name:%s, size:%dM", bW25X_ID, bW25X_Info[bW25X_ID - W25Q80].str, bW25X_Info[bW25X_ID - W25Q80].size / 1024 / 1024);
-        return 0;
+        else
+        {
+            bW25X_Driver[i].status = -1;
+        }
+        _bW25X_Sleep(bW25X_Driver[i]._hal_if);
+        b_log("id:%d, name:%s, size:%dM\r\n", id, bW25X_Info[id - W25Q80].str, bW25X_Info[id - W25Q80].size / 1024 / 1024);
     }
-    _bW25X_Sleep();
-    return -1;
+    return 0;
 }
 
-/**
- * \}
- */
+
+bDRIVER_INIT(bW25X_Init);
+
 
 /**
  * \}
@@ -474,5 +497,9 @@ int bW25X_Init()
  * \}
  */
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/**
+ * \}
+ */
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 

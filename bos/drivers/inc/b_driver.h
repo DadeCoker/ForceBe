@@ -31,35 +31,41 @@
 #ifndef __B_DRIVER_H__
 #define __B_DRIVER_H__
 
+#include <stdint.h>
 
-#include "../camera/b_drv_camera.h"
-#include "b_drv_ov5640.h"
+typedef struct bDriverIf
+{
+    int status;
+    int (*open)(struct bDriverIf *pdrv);
+    int (*close)(struct bDriverIf *pdrv);
+    int (*ctl)(struct bDriverIf *pdrv, uint8_t cmd, void *param);
+    int (*write)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len);
+    int (*read)(struct bDriverIf *pdrv, uint32_t offset, uint8_t *pbuf, uint16_t len);
+    void *_hal_if;
+    union
+    {
+        uint32_t v;
+        void *_p;
+    }_private;
+}bDriverInterface_t; 
 
-#include "../flash/b_drv_flash.h"
-#include "b_drv_w25x.h"
-#include "b_drv_24cxx.h"
-#include "b_drv_fm25cl.h"
-
-#include "../lcd/b_drv_lcd.h"
-#include "b_drv_oled.h"
-#include "b_drv_ili9320.h"
-#include "b_drv_ili9341.h"
-#include "b_drv_ssd1289.h"
-
-#include "../touch/b_drv_touch.h"
-#include "b_drv_xpt2046.h"
-
-#include "../lora/b_drv_lora.h"
-#include "b_drv_f8l10d.h"
-
-#include "../io-expander/b_drv_io_expander.h"
-#include "b_drv_pcf8574.h"
+typedef int (*pbDriverInit_t)(void);
 
 
 
+#define bDRIVER_USED __attribute__((used))
+#define bDRIVER_SECTION(x) __attribute__((section(".rodata.bdriver_init" x)))
+#define bDRIVER_INIT_START(func)    bDRIVER_USED const pbDriverInit_t _bDriverInitStart bDRIVER_SECTION("0.end") = NULL
+#define bDRIVER_INIT(func)          bDRIVER_USED const pbDriverInit_t bdrv_init##func bDRIVER_SECTION("1") = func
+#define bDRIVER_INIT_END(func)      bDRIVER_USED const pbDriverInit_t _bDriverInitEnd bDRIVER_SECTION("1.end") = NULL
+extern const pbDriverInit_t _bDriverInitStart;    
+extern const pbDriverInit_t _bDriverInitEnd;      
+#define bDRV_INIT_BASE      (&_bDriverInitStart + 1)
+    
+#define bDRV_GET_HALIF(name, type, pdrv)         type *name = (type *)(pdrv->_hal_if)
 
 //Flash IC
-extern bDriverInterface_t   bW25X_Driver;
+extern bDriverInterface_t   bW25X_Driver[];
 extern bDriverInterface_t   bFM25CL_Driver;
 
 //LCD Controller

@@ -38,6 +38,7 @@
 /*Includes ----------------------------------------------*/
 #include "b_hal.h"
 #include "b_utils.h"
+#include "b_driver.h"
 /** 
  * \addtogroup B_DRIVER
  * \{

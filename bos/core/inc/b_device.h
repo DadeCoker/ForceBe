@@ -56,18 +56,6 @@
  * \defgroup DEVICE_Exported_TypesDefinitions
  * \{
  */
-typedef struct bDriverInterface
-{
-    int (*init)(void);
-    int (*open)(void);
-    int (*close)(void);
-    int (*ctl)(uint8_t cmd, void *param);
-    int (*write)(uint32_t addr, uint8_t *pbuf, uint16_t len);
-    int (*read)(uint32_t addr, uint8_t *pbuf, uint16_t len);
-    void *_private;
-}bDriverInterface_t; 
-
-
 #define B_DEVICE_REG(dev, driver, desc)
 #include "b_device_list.h"
 
@@ -91,8 +79,6 @@ typedef enum
  * \defgroup DEVICE_Exported_Defines
  * \{
  */
-
-#define BDEVICE_ERROR       1
 
 
 /**
@@ -123,10 +109,10 @@ typedef enum
  */
 int bDeviceInit(void);
 int bDeviceOpen(uint8_t no);
-int bDeviceRead(int no, uint32_t address, uint8_t *pdata, uint16_t len);
-int bDeviceWrite(int no, uint32_t address, uint8_t *pdata, uint16_t len);
-int bDeviceClose(int no);
-int bDeviceCtl(int no, uint8_t cmd, void *param);
+int bDeviceClose(uint8_t no);
+int bDeviceRead(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len);
+int bDeviceWrite(uint8_t no, uint32_t offset, uint8_t *pdata, uint16_t len);
+int bDeviceCtl(uint8_t no, uint8_t cmd, void *param);
 int bDeviceISNormal(uint8_t no);
 /**
  * \}

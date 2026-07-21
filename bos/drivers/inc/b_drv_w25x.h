@@ -1,13 +1,13 @@
 /**
  *!
  * \file        b_drv_w25x.h
- * \version     v0.0.1
- * \date        2019/06/05
+ * \version     v0.0.2
+ * \date        2020/05/08
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,8 +36,7 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-#include "b_device.h"
+#include "b_drv_flash.h"
 
 /** 
  * \addtogroup BABYOS
@@ -59,7 +58,21 @@
  * \defgroup W25X_Exported_TypesDefinitions
  * \{
  */
- 
+
+
+typedef struct
+{
+    uint8_t type;     //0: spi   1:qspi
+    union
+    {
+        bHalQSPINumber_t qspi;
+        bHalSPINumber_t spi;
+    }xspi;
+    bHalGPIOInstance_t cs;
+}bW25X_HalIf_t;
+
+
+
 typedef bDriverInterface_t bW25X_Driver_t;  
 
 /**
@@ -142,7 +155,6 @@ typedef bDriverInterface_t bW25X_Driver_t;
  * \defgroup W25X_Exported_Functions
  * \{
  */
-int bW25X_Init(void);
 
 /**
  * \}
@@ -168,7 +180,7 @@ int bW25X_Init(void);
 #endif
 
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 
 
 
