@@ -30,7 +30,6 @@
  */
    
 /*Includes ----------------------------------------------*/
-
 #include "b_drv_w25x.h"
 /** 
  * \addtogroup BABYOS
@@ -387,25 +386,25 @@ static int _bW25X_WriteBuf(bW25X_Driver_t *pdrv, uint32_t addr, uint8_t * pbuf, 
     bHalEnterCritical();
     if(len > first_page_number)
     {
-        _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, first_page_number);
+        _bW25X_WritePage(pdrv, pbuf, addr, first_page_number);
         addr += first_page_number;
         pbuf += first_page_number;
         pages = (len - first_page_number) / W25X_PAGE_SIZE;
         last_page_number = (len - first_page_number) % W25X_PAGE_SIZE;
         for( i = 0;i < pages;i++)
         {
-            _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, W25X_PAGE_SIZE);
+            _bW25X_WritePage(pdrv, pbuf, addr, W25X_PAGE_SIZE);
             addr += W25X_PAGE_SIZE;
             pbuf += W25X_PAGE_SIZE;
         }
         if(last_page_number != 0)
         {
-            _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, last_page_number);
+            _bW25X_WritePage(pdrv, pbuf, addr, last_page_number);
         }
     }
     else
     {
-        _bW25X_WritePage(pdrv->_hal_if, pbuf, addr, len);
+        _bW25X_WritePage(pdrv, pbuf, addr, len);
     } 
     bHalExitCritical();
     return 0;
@@ -428,7 +427,7 @@ static int _bW25X_Ctl(bW25X_Driver_t *pdrv, uint8_t cmd, void * param)
                     return -1;
                 }
                 bCMD_Erase_t *p = (bCMD_Erase_t *)param;
-                retval = _bW25X_Erase(pdrv->_hal_if, p->addr, p->num);
+                retval = _bW25X_Erase(pdrv, p->addr, p->num);
             }
             break;
         default:
@@ -482,7 +481,7 @@ int bW25X_Init()
 }
 
 
-bDRIVER_INIT(bW25X_Init);
+bDRIVER_REG_INIT(bW25X_Init);
 
 
 /**

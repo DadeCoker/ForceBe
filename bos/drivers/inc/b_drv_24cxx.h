@@ -36,8 +36,7 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-#include "b_device.h"
+#include "b_drv_class_flash.h"
 /** 
  * \addtogroup B_DRIVER
  * \{
@@ -52,7 +51,13 @@
  * \defgroup 24CXX_Exported_TypesDefinitions
  * \{
  */
- 
+
+typedef struct
+{
+    bHalI2CNumber_t iic;
+    uint8_t addr;
+}b24CXX_HalIf_t;
+
 typedef bDriverInterface_t b24CXX_Driver_t;  
 /**
  * \}

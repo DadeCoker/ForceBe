@@ -110,7 +110,7 @@ void bHalI2C_SendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat)
             
             break;        
         case B_HAL_I2C_2:
-            
+            HAL_I2C_Master_Transmit(&hi2c2, dev_addr, &dat, 1, 0xfff);
             break;
 
         default:
@@ -127,7 +127,7 @@ uint8_t bHalI2C_ReceiveByte(bHalI2CNumber_t i2c, uint8_t dev_addr)
             
             break;        
         case B_HAL_I2C_2:
-            
+            HAL_I2C_Master_Receive(&hi2c2, dev_addr, &tmp, 1, 0xfff);
             break;
         default:
             break;
@@ -145,7 +145,7 @@ int bHalI2C_MemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, u
 
             break;        
         case B_HAL_I2C_2:
-            
+            HAL_I2C_Mem_Write(&hi2c2, dev_addr, mem_addr, I2C_MEMADD_SIZE_8BIT, pbuf, len, 0xfff);
             break;
         case B_HAL_I2C_3:
 
@@ -166,7 +166,7 @@ int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, ui
  
             break;        
         case B_HAL_I2C_2:
-            
+            HAL_I2C_Mem_Read(&hi2c2, dev_addr, mem_addr, I2C_MEMADD_SIZE_8BIT, pbuf, len, 0xfff);
             break;
         case B_HAL_I2C_3:
 

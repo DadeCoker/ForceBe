@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_drv_f8l10d.h
+ * \file        b_drv_class_flash.h
  * \version     v0.0.1
- * \date        2020/03/18
+ * \date        2020/05/24
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -28,92 +28,47 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_F8L10D_H__
-#define __B_DRV_F8L10D_H__
+#ifndef __B_DRV_CLASS_FLASH_H__
+#define __B_DRV_CLASS_FLASH_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-#include "b_device.h"
-
-/** 
- * \addtogroup BABYOS
- * \{
- */
-
-
+#include "b_hal.h"
+#include "b_utils.h"
+#include "b_driver.h"
 /** 
  * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup F8L10D
+ * \defgroup FLASH_Exported_TypesDefinitions
  * \{
  */
-
-/** 
- * \defgroup F8L10D_Exported_TypesDefinitions
- * \{
- */  
-
-typedef bDriverInterface_t bF8L10D_Driver_t;  
-
+typedef struct
+{
+	uint32_t addr;
+	uint32_t num;
+}bCMD_Erase_t;
 /**
  * \}
  */
    
 /** 
- * \defgroup F8L10D_Exported_Defines
+ * \defgroup FLASH_Exported_Defines
  * \{
  */
-
+#define bCMD_ERASE_SECTOR              0      // <==> bCMD_Erase_t
 
 /**
  * \}
  */
    
-/** 
- * \defgroup F8L10D_Exported_Macros
- * \{
- */
 
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup F8L10D_Exported_Variables
- * \{
- */
-  
-/**
- * \}
- */
-   
-/** 
- * \defgroup F8L10D_Exported_Functions
- * \{
- */
-int bF8L10D_Init(void);
-/**
- * \}
- */
-
-/**
- * \}
- */
  
-
-/**
- * \}
- */
-
 /**
  * \}
  */
@@ -124,7 +79,11 @@ int bF8L10D_Init(void);
  
 #endif
 
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
+
+
 
 
 

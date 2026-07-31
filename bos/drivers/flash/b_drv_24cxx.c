@@ -30,7 +30,6 @@
  */
    
 /*Includes ----------------------------------------------*/
-#include "b_drv_flash.h"
 #include "b_drv_24cxx.h"
 /** 
  * \addtogroup B_DRIVER
@@ -74,9 +73,9 @@
  * \defgroup 24CXX_Private_Variables
  * \{
  */
-b24CXX_Driver_t b24CXX_Driver = {
-    .init = b24CXX_Init,
-};
+
+const static b24CXX_HalIf_t b24CXX_HalIfTable[] = HAL_24CXX_IF;
+b24CXX_Driver_t b24CXX_Driver[sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t)];
 /**
  * \}
  */
@@ -98,31 +97,32 @@ b24CXX_Driver_t b24CXX_Driver = {
 /************************************************************************************************************driver interface*******/
 
 
-static int _b24CXXWrite(uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _b24CXXWrite(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
     uint8_t l_c = off % 8;
     uint16_t i = 0;
+    bDRV_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
     if(len <= l_c)
     {
-        bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, len);
+        bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, len);
     }
     else
     {
-        bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, l_c);
+        bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, l_c);
         bUtilDelayMS(5);
         off += l_c;
         pbuf += l_c;
         len -= l_c;
         for(i = 0;i < len / 8;i++)
         {
-            bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, 8);
+            bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, 8);
             bUtilDelayMS(5);
             off += 8;
             pbuf += 8;
         }
         if((len % 8) > 0)
         {
-            bHalI2C_MemWrite(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, (len % 8));
+            bHalI2C_MemWrite(_if->iic, _if->addr, off, pbuf, (len % 8));
             bUtilDelayMS(5);
         }
     }
@@ -130,9 +130,10 @@ static int _b24CXXWrite(uint32_t off, uint8_t *pbuf, uint16_t len)
 }
 
 
-static int _b24CXXRead(uint32_t off, uint8_t *pbuf, uint16_t len)
+static int _b24CXXRead(b24CXX_Driver_t *pdrv, uint32_t off, uint8_t *pbuf, uint16_t len)
 {
-    bHalI2C_MemRead(HAL_24CXX_I2C, HAL_24CXX_I2C_ADDR, off, pbuf, len);
+    bDRV_GET_HALIF(_if, b24CXX_HalIf_t, pdrv);
+    bHalI2C_MemRead(_if->iic, _if->addr, off, pbuf, len);
     return len;
 }
 
@@ -146,15 +147,22 @@ static int _b24CXXRead(uint32_t off, uint8_t *pbuf, uint16_t len)
  */
 int b24CXX_Init()
 {          
-    b24CXX_Driver.close = NULL;
-    b24CXX_Driver.read = _b24CXXRead;
-    b24CXX_Driver.ctl = NULL;
-    b24CXX_Driver.open = NULL;
-    b24CXX_Driver.write = _b24CXXWrite;
+    uint8_t i = 0, num_drv = sizeof(b24CXX_HalIfTable) / sizeof(b24CXX_HalIf_t);
+    for(i = 0;i < num_drv;i++)
+    {
+        b24CXX_Driver[i]._hal_if = (void *)&b24CXX_HalIfTable[i];
+        b24CXX_Driver[i].status = 0;
+        b24CXX_Driver[i].close = NULL;
+        b24CXX_Driver[i].read = _b24CXXRead;
+        b24CXX_Driver[i].ctl = NULL;
+        b24CXX_Driver[i].open = NULL;
+        b24CXX_Driver[i].write = _b24CXXWrite;
+    }
     return 0;
 }
 
 
+bDRIVER_REG_INIT(b24CXX_Init);
 
 
 

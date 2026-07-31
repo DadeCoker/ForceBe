@@ -98,7 +98,6 @@ typedef enum
  * \{
  */
 
-uint8_t bHalSPI_SendReceiveByte(bHalSPINumber_t spi, uint8_t dat);
 int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len);
 int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len);
 /**

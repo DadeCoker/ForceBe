@@ -36,7 +36,7 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_drv_flash.h"
+#include "b_drv_class_flash.h"
 
 /** 
  * \addtogroup BABYOS

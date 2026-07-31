@@ -68,10 +68,6 @@
 #define KEY2_GPIO_Port GPIOA
 #define KEY3_Pin GPIO_PIN_6
 #define KEY3_GPIO_Port GPIOA
-#define LoRaRESET_Pin GPIO_PIN_10
-#define LoRaRESET_GPIO_Port GPIOB
-#define LoRaSLEEP_Pin GPIO_PIN_11
-#define LoRaSLEEP_GPIO_Port GPIOB
 #define W25X_CS_Pin GPIO_PIN_12
 #define W25X_CS_GPIO_Port GPIOB
 #define LCD_WR_Pin GPIO_PIN_10

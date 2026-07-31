@@ -184,7 +184,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -338,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn</IncludePath>
+              <IncludePath>../Core/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Drivers/CMSIS/Include; ..\bos\core\inc\; ..\bos\drivers\inc\; ..\bos\hal\hal\inc; ..\bos\thirdparty\FlexibleButton; ..\bos\thirdparty\nr_micro_shell\inc; ..\bos\thirdparty\UGUI; ..\bos\thirdparty\CmBacktrace; ..\bos\thirdparty\qpn\inc; ..\bos\hal\utils\inc; ..\bos\modules\inc; ..\bos\config; ..\bos\algorithm\inc; ..\Examples\qpn</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -416,6 +415,11 @@
               <FileName>stm32f1xx_hal_gpio_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f1xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c</FilePath>
             </File>
             <File>
               <FileName>stm32f1xx_hal_spi.c</FileName>
@@ -647,6 +651,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\drivers\flash\b_drv_w25x.c</FilePath>
             </File>
+            <File>
+              <FileName>b_drv_24cxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\flash\b_drv_24cxx.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -676,6 +685,11 @@
               <FileName>b_hal_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\b_hal_i2c.c</FilePath>
             </File>
           </Files>
         </Group>

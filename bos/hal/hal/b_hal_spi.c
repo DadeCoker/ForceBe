@@ -100,27 +100,6 @@
  * \addtogroup SPI_Exported_Functions
  * \{
  */
-
-uint8_t bHalSPI_SendReceiveByte(bHalSPINumber_t spi, uint8_t dat)
-{
-    uint8_t tmp;
-    switch(spi)
-    {
-        case B_HAL_SPI_1:
-
-            break;        
-        case B_HAL_SPI_2:
-
-            break;
-        case B_HAL_SPI_3:
-
-            break;
-        default:
-            break;
-    }
-    return tmp;
-}
-
 int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL)
@@ -133,7 +112,7 @@ int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 
             break;        
         case B_HAL_SPI_2:
-
+            HAL_SPI_Transmit(&hspi2, pbuf, len, 0xfff);
             break;
         case B_HAL_SPI_3:
 
@@ -156,7 +135,7 @@ int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 
             break;        
         case B_HAL_SPI_2:
-
+            HAL_SPI_Receive(&hspi2, pbuf, len, 0xfff);
             break;
         case B_HAL_SPI_3:
 

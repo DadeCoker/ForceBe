@@ -45,6 +45,8 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c2;
+
 SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi3;
 
@@ -69,6 +71,7 @@ static void MX_TIM6_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI3_Init(void);
+static void MX_I2C2_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -78,7 +81,12 @@ static void MX_SPI3_Init(void);
 /* USER CODE BEGIN 0 */
 void TestLog()
 {
-    b_log_i("hello world\r\n");
+    uint8_t tmp;
+    static uint8_t test_c = 0;
+    bKV_Set("test", &test_c, 1);
+    bKV_Get("test", &tmp);
+    b_log_i("hello world %d\r\n", tmp);
+    test_c += 1;
 }
 
 void SortTest()
@@ -130,6 +138,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_SPI3_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -138,6 +147,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   bInit();
   SortTest();
+  bKV_Init(W25QXX, 0, 40960, 4096);
+  
+  int fd = -1;
+  fd = bOpen(_24C02, BCORE_FLAG_RW);
+  if(fd >= 0)
+  {
+      bWrite(fd, (uint8_t *)"hello 24c02", 12);
+      uint8_t buf[12];
+      bLseek(fd, 0);
+      bRead(fd, buf, 12);
+      bClose(fd);
+      b_log("%s\r\n", buf);
+  }
+  
   while (1)
   {
       bExec();
@@ -198,6 +221,26 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+}
+
+/* I2C2 init function */
+static void MX_I2C2_Init(void)
+{
+
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.ClockSpeed = 100000;
+  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
 }
 
 /* SPI2 init function */
@@ -359,10 +402,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LoRaRESET_Pin|W25X_CS_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LoRaSLEEP_GPIO_Port, LoRaSLEEP_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(W25X_CS_GPIO_Port, W25X_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, LCD_WR_Pin|LCD_RS_Pin|LCD_RD_Pin, GPIO_PIN_RESET);
@@ -413,13 +453,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LoRaRESET_Pin LoRaSLEEP_Pin */
-  GPIO_InitStruct.Pin = LoRaRESET_Pin|LoRaSLEEP_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : W25X_CS_Pin */
   GPIO_InitStruct.Pin = W25X_CS_Pin;

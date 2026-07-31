@@ -31,8 +31,33 @@
 #ifndef __B_DRIVER_H__
 #define __B_DRIVER_H__
 
-#include <stdint.h>
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
+/*Includes ----------------------------------------------*/
+#include <stdint.h>
+#include "b_drv_class_flash.h"
+
+/** 
+ * \addtogroup BABYOS
+ * \{
+ */
+
+/** 
+ * \addtogroup CORE
+ * \{
+ */
+
+/** 
+ * \addtogroup DRIVER
+ * \{
+ */
+
+/** 
+ * \defgroup DRIVER_Exported_TypesDefinitions
+ * \{
+ */
 typedef struct bDriverIf
 {
     int status;
@@ -51,8 +76,14 @@ typedef struct bDriverIf
 
 typedef int (*pbDriverInit_t)(void);
 
-
-
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup DRIVER_Exported_Defines
+ * \{
+ */
 #define bDRIVER_USED __attribute__((used))
 #define bDRIVER_SECTION(x) __attribute__((section(".rodata.bdriver_init" x)))
 #define bDRIVER_INIT_START(func)    bDRIVER_USED const pbDriverInit_t _bDriverInitStart bDRIVER_SECTION("0.end") = NULL
@@ -60,35 +91,49 @@ typedef int (*pbDriverInit_t)(void);
 #define bDRIVER_INIT_END(func)      bDRIVER_USED const pbDriverInit_t _bDriverInitEnd bDRIVER_SECTION("1.end") = NULL
 extern const pbDriverInit_t _bDriverInitStart;    
 extern const pbDriverInit_t _bDriverInitEnd;      
-#define bDRV_INIT_BASE      (&_bDriverInitStart + 1)
-    
-#define bDRV_GET_HALIF(name, type, pdrv)         type *name = (type *)(pdrv->_hal_if)
+#define bDRV_INIT_BASE      (&_bDriverInitStart + 1)  
 
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup DRIVER_Exported_Macros
+ * \{
+ */
+#define bDRIVER_REG_INIT(func)                   bDRIVER_INIT(func)  
+#define bDRV_GET_HALIF(name, type, pdrv)         type *name = (type *)(pdrv->_hal_if)
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup DRIVER_Exported_Variables
+ * \{
+ */
 //Flash IC
 extern bDriverInterface_t   bW25X_Driver[];
-extern bDriverInterface_t   bFM25CL_Driver;
+extern bDriverInterface_t   b24CXX_Driver[];
 
-//LCD Controller
-extern bDriverInterface_t   bSSD1289_Driver;
-extern bDriverInterface_t   bILI9341_Driver;
-extern bDriverInterface_t   bILI9320_Driver;
-extern bDriverInterface_t   bOLED_Driver;
+/**
+ * \}
+ */
 
-//Touch
-extern bDriverInterface_t   bXPT2046_Driver;
+/**
+ * \}
+ */ 
 
-//LoRa Modules
-extern bDriverInterface_t   bF8L10D_Driver;
+/**
+ * \}
+ */
 
-//IO Expander
-extern bDriverInterface_t   bPCF8574_Driver;
+/**
+ * \}
+ */
 
-//Camera
-extern bDriverInterface_t   bOV5640_Driver;
-
-//EEPROM
-extern bDriverInterface_t   b24CXX_Driver;
-
+#ifdef __cplusplus
+	}
+#endif
 
 
 #endif
