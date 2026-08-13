@@ -36,7 +36,7 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include <stdint.h>
+#include "b_config.h"
 #include "b_drv_class_flash.h"
 
 /** 
@@ -84,15 +84,8 @@ typedef int (*pbDriverInit_t)(void);
  * \defgroup DRIVER_Exported_Defines
  * \{
  */
-#define bDRIVER_USED __attribute__((used))
-#define bDRIVER_SECTION(x) __attribute__((section(".rodata.bdriver_init" x)))
-#define bDRIVER_INIT_START(func)    bDRIVER_USED const pbDriverInit_t _bDriverInitStart bDRIVER_SECTION("0.end") = NULL
-#define bDRIVER_INIT(func)          bDRIVER_USED const pbDriverInit_t bdrv_init##func bDRIVER_SECTION("1") = func
-#define bDRIVER_INIT_END(func)      bDRIVER_USED const pbDriverInit_t _bDriverInitEnd bDRIVER_SECTION("1.end") = NULL
-extern const pbDriverInit_t _bDriverInitStart;    
-extern const pbDriverInit_t _bDriverInitEnd;      
-#define bDRV_INIT_BASE      (&_bDriverInitStart + 1)  
-
+ 
+     
 /**
  * \}
  */
@@ -101,7 +94,7 @@ extern const pbDriverInit_t _bDriverInitEnd;
  * \defgroup DRIVER_Exported_Macros
  * \{
  */
-#define bDRIVER_REG_INIT(func)                   bDRIVER_INIT(func)  
+#define bDRIVER_REG_INIT(func)                   const pbDriverInit_t bSECTION_ITEM_REGISTER_FLASH(driver_init, CONCAT_2(init, func))=func  
 #define bDRV_GET_HALIF(name, type, pdrv)         type *name = (type *)(pdrv->_hal_if)
 /**
  * \}

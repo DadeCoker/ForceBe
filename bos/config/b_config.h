@@ -282,13 +282,7 @@
 #define b_log(...)
 #endif
 
-typedef struct bPollingFuncStruct
-{
-    void (*pPollingFunction)(void);
-    struct bPollingFuncStruct *pnext;
-}bPollingFunc_t; 
-
-int bRegistPollingFunc(bPollingFunc_t *pfunc);
+#include "b_common.h"
 
 #ifdef __cplusplus
 	}
