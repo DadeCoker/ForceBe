@@ -52,11 +52,10 @@ extern "C"
 
 typedef void (*shell_fun_t)(char, char *);
 
-typedef struct static_cmd_function_struct
+typedef struct
 {
     const char *cmd;
     void (*fp)(char argc, char *argv);
-    struct static_cmd_function_struct *pnext;
 }static_cmd_st;
 
 typedef struct shell_history_queue_struct
@@ -79,7 +78,6 @@ typedef struct shell_history_queue_struct
 typedef struct nr_shell
 {
     char user_name[NR_SHELL_USER_NAME_MAX_LENGTH];
-    static_cmd_st *static_cmd;
     shell_his_queue_st cmd_his;
 }shell_st;
 
@@ -92,6 +90,8 @@ unsigned short int shell_his_queue_search_cmd(shell_his_queue_st *queue, char *s
 void shell_his_copy_queue_item(shell_his_queue_st *queue, unsigned short i, char *str_buf);
 
 extern shell_st nr_shell;
+extern const static_cmd_st bSECTION_START(b_mod_shell);
+extern const static_cmd_st bSECTION_END(b_mod_shell);
 
 #define shell_init()            \
     {                           \
@@ -117,11 +117,8 @@ extern shell_st nr_shell;
 #ifdef USING_RT_THREAD
     int rt_nr_shell_system_init(void);
 #endif
-
-extern static_cmd_st *bShellHead;
-
 #endif
-
+  
 #ifdef __cplusplus
 }
 #endif

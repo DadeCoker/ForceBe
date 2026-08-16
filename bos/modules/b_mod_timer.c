@@ -80,9 +80,6 @@
  * \{
  */
 static bSoftTimerInstance_t *pSoftTimer = NULL;   
-static bPollingFunc_t TimerPollFunc = {
-    .pPollingFunction = NULL,
-};
 /**
  * \}
  */
@@ -145,6 +142,8 @@ static void _bSoftTimerCore()
     }
 }
 
+BOS_REG_POLLING_FUNC(_bSoftTimerCore);
+
 /**
  * \}
  */
@@ -159,11 +158,6 @@ int bSoftTimerStart(bSoftTimerInstance_t *pTimerInstance, pTimerHandler handler)
     if(pTimerInstance == NULL || handler == NULL)
     {
         return -1;
-    }
-    if(TimerPollFunc.pPollingFunction == NULL)
-    {
-        TimerPollFunc.pPollingFunction = _bSoftTimerCore;
-        bRegistPollingFunc(&TimerPollFunc);
     }
     if(pSoftTimer == NULL)
     {

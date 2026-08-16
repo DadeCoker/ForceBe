@@ -46,8 +46,9 @@ NR_SHELL_CMD_EXPORT_END("/0", NULL);
 shell_st nr_shell =
 {
 		.user_name = NR_SHELL_USER_NAME,
-		.static_cmd = NULL,
 };
+
+bSECTION_DEF_FLASH(b_mod_shell, static_cmd_st);
 
 static char *nr_shell_strtok(char *string_org, const char *demial)
 {
@@ -99,18 +100,7 @@ static char *nr_shell_strtok(char *string_org, const char *demial)
 
 void _shell_init(shell_st *shell)
 {
-
-#if NR_SHELL_SHOW_LOG
-	shell_printf(" _   _ ____    __  __ _                  ____  _          _ _ \r\n");
-	shell_printf("| \\ | |  _ \\  |  \\/  (_) ___ _ __ ___   / ___|| |__   ___| | |\r\n");
-	shell_printf("|  \\| | |_) | | |\\/| | |/ __| '__/ _ \\  \\___ \\| '_ \\ / _ \\ | |\r\n");
-	shell_printf("| |\\  |  _ <  | |  | | | (__| | | (_) |  ___) | | | |  __/ | |\r\n");
-	shell_printf("|_| \\_|_| \\_\\ |_|  |_|_|\\___|_|  \\___/  |____/|_| |_|\\___|_|_|\r\n");
-	shell_printf("                                                              \r\n");
-#endif
-
 	shell_printf(shell->user_name);
-    shell->static_cmd = bShellHead;
 	shell_his_queue_init(&shell->cmd_his);
 	shell_his_queue_add_cmd(&shell->cmd_his, "ls cmd");
 	shell->cmd_his.index = 1;
@@ -118,8 +108,7 @@ void _shell_init(shell_st *shell)
 
 shell_fun_t shell_search_cmd(shell_st *shell, char *str)
 {
-    static_cmd_st *ptmp = shell->static_cmd;
-    while(ptmp)
+    bSECTION_FOR_EACH(b_mod_shell, static_cmd_st, ptmp)  
     {
         if(ptmp->fp != NULL)
         {
@@ -128,7 +117,6 @@ shell_fun_t shell_search_cmd(shell_st *shell, char *str)
                 return ptmp->fp;
             }
         }
-        ptmp = ptmp->pnext;
     }
 	return NULL;
 }
@@ -195,9 +183,9 @@ char *shell_cmd_complete(shell_st *shell, char *str)
 	char *temp = NULL;
 	char *best_matched = NULL;
 	unsigned char min_position = 255;
-    static_cmd_st *ptmp = shell->static_cmd;
+
     
-    while(ptmp)
+    bSECTION_FOR_EACH(b_mod_shell, static_cmd_st, ptmp)  
     {
         temp = NULL;
         temp = strstr(ptmp->cmd, str);
@@ -210,7 +198,6 @@ char *shell_cmd_complete(shell_st *shell, char *str)
 				break;
 			}
 		}
-        ptmp = ptmp->pnext;
     }
 	return best_matched;
 }

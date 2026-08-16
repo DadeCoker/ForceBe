@@ -75,12 +75,6 @@
  * \{
  */
 static bHalUartRxInstance_t *pHalUartRxInstanceHead = NULL;
-
-static bPollingFunc_t bHalUartRxPollingFunc = {
-    .pPollingFunction = NULL,
-};
-
-
 /**
  * \}
  */
@@ -136,6 +130,8 @@ static void _bHalUartDetectIdle()
     }
 }
 
+BOS_REG_POLLING_FUNC(_bHalUartDetectIdle);
+
 /**
  * \}
  */
@@ -178,12 +174,6 @@ int bHalUartRxRegist(bHalUartRxInstance_t *pHalUartRxInstance)
     {
         pHalUartRxInstance->pnext = pHalUartRxInstanceHead->pnext;
         pHalUartRxInstanceHead->pnext = pHalUartRxInstance;
-    }
-    
-    if(bHalUartRxPollingFunc.pPollingFunction == NULL)
-    {
-        bHalUartRxPollingFunc.pPollingFunction = _bHalUartDetectIdle;
-        bRegistPollingFunc(&bHalUartRxPollingFunc);
     }
     pHalUartRxInstance->index = 0;
     pHalUartRxInstance->l_index = 0;

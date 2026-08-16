@@ -93,9 +93,6 @@ static bYmodemInfo_t bYmodemInfo = {
     .tick = 0,
 };
 
-static bPollingFunc_t YmodemPollFunc = {
-    .pPollingFunction = NULL,
-};
 /**
  * \}
  */
@@ -200,7 +197,7 @@ static void _bYmodemTimeout()
     }
 }
 
-
+BOS_REG_POLLING_FUNC(_bYmodemTimeout);
 /**
  * \}
  */
@@ -219,11 +216,6 @@ int bYmodemInit(pymcb_t fcb, pymsend fs)
     bYmodemInfo.cb = fcb;
     bYmodemInfo.send_f = fs;
     bYmodemInfo.statu = YM_S_NULL;
-    if(YmodemPollFunc.pPollingFunction == NULL)
-    {
-        YmodemPollFunc.pPollingFunction = _bYmodemTimeout;
-        bRegistPollingFunc(&YmodemPollFunc);
-    }
     return 0;
 }
 

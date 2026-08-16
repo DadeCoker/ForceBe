@@ -112,24 +112,6 @@ typedef struct
  */
    
 /** 
- * \defgroup KV_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup KV_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
  * \defgroup KV_Exported_Functions
  * \{
  */

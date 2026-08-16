@@ -71,22 +71,75 @@
  */
 
 #define HAL_LOG_UART                    B_HAL_UART_1
-
-/**                           Flash IC                                 */
+//
+//                               Flash  
+//
 ///< W25X
-#define HAL_W25X_IF                     {{0, .xspi.spi = B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}
-///<24cxx
-#define HAL_24CXX_IF                    {{B_HAL_I2C_2, 0xa0},}
+#define HAL_W25X_QSPI_EN                0
+#if HAL_W25X_QSPI_EN
+#define HAL_W25X_IF                     {{B_HAL_QSPI_1},}
+#else
+//#define HAL_W25X_IF                     {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
+#endif
+///< 24cxx
+//#define HAL_24CXX_IF                    {{B_HAL_I2C_1, 0xa0},}
+
+//
+//                               LCD   
+//
+#if 0
+#define HAL_LCD_FSMC_ADDR               ((uint32_t)(0x60000000 | 0x0007FFFE))
+#else
+#define HAL_LCD_RS_PORT                 B_HAL_GPIOD                 
+#define HAL_LCD_RS_PIN                  B_HAL_PIN13
+#define HAL_LCD_WR_PORT                 B_HAL_GPIOB
+#define HAL_LCD_WR_PIN                  B_HAL_PIN14
+#define HAL_LCD_RD_PORT                 B_HAL_GPIOD
+#define HAL_LCD_RD_PIN                  B_HAL_PIN15
+#define HAL_LCD_CS_PORT                 B_HAL_GPIOC
+#define HAL_LCD_CS_PIN                  B_HAL_PIN8
+#define HAL_LCD_DAT_PORT                B_HAL_GPIOE 
+#endif
+
+///< OLED
+//#define HAL_OLED_I2C                    B_HAL_I2C_1
+//#define HAL_OLED_I2C_ADDR               0X78
+
+
+//
+//                               TOUCH   
+//
+///< XPT2046
+//#define HAL_XPT2046_SPI                 B_HAL_SPI_3
+//#define HAL_XPT2046_CS_PORT             B_HAL_GPIOC             
+//#define HAL_XPT2046_CS_PIN              B_HAL_PIN9
 
 
 
+//
+//                               CAMERA   
+//
+///<OV5640
+//#define HAL_OV5640_SCCB                 B_HAL_SCCB_1
+//#define HAL_OV5640_SCCB_ADDR            0X78
+//#define HAL_OV5640_RESET_PORT           B_HAL_GPIOA
+//#define HAL_OV5640_RESET_PIN            B_HAL_PIN15
 
-/**                           b_mod_button                           */
-///<b_mod_button {port, pin, pressed_logic_level}
+
+//
+//                               IO   
+//
+///<PCF8574
+//#define HAL_PCF8574_I2C                 B_HAL_I2C_2
+//#define HAL_PCF8574_I2C_ADDR            0X40
+
+
+//
+//                               BUTTON   
+//
+///< b_mod_button {port, pin, pressed_logic_level}
 #if _FLEXIBLEBUTTON_ENABLE
-#define HAL_B_BUTTON_GPIO               {{B_HAL_GPIOA, B_HAL_PIN3, 0},\
-                                         {B_HAL_GPIOA, B_HAL_PIN2, 0},\
-                                         {B_HAL_GPIOC, B_HAL_PIN13, 0},}
+#define HAL_B_BUTTON_GPIO               {{B_HAL_GPIOA, B_HAL_PIN0, 0},}
 #endif
 
 /**
@@ -108,8 +161,6 @@
  * \{
  */
 extern UART_HandleTypeDef huart1;
-extern I2C_HandleTypeDef hi2c2;
-extern SPI_HandleTypeDef hspi2;
 /**
  * \}
  */

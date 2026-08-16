@@ -85,23 +85,6 @@ typedef bFIFO_Info_t     bFIFO_Instance_t;
  * \}
  */
    
-/** 
- * \defgroup FIFO_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup FIFO_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup FIFO_Exported_Functions

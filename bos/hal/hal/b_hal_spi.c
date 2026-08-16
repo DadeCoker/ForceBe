@@ -112,7 +112,7 @@ int bHalSPI_Send(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 
             break;        
         case B_HAL_SPI_2:
-            HAL_SPI_Transmit(&hspi2, pbuf, len, 0xfff);
+
             break;
         case B_HAL_SPI_3:
 
@@ -135,7 +135,7 @@ int bHalSPI_Receive(bHalSPINumber_t spi, uint8_t *pbuf, uint16_t len)
 
             break;        
         case B_HAL_SPI_2:
-            HAL_SPI_Receive(&hspi2, pbuf, len, 0xfff);
+
             break;
         case B_HAL_SPI_3:
 

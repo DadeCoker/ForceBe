@@ -68,33 +68,6 @@ typedef void (*AO_InitFunc_t)(void);
  */
    
 /** 
- * \defgroup QPN_Exported_Defines
- * \{
- */
- 
- /**
- * \}
- */
-   
-/** 
- * \defgroup QPN_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup QPN_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
  * \defgroup QPN_Exported_Functions
  * \{
  */

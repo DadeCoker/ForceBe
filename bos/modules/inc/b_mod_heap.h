@@ -106,14 +106,6 @@
  * \}
  */
    
-/** 
- * \defgroup HEAP_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup HEAP_Exported_Functions

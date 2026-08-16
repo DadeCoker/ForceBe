@@ -82,11 +82,8 @@
  */
 static uint8_t bBatteryStatus = BATTERY_STA_LOW;
 static uint16_t bBatteryVoltage = 0;
-
 static pBatteryGetmV_t bpBatteryGetmV = NULL; 
-static bPollingFunc_t BatteryPollFunc = {
-    .pPollingFunction = NULL,
-};
+
 /**
  * \}
  */
@@ -142,6 +139,8 @@ static void _bBatteryCalculate()
     }
 } 
 
+BOS_REG_POLLING_FUNC(_bBatteryCalculate);
+
 /**
  * \}
  */
@@ -153,11 +152,6 @@ static void _bBatteryCalculate()
 int bBatteryInit(pBatteryGetmV_t f)
 {
     bpBatteryGetmV = f;
-    if(BatteryPollFunc.pPollingFunction == NULL)
-    {
-        BatteryPollFunc.pPollingFunction = _bBatteryCalculate;
-        bRegistPollingFunc(&BatteryPollFunc);
-    }
     return 0;
 }
 

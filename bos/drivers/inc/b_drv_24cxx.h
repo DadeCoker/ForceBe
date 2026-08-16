@@ -63,46 +63,6 @@ typedef bDriverInterface_t b24CXX_Driver_t;
  * \}
  */
    
-/** 
- * \defgroup 24CXX_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup 24CXX_Exported_Macros
- * \{
- */
-
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup 24CXX_Exported_Variables
- * \{
- */
- 
-/**
- * \}
- */
-   
-/** 
- * \defgroup 24CXX_Exported_Functions
- * \{
- */
-int b24CXX_Init(void);
-
-/**
- * \}
- */
- 
 
 /**
  * \}

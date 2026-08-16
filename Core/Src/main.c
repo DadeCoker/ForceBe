@@ -81,12 +81,7 @@ static void MX_I2C2_Init(void);
 /* USER CODE BEGIN 0 */
 void TestLog()
 {
-    uint8_t tmp;
-    static uint8_t test_c = 0;
-    bKV_Set("test", &test_c, 1);
-    bKV_Get("test", &tmp);
-    b_log_i("hello world %d\r\n", tmp);
-    test_c += 1;
+    b_log_i("hello world\r\n");
 }
 
 void SortTest()
@@ -147,20 +142,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   bInit();
   SortTest();
-  bKV_Init(W25QXX, 0, 40960, 4096);
-  
-  int fd = -1;
-  fd = bOpen(_24C02, BCORE_FLAG_RW);
-  if(fd >= 0)
-  {
-      bWrite(fd, (uint8_t *)"hello 24c02", 12);
-      uint8_t buf[12];
-      bLseek(fd, 0);
-      bRead(fd, buf, 12);
-      bClose(fd);
-      b_log("%s\r\n", buf);
-  }
-  
   while (1)
   {
       bExec();

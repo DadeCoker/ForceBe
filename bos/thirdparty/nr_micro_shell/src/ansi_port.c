@@ -190,7 +190,6 @@ void nr_ansi_in_right(ansi_st *ansi)
 void nr_ansi_in_tab(ansi_st *ansi)
 {
     char *cmd;
-    static_cmd_st *ptmp = bShellHead;
     cmd = shell_cmd_complete(&nr_shell, ansi->current_line);
     if (cmd != NULL)
     {
@@ -198,11 +197,10 @@ void nr_ansi_in_tab(ansi_st *ansi)
         if (ansi->counter == 0)
         {
             shell_printf("\r\n");
-            while(ptmp)
+            bSECTION_FOR_EACH(b_mod_shell, static_cmd_st, ptmp)  
             {
                 shell_printf(ptmp->cmd);
                 shell_printf("\r\n");
-                ptmp = ptmp->pnext;
             }
             shell_printf(nr_shell.user_name);
         }

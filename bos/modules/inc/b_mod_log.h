@@ -119,23 +119,6 @@
  * \}
  */
    
-/** 
- * \defgroup LOG_Exported_Macros
- * \{
- */
- 
-/**
- * \}
- */
-   
-/** 
- * \defgroup LOG_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup LOG_Exported_Functions

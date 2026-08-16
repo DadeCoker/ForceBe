@@ -58,7 +58,8 @@
  * \{
  */
 static void _ShellParamHandle(char argc, char *argv); 
-bSHELL_INSTANCE(ShellParam, "param", _ShellParamHandle);   
+bSHELL_REG_INSTANCE("param", _ShellParamHandle);
+
 /**
  * \}
  */
@@ -85,8 +86,7 @@ bSHELL_INSTANCE(ShellParam, "param", _ShellParamHandle);
  * \defgroup PARAM_Private_Variables
  * \{
  */
-static bParamInstance_t   *pParamInstanceHead = NULL;
-
+bSECTION_DEF_FLASH(b_mod_param, bParamInstance_t);
 /**
  * \}
  */
@@ -117,10 +117,9 @@ static int _copy2int(void * addr , uint8_t size)
 static void _ShellParamHandle(char argc, char *argv)
 {
     int val;
-    bParamInstance_t *ptmp = pParamInstanceHead;
 	if (argc > 1)
 	{
-        while(ptmp)
+        bSECTION_FOR_EACH(b_mod_param, bParamInstance_t, ptmp) 
         {
             if (!strcmp(ptmp->name, &argv[argv[1]]))
             {
@@ -135,15 +134,13 @@ static void _ShellParamHandle(char argc, char *argv)
                 }
                 break;
             }
-            ptmp = ptmp->pnext;
         }
 	}
 	else
 	{
-		while(ptmp)
+		bSECTION_FOR_EACH(b_mod_param, bParamInstance_t, ptmp)
         {
             b_log(": %s\r\n", ptmp->name);
-            ptmp = ptmp->pnext;
         }
 	}
 }
@@ -155,32 +152,6 @@ static void _ShellParamHandle(char argc, char *argv)
  * \addtogroup PARAM_Exported_Functions
  * \{
  */
-
-int bParamInit()
-{
-    bShellRegistCmd(&ShellParam);
-    return 0;
-}
-
-
-int bParamRegist(bParamInstance_t *pParamInstance)
-{
-    if(pParamInstance == NULL)
-    {
-        return -1;
-    }
-    
-    if(pParamInstanceHead == NULL)
-    {
-        pParamInstanceHead = pParamInstance;
-    }
-    else
-    {
-        pParamInstance->pnext = pParamInstanceHead->pnext;
-        pParamInstanceHead->pnext = pParamInstance;
-    }
-    return 0;
-}
 
 
 /**

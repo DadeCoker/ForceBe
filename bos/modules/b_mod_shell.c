@@ -79,7 +79,6 @@
  * \defgroup SHELL_Private_Variables
  * \{
  */
-bShellInstance_t *bShellHead = NULL;
 
 /**
  * \}
@@ -107,28 +106,13 @@ bShellInstance_t *bShellHead = NULL;
  * \addtogroup SHELL_Exported_Functions
  * \{
  */
-
-int bShellRegistCmd(bShellInstance_t *pbShellInstance)
+ 
+void bShellInit()
 {
-    if(pbShellInstance == NULL)
-    {
-        return -1;
-    }
-    if(bShellHead == NULL)
-    {
-        bShellHead = pbShellInstance;
-        shell_init();
-    }
-    else
-    {
-        pbShellInstance->pnext = bShellHead->pnext;
-        bShellHead->pnext = pbShellInstance;
-    }
-    return 0;
-}
-
-
-
+    shell_init();
+}    
+ 
+ 
 int bShellParse(uint8_t *pbuf, uint16_t len)
 {
     if(pbuf == NULL || len == 0)

@@ -81,25 +81,6 @@ typedef bEventInfo_t  bEventInstance_t;
 /**
  * \}
  */
-   
-/** 
- * \defgroup EVENT_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup EVENT_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
 /** 
  * \defgroup EVENT_Exported_Functions
  * \{

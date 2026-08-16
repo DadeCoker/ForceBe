@@ -54,50 +54,12 @@
  * \{
  */
 
-/** 
- * \defgroup BUTTON_Exported_TypesDefinitions
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup BUTTON_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup BUTTON_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup BUTTON_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup BUTTON_Exported_Functions
  * \{
  */
 int bButtonInit(void);
-
 void bButtonCallback(void *p);
 /**
  * \}

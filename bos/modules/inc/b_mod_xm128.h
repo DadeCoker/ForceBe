@@ -104,23 +104,6 @@ typedef struct
  * \}
  */
    
-/** 
- * \defgroup XMODEM128_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup XMODEM128_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup XMODEM128_Exported_Functions

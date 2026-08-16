@@ -171,14 +171,6 @@ typedef bMB_Info_t    bModbusInstance_t;
  * \}
  */
    
-/** 
- * \defgroup MODBUS_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup MODBUS_Exported_Functions

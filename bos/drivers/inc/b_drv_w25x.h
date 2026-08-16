@@ -59,18 +59,18 @@
  * \{
  */
 
-
+#if HAL_W25X_QSPI_EN
 typedef struct
 {
-    uint8_t type;     //0: spi   1:qspi
-    union
-    {
-        bHalQSPINumber_t qspi;
-        bHalSPINumber_t spi;
-    }xspi;
+    bHalQSPINumber_t qspi;
+}bW25X_HalIf_t;
+#else
+typedef struct
+{
+    bHalSPINumber_t spi;
     bHalGPIOInstance_t cs;
 }bW25X_HalIf_t;
-
+#endif
 
 
 typedef bDriverInterface_t bW25X_Driver_t;  
@@ -142,23 +142,6 @@ typedef bDriverInterface_t bW25X_Driver_t;
  * \}
  */
    
-/** 
- * \defgroup W25X_Exported_Variables
- * \{
- */
-  
-/**
- * \}
- */
-   
-/** 
- * \defgroup W25X_Exported_Functions
- * \{
- */
-
-/**
- * \}
- */
 
 /**
  * \}

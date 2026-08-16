@@ -79,11 +79,6 @@
  * \{
  */
 static bEventInstance_t *pEventInstanceHead = NULL;  
-
-static bPollingFunc_t EventPollFunc = {
-    .pPollingFunction = NULL,
-};
-
 /**
  * \}
  */
@@ -115,6 +110,9 @@ static void _bEventCore()
         ptmp = ptmp->pnext;
     }
 } 
+
+BOS_REG_POLLING_FUNC(_bEventCore);
+
 /**
  * \}
  */
@@ -147,12 +145,6 @@ int bEventRegist(bEventInstance_t *pInstance, pEventHandler_t handler)
     {
         pInstance->pnext = pEventInstanceHead->pnext;
         pEventInstanceHead->pnext = pInstance;
-    }
-    
-    if(EventPollFunc.pPollingFunction == NULL)
-    {
-        EventPollFunc.pPollingFunction = _bEventCore;
-        bRegistPollingFunc(&EventPollFunc);
     }
     pInstance->trigger = 0;
     pInstance->phandler = handler;

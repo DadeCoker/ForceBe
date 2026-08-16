@@ -70,33 +70,6 @@ typedef struct
  * \}
  */
    
-/** 
- * \defgroup LUNAR_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup LUNAR_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup LUNAR_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup LUNAR_Exported_Functions

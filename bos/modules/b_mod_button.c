@@ -88,10 +88,6 @@ typedef struct
  */
 static flex_button_t bButtonList[FLEX_BTN_NUMBER]; 
 const static bButtonInfo_t bButtonInfo[FLEX_BTN_NUMBER] = HAL_B_BUTTON_GPIO;
-
-static bPollingFunc_t ButtonPollFunc = {
-    .pPollingFunction = NULL,
-};
 /**
  * \}
  */
@@ -126,6 +122,8 @@ static void _bButtonCore()
     }
 }
 
+BOS_REG_POLLING_FUNC(_bButtonCore);
+
 /**
  * \}
  */
@@ -149,11 +147,6 @@ int bButtonInit()
         bButtonList[i].long_press_start_tick = FLEX_MS_TO_SCAN_CNT(3000);
         bButtonList[i].long_hold_start_tick = FLEX_MS_TO_SCAN_CNT(4500);
         flex_button_register(&bButtonList[i]);
-    }
-    if(ButtonPollFunc.pPollingFunction == NULL)
-    {
-        ButtonPollFunc.pPollingFunction = _bButtonCore;
-        bRegistPollingFunc(&ButtonPollFunc);
     }
     return 0;
 }

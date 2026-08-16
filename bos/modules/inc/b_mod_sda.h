@@ -103,23 +103,6 @@ typedef bSDA_Info_t     bSDA_Instance_t;
  * \}
  */
    
-/** 
- * \defgroup SDA_Exported_Macros
- * \{
- */
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup SDA_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup SDA_Exported_Functions

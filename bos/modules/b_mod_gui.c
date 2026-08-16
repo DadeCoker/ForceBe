@@ -33,7 +33,7 @@
 #include "b_mod_gui.h"
 #if _UGUI_ENABLE
 #include "b_core.h"
-#include "b_utils.h"
+#include "b_driver.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -59,10 +59,6 @@ static bGUI_Info_t GUI_Info = {
 };  
 
 static UG_GUI bGUI_Handle;
-
-static bPollingFunc_t GUIPollFunc = {
-    .pPollingFunction = NULL,
-};
 
 /**
  * \}
@@ -135,7 +131,7 @@ static void _LCD_SetColorPixel(UG_S16 x, UG_S16 y, UG_COLOR c)
 static void _bGUI_TouchExec()
 {
     int fd = -1;
-    uint16_t xy[2];
+    bTouchAD_ReadStruct_t bTouchAD_ReadStruct;
 #if (_LCD_DISP_MODE == 0)
      uint16_t tmp;
 #endif       
@@ -148,23 +144,24 @@ static void _bGUI_TouchExec()
     {
         return;
     }
-    bRead(fd, (uint8_t *)xy, sizeof(xy));
+    bRead(fd, (uint8_t *)&bTouchAD_ReadStruct, sizeof(bTouchAD_ReadStruct_t));
     bClose(fd);
-    if(xy[0] < _X_TOUCH_AD_MIN || xy[0] >= _X_TOUCH_AD_MAX
-        || xy[1] < _Y_TOUCH_AD_MIN || xy[1] >= _Y_TOUCH_AD_MAX)
+    if(bTouchAD_ReadStruct.x_ad < _X_TOUCH_AD_MIN || bTouchAD_ReadStruct.x_ad >= _X_TOUCH_AD_MAX
+        || bTouchAD_ReadStruct.y_ad < _Y_TOUCH_AD_MIN || bTouchAD_ReadStruct.y_ad >= _Y_TOUCH_AD_MAX)
     {
         UG_TouchUpdate( _LCD_X_SIZE, _LCD_Y_SIZE, TOUCH_STATE_RELEASED);
     }
     else
     {
-        xy[0] = (xy[0] - _X_TOUCH_AD_MIN) * _LCD_X_SIZE / (_X_TOUCH_AD_MAX - _X_TOUCH_AD_MIN);
-        xy[1] = (xy[1] - _Y_TOUCH_AD_MIN) * _LCD_Y_SIZE / (_Y_TOUCH_AD_MAX - _Y_TOUCH_AD_MIN);
+        bTouchAD_ReadStruct.x_ad = (bTouchAD_ReadStruct.x_ad - _X_TOUCH_AD_MIN) * _LCD_X_SIZE / (_X_TOUCH_AD_MAX - _X_TOUCH_AD_MIN);
+        bTouchAD_ReadStruct.y_ad = (bTouchAD_ReadStruct.y_ad - _Y_TOUCH_AD_MIN) * _LCD_Y_SIZE / (_Y_TOUCH_AD_MAX - _Y_TOUCH_AD_MIN);
 #if (_LCD_DISP_MODE == 0)
-        tmp = xy[0];
-        xy[0] = xy[1];
-        xy[1] = _LCD_X_SIZE - 1 - tmp;
+        tmp = bTouchAD_ReadStruct.x_ad;
+        bTouchAD_ReadStruct.x_ad = bTouchAD_ReadStruct.y_ad;
+        bTouchAD_ReadStruct.y_ad = _LCD_X_SIZE - 1 - tmp;
 #endif        
-        UG_TouchUpdate( xy[0], xy[1], TOUCH_STATE_PRESSED);
+        UG_TouchUpdate( bTouchAD_ReadStruct.x_ad, bTouchAD_ReadStruct.y_ad, TOUCH_STATE_PRESSED);
+        b_log("::%d %d\r\n", bTouchAD_ReadStruct.x_ad, bTouchAD_ReadStruct.y_ad);
     }
 }
 
@@ -178,6 +175,8 @@ static void _bGUI_Core()
     }
     UG_Update();
 }
+
+BOS_REG_POLLING_FUNC(_bGUI_Core);
 
 /**
  * \}
@@ -194,13 +193,7 @@ int bGUI_Init(int lcd, int touch)
     if(lcd < 0)
     {
         return -1;
-    }
-
-    if(GUIPollFunc.pPollingFunction == NULL)
-    {
-        GUIPollFunc.pPollingFunction = _bGUI_Core;
-        bRegistPollingFunc(&GUIPollFunc);
-    }    
+    }   
     GUI_Info.lcd_id = lcd;
     GUI_Info.touch_id = touch;
 #if (_LCD_DISP_MODE == 0)

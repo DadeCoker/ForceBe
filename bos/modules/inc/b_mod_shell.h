@@ -59,7 +59,7 @@
  * \{
  */
 
-typedef static_cmd_st       bShellInstance_t;
+
 /**
  * \}
  */
@@ -68,37 +68,18 @@ typedef static_cmd_st       bShellInstance_t;
  * \defgroup SHELL_Exported_Defines
  * \{
  */
-#define bSHELL_INSTANCE(instance_name, cmd_name, cmd_handler)           bShellInstance_t instance_name = {.cmd = cmd_name,\
-                                                                                            .fp = cmd_handler,\
-                                                                                            .pnext = NULL};      
+#define bSHELL_REG_INSTANCE(cmd_name, cmd_handler)           bSECTION_ITEM_REGISTER_FLASH(b_mod_shell, static_cmd_st, CONCAT_2(do_, cmd_handler)) = \
+                                                                                                                    {.cmd = cmd_name, .fp = cmd_handler};      
 /**
  * \}
  */
    
-/** 
- * \defgroup SHELL_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup SHELL_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup SHELL_Exported_Functions
  * \{
  */
-///< pbShellInstance \ref bSHELL_INSTANCE
-int bShellRegistCmd(bShellInstance_t *pbShellInstance);
+void bShellInit(void);                                                                                                                 
 int bShellParse(uint8_t *pbuf, uint16_t len);
 /**
  * \}

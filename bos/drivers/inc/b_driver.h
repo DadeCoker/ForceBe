@@ -36,9 +36,11 @@
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h"
 #include "b_drv_class_flash.h"
-
+#include "b_drv_class_lcd.h"
+#include "b_drv_class_touch.h"
+#include "b_drv_class_io.h"
+#include "b_drv_class_camera.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -104,10 +106,34 @@ typedef int (*pbDriverInit_t)(void);
  * \defgroup DRIVER_Exported_Variables
  * \{
  */
-//Flash IC
+//
+//                  Flash
+//
 extern bDriverInterface_t   bW25X_Driver[];
 extern bDriverInterface_t   b24CXX_Driver[];
 
+//
+//                  LCD
+//
+extern bDriverInterface_t   bSSD1289_Driver;
+extern bDriverInterface_t   bILI9341_Driver;
+extern bDriverInterface_t   bILI9320_Driver;
+extern bDriverInterface_t   bOLED_Driver;
+
+//
+//                  TOUCH
+//
+extern bDriverInterface_t   bXPT2046_Driver;
+
+//
+//                  CAMERA
+//
+extern bDriverInterface_t   bOV5640_Driver;
+
+//
+//                  IO
+//
+extern bDriverInterface_t   bPCF8574_Driver;
 /**
  * \}
  */

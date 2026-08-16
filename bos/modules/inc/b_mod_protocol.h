@@ -115,23 +115,6 @@ typedef struct
  * \}
  */
    
-/** 
- * \defgroup PROTOCOL_Exported_Macros
- * \{
- */
-      
-/**
- * \}
- */
-   
-/** 
- * \defgroup PROTOCOL_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup PROTOCOL_Exported_Functions

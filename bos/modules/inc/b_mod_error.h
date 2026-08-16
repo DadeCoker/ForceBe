@@ -87,25 +87,7 @@ typedef void (*pecb)(bErrorInfo_t *);
 /**
  * \}
  */
-   
-/** 
- * \defgroup ERROR_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup ERROR_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
+    
 /** 
  * \defgroup ERROR_Exported_Functions
  * \{

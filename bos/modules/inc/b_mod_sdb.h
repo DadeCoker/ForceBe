@@ -91,23 +91,6 @@ typedef bSDB_Info_t     bSDB_Instance_t;
  * \}
  */
    
-/** 
- * \defgroup SDB_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup SDB_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup SDB_Exported_Functions

@@ -85,25 +85,7 @@ typedef uint16_t (*pBatteryGetmV_t)(void);
 /**
  * \}
  */
-   
-/** 
- * \defgroup BATTERY_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup BATTERY_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
+    
 /** 
  * \defgroup BATTERY_Exported_Functions
  * \{

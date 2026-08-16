@@ -81,9 +81,6 @@
  */
 static bErrorInfo_t bErrorRecord[_ERROR_Q_LENGTH];   
 static pecb bFcb = NULL; 
-static bPollingFunc_t ErrorPollFunc = {
-    .pPollingFunction = NULL,
-};
 /**
  * \}
  */
@@ -130,6 +127,8 @@ static void _bErrorCore()
     } 
 }
 
+BOS_REG_POLLING_FUNC(_bErrorCore);
+
 /**
  * \}
  */
@@ -150,11 +149,6 @@ int bErrorInit(pecb cb)
     for(i = 0;i < _ERROR_Q_LENGTH;i++)
     {
     	bErrorRecord[i].err = INVALID_ERR;
-    }
-    if(ErrorPollFunc.pPollingFunction == NULL)
-    {
-        ErrorPollFunc.pPollingFunction = _bErrorCore;
-        bRegistPollingFunc(&ErrorPollFunc);
     }
     return 0;
 }

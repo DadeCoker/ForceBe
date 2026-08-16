@@ -69,34 +69,6 @@ typedef struct
  */
    
 /** 
- * \defgroup GUI_Exported_Defines
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup GUI_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup GUI_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
  * \defgroup GUI_Exported_Functions
  * \{
  */

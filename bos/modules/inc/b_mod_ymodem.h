@@ -122,23 +122,6 @@ typedef struct
  * \}
  */
    
-/** 
- * \defgroup YMODEM_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup YMODEM_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup YMODEM_Exported_Functions

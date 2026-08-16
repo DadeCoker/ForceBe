@@ -54,42 +54,7 @@
  * \{
  */
 
-/** 
- * \defgroup TRACE_Exported_TypesDefinitions
- * \{
- */
 
-/**
- * \}
- */
-   
-/** 
- * \defgroup TRACE_Exported_Defines
- * \{
- */
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup TRACE_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup TRACE_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
 /** 
  * \defgroup TRACE_Exported_Functions
  * \{

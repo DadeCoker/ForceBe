@@ -78,8 +78,7 @@
  * \defgroup BOS_Private_Variables
  * \{
  */
-static bPollingFunc_t *pPollingFuncHead = NULL;
-
+bSECTION_DEF_FLASH(bos_polling, pbPoling_t);
 /**
  * \}
  */
@@ -97,19 +96,7 @@ static bPollingFunc_t *pPollingFuncHead = NULL;
  * \defgroup BOS_Private_Functions
  * \{
  */
-static int _bPollingFuncIS_Exist(bPollingFunc_t *pfunc)
-{
-    bPollingFunc_t *ptmp = pPollingFuncHead; 
-    while(ptmp)
-    {
-        if(ptmp == pfunc)
-        {
-            return 0;
-        }
-        ptmp = ptmp->pnext;
-    }
-    return -1;
-}
+
 
 /**
  * \}
@@ -145,31 +132,6 @@ int bInit()
 }
 
 
-int bRegistPollingFunc(bPollingFunc_t *pfunc)
-{
-    if(pfunc == NULL)
-    {
-        return -1;
-    }
-    if(_bPollingFuncIS_Exist(pfunc) == 0)
-    {
-        return 0;
-    }
-    pfunc->pnext = NULL;
-    if(pPollingFuncHead == NULL)
-    {
-        pPollingFuncHead = pfunc;
-    }
-    else
-    {
-        pfunc->pnext = pPollingFuncHead->pnext;
-        pPollingFuncHead->pnext = pfunc;
-    }
-    return 0;
-}
-
-
-
 
 /**
  * \brief  Call this function inside the while(1)
@@ -179,14 +141,9 @@ int bRegistPollingFunc(bPollingFunc_t *pfunc)
  */
 int bExec()
 {
-    bPollingFunc_t *ptmp = pPollingFuncHead;    
-    while(ptmp)
+    bSECTION_FOR_EACH(bos_polling, pbPoling_t, polling)  
     {
-        if(ptmp->pPollingFunction)
-        {
-            ptmp->pPollingFunction();
-        }
-        ptmp = ptmp->pnext;
+        (*polling)();
     }
     return 0;
 }

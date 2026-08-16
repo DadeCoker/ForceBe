@@ -39,8 +39,8 @@
 
 //B_DEVICE_REG(SSD1289, bSSD1289_Driver, "LCD")
 //B_DEVICE_REG(XPT2046, bXPT2046_Driver, "TOUCH")
-B_DEVICE_REG(W25QXX, bW25X_Driver[0], "flash")
-B_DEVICE_REG(_24C02, b24CXX_Driver[0], "24c02")
+//B_DEVICE_REG(W25QXX, bW25X_Driver[0], "flash")
+//B_DEVICE_REG(_24C02, b24CXX_Driver[0], "24c02")
 //B_DEVICE_REG(SUART2, SUART_Driver2, "suart2")
 //B_DEVICE_REG(LoRaModule, F8l10dDriver, "lora")
 

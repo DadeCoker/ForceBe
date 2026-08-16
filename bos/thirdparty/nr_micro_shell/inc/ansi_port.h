@@ -57,6 +57,7 @@ void nr_ansi_in_right(ansi_st *ansi);
 void nr_ansi_in_tab(ansi_st *ansi);
 void nr_ansi_in_enter(ansi_st *ansi);
 void ansi_show_char(char ch);
+
 #endif
 
 #ifdef __cplusplus

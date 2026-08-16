@@ -93,23 +93,6 @@ typedef struct bMenuItem
  * \}
  */
    
-/** 
- * \defgroup MENU_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup MENU_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup MENU_Exported_Functions

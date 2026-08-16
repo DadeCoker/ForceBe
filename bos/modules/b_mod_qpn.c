@@ -35,7 +35,7 @@
 #include "b_utils.h"
 #if _QPN_ENABLE
 /*Includes AO -------------------------------------------*/
-#include "blinky.h"    //blinky  Examples/qpn/
+//#include "blinky.h"    //blinky  Examples/qpn/
 /** 
  * \addtogroup BABYOS
  * \{
@@ -87,19 +87,14 @@
 QActiveCB const Q_ROM QF_active[] = {
     { (QActive *)0,           (QEvt *)0,        0U                      },
     //add more ...
-    { (QActive *)&AO_Blinky, l_blinkyQSto, Q_DIM(l_blinkyQSto) }   //Blinky Examples/qpn/
+//    { (QActive *)&AO_Blinky, l_blinkyQSto, Q_DIM(l_blinkyQSto) }   //Blinky Examples/qpn/
 };
 
 static const AO_InitFunc_t AO_InitFuncTable[] = {
     //add more ...
-    Blinky_ctor,                  //Blinky Examples/qpn/
+//    Blinky_ctor,                  //Blinky Examples/qpn/
     NULL,
 };
-
-static bPollingFunc_t QPN_CorePollFunc = {
-    .pPollingFunction = NULL,
-};
-
 /**
  * \}
  */
@@ -128,6 +123,8 @@ static void _bQPN_Run()
     }
 }
 
+BOS_REG_POLLING_FUNC(_bQPN_Run);
+
 /**
  * \}
  */
@@ -143,12 +140,7 @@ void bQPN_Init()
     {
         AO_InitFuncTable[i]();
         i++;
-    }
-    if(QPN_CorePollFunc.pPollingFunction == NULL)
-    {
-        QPN_CorePollFunc.pPollingFunction = _bQPN_Run;
-        bRegistPollingFunc(&QPN_CorePollFunc);
-    }    
+    }   
 	QF_init(Q_DIM(QF_active));      /* initialize the QF-nano framework */
 	QF_Ready_run();
 }

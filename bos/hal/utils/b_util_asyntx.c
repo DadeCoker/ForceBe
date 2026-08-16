@@ -75,7 +75,6 @@
  */
 static bAsyntxInfo_t bAsyntxInfoTable[_ASYN_TX_I_NUMBER]; 
 static uint8_t bAsyntxInfoIndex = 0;
-static bPollingFunc_t bUtilAsyntxPollingFunc;
 /**
  * \}
  */
@@ -114,7 +113,10 @@ static void _bAsyntxCore()
             }
         }
     }
-}   
+} 
+
+BOS_REG_POLLING_FUNC(_bAsyntxCore);
+
 /**
  * \}
  */
@@ -137,12 +139,6 @@ int bAsyntxRegist(pSendBytes f, uint32_t timeout_ms)
     if(f == NULL || bAsyntxInfoIndex >= _ASYN_TX_I_NUMBER)
     {
         return -1;
-    }
-    if(bAsyntxInfoIndex == 0)
-    {
-        bUtilAsyntxPollingFunc.pnext = NULL;
-        bUtilAsyntxPollingFunc.pPollingFunction = _bAsyntxCore;
-        bRegistPollingFunc(&bUtilAsyntxPollingFunc);
     }
     bAsyntxInfoTable[bAsyntxInfoIndex].state = BASYN_TX_NULL;
     bAsyntxInfoTable[bAsyntxInfoIndex].td_flag = 0;

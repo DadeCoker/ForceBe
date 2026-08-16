@@ -62,7 +62,6 @@ typedef struct bParamStruct
     uint8_t size;
     char *name;
     void *addr;
-    struct bParamStruct *pnext;
 }bParamStruct_t;
 
 
@@ -79,45 +78,15 @@ typedef bParamStruct_t       bParamInstance_t;
 
 #define _PARAM2STR(n)       (#n)
 
-#define bPARAM_INSTANCE(instance_name, param, param_size)       bParamInstance_t instance_name = {.size = param_size,\
+#define bPARAM_REG_INSTANCE(param, param_size)       bSECTION_ITEM_REGISTER_FLASH(b_mod_param, bParamInstance_t, CONCAT_2(do_, param)) = {.size = param_size,\
                                                                                             .name = _PARAM2STR(param),\
-                                                                                            .addr = &(param),\
-                                                                                            .pnext = NULL};
+                                                                                            .addr = &(param)};
 
 /**
  * \}
  */
    
-/** 
- * \defgroup PARAM_Exported_Macros
- * \{
- */
    
-/**
- * \}
- */
-   
-/** 
- * \defgroup PARAM_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup PARAM_Exported_Functions
- * \{
- */
-int bParamInit(void); 
-///< pParamInstance \ref bPARAM_INSTANCE
-int bParamRegist(bParamInstance_t *pParamInstance);
-/**
- * \}
- */
- 
- 
 /**
  * \}
  */

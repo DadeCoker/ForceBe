@@ -89,23 +89,6 @@ typedef bSoftTimerStruct_t      bSoftTimerInstance_t;
  * \}
  */
    
-/** 
- * \defgroup TIMER_Exported_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup TIMER_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup TIMER_Exported_Functions

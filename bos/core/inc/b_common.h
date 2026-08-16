@@ -57,13 +57,7 @@
  * \defgroup COMMON_Exported_TypesDefinitions
  * \{
  */
-typedef struct bPollingFuncStruct
-{
-    void (*pPollingFunction)(void);
-    struct bPollingFuncStruct *pnext;
-}bPollingFunc_t; 
-
-
+typedef void (*pbPoling_t)(void);
 /**
  * \}
  */
@@ -131,7 +125,7 @@ typedef struct bPollingFuncStruct
  * \defgroup COMMON_Exported_Macros
  * \{
  */
-
+#define BOS_REG_POLLING_FUNC(func)      bSECTION_ITEM_REGISTER_FLASH(bos_polling, pbPoling_t, CONCAT_2(polling, func))=func
 /**
  * \}
  */
@@ -151,10 +145,6 @@ typedef struct bPollingFuncStruct
  * \defgroup DEVICE_Exported_Functions
  * \{
  */
-
-int bRegistPollingFunc(bPollingFunc_t *pfunc);
-
-
 
 /**
  * \}

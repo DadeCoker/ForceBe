@@ -98,14 +98,6 @@ typedef uint32_t    bUTC_t;
  * \}
  */
    
-/** 
- * \defgroup UTC_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
    
 /** 
  * \defgroup UTC_Exported_Functions

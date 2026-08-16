@@ -92,11 +92,6 @@ static bXmodem128Info_t bXmodem128Info = {
     .tick = 0
 };
 
-static bPollingFunc_t XmodemPollFunc = {
-    .pPollingFunction = NULL,
-};
-
-
 /**
  * \}
  */
@@ -172,6 +167,7 @@ static void _bXmodem128Timeout()
     }
 }
 
+BOS_REG_POLLING_FUNC(_bXmodem128Timeout);
 
 /**
  * \}
@@ -191,11 +187,6 @@ int bXmodem128Init(pcb_t fcb, psend fs)
     bXmodem128Info.cb = fcb;
     bXmodem128Info.send_f = fs;
     bXmodem128Info.statu = XM_S_NULL;
-    if(XmodemPollFunc.pPollingFunction == NULL)
-    {
-        XmodemPollFunc.pPollingFunction = _bXmodem128Timeout;
-        bRegistPollingFunc(&XmodemPollFunc);
-    }
     return 0;
 }
 
