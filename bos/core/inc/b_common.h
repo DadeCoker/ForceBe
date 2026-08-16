@@ -85,14 +85,16 @@ typedef struct bPollingFuncStruct
 #define bSECTION_START(section_name) CONCAT_2(__bos_start_, section_name)
 #define bSECTION_END(section_name)   CONCAT_2(__bos_stop_, section_name)
  
-#define bSECTION_ITEM_REGISTER_FLASH(section_name, section_var) section_var __attribute__ ((section(".bos_flash." STRINGIFY(CONCAT_2(section_name, __1))))) __attribute__((used))
+#define bSECTION_ITEM_REGISTER_FLASH(section_name, data_type, var_name) const data_type var_name \
+                        __attribute__ ((section(".bos_flash." STRINGIFY(CONCAT_2(section_name, __1))))) __attribute__((used))
  
-#define bSECTION_ITEM_REGISTER_RAM(section_name, section_var)   section_var __attribute__ ((section(".bos_ram." STRINGIFY(CONCAT_2(section_name, __1))))) __attribute__((used))
+#define bSECTION_ITEM_REGISTER_RAM(section_name, data_type, var_name)   volatile data_type var_name \
+                        __attribute__ ((section(".bos_ram." STRINGIFY(CONCAT_2(section_name, __1))))) __attribute__((used))
  
  
 #define bSECTION_DEF_FLASH(section_name, data_type)   \
-     volatile const data_type bSECTION_START(section_name) __attribute__ ((section(".bos_flash." STRINGIFY(CONCAT_2(section_name, __0))))) __attribute__((used)); \
-     volatile const data_type bSECTION_END(section_name)   __attribute__ ((section(".bos_flash." STRINGIFY(CONCAT_2(section_name, __2))))) __attribute__((used))
+     const data_type bSECTION_START(section_name) __attribute__ ((section(".bos_flash." STRINGIFY(CONCAT_2(section_name, __0))))) __attribute__((used)); \
+     const data_type bSECTION_END(section_name)   __attribute__ ((section(".bos_flash." STRINGIFY(CONCAT_2(section_name, __2))))) __attribute__((used))
  
 #define bSECTION_DEF_RAM(section_name, data_type)   \
      volatile data_type bSECTION_START(section_name) __attribute__ ((section(".bos_ram." STRINGIFY(CONCAT_2(section_name, __0))))) __attribute__((used)); \
@@ -110,8 +112,8 @@ typedef struct bPollingFuncStruct
      bSECTION_LENGTH(section_name) / sizeof(data_type)
 
 #define bSECTION_FOR_EACH(section_name, data_type, variable)                               \
-     for (data_type * variable = (data_type *) bSECTION_START(section_name);                \
-          (intptr_t) variable != (intptr_t) bSECTION_END(section_name);                         \
+     for (data_type * variable = ((data_type *)&bSECTION_START(section_name)) + 1;                \
+          (intptr_t) variable != (intptr_t)&bSECTION_END(section_name);                         \
           variable++)     
 
 /**

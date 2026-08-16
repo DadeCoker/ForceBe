@@ -94,7 +94,7 @@ typedef int (*pbDriverInit_t)(void);
  * \defgroup DRIVER_Exported_Macros
  * \{
  */
-#define bDRIVER_REG_INIT(func)                   const pbDriverInit_t bSECTION_ITEM_REGISTER_FLASH(driver_init, CONCAT_2(init, func))=func  
+#define bDRIVER_REG_INIT(func)                   bSECTION_ITEM_REGISTER_FLASH(driver_init, pbDriverInit_t, CONCAT_2(init, func))=func  
 #define bDRV_GET_HALIF(name, type, pdrv)         type *name = (type *)(pdrv->_hal_if)
 /**
  * \}
