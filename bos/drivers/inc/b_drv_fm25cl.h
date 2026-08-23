@@ -1,13 +1,13 @@
 /**
  *!
- * \file        b_hal.c
+ * \file        b_drv_fm25cl.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/02/05
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
  * 
- * Copyright (c) 2019 Bean
+ * Copyright (c) 2020 Bean
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,103 +28,70 @@
  * SOFTWARE.
  *******************************************************************************
  */
-   
+#ifndef __B_DRV_FM25CL_H__
+#define __B_DRV_FM25CL_H__
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /*Includes ----------------------------------------------*/
-#include "b_hal.h" 
-#include <string.h>
+#include "b_drv_class_flash.h"
+
 /** 
- * \addtogroup B_HAL
+ * \addtogroup BABYOS
+ * \{
+ */
+
+
+/** 
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup HAL
+ * \addtogroup FM25CL
  * \{
  */
 
 /** 
- * \defgroup HAL_Private_TypesDefinitions
+ * \defgroup FM25CL_Exported_TypesDefinitions
  * \{
+ */
+
+typedef struct
+{
+    bHalSPINumber_t spi;
+    bHalGPIOInstance_t cs;
+}bFM25CL_HalIf_t;
+
+typedef bDriverInterface_t bFM25CL_Driver_t;  
+
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FM25CL_Exported_Defines
+ * \{
+ */
+
+#define SFC_WREN        0x06 	//Set write enable latch
+#define SFC_WRDI        0x04	//Write disable
+#define SFC_RDSR        0x05	//Read Status Register
+#define SFC_WRSR        0x01	//Write Status Register
+#define SFC_READ        0x03	//Read memory data
+#define SFC_WRITE    	0x02	//Write memory data
+
+/**
+ * \}
  */
   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Defines
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Macros
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Variables
- * \{
- */
-volatile uint32_t bSysTick = 0;
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_FunctionPrototypes
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup HAL_Private_Functions
- * \{
- */
-
 
 /**
  * \}
  */
-   
-/** 
- * \addtogroup HAL_Exported_Functions
- * \{
- */
-void bHalEnterCritical()
-{
-
-}    
-
-void bHalExitCritical()
-{
-
-}
-
-
-/**
- * \brief Call this function _TICK_FRQ_HZ times per second \ref _TICK_FRQ_HZ
- */
-void bHalIncSysTick()
-{
-    bSysTick += 1;
-}
-
-
-void bHalInit()
-{
-    // Add code ...gpio init or some other functions 
-}
+ 
 
 /**
  * \}
@@ -134,11 +101,14 @@ void bHalInit()
  * \}
  */
 
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif
 
-/**
- * \}
- */
 
 /************************ Copyright (c) 2019 Bean *****END OF FILE****/
+
 
 

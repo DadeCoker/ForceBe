@@ -77,11 +77,9 @@
 /** 
  * \defgroup FM25CL_Private_Variables
  * \{
- */
-bFM25CL_Driver_t bFM25CL_Driver = {
-    .init = bFM25CL_Init,
-};	
-
+ */	
+static const bFM25CL_HalIf_t bFM25CL_HalIfTable[] = HAL_FM25CL_IF;
+bFM25CL_Driver_t bFM25CL_Driver[sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t)];
 /**
  * \}
  */
@@ -100,56 +98,58 @@ bFM25CL_Driver_t bFM25CL_Driver = {
  * \{
  */
 
-static void _FM25_WR_Enable()
+static void _FM25_WR_Enable(bFM25CL_HalIf_t *_if)
 {	
-    bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 0);
-    bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, SFC_WREN);  
-	bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 1);
+    uint8_t cmd = SFC_WREN;
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    bHalSPI_Send(_if->spi, &cmd, 1);  
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
 }	
 
-static void _FM25_WR_Lock() 
-{	
-    bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 0);
-    bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, SFC_WRDI);  
-	bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 1);    
+static void _FM25_WR_Lock(bFM25CL_HalIf_t *_if) 
+{	 
+    uint8_t cmd = SFC_WRDI;
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    bHalSPI_Send(_if->spi, &cmd, 1);  
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
+    
 }
 
 
 /**************************************************************************************************driver interface*****/
 
-static int _FM25_ReadBuff(uint32_t addr, uint8_t *pDat, uint16_t len)
+static int _FM25_ReadBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t *pDat, uint16_t len)
 {	
-	int i; 
-	bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 0);
-	bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, SFC_READ);             
-	bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, (uint8_t)(addr >> 8));   
-	bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, (uint8_t)(addr >> 0));  
+	uint8_t cmd[3]; 
+    bDRV_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
     
-	for(i = 0;i < len;i++)
-    {
-        pDat[i] = bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, 0);
-    }
-	bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 1); 
+    cmd[0] = SFC_READ;
+    cmd[1] = (uint8_t)(addr>>8);
+    cmd[2] = (uint8_t)(addr>>0);    
+    
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+	bHalSPI_Send(_if->spi, cmd, 3); 
+    bHalSPI_Receive(_if->spi, pDat, len);
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1); 
     return len;
 }   
 
 
-static int _FM25_WritBuff(uint32_t addr, uint8_t* pdat,uint16_t len)
+static int _FM25_WritBuff(bFM25CL_Driver_t *pdrv, uint32_t addr, uint8_t* pdat,uint16_t len)
 {	
-	int i; 
-	_FM25_WR_Enable();           
+	uint8_t cmd[3]; 
+    bDRV_GET_HALIF(_if, bFM25CL_HalIf_t, pdrv);
+	_FM25_WR_Enable(_if);           
 	//-----------------------------------------------------------
-	bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 0);
-	bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, SFC_WRITE);        
-	bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, (unsigned char)(addr>>8));
-	bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, (unsigned char)(addr>>0)); 
-	for(i = 0;i < len;i++)
-    {
-        bHalSPI_SendReceiveByte(HAL_FM25CL_SPI, pdat[i]);
-    }
-	bHalGPIO_WritePin(HAL_FM25CL_CS_PORT, HAL_FM25CL_CS_PIN, 1);
+    cmd[0] = SFC_WRITE;
+    cmd[1] = (uint8_t)(addr>>8);
+    cmd[2] = (uint8_t)(addr>>0);
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    bHalSPI_Send(_if->spi, cmd, 3);
+    bHalSPI_Send(_if->spi, pdat, len);
+	bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
 	//-----------------------------------------------------------
-	_FM25_WR_Lock();    
+	_FM25_WR_Lock(_if);    
     return len;
 } 
 
@@ -164,11 +164,17 @@ static int _FM25_WritBuff(uint32_t addr, uint8_t* pdat,uint16_t len)
  */
 int bFM25CL_Init()
 {  
-    bFM25CL_Driver.close = NULL;
-    bFM25CL_Driver.read = _FM25_ReadBuff;
-    bFM25CL_Driver.ctl = NULL;
-    bFM25CL_Driver.open = NULL;
-    bFM25CL_Driver.write = _FM25_WritBuff;
+    uint8_t i = 0, num_drv = (sizeof(bFM25CL_HalIfTable) / sizeof(bFM25CL_HalIf_t));
+    for(i = 0;i < num_drv;i++)
+    {
+        bFM25CL_Driver[i]._hal_if = (void *)&bFM25CL_HalIfTable[i];
+        bFM25CL_Driver[i].status = 0;
+        bFM25CL_Driver[i].close = NULL;
+        bFM25CL_Driver[i].read = _FM25_ReadBuff;
+        bFM25CL_Driver[i].ctl = NULL;
+        bFM25CL_Driver[i].open = NULL;
+        bFM25CL_Driver[i].write = _FM25_WritBuff;
+    }
     return 0;
 }
 

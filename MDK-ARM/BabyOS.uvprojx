@@ -646,13 +646,6 @@
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
-          <Files>
-            <File>
-              <FileName>b_drv_fm25cl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\flash\b_drv_fm25cl.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal/hal</GroupName>

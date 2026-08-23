@@ -81,6 +81,8 @@
 #else
 //#define HAL_W25X_IF                     {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
 #endif
+///< FM25CL
+//#define HAL_FM25CL_IF                   {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
 ///< 24cxx
 //#define HAL_24CXX_IF                    {{B_HAL_I2C_1, 0xa0},}
 
