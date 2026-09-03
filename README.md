@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v3.3.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
+![GitHub](https://img.shields.io/github/license/notrynohigh/BabyOS)![GitHub language count](https://img.shields.io/github/languages/count/notrynohigh/BabyOS)![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/notrynohigh/BabyOS)![GitHub commits since latest release (by SemVer)](https://img.shields.io/github/commits-since/notrynohigh/BabyOS/v4.0.0)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/notrynohigh/BabyOS)
 
 # BabyOS
 
@@ -129,9 +129,7 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 b_hal.h中取消如下部分的注释，并根据实际连接图修改GPIO和SPI号
 
 ```C
-#define HAL_W25X_SPI                    B_HAL_SPI_2
-#define HAL_W25X_CS_PORT                B_HAL_GPIOB             
-#define HAL_W25X_CS_PIN                 B_HAL_PIN12
+//#define HAL_W25X_IF                     {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
 ```
 
 修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台，使用STM32 HAL库为例）
