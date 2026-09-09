@@ -54,7 +54,7 @@
  * \defgroup GPIO_Private_Defines
  * \{
  */
-   
+bSECTION_DEF_FLASH(b_hal_gpio, bHalGPIO_EXTI_t);   
 /**
  * \}
  */
@@ -76,8 +76,7 @@ static GPIO_TypeDef *GPIO_PortTable[] = {GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIO
 const static uint16_t GPIO_PinTable[] = {GPIO_PIN_0, GPIO_PIN_1, GPIO_PIN_2, GPIO_PIN_3, GPIO_PIN_4, GPIO_PIN_5, 
                                         GPIO_PIN_6, GPIO_PIN_7, GPIO_PIN_8, GPIO_PIN_9, GPIO_PIN_10, GPIO_PIN_11, 
                                         GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_All};
-
-static bHalGPIO_EXTI_t *pHalGPIO_EXTI_Head = NULL;                                       
+                                       
 /**
  * \}
  */
@@ -176,51 +175,25 @@ uint16_t bHalGPIO_Read(bHalGPIOPort_t port)
 
 
 /**
- * \brief Register external interrupts
- * \param pexti EXTI information \ref bHalGPIO_EXTI_t
- */ 
-int bHalGPIO_EXTI_Regist(bHalGPIO_EXTI_t *pexti)
-{
-    if(pexti == NULL)
-    {
-        return - 1;
-    }
-    pexti->pnext = NULL;
-    if(pHalGPIO_EXTI_Head == NULL)
-    {
-        pHalGPIO_EXTI_Head = pexti;
-    }
-    else
-    {
-        pexti->pnext = pHalGPIO_EXTI_Head->pnext;
-        pHalGPIO_EXTI_Head->pnext = pexti;
-    }
-    return 0;
-}
-
-
-/**
  * \brief This function handles EXTI interrupts.
  * \param pin Specifies the pins connected EXTI line \ref bHalGPIOPin_t
  */ 
 void bHalGPIO_EXTI_IRQHandler(bHalGPIOPin_t pin)
 {
-    bHalGPIO_EXTI_t *ptmp = pHalGPIO_EXTI_Head;
     if(pin >= B_HAL_PINAll)
     {
         return;
     }
-    while(ptmp)
+    bSECTION_FOR_EACH(b_hal_gpio, bHalGPIO_EXTI_t, ptmp) 
     {
         if(ptmp->pin == pin)
         {
-            if(ptmp->cb)
+            if(ptmp->handler)
             {
-                ptmp->cb();
+                ptmp->handler();
                 break;
             }
         }
-        ptmp = ptmp->pnext;
     }
 }
 

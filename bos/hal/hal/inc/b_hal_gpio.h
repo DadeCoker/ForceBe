@@ -97,14 +97,12 @@ typedef struct
 
 
 
-typedef void (*pExtiCallback)(void);
+typedef void (*pbExtiHandler_t)(void);
 
 typedef struct bHalGPIO_EXTI_Struct
 {
     bHalGPIOPin_t pin;
-    pExtiCallback cb;
-    
-    struct bHalGPIO_EXTI_Struct *pnext;
+    pbExtiHandler_t handler;
 }bHalGPIO_EXTI_t;
 
 
@@ -134,18 +132,11 @@ typedef struct bHalGPIO_EXTI_Struct
  
 #define B_HAL_GPIO_ISVALID(port, pin)       (port != B_HAL_GPIO_NULL && pin != B_HAL_PIN_NULL)
 
+#define bHAL_REG_GPIO_EXTI(_pin, _handler)    bSECTION_ITEM_REGISTER_FLASH(b_hal_gpio, bHalGPIO_EXTI_t, CONCAT_2(exti, pin)) = {\
+                                                                                .pin = _pin, .handler = _handler}
 /**
  * \}
- */
-   
-/** 
- * \defgroup GPIO_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
+ */   
    
 /** 
  * \defgroup GPIO_Exported_Functions
@@ -157,8 +148,6 @@ void bHalGPIO_WritePin(bHalGPIOPort_t port, bHalGPIOPin_t pin, uint8_t s);
 uint8_t bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin);
 void bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat);
 uint16_t bHalGPIO_Read(bHalGPIOPort_t port);
-int bHalGPIO_EXTI_Regist(bHalGPIO_EXTI_t *pexti);
-
 
 void bHalGPIO_EXTI_IRQHandler(bHalGPIOPin_t pin);
 

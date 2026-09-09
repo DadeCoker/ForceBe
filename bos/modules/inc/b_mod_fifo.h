@@ -75,9 +75,9 @@ typedef bFIFO_Info_t     bFIFO_Instance_t;
  * \defgroup FIFO_Exported_Defines
  * \{
  */
-#define bFIFO_INSTANCE(name, _pbuf, _size)          bFIFO_Instance_t name = {\
-                                                                        .pbuf = _pbuf,\
-                                                                        .size = _size,\
+#define bFIFO_INSTANCE(name, _fifo_size)          static uint8_t fifo##name[_fifo_size]; bFIFO_Instance_t name = {\
+                                                                        .pbuf = fifo##name,\
+                                                                        .size = _fifo_size,\
                                                                         .r_index = 0,\
                                                                         .w_index = 0};
 

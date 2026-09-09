@@ -56,10 +56,10 @@
 #define _TICK_FRQ_HZ          	    1000
 #define MS2TICKS(m)                 (m / (1000 / _TICK_FRQ_HZ))
 //<q> UTC2000 Enable/Disable
-#define _UTC2000_ENABLE           	0
+#define _UTC2000_ENABLE           	1
 
 //<q> Lunar Enable/Disable
-#define _LUNAR_ENABLE           	0
+#define _LUNAR_ENABLE           	1
 
 //<o> Debug level
 //<0=> off
@@ -70,7 +70,7 @@
 
 
 //<e> Battery Enable/Disable
-#define _BATTERY_ENABLE           	0
+#define _BATTERY_ENABLE           	1
 //<o> Battery Threshold (mv)
 #define _BATTERY_THRESHOLD      	3350
 //<o> Battery Detection Cycle (ms)
@@ -79,23 +79,23 @@
 
 
 //<e> Error Manage Enable/Disable
-#define _ERROR_MANAGE_ENABLE       	0
+#define _ERROR_MANAGE_ENABLE       	1
 //<o> Error Queue Length
 #define _ERROR_Q_LENGTH          	10
 //</e>
 
 //<q> Event Manage Enable/Disable
-#define _EVENT_MANAGE_ENABLE       	0
+#define _EVENT_MANAGE_ENABLE       	1
 
 
 //<e> Modbus Enable/Disable
-#define _MODBUS_ENABLE           	0
+#define _MODBUS_ENABLE           	1
 //<o> Modbus Buffer Size
 #define _MODBUS_BUF_SIZE            200
 //</e>
 
 //<e> Protocol Enable/Disable
-#define _PROTO_ENABLE         		0
+#define _PROTO_ENABLE         		1
 //<o> Size of The Device ID Field
 //<2=> 2Bytes
 //<4=> 4Bytes
@@ -118,7 +118,7 @@
 //</e>
 
 //<e> Save Data Enable/Disable
-#define _SAVE_DATA_ENABLE         	0
+#define _SAVE_DATA_ENABLE         	1
 
 //<q> Save Data ClassA
 #define _SAVE_DATA_A_ENABLE         1
@@ -129,26 +129,26 @@
 //</e>
 
 //<q> KV Enable/Disable
-#define _KV_ENABLE             	    0
+#define _KV_ENABLE             	    1
 
 //<q> FIFO Enable/Disable
-#define _FIFO_ENABLE             	0
+#define _FIFO_ENABLE             	1
 
 //<q> XMODEM128 Enable/Disable
-#define _XMODEM128_ENABLE           0
+#define _XMODEM128_ENABLE           1
 
 //<q> YMODEM Enable/Disable
-#define _YMODEM_ENABLE              0
+#define _YMODEM_ENABLE              1
 
 
 //<e> Menu Enable/Disable
-#define _MENU_ENABLE                0
+#define _MENU_ENABLE                1
 //<o> Menu Item Number
 #define _MENU_ITEM_NUMBER           10
 //</e>
 
 //<e> Heap4 Enable/Disable
-#define _HEAP_ENABLE                0
+#define _HEAP_ENABLE                1
 //<o> Heap Size
 #define _HEAP_SIZE                  1024
 //<e> External SDRAM ?
@@ -159,10 +159,10 @@
 //</e>
 
 //<q> Soft-timer Enable/Disable
-#define _TIMER_ENABLE               0
+#define _TIMER_ENABLE               1
 
 //<q> Tuning Parameters Enable/Disable
-#define _PARAM_ENABLE               0
+#define _PARAM_ENABLE               1
 
 //</h>
 
@@ -170,7 +170,7 @@
 //<h> Third Party Configuration
 
 //<e> NR Micro Shell Enable/Disable
-#define _NR_MICRO_SHELL_ENABLE              0
+#define _NR_MICRO_SHELL_ENABLE              1
 
 //<s> The user's name
 #define NR_SHELL_USER_NAME                 "nr@bos:"
@@ -216,7 +216,7 @@
 //</e>
 
 //<e> FlexibleButton Enable/Disable
-#define _FLEXIBLEBUTTON_ENABLE              0
+#define _FLEXIBLEBUTTON_ENABLE              1
 //<o> How often flex_button_scan () is called
 #define FLEX_BTN_SCAN_FREQ_HZ               50 
 //<o> Number of Buttons
@@ -224,13 +224,13 @@
 //</e>
 
 //<e> QPN Enable/Disable
-#define _QPN_ENABLE                         0
+#define _QPN_ENABLE                         1
 //<o> How often ISR_TIMER_COMPA_vect() and qpn_run() is called (ms)
 #define QPN_PER_SEC                         10
 //</e>
 
 //<e> UGUI Enable/Disable
-#define _UGUI_ENABLE                        0
+#define _UGUI_ENABLE                        1
 //<o> X PHYSICAL SIZE
 #define _LCD_X_SIZE                         240 
 //<o> Y PHYSICAL SIZE
@@ -255,7 +255,7 @@
 
 
 //<e> CmBacktrace Enable/Disable
-#define _CMBACKTRACE_ENABLE                 0
+#define _CMBACKTRACE_ENABLE                 1
 
 //<o> CMB_CPU_ARM_CORTEX_M?
 //<0=> ARM_CORTEX_M0

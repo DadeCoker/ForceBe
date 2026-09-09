@@ -675,6 +675,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\hal\utils\b_util_delay.c</FilePath>
             </File>
+            <File>
+              <FileName>b_util_at.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\utils\b_util_at.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

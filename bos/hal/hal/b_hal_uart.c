@@ -56,7 +56,7 @@
  * \defgroup UART_Private_Defines
  * \{
  */
-   
+bSECTION_DEF_RAM(b_hal_uart, bHalUartRxInfo_t);  
 /**
  * \}
  */
@@ -74,7 +74,7 @@
  * \defgroup UART_Private_Variables
  * \{
  */
-static bHalUartRxInstance_t *pHalUartRxInstanceHead = NULL;
+
 /**
  * \}
  */
@@ -98,9 +98,8 @@ static bHalUartRxInstance_t *pHalUartRxInstanceHead = NULL;
 static void _bHalUartDetectIdle()
 {
     uint32_t c_tick = bUtilGetTick();
-    bHalUartRxInfo_t *ptmp = pHalUartRxInstanceHead;
     
-    while(ptmp)
+    bSECTION_FOR_EACH(b_hal_uart, bHalUartRxInfo_t, ptmp)
     {
         if(ptmp->index > 0)
         {
@@ -118,15 +117,14 @@ static void _bHalUartDetectIdle()
                 }
                 else if(bUtilGetTick() - ptmp->l_tick > ptmp->idle_threshold)
                 {
-                    if(ptmp->cb != NULL)
+                    if(ptmp->handler != NULL)
                     {
-                        ptmp->cb(ptmp->pbuf, ptmp->index);
+                        ptmp->handler(ptmp->pbuf, ptmp->index);
                         ptmp->index = 0;
                     }
                 }
             }
         }
-        ptmp = ptmp->pnext;
     }
 }
 
@@ -156,29 +154,6 @@ void bHalUartSend(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len)
     }
 }
 
-/**
- * \brief Register UART_RX information
- * \param pHalUartRxInstance Pointer to UART_RX instance \ref bHAL_UART_RX_INSTANCE
- */
-int bHalUartRxRegist(bHalUartRxInstance_t *pHalUartRxInstance)
-{
-    if(pHalUartRxInstance == NULL)
-    {
-        return -1;
-    }
-    if(pHalUartRxInstanceHead == NULL)
-    {
-        pHalUartRxInstanceHead = pHalUartRxInstance;
-    }
-    else
-    {
-        pHalUartRxInstance->pnext = pHalUartRxInstanceHead->pnext;
-        pHalUartRxInstanceHead->pnext = pHalUartRxInstance;
-    }
-    pHalUartRxInstance->index = 0;
-    pHalUartRxInstance->l_index = 0;
-    return 0;
-}
 
 
 
@@ -189,12 +164,11 @@ int bHalUartRxRegist(bHalUartRxInstance_t *pHalUartRxInstance)
  */ 
 void bHalUartRxIRQ_Handler(bHalUartNumber_t uart, uint8_t dat)
 {
-    bHalUartRxInfo_t *ptmp = pHalUartRxInstanceHead;
     if(uart >= B_HAL_UART_NUMBER)
     {
         return;
     }
-    while(ptmp)
+    bSECTION_FOR_EACH(b_hal_uart, bHalUartRxInfo_t, ptmp)
     {
         if(ptmp->uart == uart)
         {
@@ -204,7 +178,6 @@ void bHalUartRxIRQ_Handler(bHalUartNumber_t uart, uint8_t dat)
             }
             break;
         }
-        ptmp = ptmp->pnext;
     }
 }
 

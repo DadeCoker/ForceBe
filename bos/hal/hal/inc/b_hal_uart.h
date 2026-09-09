@@ -63,7 +63,7 @@ typedef enum
 
 
 
-typedef void (*pUartRxIdleCallback)(uint8_t *pbuf, uint16_t len);
+typedef void (*pbUartRxIdleHandler_t)(uint8_t *pbuf, uint16_t len);
 
 typedef struct bHalUartRxStruct
 {
@@ -71,12 +71,10 @@ typedef struct bHalUartRxStruct
     uint8_t *pbuf;
     uint16_t buf_len;
     uint32_t idle_threshold;
-    pUartRxIdleCallback cb;
+    pbUartRxIdleHandler_t handler;
     volatile uint32_t l_tick;
     volatile uint32_t l_index;
     volatile uint16_t index;
-    
-    struct bHalUartRxStruct *pnext;
 }bHalUartRxInfo_t;
 
 
@@ -92,31 +90,16 @@ typedef bHalUartRxInfo_t        bHalUartRxInstance_t;
  * \defgroup UART_Exported_Defines
  * \{
  */
-#define bHAL_UART_RX_INSTANCE(name, _uart, _pbuf, _len, _idle_ms, _idle_cb)      bHalUartRxInstance_t name = {\
-                                                                                      .uart = _uart,\
-                                                                                      .pbuf = _pbuf,\
-                                                                                      .buf_len = _len,\
-                                                                                      .idle_threshold = _idle_ms,\
-                                                                                      .cb = _idle_cb};
-/**
- * \}
- */
-   
-/** 
- * \defgroup UART_Exported_Macros
- * \{
- */
-
-
-/**
- * \}
- */
-   
-/** 
- * \defgroup UART_Exported_Variables
- * \{
- */
-   
+#define bHAL_REG_UART_RX(_uart, _buf_len, _idle_ms, _idle_handler)      static uint8_t _uart##buf[_buf_len];\
+                                                                    bSECTION_ITEM_REGISTER_RAM(b_hal_uart, bHalUartRxInfo_t, CONCAT_2(rx, _uart))={\
+                                                                    .uart = _uart,\
+                                                                    .pbuf = _uart##buf,\
+                                                                    .buf_len = _buf_len,\
+                                                                    .idle_threshold = _idle_ms,\
+                                                                    .handler = _idle_handler,\
+                                                                    .index = 0,\
+                                                                    .l_tick = 0,\
+                                                                    .l_index = 0}
 /**
  * \}
  */
@@ -125,9 +108,6 @@ typedef bHalUartRxInfo_t        bHalUartRxInstance_t;
  * \defgroup UART_Exported_Functions
  * \{
  */
- 
-///<  pHalUartRxInstance \ref bHAL_UART_RX_INSTANCE
-int bHalUartRxRegist(bHalUartRxInstance_t *pHalUartRxInstance);
 void bHalUartSend(bHalUartNumber_t uart, uint8_t *pbuf, uint16_t len);
 void bHalUartRxIRQ_Handler(bHalUartNumber_t uart, uint8_t dat);
 /**

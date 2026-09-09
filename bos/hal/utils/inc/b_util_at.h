@@ -52,30 +52,27 @@
  * \defgroup AT_Exported_TypesDefinitions
  * \{
  */
-
-#define _AT_I_NUMBER                    1
-#define _AT_BUF_LEN                     200
-
-
-typedef void (*pAT_TX)(uint8_t *, uint16_t len); 
+typedef void (*pbAT_Send_t)(uint8_t *, uint16_t len); 
  
 typedef struct
 {
     uint8_t stat;
-    uint32_t ctick;
-    pAT_TX AT_TXFunc; 
-    uint8_t buf[_AT_BUF_LEN];
+    uint8_t *pbuf;
     volatile uint8_t r_flag; 
     volatile uint16_t r_len;
+    uint16_t buf_len;
+    uint32_t ctick;
+    pbAT_Send_t f_send; 
 }bAT_Info_t;
 
 typedef struct
 {
-    uint8_t *pResp;
+    uint8_t *pbuf;
     uint16_t len;
-    uint32_t timeout;
-}bAT_ExpectedResp_t;
+}bAT_RecResult_t;
 
+
+typedef bAT_Info_t      bAT_Instance_t;
 /**
  * \}
  */
@@ -95,16 +92,8 @@ typedef struct
  * \defgroup AT_Exported_Macros
  * \{
  */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup AT_Exported_Variables
- * \{
- */
-   
+#define bAT_INSTANCE(name, send_func, _buf_len)          static uint8_t name##buf[_buf_len]; bAT_Instance_t name = {.f_send = send_func,\
+                                                                                                .pbuf = name##buf, .buf_len = _buf_len,}     
 /**
  * \}
  */
@@ -113,9 +102,9 @@ typedef struct
  * \defgroup AT_Exported_Functions
  * \{
  */
-int bAT_Regist(pAT_TX ptx);
-int bAT_Write(int no, bAT_ExpectedResp_t *pe_resp, const char *pcmd, ...);
-int bAT_Read(int no, uint8_t *pbuf, uint16_t size);
+///< pInstance \ref bAT_INSTANCE                                                                                          
+int bAT_Write(bAT_Instance_t *pInstance, uint32_t timeout, bAT_RecResult_t *presult, const char *pcmd, ...);
+int bAT_Read(bAT_Instance_t *pInstance, uint8_t *pbuf, uint16_t size);
 /**
  * \}
  */
