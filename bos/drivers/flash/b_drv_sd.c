@@ -330,77 +330,137 @@ static int _bSD_Init()
     return 0;   
 }
 
-
-//static int _bSD_RxDataBlock(uint8_t *buff, uint16_t len)
-//{
-//	uint8_t token;
-//    uint16_t cnt = 0;
-//    SD_CS_RESET();
-//	do 
-//    {
-//		token = bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
-//        cnt++;
-//	} while((token == 0xFF) && cnt < 200);
-
-//	if(token != 0xFE)
-//    {
-//        SD_CS_SET();
-//        return -1;
-//    }
-//	do 
-//    {
-//		*buff = bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
-//        buff++;
-//	} while(len--);
-//	bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
-//	bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
-//    SD_CS_SET();
-//    _bSD_SendDump(1);
-//	return len;
-//}
+static int _bSD_WaitResponse(uint8_t exp)
+{
+    uint16_t cnt = 0;
+    uint8_t tmp;
+    do
+    {
+        tmp = bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
+        cnt++;
+    }while(tmp != exp && cnt <= 0xfff);
+    if(tmp == exp)
+    {
+        return 0;
+    }
+    return -1;
+}
 
 
-//static int _bSD_TxDataBlock(const uint8_t *buff, uint8_t token)
-//{
-//	uint8_t resp;
-//	uint8_t i = 0;
-
-//	/* wait SD ready */
-//	if (SD_ReadyWait() != 0xFF) return FALSE;
-
-//	/* transmit token */
-//	SPI_TxByte(token);
-
-//	/* if it's not STOP token, transmit data */
-//	if (token != 0xFD)
-//	{
-//		SPI_TxBuffer((uint8_t*)buff, 512);
-
-//		/* discard CRC */
-//		SPI_RxByte();
-//		SPI_RxByte();
-
-//		/* receive response */
-//		while (i <= 64)
-//		{
-//			resp = SPI_RxByte();
-
-//			/* transmit 0x05 accepted */
-//			if ((resp & 0x1F) == 0x05) break;
-//			i++;
-//		}
-
-//		/* recv buffer clear */
-//		while (SPI_RxByte() == 0);
-//	}
-
-//	/* transmit 0x05 accepted */
-//	if ((resp & 0x1F) == 0x05) return TRUE;
-
-//	return FALSE;
-//}
+static int _bSD_ReceiveData(uint8_t *buff, uint16_t len)
+{
+	if(_bSD_WaitResponse(0xfe) < 0)
+    {
+        return -1;
+    }
+	while(len--)
+    {
+		*buff = bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
+        buff++;
+	}
+	bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
+	bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
+	return len;
+}
 
 
+static int _bSD_ReadSingleBlock(uint32_t sector, uint8_t *pbuf)
+{
+    int retval = 0;
+    if(bSD_Driver._private.v != CT_SDHC)
+    {
+        sector = sector << 9; 
+    }
+    SD_CS_RESET();
+    retval = _bSD_SendCmd(CMD17, sector, 0);
+    if(retval != 0)
+    {
+        SD_CS_SET();
+        return -1;
+    }
+    SD_CS_SET();
+    _bSD_SendDump(1);
+    
+    SD_CS_RESET();
+    if(_bSD_ReceiveData(pbuf, 512) < 0)
+    {
+        SD_CS_SET();
+        return -1;
+    }
+    SD_CS_SET();
+    _bSD_SendDump(1);
+    return 512;
+}
+
+
+static int _bSD_WriteSingleBlock(uint32_t sector, uint8_t *pbuf)
+{
+	int retval = 0;
+    uint16_t cnt;
+    if(bSD_Driver._private.v != CT_SDHC)
+    {
+        sector = sector << 9; 
+    }
+    SD_CS_RESET();
+    retval = _bSD_SendCmd(CMD24, sector, 0);
+    if(retval != 0)
+    {
+        SD_CS_SET();
+        return -1;
+    }
+    SD_CS_SET();
+    _bSD_SendDump(1);
+    
+    SD_CS_RESET();
+    _bSD_SendDump(3);
+    bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xfe);
+    bHalSPI_Send(HAL_SD_SPI, pbuf, 512);
+    _bSD_SendDump(2);
+    retval = bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff);
+    if((retval & 0x1f) != 0x05)
+    {
+        SD_CS_SET();
+        return -1;
+    }
+    cnt = 0;
+    while(!bHalSPI_SendReceiveByte(HAL_SD_SPI, 0xff))
+    {
+        cnt++;
+        if(cnt >= 0xfffe)
+        {
+            SD_CS_SET();
+            return -1;
+        }
+    }
+    SD_CS_SET();
+    _bSD_SendDump(1);
+    return 0;
+}
+
+
+//sector:  Sector number to write from
+//count: Number of sectors to write
+static int _bSD_Write(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint16_t count)
+{
+    int i = 0;
+    for(i = 0;i < count;i++)
+    {
+        _bSD_WriteSingleBlock(sector + i, pbuf + i * 512);
+    }
+    return count;
+}
+
+//sector:  Sector number to write from
+//count: Number of sectors to write
+static int _bSD_Read(bSD_Driver_t *pdrv, uint32_t sector, uint8_t *pbuf, uint16_t count)
+{
+    int i = 0;
+    for(i = 0;i < count;i++)
+    {
+        _bSD_ReadSingleBlock(sector + i, pbuf + i * 512);
+    }
+    return count;
+}
 
 
 /**
@@ -418,13 +478,12 @@ int bSD_Init()
         b_log("sd_err\r\n");
         return -1;
     }
-    b_log("sd_ok\r\n");
     bSD_Driver.status = 0;
     bSD_Driver.close = NULL;
-    bSD_Driver.read = NULL;
+    bSD_Driver.read = _bSD_Read;
     bSD_Driver.ctl = NULL;
     bSD_Driver.open = NULL;
-    bSD_Driver.write = NULL;
+    bSD_Driver.write = _bSD_Write;
     return 0;
 }
 

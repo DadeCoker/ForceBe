@@ -79,9 +79,21 @@ static void MX_I2C2_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+#include <string.h>
+uint8_t sector[512] = {"hello world"};
 void TestLog()
 {
-    b_log_i("hello world\r\n");
+    int fd = -1;
+    fd = bOpen(SD, BCORE_FLAG_RW);
+    if(fd >= 0)
+    {   
+        bWrite(fd, sector, 1);
+        memset(sector, 0, 512);
+        bLseek(fd, 0);
+        bRead(fd, sector, 1);
+        bClose(fd);
+        b_log(":%s\r\n", sector);
+    }
 }
 
 void SortTest()
@@ -142,13 +154,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   bInit();
   SortTest();
+  
   while (1)
   {
       bExec();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-      BOS_PERIODIC_TASK(TestLog, 1000);
+      BOS_PERIODIC_TASK(TestLog, 5000);
   }
   /* USER CODE END 3 */
 
