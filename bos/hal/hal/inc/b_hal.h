@@ -79,7 +79,7 @@
 #if HAL_W25X_QSPI_EN
 #define HAL_W25X_IF                     {{B_HAL_QSPI_1},}
 #else
-//#define HAL_W25X_IF                     {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
+#define HAL_W25X_IF                     {{B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}
 #endif
 ///< FM25CL
 //#define HAL_FM25CL_IF                   {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}

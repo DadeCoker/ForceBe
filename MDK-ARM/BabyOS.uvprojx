@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc;  ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;  ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;  ../Drivers/CMSIS/Include;  ..\bos\core\inc\;  ..\bos\drivers\inc\;  ..\bos\hal\hal\inc;  ..\bos\thirdparty\FlexibleButton;  ..\bos\thirdparty\nr_micro_shell\inc;  ..\bos\thirdparty\UGUI;  ..\bos\thirdparty\CmBacktrace;  ..\bos\thirdparty\qpn\inc;  ..\bos\hal\utils\inc;  ..\bos\modules\inc;  ..\bos\config;  ..\bos\algorithm\inc;  ..\Examples\qpn</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn;..\bos\thirdparty\FatFS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -651,6 +651,11 @@
               <FileType>1</FileType>
               <FilePath>..\bos\drivers\flash\b_drv_sd.c</FilePath>
             </File>
+            <File>
+              <FileName>b_drv_w25x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\flash\b_drv_w25x.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -790,6 +795,31 @@
               <FileName>bsp.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Examples\qpn\bsp.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/FatFS</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\FatFS\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\FatFS\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffsystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\FatFS\ffsystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\FatFS\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>

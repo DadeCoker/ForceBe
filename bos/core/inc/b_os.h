@@ -39,11 +39,7 @@
 
 #include "b_core.h"
 #include "b_device.h"
-
-#include "b_hal.h"
-#include "b_utils.h"
 #include "b_modules.h"
-
 #include "algorithm.h"
 /** 
  * \addtogroup BABYOS
