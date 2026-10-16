@@ -42,6 +42,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "b_os.h"
+#include "ff.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -80,20 +81,10 @@ static void MX_I2C2_Init(void);
 
 /* USER CODE BEGIN 0 */
 #include <string.h>
-uint8_t sector[512] = {"hello world"};
+
 void TestLog()
 {
-    int fd = -1;
-    fd = bOpen(SD, BCORE_FLAG_RW);
-    if(fd >= 0)
-    {   
-        bWrite(fd, sector, 1);
-        memset(sector, 0, 512);
-        bLseek(fd, 0);
-        bRead(fd, sector, 1);
-        bClose(fd);
-        b_log(":%s\r\n", sector);
-    }
+    b_log_w("hello world\r\n");
 }
 
 void SortTest()
@@ -154,7 +145,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   bInit();
   SortTest();
-  
   while (1)
   {
       bExec();

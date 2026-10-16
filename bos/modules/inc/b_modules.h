@@ -57,6 +57,7 @@
 #include "b_mod_qpn.h"
 #include "b_mod_timer.h"
 #include "b_mod_param.h"
+#include "b_mod_fs.h"
 
 #ifdef __cplusplus
 	}

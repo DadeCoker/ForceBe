@@ -11,10 +11,6 @@
 #include "diskio.h"		/* Declarations of disk functions */
 #include "b_os.h"
 /* Definitions of physical drive number for each drive */
-#define DEV_SPIFLASH		0	/* Map SPIFLASH to physical drive 0 */
-#define DEV_SDCARD          1	/* Map MMC/SD card to physical drive 1 */
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -24,6 +20,7 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
+#if _FS_ENABLE    
 	DSTATUS stat = RES_OK;
 	switch (pdrv) {
 	case DEV_SPIFLASH :
@@ -32,6 +29,7 @@ DSTATUS disk_status (
 	case DEV_SDCARD :
 		return stat;
 	}
+#endif    
 	return STA_NOINIT;
 }
 
@@ -61,6 +59,7 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
+#if _FS_ENABLE    
     UINT i = 0;
 	DRESULT res = RES_OK;
     int fd = -1;
@@ -106,7 +105,7 @@ DRESULT disk_read (
 
 		return res;
 	}
-
+#endif
 	return RES_PARERR;
 }
 
@@ -125,6 +124,7 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
+#if _FS_ENABLE      
 	UINT i = 0;
     bCMD_Erase_t cmd_erase;
 	DRESULT res = RES_OK;
@@ -174,7 +174,7 @@ DRESULT disk_write (
 
 		return res;
 	}
-
+#endif
 	return RES_PARERR;
 }
 
@@ -191,13 +191,14 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
+#if _FS_ENABLE      
 	DRESULT res = RES_OK;
 	switch (pdrv) {
 	case DEV_SPIFLASH :
         switch(cmd)
         {
             case GET_SECTOR_COUNT:
-                ((LBA_t *)buff)[0] = 2000;
+                ((LBA_t *)buff)[0] = _SPIFLASH_SIZE * 1024 * 1024 / 4096;
                 break;
             case GET_SECTOR_SIZE:
                 ((WORD *)buff)[0] = 4096;
@@ -214,20 +215,20 @@ DRESULT disk_ioctl (
         switch(cmd)
         {
             case GET_SECTOR_COUNT:
-                ((LBA_t *)buff)[0] = 65536;
+                ((LBA_t *)buff)[0] = _SD_SIZE * 1024 * 1024 / 512 * 1024;
                 break;
             case GET_SECTOR_SIZE:
                 ((WORD *)buff)[0] = 512;
                 break;
             case GET_BLOCK_SIZE:
-                ((WORD *)buff)[0] = 1;
+                ((WORD *)buff)[0] = 8;
                 break;
         }
 		// Process of the command for the MMC/SD card
 
 		return res;
 	}
-
+#endif
 	return RES_PARERR;
 }
 

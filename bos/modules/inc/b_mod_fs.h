@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_device_list.h
+ * \file        b_mod_fs.h
  * \version     v0.0.1
- * \date        2019/06/05
+ * \date        2020/06/02
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -28,36 +28,90 @@
  * SOFTWARE.
  *******************************************************************************
  */
+#ifndef __B_MOD_FS_H__
+#define __B_MOD_FS_H__
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
-
-/**
-           for example !
-
-/////B_DEVICE_REG(dev, driver_interface, desc);           
+/*Includes ----------------------------------------------*/
+#include "b_config.h"  
+#if _FS_ENABLE
+#include "ff.h"
+/** 
+ * \addtogroup BABYOS
+ * \{
  */
 
-//B_DEVICE_REG(SSD1289, bSSD1289_Driver, "LCD")
-//B_DEVICE_REG(XPT2046, bXPT2046_Driver, "TOUCH")
-//B_DEVICE_REG(SPIFLASH, bW25X_Driver[0], "flash")
-//B_DEVICE_REG(_24C02, b24CXX_Driver[0], "24c02")
-//B_DEVICE_REG(SD, bSD_Driver, "sd card")
+/** 
+ * \addtogroup MODULES
+ * \{
+ */
 
+/** 
+ * \addtogroup FS
+ * \{
+ */
 
+/** 
+ * \defgroup FS_Exported_TypesDefinitions
+ * \{
+ */
+typedef enum
+{
+#if _SPIFLASH_ENABLE    
+    E_DEV_SPIFLASH,           /* Map SPIFLASH to physical drive*/
+#endif
+#if _SD_ENABLE    
+    E_DEV_SDCARD,             /* Map MMC/SD card to physical drive*/
+#endif
+    E_DEV_NUMBER,
+}FS_DEV_Enum_t;
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup FS_Exported_Defines
+ * \{
+ */
+#define DEV_SPIFLASH        0   /* Map SPIFLASH to physical drive 0*/
+#define DEV_SDCARD          1   /* Map SPIFLASH to physical drive 1*/
 
+/**
+ * \}
+ */
+   
+   
+/** 
+ * \defgroup FS_Exported_Functions
+ * \{
+ */
+int bFS_Init(void);
+/**
+ * \}
+ */
+ 
+/**
+ * \}
+ */ 
 
+/**
+ * \}
+ */
 
-//If there is no device to register, uncomment the null device
-B_DEVICE_REG(null, bNullDriver, "null")
+/**
+ * \}
+ */
 
+#endif
 
+#ifdef __cplusplus
+	}
+#endif
+ 
+#endif  
 
-#undef B_DEVICE_REG
-
-
-
-/************************ Copyright (c) 2019 Bean *****END OF FILE****/
-
-
-
+/************************ Copyright (c) 2020 Bean *****END OF FILE****/
 

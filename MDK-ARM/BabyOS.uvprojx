@@ -641,22 +641,15 @@
               <FileType>1</FileType>
               <FilePath>..\bos\modules\b_mod_param.c</FilePath>
             </File>
+            <File>
+              <FileName>b_mod_fs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\modules\b_mod_fs.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
-          <Files>
-            <File>
-              <FileName>b_drv_sd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\flash\b_drv_sd.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_drv_w25x.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\drivers\flash\b_drv_w25x.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal/hal</GroupName>
@@ -675,11 +668,6 @@
               <FileName>b_hal_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>b_hal_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\bos\hal\hal\b_hal_spi.c</FilePath>
             </File>
           </Files>
         </Group>
