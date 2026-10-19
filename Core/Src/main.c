@@ -42,7 +42,6 @@
 
 /* USER CODE BEGIN Includes */
 #include "b_os.h"
-#include "ff.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -80,8 +79,6 @@ static void MX_I2C2_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-#include <string.h>
-
 void TestLog()
 {
     b_log_w("hello world\r\n");
