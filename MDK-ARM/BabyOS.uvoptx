@@ -148,24 +148,7 @@
           <Name>-U5&amp;27CCEFDF&amp;0&amp;2 -O2254 -SF4000 -C0 -A0 -I0 -HNlocalhost -HP7184 -P2 -N00("ARM CoreSight SW-DP") -D00(1BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_512.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F103ZE$Flash\STM32F10x_512.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>3656</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134239240</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\bos\thirdparty\FatFS\ff.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\BabyOS\../bos/thirdparty/FatFS/ff.c\3656</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -1265,7 +1248,7 @@
   </Group>
 
   <Group>
-    <GroupName>BOS/Algorithm</GroupName>
+    <GroupName>BOS/ThirdParty/littlefs</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -1277,14 +1260,46 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\bos\algorithm\algo_base64.c</PathWithFileName>
-      <FilenameWithoutPath>algo_base64.c</FilenameWithoutPath>
+      <PathWithFileName>..\bos\thirdparty\littlefs\lfs.c</PathWithFileName>
+      <FilenameWithoutPath>lfs.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>17</GroupNumber>
       <FileNumber>73</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\bos\thirdparty\littlefs\lfs_util.c</PathWithFileName>
+      <FilenameWithoutPath>lfs_util.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>BOS/Algorithm</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>18</GroupNumber>
+      <FileNumber>74</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\bos\algorithm\algo_base64.c</PathWithFileName>
+      <FilenameWithoutPath>algo_base64.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>18</GroupNumber>
+      <FileNumber>75</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1298,13 +1313,13 @@
 
   <Group>
     <GroupName>BOS/Config</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>18</GroupNumber>
-      <FileNumber>74</FileNumber>
+      <GroupNumber>19</GroupNumber>
+      <FileNumber>76</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1315,8 +1330,8 @@
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>18</GroupNumber>
-      <FileNumber>75</FileNumber>
+      <GroupNumber>19</GroupNumber>
+      <FileNumber>77</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

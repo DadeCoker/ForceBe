@@ -79,7 +79,15 @@
  * \defgroup FS_Private_Variables
  * \{
  */
+#if _FS_SELECT == 0 
 static FATFS    bFATFS_Table[E_DEV_NUMBER];
+#endif
+
+
+#if _FS_SELECT == 1 
+lfs_t lfs;
+#endif
+
 /**
  * \}
  */
@@ -97,7 +105,71 @@ static FATFS    bFATFS_Table[E_DEV_NUMBER];
  * \defgroup FS_Private_Functions
  * \{
  */
-   
+#if _FS_SELECT == 1
+#include "b_core.h"
+#include "b_device.h"
+
+static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size)
+{
+    int fd = -1;
+    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    if(fd >= 0)
+    {
+        bLseek(fd, block * 4096 + off);
+        bRead(fd, buffer, size);
+        bClose(fd);
+    }
+    else
+    {
+        return LFS_ERR_CORRUPT;
+    }
+    return LFS_ERR_OK;
+}
+
+
+int _bFS_DeviceWrite(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size)
+{
+    int fd = -1;
+    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    if(fd >= 0)
+    {
+        bLseek(fd, block * 4096 + off);
+        bWrite(fd, (uint8_t *)buffer, size);
+        bClose(fd);
+    }
+    else
+    {
+        return LFS_ERR_CORRUPT;
+    }
+    return LFS_ERR_OK;
+}
+
+
+int _bFS_DeviceErase(const struct lfs_config *c, lfs_block_t block)
+{
+    int fd = -1;
+    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+    if(fd >= 0)
+    {
+        bCMD_Erase_t cmd;
+        cmd.addr = block * 4096;
+        cmd.num = 1;
+        bCtl(fd, bCMD_ERASE_SECTOR, &cmd);
+        bClose(fd);
+    }
+    else
+    {
+        return LFS_ERR_CORRUPT;
+    }
+    return LFS_ERR_OK;
+}
+
+int _bFS_DeviceSync(const struct lfs_config *c)
+{
+    return LFS_ERR_OK;
+}
+
+#endif
 /**
  * \}
  */
@@ -106,6 +178,7 @@ static FATFS    bFATFS_Table[E_DEV_NUMBER];
  * \addtogroup FS_Exported_Functions
  * \{
  */
+#if _FS_SELECT == 0  
 uint8_t bFileSystemWorkBuf[FF_MAX_SS];
 int bFS_Init()
 {
@@ -158,6 +231,59 @@ int bFS_Init()
 #endif
     return 0;
 }
+
+#endif
+
+
+#if (_FS_SELECT == 1)
+// configuration of the filesystem is provided by this struct
+const struct lfs_config cfg = {
+    // block device operations
+    .read  = _bFS_DeviceRead,
+    .prog  = _bFS_DeviceWrite,
+    .erase = _bFS_DeviceErase,
+    .sync  = _bFS_DeviceSync,
+
+    // block device configuration
+    .read_size = 16,
+    .prog_size = 16,
+    .block_size = 4096,
+    .block_count = _SPIFLASH_SIZE * 1024 * 1024 / 4096,
+    .cache_size = 16,
+    .lookahead_size = 16,
+    .block_cycles = 500,
+};
+
+int bFS_Init()
+{
+    // mount the filesystem
+    int err = lfs_mount(&lfs, &cfg);
+    b_log("mount:%d\r\n", err);
+    // reformat if we can't mount the filesystem
+    // this should only happen on the first boot
+    if (err) 
+    {
+        lfs_format(&lfs, &cfg);
+        lfs_mount(&lfs, &cfg);
+    }
+    return 0;
+}
+
+
+
+
+
+#endif
+
+
+
+
+
+
+
+
+
+
 
 /**
  * \}

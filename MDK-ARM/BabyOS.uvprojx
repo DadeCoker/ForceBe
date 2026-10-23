@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn;..\bos\thirdparty\FatFS</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn;..\bos\thirdparty\FatFS;..\bos\thirdparty\littlefs</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -808,6 +808,21 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\thirdparty\FatFS\ffunicode.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/littlefs</GroupName>
+          <Files>
+            <File>
+              <FileName>lfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\littlefs\lfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfs_util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\littlefs\lfs_util.c</FilePath>
             </File>
           </Files>
         </Group>

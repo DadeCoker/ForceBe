@@ -273,6 +273,11 @@
 //<e> FS Enable/Disable
 #define _FS_ENABLE                          0
 
+//<o> FatFS or LittleFS
+//<0=> FatFS
+//<1=> LittleFS
+#define _FS_SELECT                          0
+
 //<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
 #define _SPIFLASH_ENABLE                    1  
 //<o> SPI Flash x(MB)
@@ -280,7 +285,7 @@
 //</e>
 
 //<e> SD Card Enable/Disable (Device No:SD)
-#define _SD_ENABLE                          1  
+#define _SD_ENABLE                          0  
 //<o> SD Card x(G)
 #define _SD_SIZE                            32                                             
 //</e>

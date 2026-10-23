@@ -20,7 +20,7 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-#if _FS_ENABLE    
+#if _FS_ENABLE && (_FS_SELECT == 0)     
 	DSTATUS stat = RES_OK;
 	switch (pdrv) {
 	case DEV_SPIFLASH :
@@ -59,11 +59,12 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-#if _FS_ENABLE    
+#if _FS_ENABLE && (_FS_SELECT == 0)    
     UINT i = 0;
 	DRESULT res = RES_OK;
     int fd = -1;
 	switch (pdrv) {
+#if _SPIFLASH_ENABLE        
 	case DEV_SPIFLASH :
 		// translate the arguments here
 
@@ -85,7 +86,10 @@ DRESULT disk_read (
 		// translate the reslut code here
 
 		return res;
-
+#endif        
+        
+        
+#if _SD_ENABLE
 	case DEV_SDCARD :
 		// translate the arguments here
 
@@ -104,6 +108,7 @@ DRESULT disk_read (
 		// translate the reslut code here
 
 		return res;
+#endif        
 	}
 #endif
 	return RES_PARERR;
@@ -124,12 +129,13 @@ DRESULT disk_write (
 	UINT count			/* Number of sectors to write */
 )
 {
-#if _FS_ENABLE      
+#if _FS_ENABLE && (_FS_SELECT == 0)      
 	UINT i = 0;
     bCMD_Erase_t cmd_erase;
 	DRESULT res = RES_OK;
     int fd = -1;
 	switch (pdrv) {
+#if _SPIFLASH_ENABLE         
 	case DEV_SPIFLASH :
 		// translate the arguments here
         
@@ -154,7 +160,9 @@ DRESULT disk_write (
 		// translate the reslut code here
 
 		return res;
-
+#endif        
+        
+#if _SD_ENABLE
 	case DEV_SDCARD :
 		// translate the arguments here
 
@@ -173,6 +181,7 @@ DRESULT disk_write (
 		// translate the reslut code here
 
 		return res;
+#endif        
 	}
 #endif
 	return RES_PARERR;
