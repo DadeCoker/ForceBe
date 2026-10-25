@@ -142,6 +142,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   bInit();
   SortTest();
+  bFS_Init();
   while (1)
   {
       bExec();

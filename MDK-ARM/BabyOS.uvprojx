@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn;..\bos\thirdparty\FatFS;..\bos\thirdparty\littlefs</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\bos\core\inc\;..\bos\drivers\inc\;..\bos\hal\hal\inc;..\bos\thirdparty\FlexibleButton;..\bos\thirdparty\nr_micro_shell\inc;..\bos\thirdparty\UGUI;..\bos\thirdparty\CmBacktrace;..\bos\thirdparty\qpn\inc;..\bos\hal\utils\inc;..\bos\modules\inc;..\bos\config;..\bos\algorithm\inc;..\Examples\qpn;..\bos\thirdparty\FatFS;..\bos\thirdparty\littlefs;..\bos\thirdparty\SFUD\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -650,6 +650,13 @@
         </Group>
         <Group>
           <GroupName>BOS/Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>b_drv_spiflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\drivers\flash\b_drv_spiflash.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>BOS/Hal/hal</GroupName>
@@ -668,6 +675,16 @@
               <FileName>b_hal_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\hal\hal\b_hal_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_qspi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\b_hal_qspi.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\hal\hal\b_hal_spi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -823,6 +840,21 @@
               <FileName>lfs_util.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bos\thirdparty\littlefs\lfs_util.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BOS/ThirdParty/SFUD</GroupName>
+          <Files>
+            <File>
+              <FileName>sfud.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\SFUD\sfud.c</FilePath>
+            </File>
+            <File>
+              <FileName>sfud_sfdp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bos\thirdparty\SFUD\sfud_sfdp.c</FilePath>
             </File>
           </Files>
         </Group>

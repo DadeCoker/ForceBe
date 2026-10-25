@@ -156,7 +156,7 @@ uint8_t bHalGPIO_ReadPin(bHalGPIOPort_t port, bHalGPIOPin_t pin)
 
 void bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat)
 {
-    if(port == B_HAL_GPIO_NULL)
+    if(port == B_HAL_GPIO_INVALID)
     {
         return;
     }
@@ -165,7 +165,7 @@ void bHalGPIO_Write(bHalGPIOPort_t port, uint16_t dat)
 
 uint16_t bHalGPIO_Read(bHalGPIOPort_t port)
 {
-    if(port == B_HAL_GPIO_NULL)
+    if(port == B_HAL_GPIO_INVALID)
     {
         return 0;
     }

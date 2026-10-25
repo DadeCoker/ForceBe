@@ -62,7 +62,7 @@ typedef enum
     B_HAL_GPIOE,
     B_HAL_GPIOF,
     B_HAL_GPIOG,
-    B_HAL_GPIO_NULL,   
+    B_HAL_GPIO_INVALID,   
 }bHalGPIOPort_t;
 
 typedef enum
@@ -84,7 +84,7 @@ typedef enum
     B_HAL_PIN14,
     B_HAL_PIN15,
     B_HAL_PINAll, 
-    B_HAL_PIN_NULL,    
+    B_HAL_PIN_INVALID,    
 }bHalGPIOPin_t;  
 
 
@@ -130,9 +130,9 @@ typedef struct bHalGPIO_EXTI_Struct
  * \{
  */
  
-#define B_HAL_GPIO_ISVALID(port, pin)       (port != B_HAL_GPIO_NULL && pin != B_HAL_PIN_NULL)
+#define B_HAL_GPIO_ISVALID(port, pin)       (port != B_HAL_GPIO_INVALID && pin != B_HAL_PIN_INVALID)
 
-#define bHAL_REG_GPIO_EXTI(_pin, _handler)    bSECTION_ITEM_REGISTER_FLASH(b_hal_gpio, bHalGPIO_EXTI_t, CONCAT_2(exti, pin)) = {\
+#define bHAL_REG_GPIO_EXTI(_pin, _handler)  bSECTION_ITEM_REGISTER_FLASH(b_hal_gpio, bHalGPIO_EXTI_t, CONCAT_2(exti, pin)) = {\
                                                                                 .pin = _pin, .handler = _handler}
 /**
  * \}

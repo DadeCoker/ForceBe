@@ -56,6 +56,7 @@
 typedef enum
 {
     B_HAL_QSPI_1,
+    B_HAL_QSPI_INVALID,
 }bHalQSPINumber_t; 
 /**
  * \}

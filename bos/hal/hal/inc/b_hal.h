@@ -74,17 +74,18 @@
 //
 //                               Flash  
 //
-///< W25X
-#define HAL_W25X_QSPI_EN                0
-#if HAL_W25X_QSPI_EN
-#define HAL_W25X_IF                     {{B_HAL_QSPI_1},}
-#else
-//#define HAL_W25X_IF                     {{B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}
-#endif
+///< SPIFLASH
+#define HAL_SPIFLASH_QSPI_EN            0
+#define HAL_SPIFLASH_TOTAL_NUMBER       1
+//{{qspi, spi, {cs_port, cs_pin}},}  
+#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_2, {B_HAL_GPIOB, B_HAL_PIN12}},}
+
 ///< FM25CL
 //#define HAL_FM25CL_IF                   {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
+
 ///< 24cxx
 //#define HAL_24CXX_IF                    {{B_HAL_I2C_1, 0xa0},}
+
 ///< SD
 //#define HAL_SD_SPI                      B_HAL_SPI_2
 //#define HAL_SD_CS_PORT                  B_HAL_GPIOD
@@ -167,7 +168,7 @@
  * \{
  */
 extern UART_HandleTypeDef huart1;
-
+extern SPI_HandleTypeDef hspi2;
 /**
  * \}
  */

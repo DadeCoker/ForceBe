@@ -59,6 +59,7 @@ typedef enum
     B_HAL_SPI_2,
     B_HAL_SPI_3,
     B_HAL_SPI_4,
+    B_HAL_SPI_INVALID,
 }bHalSPINumber_t; 
 /**
  * \}

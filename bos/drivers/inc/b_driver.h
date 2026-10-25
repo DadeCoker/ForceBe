@@ -109,7 +109,7 @@ typedef int (*pbDriverInit_t)(void);
 //
 //                  Flash
 //
-extern bDriverInterface_t   bW25X_Driver[];
+extern bDriverInterface_t   bSPIFLASH_Driver[];
 extern bDriverInterface_t   bFM25CL_Driver[];
 extern bDriverInterface_t   b24CXX_Driver[];
 extern bDriverInterface_t   bSD_Driver;

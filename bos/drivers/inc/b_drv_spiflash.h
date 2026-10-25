@@ -1,6 +1,6 @@
 /**
  *!
- * \file        b_drv_w25x.h
+ * \file        b_drv_spiflash.h
  * \version     v0.0.2
  * \date        2020/05/08
  * \author      Bean(notrynohigh@outlook.com)
@@ -28,8 +28,8 @@
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_DRV_W25X_H__
-#define __B_DRV_W25X_H__
+#ifndef __B_DRV_SPIFLASH_H__
+#define __B_DRV_SPIFLASH_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -50,93 +50,44 @@
  */
 
 /** 
- * \addtogroup W25X
+ * \addtogroup SPIFLASH
  * \{
  */
 
 /** 
- * \defgroup W25X_Exported_TypesDefinitions
+ * \defgroup SPIFLASH_Exported_TypesDefinitions
  * \{
  */
-
-#if HAL_W25X_QSPI_EN
 typedef struct
 {
     bHalQSPINumber_t qspi;
-}bW25X_HalIf_t;
-#else
-typedef struct
-{
     bHalSPINumber_t spi;
     bHalGPIOInstance_t cs;
-}bW25X_HalIf_t;
-#endif
+}bSPIFLASH_HalIf_t;
 
 
-typedef bDriverInterface_t bW25X_Driver_t;  
 
-/**
- * \}
- */
-   
-/** 
- * \defgroup W25X_Exported_Defines
- * \{
- */
-#define W25X_PAGE_SIZE 			      0X100		
-#define W25X_SECTOR_SIZE 			  ((uint32_t)0X1000)	
-
-#define W25X_WRITEENABLE		      0X06		
-#define W25X_WRITEDISABLE		      0X04		
-#define W25X_READSTATUSREG		      0X05		
-#define W25X_WRITESTATUSREG		      0X01	
-#define W25X_READDATA			      0X03		
-#define W25X_FASTREADDATA		      0X0B		
-#define W25X_FASTREADDUAL		      0X3B		 
-#define W25X_PAGEPROGRAM		      0X02		
-#define W25X_BLOCKERASE			      0XD8	
-#define W25X_SECTORERASE		      0X20		
-#define W25X_CHIPERASE			      0XC7		
-#define W25X_POWERDOWN			      0XB9		
-#define W25X_RELEASEPOWERDOWN		  0XAB		
-#define W25X_DEVICEID			      0XAB		
-#define W25X_MANUFACTDEVICEID		  0X90		
-#define W25X_JEDECDEVICEID		      0X9F 
-#define W25X_READUNIQUEID			  0X4B		
-
-#define W25X_RESETENABLE              0X66
-#define W25X_RESETCMD                 0X99
-#define WIP_FLAG					  0X01		
-#define WEL_FLAG					  0X02     
-#define DUMMY_BYTE				      0XFF	
-#define W25X_Enable4ByteAddr          0xB7
-
-#define W25X_ReadStatusReg1		      0x05 
-#define W25X_ReadStatusReg2		      0x35 
-#define W25X_ReadStatusReg3		      0x15 
-
-
-#define WinbondID		              0xEF
-
-#define W25Q80 	        ((uint16_t)0X0013) 	
-#define W25Q16 	        ((uint16_t)0X0014) 
-#define W25Q32 	        ((uint16_t)0X0015) 
-#define W25Q64 	        ((uint16_t)0X0016) 
-#define W25Q128	        ((uint16_t)0X0017)
-#define W25Q256         ((uint16_t)0X0018)
+typedef bDriverInterface_t bSPIFLASH_Driver_t;  
 
 /**
  * \}
  */
    
 /** 
- * \defgroup W25X_Exported_Macros
+ * \defgroup SPIFLASH_Exported_Defines
  * \{
  */
 
 
-#define bW25X_ID_IS_VALID(n)    (n == W25Q80 || n == W25Q16 || n == W25Q32 || \
-                                 n == W25Q64 || n == W25Q128 || n == W25Q256)
+/**
+ * \}
+ */
+   
+/** 
+ * \defgroup SPIFLASH_Exported_Macros
+ * \{
+ */
+
 
 /**
  * \}

@@ -129,7 +129,7 @@
 //</e>
 
 //<q> KV Enable/Disable
-#define _KV_ENABLE             	    0
+#define _KV_ENABLE             	    1
 
 //<q> FIFO Enable/Disable
 #define _FIFO_ENABLE             	0
@@ -271,7 +271,7 @@
 //</e>
 
 //<e> FS Enable/Disable
-#define _FS_ENABLE                          0
+#define _FS_ENABLE                          1
 
 //<o> FatFS or LittleFS
 //<0=> FatFS
