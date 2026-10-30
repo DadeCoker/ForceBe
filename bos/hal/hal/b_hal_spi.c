@@ -120,7 +120,9 @@ int bHalSPI_SetSpeed(bHalSPINumber_t spi, uint32_t clk_hz)
 
             break;        
         case B_HAL_SPI_2:
-
+            while(hspi2.Instance->SR & 0x80);
+            hspi2.Instance->CR1 &= ~(0x7 << 3);
+            hspi2.Instance->CR1 |= (div - 1) << 3;
             break;
         case B_HAL_SPI_3:
 
@@ -141,7 +143,7 @@ uint8_t bHalSPI_SendReceiveByte(bHalSPINumber_t spi, uint8_t dat)
 
             break;        
         case B_HAL_SPI_2:
-
+            HAL_SPI_TransmitReceive(&hspi2, &dat, &tmp, 1, 0xfff);
             break;
         case B_HAL_SPI_3:
 

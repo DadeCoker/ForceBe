@@ -62,7 +62,9 @@
  * \defgroup SPIFLASH_Private_Defines
  * \{
  */
-
+#ifndef SFUD_USING_SFDP
+#err "please add bos/thirdparty/SFUD"
+#endif
 /**
  * \}
  */
@@ -184,13 +186,37 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
 /*********************************************************************************driver interface******/
 static int _bSPIFLASH_Open(bSPIFLASH_Driver_t *pdrv)
 {   
- 
+    bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
+    uint8_t cmd = 0xab;
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    if(_if->qspi != B_HAL_QSPI_INVALID)
+    {
+    
+    }
+    else
+    {
+        bHalSPI_Send(_if->spi, &cmd, 1);
+    }
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
+    bUtilDelayUS(10);
     return 0;
 }
 
 static int _bSPIFLASH_Close(bSPIFLASH_Driver_t *pdrv)
 {   
-   
+    bDRV_GET_HALIF(_if, bSPIFLASH_HalIf_t, pdrv);
+    uint8_t cmd = 0xb9;
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 0);
+    if(_if->qspi != B_HAL_QSPI_INVALID)
+    {
+    
+    }
+    else
+    {
+        bHalSPI_Send(_if->spi, &cmd, 1);
+    }
+    bHalGPIO_WritePin(_if->cs.port, _if->cs.pin, 1);
+    bUtilDelayUS(10);
     return 0;
 }
 
@@ -248,7 +274,7 @@ static int _bSPIFLASH_Ctl(bSPIFLASH_Driver_t *pdrv, uint8_t cmd, void * param)
 int bSPIFLASH_Init()
 {
     size_t i = 0, number = sizeof(bSPIFLASH_HalIfTable) / sizeof(bSPIFLASH_HalIf_t);
-    
+    int retval = 0;
     for(i = 0;i < number;i++)
     {
         sprintf(bSPIFlashName[i], "%03d", i);
@@ -263,7 +289,11 @@ int bSPIFLASH_Init()
         bSPIFLASH_Driver[i].write = _bSPIFLASH_WriteBuf;
         bSPIFLASH_Driver[i].status = 0;
         bSPIFLASH_Driver[i]._private._p = &flash_table[i];
-
+    }
+    
+    for(i = 0;i < number;i++)
+    {
+        _bSPIFLASH_Open(&bSPIFLASH_Driver[i]);    //wakeup flash
     }
     
     if(sfud_init() != SFUD_SUCCESS)
@@ -272,9 +302,15 @@ int bSPIFLASH_Init()
         {
             bSPIFLASH_Driver[i].status = -1;
         }
-        return -1;
+        retval = -1;
     }
-    return 0;
+    
+    for(i = 0;i < number;i++)
+    {
+        _bSPIFLASH_Close(&bSPIFLASH_Driver[i]);    //powerdown flash
+    }   
+    
+    return retval;
 }
 
 

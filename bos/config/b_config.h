@@ -129,7 +129,7 @@
 //</e>
 
 //<q> KV Enable/Disable
-#define _KV_ENABLE             	    1
+#define _KV_ENABLE             	    0
 
 //<q> FIFO Enable/Disable
 #define _FIFO_ENABLE             	0
@@ -276,7 +276,7 @@
 //<o> FatFS or LittleFS
 //<0=> FatFS
 //<1=> LittleFS
-#define _FS_SELECT                          0
+#define _FS_SELECT                          1
 
 //<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
 #define _SPIFLASH_ENABLE                    1  

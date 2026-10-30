@@ -96,6 +96,11 @@ typedef enum
  * \defgroup FS_Exported_Functions
  * \{
  */
+
+#if _FS_SELECT == 1 
+extern lfs_t bLittleFS;
+#endif
+
 int bFS_Init(void);
 /**
  * \}

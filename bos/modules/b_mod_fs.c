@@ -85,7 +85,7 @@ static FATFS    bFATFS_Table[E_DEV_NUMBER];
 
 
 #if _FS_SELECT == 1 
-lfs_t lfs;
+lfs_t bLittleFS;
 #endif
 
 /**
@@ -257,14 +257,14 @@ const struct lfs_config cfg = {
 int bFS_Init()
 {
     // mount the filesystem
-    int err = lfs_mount(&lfs, &cfg);
+    int err = lfs_mount(&bLittleFS, &cfg);
     b_log("mount:%d\r\n", err);
     // reformat if we can't mount the filesystem
     // this should only happen on the first boot
     if (err) 
     {
-        lfs_format(&lfs, &cfg);
-        lfs_mount(&lfs, &cfg);
+        lfs_format(&bLittleFS, &cfg);
+        lfs_mount(&bLittleFS, &cfg);
     }
     return 0;
 }
