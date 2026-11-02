@@ -115,7 +115,8 @@ b_device_list.h，在里面添加使用的外设。例如项目只需要使用SP
 
 ```c
 //           设备        驱动          描述
-B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
+B_DEVICE_REG(SPIFLASH, bSPIFLASH_Driver[0], "flash")
+//B_DEVICE_REG(SD, bSD_Driver, "sd card")
 //如果没有注册任何设备，取消B_DEVICE_REG(null, bNullDriver, "null")的注释    
 //B_DEVICE_REG(null, bNullDriver, "null")   
 ```
@@ -129,7 +130,9 @@ B_DEVICE_REG(W25QXX, bW25X_Driver, "flash")
 b_hal.h中取消如下部分的注释，并根据实际连接图修改GPIO和SPI号
 
 ```C
-//#define HAL_W25X_IF                     {{B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN9}},}
+#define HAL_SPIFLASH_QSPI_EN            0
+#define HAL_SPIFLASH_TOTAL_NUMBER       1 
+#define HAL_SPIFLASH_IF                 {{B_HAL_QSPI_INVALID, B_HAL_SPI_1, {B_HAL_GPIOB, B_HAL_PIN12}},}    ////{{qspi, spi, {cs_port, cs_pin}},} 
 ```
 
 修改硬件抽象层b_hal_spi.c内SPI的操作（依赖硬件平台，使用STM32 HAL库为例）
@@ -191,8 +194,8 @@ int main()
     //......     
     bInit();    //初始化，外设的初始化会在此处调用
     
-    //下面举例使用：W25QXX和KV存储功能模块,其中W25QXX已经添加到b_device_list.h
-    if(0 == bKV_Init(W25QXX, 0xA000, 4096 * 4, 4096)) //初始化KV存储，指定存储设备W25QXX
+    //下面举例使用：SPIFLASH和KV存储功能模块,其中SPIFLASH已经添加到b_device_list.h
+    if(0 == bKV_Init(SPIFLASH, 0xA000, 4096 * 4, 4096)) //初始化KV存储，指定存储设备SPIFLASH
     {
         b_log("bKV_Init ok...\r\n");
     }
@@ -215,10 +218,10 @@ int main()
 如果不使用功能模块，单独对设备进行操作，使用如下方式进行：
 
 ```c
-//举例使用W25QXX读取数据，从0地址读取128个字节数据至buf
+//举例使用SPIFLASH读取数据，从0地址读取128个字节数据至buf
 {
     int fd = -1;
-    fd = bOpen(W25QXX, BCORE_FLAG_RW);
+    fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
     if(fd == -1)
     {
         return;
