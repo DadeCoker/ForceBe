@@ -271,7 +271,7 @@
 //</e>
 
 //<e> FS Enable/Disable
-#define _FS_ENABLE                          1
+#define _FS_ENABLE                          0
 
 //<o> FatFS or LittleFS
 //<0=> FatFS

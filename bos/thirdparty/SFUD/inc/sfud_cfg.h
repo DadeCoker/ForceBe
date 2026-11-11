@@ -41,6 +41,10 @@
 #define SFUD_USING_QSPI
 #endif
 
+#ifdef HAL_SPIFLASH_TOTAL_NUMBER
 #define SFUD_USING_FALSH_NUMBER         HAL_SPIFLASH_TOTAL_NUMBER
+#else
+#define SFUD_USING_FALSH_NUMBER         1
+#endif
 
 #endif /* _SFUD_CFG_H_ */

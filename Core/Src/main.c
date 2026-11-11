@@ -106,7 +106,7 @@ void SortTest()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  lfs_file_t file;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -142,29 +142,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   bInit();
   SortTest();
-  bFS_Init();
-  
-  //<<<  Test LittleFS  (SPIFLASH + LittleFS)
-  // read current count
-  uint32_t boot_count = 0;
-  lfs_file_open(&bLittleFS, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
-  lfs_file_read(&bLittleFS, &file, &boot_count, sizeof(boot_count));
-
-  // update boot count
-  boot_count += 1; 
-  lfs_file_rewind(&bLittleFS, &file);
-  lfs_file_write(&bLittleFS, &file, &boot_count, sizeof(boot_count));
-
-  // remember the storage is not updated until the file is closed successfully
-  lfs_file_close(&bLittleFS, &file);
-
-  // release any resources we were using
-  lfs_unmount(&bLittleFS);
-
-  // print the boot count
-  b_log("boot_count: %d\n", boot_count);
-  
-  
   while (1)
   {
       bExec();
