@@ -60,54 +60,62 @@ DRESULT disk_read (
 )
 {
 #if _FS_ENABLE && (_FS_SELECT == 0)    
-    UINT i = 0;
 	DRESULT res = RES_OK;
     int fd = -1;
 	switch (pdrv) {
 #if _SPIFLASH_ENABLE        
 	case DEV_SPIFLASH :
-		// translate the arguments here
-
-		fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-        if(fd >= 0)
         {
-            bLseek(fd, sector * 4096);
-            for(i = 0;i < count;i++)
+            // translate the arguments here
+            uint32_t e_size = 0;
+            fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            if(fd >= 0)
             {
-                bRead(fd, buff + i * 4096, 4096);
+                if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+                {
+                    bLseek(fd, sector * e_size);
+                    bRead(fd, buff, count * e_size);
+                }
+                else
+                {
+                    res = RES_ERROR;
+                }
+                bClose(fd);
             }
-            bClose(fd);
-        }
-        else
-        {
-            res = RES_ERROR;
-        }
+            else
+            {
+                res = RES_ERROR;
+            }
 
-		// translate the reslut code here
+            // translate the reslut code here
 
-		return res;
+            return res;
+        }
 #endif        
         
         
 #if _SD_ENABLE
 	case DEV_SDCARD :
-		// translate the arguments here
-
-		fd = bOpen(SD, BCORE_FLAG_RW);
-        if(fd >= 0)
         {
-            bLseek(fd, sector);
-            bRead(fd, buff, count);
-            bClose(fd);
-        }
-        else
-        {
-            res = RES_ERROR;
-        }
+            // translate the arguments here
 
-		// translate the reslut code here
+            fd = bOpen(SD, BCORE_FLAG_RW);
+            if(fd >= 0)
+            {
+                bLseek(fd, sector);
+                bRead(fd, buff, count);
+                bClose(fd);
+            }
+            else
+            {
+                res = RES_ERROR;
+            }
 
-		return res;
+            // translate the reslut code here
+
+            return res;
+        }
+        break;
 #endif        
 	}
 #endif
@@ -130,57 +138,65 @@ DRESULT disk_write (
 )
 {
 #if _FS_ENABLE && (_FS_SELECT == 0)      
-	UINT i = 0;
-    bCMD_Erase_t cmd_erase;
 	DRESULT res = RES_OK;
     int fd = -1;
 	switch (pdrv) {
 #if _SPIFLASH_ENABLE         
 	case DEV_SPIFLASH :
-		// translate the arguments here
-        
-		fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
-        if(fd >= 0)
         {
-            cmd_erase.addr = sector * 4096;
-            cmd_erase.num = count;
-            bCtl(fd, bCMD_ERASE_SECTOR, &cmd_erase);
-            bLseek(fd, sector * 4096);
-            for(i = 0;i < count;i++)
+            // translate the arguments here
+            bCMD_Erase_t cmd_erase;
+            uint32_t e_size = 0;
+            fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            if(fd >= 0)
             {
-                bWrite(fd, (uint8_t *)buff + i * 4096, 4096);
+                if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+                {
+                    cmd_erase.addr = sector * e_size;
+                    cmd_erase.num = count;
+                    bCtl(fd, bCMD_ERASE_SECTOR, &cmd_erase);
+                    bLseek(fd, sector * e_size);
+                    bWrite(fd, (uint8_t *)buff, count * e_size);
+                }
+                else
+                {
+                    res = RES_ERROR;
+                }
+                bClose(fd);
             }
-            bClose(fd);
-        }
-        else
-        {
-            res = RES_ERROR;
-        }
+            else
+            {
+                res = RES_ERROR;
+            }
 
-		// translate the reslut code here
+            // translate the reslut code here
 
-		return res;
+            return res;
+        }
 #endif        
         
 #if _SD_ENABLE
 	case DEV_SDCARD :
-		// translate the arguments here
-
-		fd = bOpen(SD, BCORE_FLAG_RW);
-        if(fd >= 0)
         {
-            bLseek(fd, sector);
-            bWrite(fd, (uint8_t *)buff, count);
-            bClose(fd);
-        }
-        else
-        {
-            res = RES_ERROR;
-        }
+            // translate the arguments here
 
-		// translate the reslut code here
+            fd = bOpen(SD, BCORE_FLAG_RW);
+            if(fd >= 0)
+            {
+                bLseek(fd, sector);
+                bWrite(fd, (uint8_t *)buff, count);
+                bClose(fd);
+            }
+            else
+            {
+                res = RES_ERROR;
+            }
 
-		return res;
+            // translate the reslut code here
+
+            return res;
+        }
+        break;
 #endif        
 	}
 #endif
@@ -204,21 +220,39 @@ DRESULT disk_ioctl (
 	DRESULT res = RES_OK;
 	switch (pdrv) {
 	case DEV_SPIFLASH :
-        switch(cmd)
         {
-            case GET_SECTOR_COUNT:
-                ((LBA_t *)buff)[0] = _SPIFLASH_SIZE * 1024 * 1024 / 4096;
-                break;
-            case GET_SECTOR_SIZE:
-                ((WORD *)buff)[0] = 4096;
-                break;
-            case GET_BLOCK_SIZE:
-                ((WORD *)buff)[0] = 1;
-                break;
+            int fd = -1;
+            fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
+            if(fd >= 0)
+            {
+                switch(cmd)
+                {
+                    case GET_SECTOR_COUNT:
+                        if(bCtl(fd, bCMD_GET_SECTOR_COUNT, buff) < 0)
+                        {
+                            res = RES_ERROR;
+                        }
+                        break;
+                    case GET_SECTOR_SIZE:
+                        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, buff) < 0)
+                        {
+                            res = RES_ERROR;
+                        }
+                        break;
+                    case GET_BLOCK_SIZE:
+                        ((WORD *)buff)[0] = 1;
+                        break;
+                }
+                bClose(fd);
+            }
+            else 
+            {
+                res = RES_ERROR;
+            }
+            // Process of the command for the RAM drive
+            return res;
         }
-		// Process of the command for the RAM drive
 
-		return res;
 
 	case DEV_SDCARD :
         switch(cmd)

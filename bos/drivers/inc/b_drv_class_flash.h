@@ -61,8 +61,9 @@ typedef struct
  * \defgroup FLASH_Exported_Defines
  * \{
  */
-#define bCMD_ERASE_SECTOR              0      // <==> bCMD_Erase_t
-
+#define bCMD_ERASE_SECTOR               0      // <==> bCMD_Erase_t
+#define bCMD_GET_SECTOR_SIZE            1      // <==> uint32_t
+#define bCMD_GET_SECTOR_COUNT           2      // <==> uint32_t
 /**
  * \}
  */

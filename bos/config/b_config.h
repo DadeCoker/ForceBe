@@ -50,7 +50,7 @@
 #define HW_VERSION                  200310
 
 //<o> Firmware version
-#define FW_VERSION                  40001
+#define FW_VERSION                  40013
 
 //<o> Tick Frequncy HZ
 #define _TICK_FRQ_HZ          	    1000
@@ -193,7 +193,6 @@
 //<o> History command cache length
 #define NR_SHELL_CMD_HISTORY_BUF_LENGTH     100
 
-
 //<o> End of line
 //<0=> \n
 //<1=> \r
@@ -202,9 +201,6 @@
 
 //<q> Support all ANSI codes enable/disable
 #define NR_SHLL_FULL_ANSI                   1
-
-//<q> Show logo enable/disable
-#define NR_SHELL_SHOW_LOG                   0
 
 //<q> Echo enable/disable
 #define NR_SHELL_ECHO_ENABLE                1
@@ -273,10 +269,13 @@
 //<e> FS Enable/Disable
 #define _FS_ENABLE                          0
 
+//<q> bFS_Test() Enable/Disable
+#define _FS_TEST_ENABLE                     1
+
 //<o> FatFS or LittleFS
 //<0=> FatFS
 //<1=> LittleFS
-#define _FS_SELECT                          1
+#define _FS_SELECT                          0
 
 //<e> SPIFLASH Enable/Disable (Device No:SPIFLASH)
 #define _SPIFLASH_ENABLE                    1  

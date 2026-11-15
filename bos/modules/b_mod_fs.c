@@ -112,56 +112,83 @@ lfs_t bLittleFS;
 static int _bFS_DeviceRead(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size)
 {
     int fd = -1;
+    int retval = LFS_ERR_OK;
+    uint32_t e_size = 4096;
     fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
     if(fd >= 0)
     {
-        bLseek(fd, block * 4096 + off);
-        bRead(fd, buffer, size);
+        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+        {
+            bLseek(fd, block * e_size + off);
+            bRead(fd, buffer, size);  
+        }
+        else
+        {
+            retval = LFS_ERR_CORRUPT;
+        }
         bClose(fd);
     }
     else
     {
-        return LFS_ERR_CORRUPT;
+        retval = LFS_ERR_CORRUPT;
     }
-    return LFS_ERR_OK;
+    return retval;
 }
 
 
 int _bFS_DeviceWrite(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size)
 {
     int fd = -1;
+    uint32_t e_size = 4096;
+    int retval = LFS_ERR_OK;
     fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
     if(fd >= 0)
     {
-        bLseek(fd, block * 4096 + off);
-        bWrite(fd, (uint8_t *)buffer, size);
+        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+        {
+            bLseek(fd, block * e_size + off);
+            bWrite(fd, (uint8_t *)buffer, size); 
+        }
+        else
+        {
+            retval = LFS_ERR_CORRUPT;
+        }
         bClose(fd);
     }
     else
     {
         return LFS_ERR_CORRUPT;
     }
-    return LFS_ERR_OK;
+    return retval;
 }
 
 
 int _bFS_DeviceErase(const struct lfs_config *c, lfs_block_t block)
 {
     int fd = -1;
+    int retval = LFS_ERR_OK;
+    uint32_t e_size = 4096;
+    bCMD_Erase_t cmd;
     fd = bOpen(SPIFLASH, BCORE_FLAG_RW);
     if(fd >= 0)
     {
-        bCMD_Erase_t cmd;
-        cmd.addr = block * 4096;
-        cmd.num = 1;
-        bCtl(fd, bCMD_ERASE_SECTOR, &cmd);
+        if(bCtl(fd, bCMD_GET_SECTOR_SIZE, &e_size) == 0)
+        {
+            cmd.addr = block * e_size;
+            cmd.num = 1;
+            bCtl(fd, bCMD_ERASE_SECTOR, &cmd);
+        }
+        else
+        {
+            retval = LFS_ERR_CORRUPT;
+        }
         bClose(fd);
     }
     else
     {
         return LFS_ERR_CORRUPT;
     }
-    return LFS_ERR_OK;
+    return retval;
 }
 
 int _bFS_DeviceSync(const struct lfs_config *c)
@@ -232,6 +259,60 @@ int bFS_Init()
     return 0;
 }
 
+
+#if _FS_TEST_ENABLE
+FIL fil;
+int bFS_Test()
+{
+    // read current count
+    uint32_t boot_count = 0;
+    UINT brw = 0;
+    FRESULT fr;     /* FatFs return code */
+    fr = f_open(&fil, "0:test.txt", FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+    if(fr)
+    {
+        b_log_e("open %d\r\n", fr);
+        f_close(&fil);
+        return -1;
+    }
+    f_lseek(&fil, 0);
+    fr = f_read(&fil, &boot_count, sizeof(boot_count), &brw);
+    if(fr)
+    {
+        b_log_e("read %d\r\n", fr);
+        f_close(&fil);
+        return -1;
+    }
+    if(brw != sizeof(boot_count))
+    {
+        b_log_e("read %d %d\r\n", brw, boot_count);
+        boot_count = 0;
+    }
+    else
+    {
+        b_log("boot_count %d\r\n", boot_count);
+        boot_count++;
+    }
+    f_lseek(&fil, 0);
+    fr = f_write(&fil, &boot_count, sizeof(boot_count), &brw);
+    if(fr)
+    {
+        b_log_e("write %d\r\n", fr);
+        f_close(&fil);
+        return -1;
+    }
+    f_close(&fil);
+    return 0;
+}
+#else
+int bFS_Test()
+{
+    return 0;
+}
+#endif
+
+
+
 #endif
 
 
@@ -269,9 +350,37 @@ int bFS_Init()
     return 0;
 }
 
+#if _FS_TEST_ENABLE
+lfs_file_t file;
+int bFS_Test()
+{
+    // read current count
+    lfs_t *plsf = &bLittleFS;
+    uint32_t boot_count = 0;
+    lfs_file_open(plsf, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT);
+    lfs_file_read(plsf, &file, &boot_count, sizeof(boot_count));
 
+    // update boot count
+    boot_count += 1;
+    lfs_file_rewind(plsf, &file);
+    lfs_file_write(plsf, &file, &boot_count, sizeof(boot_count));
 
+    // remember the storage is not updated until the file is closed successfully
+    lfs_file_close(plsf, &file);
 
+    // release any resources we were using
+    lfs_unmount(plsf);
+
+    // print the boot count
+    b_log("boot_count: %d\n", boot_count);
+    return 0;
+}
+#else
+int bFS_Test()
+{
+    return 0;
+}
+#endif
 
 #endif
 

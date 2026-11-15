@@ -102,6 +102,10 @@ extern lfs_t bLittleFS;
 #endif
 
 int bFS_Init(void);
+
+int bFS_Test(void);
+
+
 /**
  * \}
  */

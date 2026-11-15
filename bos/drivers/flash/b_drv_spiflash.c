@@ -254,9 +254,29 @@ static int _bSPIFLASH_Ctl(bSPIFLASH_Driver_t *pdrv, uint8_t cmd, void * param)
                 {
                     bCMD_Erase_t *perase_param = (bCMD_Erase_t *)param;
                     sfud_erase(flash, perase_param->addr, perase_param->num * flash->chip.erase_gran);
+                    retval = 0;
                 }
             }
             break;
+        case bCMD_GET_SECTOR_SIZE:
+            {
+                if(param)
+                {
+                    ((uint32_t *)param)[0] = flash->chip.erase_gran;
+                    retval = 0;
+                }
+            }
+            break;
+        case bCMD_GET_SECTOR_COUNT:
+            {
+                if(param)
+                {
+                    ((uint32_t *)param)[0] = flash->chip.capacity / flash->chip.erase_gran;
+                    retval = 0;
+                }
+            }
+            break;    
+            
     }
     return retval;
 }
