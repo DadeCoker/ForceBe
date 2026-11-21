@@ -1,8 +1,8 @@
 /**
  *!
- * \file        b_hal_i2c.h
+ * \file        b_drv_class_gsensor.h
  * \version     v0.0.1
- * \date        2020/03/25
+ * \date        2020/06/08
  * \author      Bean(notrynohigh@outlook.com)
  *******************************************************************************
  * @attention
@@ -21,98 +21,58 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SI2CL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************
  */
-#ifndef __B_HAL_I2C_H__
-#define __B_HAL_I2C_H__
+#ifndef __B_DRV_CLASS_GSENSOR_H__
+#define __B_DRV_CLASS_GSENSOR_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /*Includes ----------------------------------------------*/
-#include "b_config.h" 
-
-
+#include "b_hal.h"
+#include "b_utils.h"
+#include "b_driver.h"
 /** 
- * \addtogroup B_HAL
+ * \addtogroup B_DRIVER
  * \{
  */
 
 /** 
- * \addtogroup I2C
+ * \defgroup GSENSOR_Exported_TypesDefinitions
  * \{
  */
-
-/** 
- * \defgroup I2C_Exported_TypesDefinitions
- * \{
- */
-typedef enum
+typedef struct
 {
-    B_HAL_I2C_1,
-    B_HAL_I2C_2,
-    B_HAL_I2C_3,
-    B_HAL_I2C_4,
-    B_HAL_I2C_INVALID
-}bHalI2CNumber_t; 
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Exported_Defines
- * \{
- */
-
+    uint8_t fifo_enable;
+    uint8_t fifo_mode;
+    uint8_t fifo_length;
+}bGSensorCfgFIFO_t;    
 
 /**
  * \}
  */
    
 /** 
- * \defgroup I2C_Exported_Macros
+ * \defgroup GSENSOR_Exported_Defines
  * \{
  */
-
-
+#define bCMD_CFG_ODR            0               //uint16_t   (x)Hz
+#define bCMD_CFG_FS             1               //uint8_t   (x)g
+#define bCMD_CFG_POWERDOWN      2               //no param
+#define bCMD_CFG_FIFO           3               //bGSensorCfgFIFO_t
 /**
  * \}
  */
    
-/** 
- * \defgroup I2C_Exported_Variables
- * \{
- */
-   
-/**
- * \}
- */
-   
-/** 
- * \defgroup I2C_Exported_Functions
- * \{
- */
 
-void bHalI2C_SendByte(bHalI2CNumber_t i2c, uint8_t dev_addr, uint8_t dat);
-uint8_t bHalI2C_ReceiveByte(bHalI2CNumber_t i2c, uint8_t dev_addr);
-
-int bHalI2C_MemWrite(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
-int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, uint8_t *pbuf, uint16_t len);
-
-/**
- * \}
- */
-
-/**
- * \}
- */
-
+ 
 /**
  * \}
  */
@@ -125,5 +85,9 @@ int bHalI2C_MemRead(bHalI2CNumber_t i2c, uint8_t dev_addr, uint16_t mem_addr, ui
 
 
 /************************ Copyright (c) 2020 Bean *****END OF FILE****/
+
+
+
+
 
 

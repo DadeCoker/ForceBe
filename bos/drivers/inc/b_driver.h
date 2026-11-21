@@ -41,6 +41,7 @@
 #include "b_drv_class_touch.h"
 #include "b_drv_class_io.h"
 #include "b_drv_class_camera.h"
+#include "b_drv_class_gsensor.h"
 /** 
  * \addtogroup BABYOS
  * \{
@@ -136,6 +137,13 @@ extern bDriverInterface_t   bOV5640_Driver;
 //                  IO
 //
 extern bDriverInterface_t   bPCF8574_Driver;
+
+
+//
+//                  G-Sensor
+//
+extern bDriverInterface_t   bLIS3DH_Driver;
+
 /**
  * \}
  */

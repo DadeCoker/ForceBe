@@ -141,6 +141,21 @@
 
 
 //
+//                               G-Sensor  
+//
+//ST-LIS3DH
+#define HAL_LIS3DH_I2C_ENABLE           0
+#if HAL_LIS3DH_I2C_ENABLE
+#define HAL_LIS3DH_I2C                  B_HAL_I2C_1
+#define HAL_LIS3DH_I2C_ADDR             0X00
+#else
+#define HAL_LIS3DH_SPI                  B_HAL_SPI_1
+#define HAL_LIS3DH_CS_PORT              B_HAL_GPIOB
+#define HAL_LIS3DH_CS_PIN               B_HAL_PIN0
+#endif
+#define HAL_LIS3DH_INT_PIN              B_HAL_PIN4
+
+//
 //                               BUTTON   
 //
 ///< b_mod_button {port, pin, pressed_logic_level}
