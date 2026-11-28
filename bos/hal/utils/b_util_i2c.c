@@ -266,6 +266,71 @@ uint8_t bUtilI2C_ReadData(bUtilI2C_t i2c, uint8_t dev, uint8_t addr)
 }
 
 
+int bUtilI2C_ReadBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, uint8_t len)
+{
+	bUtilI2C_Start(i2c);
+	bUtilI2C_WriteByte(i2c, dev);
+	if(bUtilI2C_ACK(i2c) < 0)
+	{
+        bUtilI2C_Stop(i2c);
+		return 0;
+	}
+	bUtilI2C_WriteByte(i2c, addr);
+	if(bUtilI2C_ACK(i2c) < 0)
+	{
+        bUtilI2C_Stop(i2c);
+		return -1;
+	}
+	bUtilI2C_Start(i2c);
+	bUtilI2C_WriteByte(i2c, dev | 0x1);
+	if(bUtilI2C_ACK(i2c) < 0)
+	{
+        bUtilI2C_Stop(i2c);
+		return -1;
+	}
+    while(len-- > 1)
+    {
+        *pdat++ = bUtilI2C_ReadByte(i2c);
+        bUtilI2C_mACK(i2c);
+    }
+    *pdat++ = bUtilI2C_ReadByte(i2c);
+
+	bUtilI2C_Stop(i2c);
+	return 0;
+}
+
+
+int bUtilI2C_WriteBuff(bUtilI2C_t i2c, uint8_t dev, uint8_t addr, uint8_t *pdat, uint8_t len)
+{
+    uint32_t i = 0;
+	bUtilI2C_Start(i2c);
+	bUtilI2C_WriteByte(i2c, dev);
+	if(bUtilI2C_ACK(i2c) < 0)
+	{
+        bUtilI2C_Stop(i2c);
+		return -1;
+	}
+	bUtilI2C_WriteByte(i2c, addr);
+	if(bUtilI2C_ACK(i2c) < 0)
+	{
+        bUtilI2C_Stop(i2c);
+		return -1;
+	}
+    for(i = 0;i < len;i++)
+    {
+        bUtilI2C_WriteByte(i2c, pdat[i]);
+        if(bUtilI2C_ACK(i2c) < 0)
+        {
+            bUtilI2C_Stop(i2c);
+            return -1;
+        }
+    }
+	bUtilI2C_Stop(i2c);
+	return 0;
+}
+
+
+
 /**
  * \}
  */

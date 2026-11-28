@@ -109,7 +109,8 @@ static volatile uint8_t IntFlag = 1;
 static int _bLis3dhReadRegs(uint8_t reg, uint8_t* data, uint16_t len)
 {
 #if HAL_LIS3DH_I2C_ENABLE
-
+    reg = reg | 0x80;
+    bHalI2C_MemRead(HAL_LIS3DH_I2C, HAL_LIS3DH_I2C_ADDR, reg, data, len);
 #else    
     reg |= 0xC0;
     bHalGPIO_WritePin(HAL_LIS3DH_CS_PORT, HAL_LIS3DH_CS_PIN, 0);
@@ -123,7 +124,7 @@ static int _bLis3dhReadRegs(uint8_t reg, uint8_t* data, uint16_t len)
 static int _bLis3dhWriteRegs(uint8_t reg, uint8_t* data, uint16_t len)
 {
 #if HAL_LIS3DH_I2C_ENABLE
-
+    bHalI2C_MemWrite(HAL_LIS3DH_I2C, HAL_LIS3DH_I2C_ADDR, reg, data, len);
 #else    
     reg |= 0x40;
     bHalGPIO_WritePin(HAL_LIS3DH_CS_PORT, HAL_LIS3DH_CS_PIN, 0);
